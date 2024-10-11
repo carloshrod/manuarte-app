@@ -1,3 +1,22 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": [
+    "next/core-web-vitals",
+    "standard",
+    "plugin:react/recommended"
+  ],
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "no-unused-vars": "warn",
+    "space-before-function-paren": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "camelcase": "off",
+    "semi": "off",
+    "no-tabs": "off",
+    "indent": "off",
+    "no-undef": "off"
+  }
 }
