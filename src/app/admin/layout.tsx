@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Button, Layout, Menu, theme } from 'antd';
 import {
 	TbLayoutSidebarLeftCollapseFilled,
@@ -15,14 +16,35 @@ const AdminLayout = ({
 	children: React.ReactNode;
 }>) => {
 	const [collapsed, setCollapsed] = useState(false);
-	const [selectedItem, setSelectedItem] = useState(['1']);
 	const [hide, setHide] = useState(false);
+	const [selectedItem, setSelectedItem] = useState<string[]>([]);
+	const pathname = usePathname();
+
 	const {
 		token: { colorBgContainer, borderRadiusLG }
 	} = theme.useToken();
 
+	const getInitialSelectedItem = (pathname: string) => {
+		return (
+			menuItems.find(item =>
+				typeof item.label === 'string'
+					? item.label === pathname
+					: item.label.props.href === pathname
+			)?.key || '1'
+		);
+	};
+
+	useEffect(() => {
+		const newSelectedItem = [getInitialSelectedItem(pathname)];
+		setSelectedItem(newSelectedItem);
+	}, [pathname]);
+
+	const handleMenuSelect = ({ key }: { key: string }) => {
+		if (key !== '9') setSelectedItem([key]);
+	};
+
 	return (
-		<Layout className='h-screen'>
+		<Layout className='h-full'>
 			<Sider
 				className='p-2'
 				trigger={null}
@@ -42,7 +64,7 @@ const AdminLayout = ({
 					mode='inline'
 					defaultSelectedKeys={['1']}
 					selectedKeys={selectedItem}
-					onSelect={({ key }) => (key !== '9' ? setSelectedItem([key]) : null)}
+					onSelect={handleMenuSelect}
 					items={menuItems}
 				/>
 			</Sider>
