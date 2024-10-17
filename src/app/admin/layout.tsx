@@ -49,7 +49,7 @@ const AdminLayout = ({
 			<Layout>
 				<Header
 					style={{ padding: 0, background: colorBgContainer }}
-					className='flex justify-end md:justify-between'
+					className='flex justify-end md:justify-between drop-shadow-md'
 				>
 					{!hide ? (
 						<Button

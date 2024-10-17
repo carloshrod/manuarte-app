@@ -18,6 +18,7 @@
     "no-tabs": "off",
     "indent": "off",
     "no-undef": "off",
-    "multiline-ternary": "off"
+    "multiline-ternary": "off",
+    "quotes": "off"
   }
 }
