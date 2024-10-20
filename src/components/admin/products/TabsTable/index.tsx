@@ -8,12 +8,15 @@ import { IoMdAdd } from 'react-icons/io';
 import { AiOutlineAppstore } from 'react-icons/ai';
 import { BiPackage } from 'react-icons/bi';
 import { MdOutlineCategory } from 'react-icons/md';
+import { useDispatch } from 'react-redux';
+import { openModal } from '@/reducers/ui/uiSlice';
 
 const TabsTable = () => {
 	const { productColumns, productCategoryColumns } = useTableColumns();
 	const productArray = products as Product[][];
 	const productsData = productArray[0];
 	const [isProducts, setIsProducts] = useState(true);
+	const dispatch = useDispatch();
 
 	const onChange = (key: string) => {
 		setIsProducts(key === '1');
@@ -58,17 +61,53 @@ const TabsTable = () => {
 
 	const operations = isProducts ? (
 		<div className='flex gap-2 max-[460px]:flex-col'>
-			<Button variant='outlined' color='primary' icon={<IoMdAdd size={18} />}>
+			<Button
+				variant='outlined'
+				color='primary'
+				icon={<IoMdAdd size={18} />}
+				onClick={() =>
+					dispatch(
+						openModal({
+							title: 'Agregar Productos',
+							content: 'productVariants'
+						})
+					)
+				}
+			>
 				<p className='max-sm:hidden'>Presentación</p>{' '}
 				<AiOutlineAppstore size={18} />
 			</Button>
-			<Button variant='outlined' color='primary' icon={<IoMdAdd size={18} />}>
+			<Button
+				variant='outlined'
+				color='primary'
+				icon={<IoMdAdd size={18} />}
+				onClick={() =>
+					dispatch(
+						openModal({
+							title: 'Agregar Productos',
+							content: 'products'
+						})
+					)
+				}
+			>
 				<p className='max-sm:hidden'>Producto</p>
 				<BiPackage size={18} />
 			</Button>
 		</div>
 	) : (
-		<Button variant='outlined' color='primary' icon={<IoMdAdd size={18} />}>
+		<Button
+			variant='outlined'
+			color='primary'
+			icon={<IoMdAdd size={18} />}
+			onClick={() =>
+				dispatch(
+					openModal({
+						title: 'Agregar Productos',
+						content: 'productVariants'
+					})
+				)
+			}
+		>
 			Categoría <MdOutlineCategory size={18} />
 		</Button>
 	);

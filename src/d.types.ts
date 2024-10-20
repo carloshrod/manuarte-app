@@ -38,3 +38,15 @@ interface ProductCategory {
 }
 
 type DataTable = Product | ProductCategory;
+
+interface UIModalState {
+	isOpen: boolean;
+	title: string | null;
+	content: string | null;
+}
+
+interface RootState {
+	ui: {
+		modal: UIModalState;
+	};
+}
