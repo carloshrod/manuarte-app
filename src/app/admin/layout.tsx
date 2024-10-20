@@ -44,7 +44,7 @@ const AdminLayout = ({
 	};
 
 	return (
-		<Layout className='h-full'>
+		<Layout style={{ minHeight: '100vh' }}>
 			<Sider
 				className='p-2'
 				trigger={null}
