@@ -1,8 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { Button, Table, Tabs, TabsProps } from 'antd';
-import products from './products.json';
-import productCategories from './productCategories.json';
+import products from '@/../../mock/products.json';
+import productCategories from '@/../../mock/productCategories.json';
 import useTableColumns from '@/hooks/useTableColumns';
 import { IoMdAdd } from 'react-icons/io';
 import { AiOutlineAppstore } from 'react-icons/ai';
@@ -10,6 +10,7 @@ import { BiPackage } from 'react-icons/bi';
 import { MdOutlineCategory } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
 import { openModal } from '@/reducers/ui/uiSlice';
+import { ModalContentKey } from '@/enums';
 
 const TabsTable = () => {
 	const { productColumns, productCategoryColumns } = useTableColumns();
@@ -68,8 +69,8 @@ const TabsTable = () => {
 				onClick={() =>
 					dispatch(
 						openModal({
-							title: 'Agregar Productos',
-							content: 'productVariants'
+							title: 'Agregar Presentación de Producto',
+							content: ModalContentKey.ProductVariants
 						})
 					)
 				}
@@ -84,8 +85,8 @@ const TabsTable = () => {
 				onClick={() =>
 					dispatch(
 						openModal({
-							title: 'Agregar Productos',
-							content: 'products'
+							title: 'Agregar Producto',
+							content: ModalContentKey.Products
 						})
 					)
 				}
@@ -102,8 +103,8 @@ const TabsTable = () => {
 			onClick={() =>
 				dispatch(
 					openModal({
-						title: 'Agregar Productos',
-						content: 'productVariants'
+						title: 'Agregar Categoría de Producto',
+						content: ModalContentKey.ProductCategories
 					})
 				)
 			}

@@ -1,26 +1,24 @@
+import { ModalContentKey } from '@/enums';
 import { closeModal } from '@/reducers/ui/uiSlice';
 import { Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-
-type ContentKey = 'products' | 'productVariants' | 'productCategories';
 
 const CustomModal = () => {
 	const { modal } = useSelector((state: RootState) => state.ui);
 	const { isOpen, title, content } = modal;
 	const dispatch = useDispatch();
 
-	const CONTENT: Record<ContentKey, React.ReactNode> = {
-		products: <p>Form Products</p>,
-		productVariants: <p>Form ProductVariants</p>,
-		productCategories: <p>Form ProductCategories</p>
+	const CONTENT: Record<ModalContentKey, React.ReactNode> = {
+		[ModalContentKey.Products]: <p>Form Products</p>,
+		[ModalContentKey.ProductVariants]: <p>Form ProductVariants</p>,
+		[ModalContentKey.ProductCategories]: <p>Form ProductCategories</p>,
+		[ModalContentKey.Users]: <p>Form Users</p>
 	};
 
 	const modalContent =
-		content && typeof content === 'string' ? (
-			CONTENT[content as ContentKey]
-		) : (
-			<p>Contenido no disponible.</p>
-		);
+		content && typeof content === 'string'
+			? CONTENT[content as ModalContentKey]
+			: null;
 
 	return (
 		<Modal
