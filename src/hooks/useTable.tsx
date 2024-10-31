@@ -4,15 +4,15 @@ import { FilterDropdownProps } from 'antd/es/table/interface';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 
-const useTable = <T extends object>() => {
+const useTable = () => {
 	const [searchText, setSearchText] = useState('');
-	const [searchedColumn, setSearchedColumn] = useState<keyof T | ''>('');
+	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef<InputRef>(null);
 
 	const handleSearch = (
 		selectedKeys: string[],
 		confirm: FilterDropdownProps['confirm'],
-		dataIndex: keyof T
+		dataIndex: string
 	) => {
 		confirm();
 		setSearchText(selectedKeys[0]);
@@ -24,7 +24,7 @@ const useTable = <T extends object>() => {
 		setSearchText('');
 	};
 
-	const getColumnSearchProps = (dataIndex: keyof T): TableColumnType<T> => ({
+	const getColumnSearchProps = (dataIndex: string): TableColumnType<any> => ({
 		filterDropdown: ({
 			setSelectedKeys,
 			selectedKeys,
