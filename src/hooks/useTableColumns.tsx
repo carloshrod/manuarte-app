@@ -10,9 +10,9 @@ const useTableColumns = () => {
 	const productColumns: TableColumnsType<Product> = [
 		{
 			title: '#',
-			dataIndex: 'pId',
-			key: 'pId',
-			...getColumnSearchProps('pId'),
+			dataIndex: 'variantProductVId',
+			key: 'variantProductVId',
+			...getColumnSearchProps('variantProductVId'),
 			width: 100
 		},
 		{
@@ -23,40 +23,33 @@ const useTableColumns = () => {
 			...getColumnSearchProps('name')
 		},
 		{
-			title: 'CATEGORÍA',
-			dataIndex: 'categoryProductId',
-			key: 'categoryProductId',
-			width: 120,
-			...getColumnSearchProps('categoryProductId')
+			title: 'PRESENTACIÓN',
+			dataIndex: 'variantProductName',
+			key: 'variantProductName',
+			width: 100,
+			...getColumnSearchProps('variantProductName')
 		},
 		{
-			title: 'FECHA DE CREACIÓN',
-			dataIndex: 'createdDate',
-			key: 'createdDate',
-			sorter: (a: DataTable, b: Product) =>
-				moment(a?.createdDate).valueOf() - moment(b?.createdDate).valueOf(),
-			sortDirections: ['descend', 'ascend'],
-			render: (value: string) => (
-				<span>
-					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
-				</span>
-			),
-			width: 100
+			title: 'DESCRIPCIÓN',
+			dataIndex: 'description',
+			key: 'description',
+			width: 150,
+			...getColumnSearchProps('description')
+		},
+
+		{
+			title: 'CATEGORÍA',
+			dataIndex: 'categoryProductName',
+			key: 'categoryProductName',
+			width: 150,
+			...getColumnSearchProps('categoryProductName')
 		},
 		{
 			title: 'CÓDIGO QR',
-			dataIndex: ['variantProducts', 'qrCode'],
+			dataIndex: 'qrCode',
 			key: 'qrCode',
-			render: (_value: string, record: Product) => {
-				const { variantProducts } = record || {};
-				return (
-					<Image
-						src={variantProducts[0]?.qrCode}
-						width={80}
-						height={80}
-						alt='QR Image'
-					/>
-				);
+			render: (value: string) => {
+				return <Image src={value} width={80} height={80} alt='QR Image' />;
 			},
 			width: 100
 		},

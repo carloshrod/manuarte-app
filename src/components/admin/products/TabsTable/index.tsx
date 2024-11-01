@@ -1,8 +1,6 @@
 'use client';
 import { useState } from 'react';
 import { Button, Table, Tabs, TabsProps } from 'antd';
-import products from '@/../../mock/products.json';
-import productCategories from '@/../../mock/productCategories.json';
 import useTableColumns from '@/hooks/useTableColumns';
 import { IoMdAdd } from 'react-icons/io';
 import { AiOutlineAppstore } from 'react-icons/ai';
@@ -12,10 +10,13 @@ import { useDispatch } from 'react-redux';
 import { openModal } from '@/reducers/ui/uiSlice';
 import { ModalContentKey } from '@/enums';
 
-const TabsTable = () => {
+type TabsTableProps = {
+	products: Product[];
+	productCategories: ProductCategory[];
+};
+
+const TabsTable = ({ products, productCategories }: TabsTableProps) => {
 	const { productColumns, productCategoryColumns } = useTableColumns();
-	const productArray = products as Product[][];
-	const productsData = productArray[0];
 	const [isProducts, setIsProducts] = useState(true);
 	const dispatch = useDispatch();
 
@@ -32,7 +33,7 @@ const TabsTable = () => {
 					<Table<Product>
 						rowKey='id'
 						columns={productColumns}
-						dataSource={productsData}
+						dataSource={products}
 						scroll={{ y: 'calc(100vh - 380px)' }}
 						pagination={{
 							locale: { items_per_page: 'por página' }
