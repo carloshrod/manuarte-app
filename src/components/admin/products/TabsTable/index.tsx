@@ -27,7 +27,7 @@ const TabsTable = ({ products, productCategories }: TabsTableProps) => {
 	const items: TabsProps['items'] = [
 		{
 			key: '1',
-			label: 'Productos',
+			label: 'Presentaciones',
 			children: (
 				<div className='shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-2 px-4 rounded-lg'>
 					<Table<Product>
