@@ -65,9 +65,12 @@ interface UIModalState {
 	title: string | null;
 	content: string | null;
 }
-
 interface RootState {
 	ui: {
 		modal: UIModalState;
+	};
+	product: {
+		products: Product[];
+		productCategories: ProductCategory[];
 	};
 }

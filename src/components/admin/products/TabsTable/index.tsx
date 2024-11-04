@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Table, Tabs, TabsProps } from 'antd';
 import useTableColumns from '@/hooks/useTableColumns';
 import { IoMdAdd } from 'react-icons/io';
@@ -9,6 +9,7 @@ import { MdOutlineCategory } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
 import { openModal } from '@/reducers/ui/uiSlice';
 import { ModalContentKey } from '@/enums';
+import { getProductCategories } from '@/reducers/products/productSlice';
 
 type TabsTableProps = {
 	products: Product[];
@@ -19,6 +20,10 @@ const TabsTable = ({ products, productCategories }: TabsTableProps) => {
 	const { productColumns, productCategoryColumns } = useTableColumns();
 	const [isProducts, setIsProducts] = useState(true);
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch(getProductCategories(productCategories));
+	}, []);
 
 	const onChange = (key: string) => {
 		setIsProducts(key === '1');

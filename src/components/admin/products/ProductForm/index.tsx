@@ -1,7 +1,12 @@
 import { Form, Input, Select } from 'antd';
 import ProductVariantsInputList from '../ProductVariantsInputList';
+import { useSelector } from 'react-redux';
 
 const ProductForm = () => {
+	const { productCategories } = useSelector(
+		(state: RootState) => state.product
+	);
+
 	return (
 		<>
 			<Form.Item
@@ -35,10 +40,27 @@ const ProductForm = () => {
 					}
 				]}
 			>
-				<Select>
-					<Select.Option value='cat1'>Categoría 1</Select.Option>
-					<Select.Option value='cat2'>Categoría 2</Select.Option>
-					<Select.Option value='cat3'>Categoría 3</Select.Option>
+				<Select
+					allowClear
+					showSearch
+					filterOption={(input, option) => {
+						try {
+							const children = (
+								option?.children as unknown as string
+							)?.toLowerCase();
+
+							return children?.includes(input.toLowerCase());
+						} catch (error) {
+							console.error(error);
+							return false;
+						}
+					}}
+				>
+					{productCategories.map(cat => (
+						<Select.Option key={cat.id} value={cat.id}>
+							{cat.name}
+						</Select.Option>
+					))}
 				</Select>
 			</Form.Item>
 
