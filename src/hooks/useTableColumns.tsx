@@ -1,7 +1,6 @@
-import { TableColumnsType } from 'antd';
+import { QRCode, Space, TableColumnsType } from 'antd';
 import useTable from './useTable';
 import moment from 'moment';
-import Image from 'next/image';
 import ActionsProduct from '@/components/admin/products/ActionsProduct';
 
 const useTableColumns = () => {
@@ -19,37 +18,41 @@ const useTableColumns = () => {
 			title: 'NOMBRE',
 			dataIndex: 'productName',
 			key: 'productName',
-			width: 150,
-			...getColumnSearchProps('productName')
+			...getColumnSearchProps('productName'),
+			width: 150
 		},
 		{
 			title: 'PRESENTACIÓN',
 			dataIndex: 'name',
 			key: 'name',
-			width: 150,
-			...getColumnSearchProps('name')
+			...getColumnSearchProps('name'),
+			width: 120
 		},
 		{
 			title: 'DESCRIPCIÓN',
 			dataIndex: 'productDescription',
 			key: 'productDescription',
-			width: 150,
-			...getColumnSearchProps('productDescription')
+			...getColumnSearchProps('productDescription'),
+			width: 150
 		},
 
 		{
 			title: 'CATEGORÍA',
 			dataIndex: 'categoryProductName',
 			key: 'categoryProductName',
-			width: 150,
-			...getColumnSearchProps('categoryProductName')
+			...getColumnSearchProps('categoryProductName'),
+			width: 150
 		},
 		{
 			title: 'CÓDIGO QR',
-			dataIndex: 'qrCode',
-			key: 'qrCode',
+			dataIndex: 'vId',
+			key: 'vId',
 			render: (value: string) => {
-				return <Image src={value} width={80} height={80} alt='QR Image' />;
+				return (
+					<Space align='center'>
+						<QRCode value={value || 'NO vID'} size={80} />
+					</Space>
+				);
 			},
 			width: 100
 		},
@@ -74,8 +77,8 @@ const useTableColumns = () => {
 			title: 'NOMBRE',
 			dataIndex: 'name',
 			key: 'name',
-			width: 150,
-			...getColumnSearchProps('name')
+			...getColumnSearchProps('name'),
+			width: 150
 		},
 		{
 			title: 'FECHA DE CREACIÓN',
@@ -112,8 +115,8 @@ const useTableColumns = () => {
 			title: 'EMAIL',
 			dataIndex: 'email',
 			key: 'email',
-			width: 150,
-			...getColumnSearchProps('email')
+			...getColumnSearchProps('email'),
+			width: 150
 		},
 		{
 			title: 'FECHA DE CREACIÓN',

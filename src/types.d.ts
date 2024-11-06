@@ -18,7 +18,6 @@ interface ProductVariant {
 	productName: string;
 	productDescription: string;
 	categoryProductName: string;
-	qrCode: string;
 }
 
 type ProductCreationAttr = Pick<
