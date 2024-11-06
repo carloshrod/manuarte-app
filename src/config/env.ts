@@ -1,6 +1,7 @@
-const BASE_URL = process.env.NEXT_APP_API_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const ENDPOINTS = {
-	products: `${BASE_URL}/products`,
-	productCategories: `${BASE_URL}/product-categories`
+	PRODUCTS: `${BASE_URL}/products`,
+	PRODUCT_VARIANTS: `${BASE_URL}/product-variants`,
+	PRODUCT_CATEGORIES: `${BASE_URL}/product-categories`
 };

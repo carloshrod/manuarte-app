@@ -16,6 +16,7 @@ const ProductVariantsInputList = () => {
 							<div className='flex items-center gap-2'>
 								<Form.Item
 									{...field}
+									key={field.key}
 									validateTrigger={['onChange', 'onBlur']}
 									rules={[
 										{

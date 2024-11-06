@@ -5,3 +5,7 @@ export enum ModalContentKey {
 	ProductCategories = 'productCategories',
 	Users = 'users'
 }
+
+export enum ModalSubmitFnKey {
+	Products = 'products'
+}

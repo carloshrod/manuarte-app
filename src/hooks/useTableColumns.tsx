@@ -7,34 +7,34 @@ import ActionsProduct from '@/components/admin/products/ActionsProduct';
 const useTableColumns = () => {
 	const { getColumnSearchProps } = useTable();
 
-	const productColumns: TableColumnsType<Product> = [
+	const productColumns: TableColumnsType<ProductVariant> = [
 		{
 			title: '#',
-			dataIndex: 'variantProductVId',
-			key: 'variantProductVId',
-			...getColumnSearchProps('variantProductVId'),
+			dataIndex: 'vId',
+			key: 'vId',
+			...getColumnSearchProps('vId'),
 			width: 100
 		},
 		{
 			title: 'NOMBRE',
+			dataIndex: 'productName',
+			key: 'productName',
+			width: 150,
+			...getColumnSearchProps('productName')
+		},
+		{
+			title: 'PRESENTACIÓN',
 			dataIndex: 'name',
 			key: 'name',
 			width: 150,
 			...getColumnSearchProps('name')
 		},
 		{
-			title: 'PRESENTACIÓN',
-			dataIndex: 'variantProductName',
-			key: 'variantProductName',
-			width: 100,
-			...getColumnSearchProps('variantProductName')
-		},
-		{
 			title: 'DESCRIPCIÓN',
-			dataIndex: 'description',
-			key: 'description',
+			dataIndex: 'productDescription',
+			key: 'productDescription',
 			width: 150,
-			...getColumnSearchProps('description')
+			...getColumnSearchProps('productDescription')
 		},
 
 		{
@@ -57,7 +57,7 @@ const useTableColumns = () => {
 			title: 'ACCIONES',
 			key: 'actions',
 			className: 'actions',
-			render: (_, record: Product) => <ActionsProduct record={record} />,
+			render: (_, record: DataTable) => <ActionsProduct record={record} />,
 			width: 100
 		}
 	];

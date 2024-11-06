@@ -3,19 +3,28 @@
 interface Product {
 	id: string;
 	name: string;
-	description: string;
-	pId: string;
+}
+
+interface ProductVariant {
+	id: string;
+	name: string;
+	productId: string;
+	vId: string;
 	createdBy: string;
 	updatedBy: string;
 	createdDate: string;
 	updatedDate: string;
 	deletedDate?: string;
-	variantProductVId: string;
-	variantProductName: string;
-	categoryProductId: string;
+	productName: string;
+	productDescription: string;
 	categoryProductName: string;
 	qrCode: string;
 }
+
+type ProductCreationAttr = Pick<
+	ProductAttributes,
+	'name' | 'description' | 'categoryProductId'
+>;
 
 interface ProductCategory {
 	id: string;
@@ -58,7 +67,7 @@ interface User {
 	};
 }
 
-type DataTable = Product | ProductCategory | User;
+type DataTable = ProductVariant | ProductCategory | User;
 
 interface UIModalState {
 	isOpen: boolean;
@@ -71,6 +80,7 @@ interface RootState {
 	};
 	product: {
 		products: Product[];
+		productVariants: ProductVariant[];
 		productCategories: ProductCategory[];
 	};
 }

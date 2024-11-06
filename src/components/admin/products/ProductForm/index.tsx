@@ -31,7 +31,7 @@ const ProductForm = () => {
 				<Input.TextArea placeholder='Ingrese una descripción para el producto' />
 			</Form.Item>
 			<Form.Item
-				name='category'
+				name='categoryProductId'
 				label='Categoría'
 				rules={[
 					{

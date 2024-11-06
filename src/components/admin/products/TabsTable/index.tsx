@@ -6,23 +6,37 @@ import { IoMdAdd } from 'react-icons/io';
 import { AiOutlineAppstore } from 'react-icons/ai';
 import { BiPackage } from 'react-icons/bi';
 import { MdOutlineCategory } from 'react-icons/md';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '@/reducers/ui/uiSlice';
 import { ModalContentKey } from '@/enums';
-import { getProductCategories } from '@/reducers/products/productSlice';
+import {
+	getProductCategories,
+	getProductVariants
+} from '@/reducers/products/productSlice';
 
 type TabsTableProps = {
-	products: Product[];
-	productCategories: ProductCategory[];
+	productVariantsData: ProductVariant[];
+	productCategoriesData: ProductCategory[];
 };
 
-const TabsTable = ({ products, productCategories }: TabsTableProps) => {
+const TabsTable = ({
+	productVariantsData,
+	productCategoriesData
+}: TabsTableProps) => {
 	const { productColumns, productCategoryColumns } = useTableColumns();
 	const [isProducts, setIsProducts] = useState(true);
 	const dispatch = useDispatch();
+	const { productVariants, productCategories } = useSelector(
+		(state: RootState) => state.product
+	);
+
+	// ToDo:
+	// Mostrar solo productos con presentación en "Presentaciones"
+	// Agregar un tab para mostrar productos generales?
 
 	useEffect(() => {
-		dispatch(getProductCategories(productCategories));
+		dispatch(getProductVariants(productVariantsData));
+		dispatch(getProductCategories(productCategoriesData));
 	}, []);
 
 	const onChange = (key: string) => {
@@ -35,10 +49,10 @@ const TabsTable = ({ products, productCategories }: TabsTableProps) => {
 			label: 'Presentaciones',
 			children: (
 				<div className='shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-2 px-4 rounded-lg'>
-					<Table<Product>
+					<Table<ProductVariant>
 						rowKey='id'
 						columns={productColumns}
-						dataSource={products}
+						dataSource={productVariants}
 						scroll={{ y: 'calc(100vh - 380px)' }}
 						pagination={{
 							locale: { items_per_page: 'por página' }

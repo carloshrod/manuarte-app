@@ -1,35 +1,21 @@
-import ProductForm from '@/components/admin/products/ProductForm';
-import { ModalContentKey } from '@/enums';
-import { closeModal } from '@/reducers/ui/uiSlice';
 import { Form, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-
-interface Values {
-	name?: string;
-	description?: string;
-}
+import useForm from '@/hooks/useForm';
+import useModal from '@/hooks/useModal';
+import { closeModal } from '@/reducers/ui/uiSlice';
+import { ModalContentKey, ModalSubmitFnKey } from '@/enums';
 
 const CustomModal = () => {
 	const { modal } = useSelector((state: RootState) => state.ui);
 	const { isOpen, title, content } = modal;
 	const dispatch = useDispatch();
-	const [form] = Form.useForm();
+	const { form, SUBMIT_FUNCTIONS } = useForm();
+	const { MODAL_FORM_CONTENT } = useModal();
 
-	const CONTENT: Record<ModalContentKey, React.ReactNode> = {
-		[ModalContentKey.Products]: <ProductForm />,
-		[ModalContentKey.ProductVariants]: <p>Form ProductVariants</p>,
-		[ModalContentKey.ProductCategories]: <p>Form ProductCategories</p>,
-		[ModalContentKey.Users]: <p>Form Users</p>
-	};
+	const modalContent = MODAL_FORM_CONTENT[content as ModalContentKey] ?? null;
 
-	const modalContent =
-		content && typeof content === 'string'
-			? CONTENT[content as ModalContentKey]
-			: null;
-
-	const onCreate = (values: Values) => {
-		console.log('Received values of form: ', values);
-	};
+	const onSubmit =
+		SUBMIT_FUNCTIONS[content as ModalSubmitFnKey] ?? (() => Promise.resolve());
 
 	return (
 		<Modal
@@ -56,7 +42,7 @@ const CustomModal = () => {
 					name='form_in_modal'
 					initialValues={{ modifier: 'public' }}
 					clearOnDestroy
-					onFinish={values => onCreate(values)}
+					onFinish={values => onSubmit(values)}
 				>
 					{dom}
 				</Form>
