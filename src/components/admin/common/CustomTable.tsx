@@ -3,10 +3,14 @@ import { Empty, Table, TableColumnsType } from 'antd';
 interface CustomTableProps {
 	columns: TableColumnsType<any>;
 	dataSource: DataTable[];
-	isLoading: boolean;
+	isLoading?: boolean;
 }
 
-const CustomTable = ({ columns, dataSource, isLoading }: CustomTableProps) => {
+const CustomTable = ({
+	columns,
+	dataSource,
+	isLoading = false
+}: CustomTableProps) => {
 	return (
 		<div className='shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-2 px-4 rounded-lg'>
 			<Table<DataTable>
