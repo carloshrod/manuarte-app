@@ -9,7 +9,7 @@ const CustomModal = () => {
 	const { modal } = useSelector((state: RootState) => state.ui);
 	const { isOpen, title, content } = modal;
 	const dispatch = useDispatch();
-	const { form, SUBMIT_FUNCTIONS } = useForm();
+	const { form, isLoading, SUBMIT_FUNCTIONS } = useForm();
 	const { MODAL_FORM_CONTENT } = useModal();
 
 	const modalContent = MODAL_FORM_CONTENT[content as ModalContentKey] ?? null;
@@ -25,7 +25,8 @@ const CustomModal = () => {
 			cancelText='Cancelar'
 			okButtonProps={{
 				autoFocus: true,
-				htmlType: 'submit'
+				htmlType: 'submit',
+				loading: isLoading
 			}}
 			cancelButtonProps={{
 				variant: 'outlined',
