@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Button, Table, Tabs, TabsProps } from 'antd';
+import { Button, Tabs, TabsProps } from 'antd';
 import useTableColumns from '@/hooks/useTableColumns';
 import { IoMdAdd } from 'react-icons/io';
 import { AiOutlineAppstore } from 'react-icons/ai';
@@ -13,6 +13,7 @@ import {
 	getProductCategories,
 	getProductVariants
 } from '@/reducers/products/productSlice';
+import CustomTable from '../../common/CustomTable';
 
 type TabsTableProps = {
 	productVariantsData: ProductVariant[];
@@ -23,20 +24,18 @@ const TabsTable = ({
 	productVariantsData,
 	productCategoriesData
 }: TabsTableProps) => {
-	const { productColumns, productCategoryColumns } = useTableColumns();
 	const [isProducts, setIsProducts] = useState(true);
+	const [isLoading, setIsLoading] = useState(true);
+	const { productColumns, productCategoryColumns } = useTableColumns();
 	const dispatch = useDispatch();
 	const { productVariants, productCategories } = useSelector(
 		(state: RootState) => state.product
 	);
 
-	// ToDo:
-	// Mostrar solo productos con presentación en "Presentaciones"
-	// Agregar un tab para mostrar productos generales?
-
 	useEffect(() => {
 		dispatch(getProductVariants(productVariantsData));
 		dispatch(getProductCategories(productCategoriesData));
+		setIsLoading(false);
 	}, []);
 
 	const onChange = (key: string) => {
@@ -48,34 +47,22 @@ const TabsTable = ({
 			key: '1',
 			label: 'Presentaciones',
 			children: (
-				<div className='shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-2 px-4 rounded-lg'>
-					<Table<ProductVariant>
-						rowKey='id'
-						columns={productColumns}
-						dataSource={productVariants}
-						scroll={{ y: 'calc(100vh - 380px)' }}
-						pagination={{
-							locale: { items_per_page: 'por página' }
-						}}
-					/>
-				</div>
+				<CustomTable
+					columns={productColumns}
+					dataSource={productVariants}
+					isLoading={isLoading}
+				/>
 			)
 		},
 		{
 			key: '2',
 			label: 'Categorías',
 			children: (
-				<div className='shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-2 px-4 rounded-lg'>
-					<Table<ProductCategory>
-						rowKey='id'
-						columns={productCategoryColumns}
-						dataSource={productCategories}
-						scroll={{ y: 'calc(100vh - 380px)' }}
-						pagination={{
-							locale: { items_per_page: 'por página' }
-						}}
-					/>
-				</div>
+				<CustomTable
+					columns={productCategoryColumns}
+					dataSource={productCategories}
+					isLoading={isLoading}
+				/>
 			)
 		}
 	];
