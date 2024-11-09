@@ -2,7 +2,7 @@ import { Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import useModal from '@/hooks/useModal';
 import { closeModal } from '@/reducers/ui/uiSlice';
-import { ModalContentKey } from '@/enums';
+import { ModalContent } from '@/enums';
 
 const CustomModal = () => {
 	const { modal } = useSelector((state: RootState) => state.ui);
@@ -10,7 +10,7 @@ const CustomModal = () => {
 	const dispatch = useDispatch();
 	const { MODAL_CONTENT } = useModal();
 
-	const modalContent = MODAL_CONTENT[content as ModalContentKey] ?? null;
+	const modalContent = MODAL_CONTENT[content as ModalContent] ?? null;
 
 	return (
 		<Modal

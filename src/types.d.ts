@@ -1,29 +1,37 @@
 /* eslint-disable no-unused-vars */
 
-interface Product {
-	id: string;
-	name: string;
-}
-
 interface ProductVariant {
 	id: string;
 	name: string;
-	productId: string;
+	productId?: string;
 	vId: string;
-	createdBy: string;
-	updatedBy: string;
-	createdDate: string;
-	updatedDate: string;
+	createdBy?: string;
+	updatedBy?: string;
+	createdDate?: string;
+	updatedDate?: string;
 	deletedDate?: string;
-	productName: string;
-	productDescription: string;
-	categoryProductName: string;
 }
 
-type ProductCreationAttr = Pick<
-	ProductAttributes,
-	'name' | 'description' | 'categoryProductId'
->;
+interface Product {
+	id: string;
+	name: string;
+	description: string;
+	categoryProductId: string;
+	categoryProductName: string;
+	productVariants: ProductVariant[];
+}
+
+interface SubmitProductAttr {
+	name: string;
+	description: string;
+	categoryProductId: string;
+	productVariants?: string[];
+	productVariantName?: string;
+	productVariant?: {
+		id: string;
+		name?: string;
+	};
+}
 
 interface ProductCategory {
 	id: string;
@@ -72,6 +80,7 @@ interface UIModalState {
 	isOpen: boolean;
 	title: string | null;
 	content: string | null;
+	dataToEdit?: any;
 }
 interface RootState {
 	ui: {

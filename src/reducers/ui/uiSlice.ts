@@ -4,7 +4,8 @@ const initialState = {
 	modal: {
 		isOpen: false,
 		title: null,
-		content: null
+		content: null,
+		dataToEdit: null
 	}
 };
 
@@ -14,12 +15,13 @@ export const uiSlice = createSlice({
 	reducers: {
 		openModal: (state, action) => {
 			const { isOpen } = state.modal;
-			const { title, content } = action.payload;
+			const { title, content, dataToEdit = null } = action.payload;
 
 			state.modal = {
 				isOpen: !isOpen,
 				title,
-				content
+				content,
+				dataToEdit
 			};
 		},
 		closeModal: state => {

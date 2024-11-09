@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { formatProductVariantState } from '../utils';
 
 const initialState = {
 	products: [] as Product[],
@@ -20,7 +21,8 @@ export const productSlice = createSlice({
 			state.productCategories = action.payload;
 		},
 		addProduct: (state, action) => {
-			const { newProduct, newProductVariants } = action.payload;
+			const newProduct = action.payload;
+			const newProductVariants = formatProductVariantState(newProduct);
 
 			state.products = [newProduct, ...state.products];
 			state.productVariants = [...newProductVariants, ...state.productVariants];

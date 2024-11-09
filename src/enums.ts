@@ -1,11 +1,7 @@
 /* eslint-disable no-unused-vars */
-export enum ModalContentKey {
-	Products = 'products',
-	ProductVariants = 'productVariants',
-	ProductCategories = 'productCategories',
-	Users = 'users'
-}
-
-export enum ModalSubmitFnKey {
-	Products = 'products'
+export enum ModalContent {
+	products = 'products',
+	productVariants = 'productVariants',
+	productCategories = 'productCategories',
+	users = 'users'
 }

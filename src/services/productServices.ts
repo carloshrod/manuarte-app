@@ -31,6 +31,13 @@ export const getAllProductCategories = async () => {
 	}
 };
 
-export const createProduct = async (body: ProductCreationAttr) => {
+export const createProductService = async (body: SubmitProductAttr) => {
 	return await axios.post(ENDPOINTS.PRODUCTS, body);
+};
+
+export const updateProductService = async (
+	body: SubmitProductAttr,
+	productId: string
+) => {
+	return await axios.put(`${ENDPOINTS.PRODUCTS}/${productId}`, body);
 };

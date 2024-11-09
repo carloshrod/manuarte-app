@@ -8,12 +8,12 @@ import { BiPackage } from 'react-icons/bi';
 import { MdOutlineCategory } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '@/reducers/ui/uiSlice';
-import { ModalContentKey } from '@/enums';
+import { ModalContent } from '@/enums';
 import {
 	getProductCategories,
 	getProductVariants
 } from '@/reducers/products/productSlice';
-import CustomTable from '../../common/CustomTable';
+import CustomTable from '../../common/Table';
 
 type TabsTableProps = {
 	productVariantsData: ProductVariant[];
@@ -77,7 +77,7 @@ const TabsTable = ({
 					dispatch(
 						openModal({
 							title: 'Agregar Presentación de Producto',
-							content: ModalContentKey.ProductVariants
+							content: ModalContent.productVariants
 						})
 					)
 				}
@@ -93,7 +93,7 @@ const TabsTable = ({
 					dispatch(
 						openModal({
 							title: 'Agregar Producto',
-							content: ModalContentKey.Products
+							content: ModalContent.products
 						})
 					)
 				}
@@ -111,7 +111,7 @@ const TabsTable = ({
 				dispatch(
 					openModal({
 						title: 'Agregar Categoría de Producto',
-						content: ModalContentKey.ProductCategories
+						content: ModalContent.productCategories
 					})
 				)
 			}

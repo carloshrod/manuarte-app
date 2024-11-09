@@ -1,47 +1,82 @@
 import { useState } from 'react';
 import { Form, notification } from 'antd';
 import { useDispatch } from 'react-redux';
-import { ModalContentKey, ModalSubmitFnKey } from '@/enums';
-import { addProduct } from '@/reducers/products/productSlice';
+import {
+	addProduct,
+	getProductVariants
+} from '@/reducers/products/productSlice';
 import { closeModal } from '@/reducers/ui/uiSlice';
-import { createProduct } from '@/services/productServices';
+import {
+	createProductService,
+	getAllProductVariants,
+	updateProductService
+} from '@/services/productServices';
+import { AxiosResponse } from 'axios';
 
 notification.config({
 	placement: 'topRight',
 	duration: 3
 });
 
+interface handleSubmitProps {
+	serviceFn: (values: SubmitProductAttr) => Promise<AxiosResponse>;
+	values: SubmitProductAttr;
+	onSuccess: (res: AxiosResponse) => void;
+}
+
 const useForm = () => {
 	const [form] = Form.useForm();
 	const [isLoading, setIsLoading] = useState(false);
 	const dispatch = useDispatch();
 
-	const submitCreateProduct = async (values: ProductCreationAttr) => {
+	const handleSubmit = async ({
+		serviceFn,
+		values,
+		onSuccess
+	}: handleSubmitProps) => {
 		try {
 			setIsLoading(true);
-			const res = await createProduct(values);
+			const res = await serviceFn(values);
 
-			if (res?.status === 201) {
-				notification.success({ message: 'Producto agregado con éxito!' });
-				dispatch(addProduct(res?.data));
+			if (res?.status === 200 || res?.status === 201) {
+				notification.success({
+					message: res.data.message ?? 'Operación realizada con éxito'
+				});
+				onSuccess(res);
 				dispatch(closeModal());
 			}
 		} catch (error) {
 			console.error(error);
-			notification.error({ message: 'Ocurrió un error. Intentalo más tarde' });
+			notification.error({ message: 'Ocurrió un error. Inténtalo más tarde' });
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
-	const SUBMIT_FUNCTIONS: Record<
-		ModalSubmitFnKey,
-		(values: any) => Promise<void>
-	> = {
-		[ModalContentKey.Products]: submitCreateProduct
+	const submitCreateProduct = async (values: SubmitProductAttr) => {
+		await handleSubmit({
+			serviceFn: createProductService,
+			values,
+			onSuccess: res => dispatch(addProduct(res.data.newProduct))
+		});
 	};
 
-	return { form, isLoading, SUBMIT_FUNCTIONS };
+	const submitUpdateProduct = async (
+		values: SubmitProductAttr,
+		productId: string
+	) => {
+		await handleSubmit({
+			serviceFn: valuesToUpdate =>
+				updateProductService(valuesToUpdate, productId),
+			values,
+			onSuccess: async () => {
+				const productVariantsData = await getAllProductVariants();
+				dispatch(getProductVariants(productVariantsData));
+			}
+		});
+	};
+
+	return { form, isLoading, submitCreateProduct, submitUpdateProduct };
 };
 
 export default useForm;
