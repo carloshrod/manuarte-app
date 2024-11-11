@@ -6,8 +6,13 @@ import FormButtons from '../../common/FormButtons';
 import useForm from '@/hooks/useForm';
 
 const ProductForm = () => {
-	const { form, isLoading, submitCreateProduct, submitUpdateProduct } =
-		useForm();
+	const {
+		form,
+		isLoading,
+		submitCreateProduct,
+		submitUpdateProduct,
+		submitUpdateProductVariant
+	} = useForm();
 	const { productCategories } = useSelector(
 		(state: RootState) => state.product
 	);
@@ -30,7 +35,7 @@ const ProductForm = () => {
 		}
 	}, [dataToEdit]);
 
-	const onSubmit = (values: SubmitProductAttr) => {
+	const onSubmit = (values: SubmitProductDto) => {
 		if (!isUpdating) {
 			submitCreateProduct(values);
 		} else {
@@ -42,7 +47,11 @@ const ProductForm = () => {
 					name: productVariantName
 				}
 			};
-			submitUpdateProduct(valuesToUpdate, dataToEdit.productId);
+			if (editGeneralProduct) {
+				submitUpdateProduct(valuesToUpdate, dataToEdit.productId);
+			} else {
+				submitUpdateProductVariant(valuesToUpdate, dataToEdit.id);
+			}
 		}
 	};
 

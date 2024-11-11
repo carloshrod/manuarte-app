@@ -21,10 +21,11 @@ interface Product {
 	productVariants: ProductVariant[];
 }
 
-interface SubmitProductAttr {
+interface SubmitProductDto {
+	type?: 'create' | 'update' | 'updateVariant';
 	name: string;
 	description: string;
-	categoryProductId: string;
+	categoryProductId?: string;
 	productVariants?: string[];
 	productVariantName?: string;
 	productVariant?: {

@@ -31,13 +31,22 @@ export const getAllProductCategories = async () => {
 	}
 };
 
-export const createProductService = async (body: SubmitProductAttr) => {
+export const createProductService = async (body: SubmitProductDto) => {
 	return await axios.post(ENDPOINTS.PRODUCTS, body);
 };
 
 export const updateProductService = async (
-	body: SubmitProductAttr,
+	body: SubmitProductDto,
 	productId: string
 ) => {
 	return await axios.put(`${ENDPOINTS.PRODUCTS}/${productId}`, body);
+};
+
+export const updateProductVariantService = async (
+	body: SubmitProductDto,
+	productVariantId: string
+) => {
+	return await axios.put(`${ENDPOINTS.PRODUCT_VARIANTS}/${productVariantId}`, {
+		name: body?.productVariantName
+	});
 };

@@ -9,7 +9,8 @@ import { closeModal } from '@/reducers/ui/uiSlice';
 import {
 	createProductService,
 	getAllProductVariants,
-	updateProductService
+	updateProductService,
+	updateProductVariantService
 } from '@/services/productServices';
 import { AxiosResponse } from 'axios';
 
@@ -19,8 +20,8 @@ notification.config({
 });
 
 interface handleSubmitProps {
-	serviceFn: (values: SubmitProductAttr) => Promise<AxiosResponse>;
-	values: SubmitProductAttr;
+	serviceFn: (values: any) => Promise<AxiosResponse>;
+	values: any;
 	onSuccess: (res: AxiosResponse) => void;
 }
 
@@ -53,7 +54,7 @@ const useForm = () => {
 		}
 	};
 
-	const submitCreateProduct = async (values: SubmitProductAttr) => {
+	const submitCreateProduct = async (values: SubmitProductDto) => {
 		await handleSubmit({
 			serviceFn: createProductService,
 			values,
@@ -62,9 +63,10 @@ const useForm = () => {
 	};
 
 	const submitUpdateProduct = async (
-		values: SubmitProductAttr,
+		values: SubmitProductDto,
 		productId: string
 	) => {
+		console.log('submitUpdateProduct');
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
 				updateProductService(valuesToUpdate, productId),
@@ -76,7 +78,29 @@ const useForm = () => {
 		});
 	};
 
-	return { form, isLoading, submitCreateProduct, submitUpdateProduct };
+	const submitUpdateProductVariant = async (
+		values: SubmitProductDto,
+		productVariantId: string
+	) => {
+		console.log('submitUpdateProductVariant');
+		await handleSubmit({
+			serviceFn: valuesToUpdate =>
+				updateProductVariantService(valuesToUpdate, productVariantId),
+			values,
+			onSuccess: async () => {
+				const productVariantsData = await getAllProductVariants();
+				dispatch(getProductVariants(productVariantsData));
+			}
+		});
+	};
+
+	return {
+		form,
+		isLoading,
+		submitCreateProduct,
+		submitUpdateProduct,
+		submitUpdateProductVariant
+	};
 };
 
 export default useForm;
