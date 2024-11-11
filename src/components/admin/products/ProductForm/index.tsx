@@ -94,7 +94,7 @@ const ProductForm = () => {
 				]}
 			>
 				<Input
-					placeholder='Ingrese el nombre del producto'
+					placeholder='Ingresa el nombre del producto'
 					disabled={inputDisabled}
 				/>
 			</Form.Item>
@@ -109,7 +109,7 @@ const ProductForm = () => {
 				]}
 			>
 				<Input.TextArea
-					placeholder='Ingrese una descripción para el producto'
+					placeholder='Ingresa una descripción para el producto'
 					disabled={inputDisabled}
 				/>
 			</Form.Item>
@@ -124,6 +124,7 @@ const ProductForm = () => {
 				]}
 			>
 				<Select
+					placeholder='Selecciona una categoría'
 					allowClear
 					showSearch
 					filterOption={(input, option) => {
@@ -156,7 +157,7 @@ const ProductForm = () => {
 						{ required: true, message: 'El nombre del producto es requerido' }
 					]}
 				>
-					<Input placeholder='Ingrese el nombre del producto' />
+					<Input placeholder='Ingresa el nombre del producto' />
 				</Form.Item>
 			) : (
 				<ProductVariantsInputList isUpdating={isUpdating} />

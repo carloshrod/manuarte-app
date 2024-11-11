@@ -3,11 +3,13 @@ import { Form, notification } from 'antd';
 import { useDispatch } from 'react-redux';
 import {
 	addProduct,
+	addProductVariant,
 	getProductVariants
 } from '@/reducers/products/productSlice';
 import { closeModal } from '@/reducers/ui/uiSlice';
 import {
 	createProductService,
+	addProductVariantService,
 	getAllProductVariants,
 	updateProductService,
 	updateProductVariantService
@@ -66,7 +68,6 @@ const useForm = () => {
 		values: SubmitProductDto,
 		productId: string
 	) => {
-		console.log('submitUpdateProduct');
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
 				updateProductService(valuesToUpdate, productId),
@@ -82,7 +83,6 @@ const useForm = () => {
 		values: SubmitProductDto,
 		productVariantId: string
 	) => {
-		console.log('submitUpdateProductVariant');
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
 				updateProductVariantService(valuesToUpdate, productVariantId),
@@ -94,12 +94,25 @@ const useForm = () => {
 		});
 	};
 
+	const submitAddProductVariant = async (
+		values: { name: string },
+		productId: string
+	) => {
+		await handleSubmit({
+			serviceFn: async newVariantValues =>
+				addProductVariantService(newVariantValues, productId),
+			values,
+			onSuccess: res => dispatch(addProductVariant(res.data.newProductVariant))
+		});
+	};
+
 	return {
 		form,
 		isLoading,
 		submitCreateProduct,
 		submitUpdateProduct,
-		submitUpdateProductVariant
+		submitUpdateProductVariant,
+		submitAddProductVariant
 	};
 };
 

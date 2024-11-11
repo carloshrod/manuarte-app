@@ -50,3 +50,18 @@ export const updateProductVariantService = async (
 		name: body?.productVariantName
 	});
 };
+
+export const addProductVariantService = async (
+	body: { name: string },
+	productId: string
+) => {
+	return axios.post(`${ENDPOINTS.PRODUCTS}/add-variant/${productId}`, body);
+};
+
+export const searchProductsByName = async (productName: string) => {
+	const res = await axios.get(
+		`${ENDPOINTS.PRODUCTS}/search?productName=${productName}`
+	);
+
+	return res.data;
+};
