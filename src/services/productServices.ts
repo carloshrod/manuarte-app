@@ -47,7 +47,7 @@ export const updateProductVariantService = async (
 	productVariantId: string
 ) => {
 	return await axios.put(`${ENDPOINTS.PRODUCT_VARIANTS}/${productVariantId}`, {
-		name: body?.productVariantName
+		name: body?.productVariant?.name
 	});
 };
 
@@ -56,6 +56,18 @@ export const addProductVariantService = async (
 	productId: string
 ) => {
 	return axios.post(`${ENDPOINTS.PRODUCTS}/add-variant/${productId}`, body);
+};
+
+export const deleteProductService = async (
+	productId: string,
+	productVariantId: string
+) => {
+	return await axios.delete(`${ENDPOINTS.PRODUCTS}`, {
+		params: {
+			productId,
+			productVariantId
+		}
+	});
 };
 
 export const searchProductsByName = async (productName: string) => {

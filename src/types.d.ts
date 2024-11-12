@@ -3,13 +3,14 @@
 interface ProductVariant {
 	id: string;
 	name: string;
-	productId?: string;
+	productId: string;
 	vId: string;
 	createdBy?: string;
 	updatedBy?: string;
 	createdDate?: string;
 	updatedDate?: string;
 	deletedDate?: string;
+	productName?: string;
 }
 
 interface Product {

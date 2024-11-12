@@ -33,6 +33,20 @@ export const productSlice = createSlice({
 
 		addProductVariant: (state, action) => {
 			state.productVariants = [action.payload, ...state.productVariants];
+		},
+
+		removeProduct: (state, action) => {
+			const { productId, productVariantId } = action.payload ?? {};
+
+			state.productVariants = state.productVariants.filter(
+				productV => productV.id !== productVariantId
+			);
+
+			if (productId) {
+				state.products = state.products.filter(
+					product => product.id !== productId
+				);
+			}
 		}
 	}
 });
@@ -42,6 +56,7 @@ export const {
 	getProductVariants,
 	getProductCategories,
 	addProduct,
-	addProductVariant
+	addProductVariant,
+	removeProduct
 } = productSlice.actions;
 export default productSlice.reducer;
