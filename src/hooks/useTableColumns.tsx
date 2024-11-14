@@ -2,6 +2,7 @@ import { QRCode, Space, TableColumnsType } from 'antd';
 import useTable from './useTable';
 import moment from 'moment';
 import ActionsProduct from '@/components/admin/products/ActionsProduct';
+import ActionsProductCategory from '@/components/admin/products/ActionsProductCategory';
 
 const useTableColumns = () => {
 	const { getColumnSearchProps } = useTable();
@@ -60,7 +61,7 @@ const useTableColumns = () => {
 			title: 'ACCIONES',
 			key: 'actions',
 			className: 'actions',
-			render: (_, record: DataTable) => <ActionsProduct record={record} />,
+			render: (_, record: ProductVariant) => <ActionsProduct record={record} />,
 			width: 100
 		}
 	];
@@ -98,7 +99,9 @@ const useTableColumns = () => {
 			title: 'ACCIONES',
 			key: 'actions',
 			className: 'actions',
-			render: (_, record: DataTable) => <ActionsProduct record={record} />,
+			render: (_, record: ProductCategory) => (
+				<ActionsProductCategory record={record} />
+			),
 			width: 100
 		}
 	];

@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Form, notification } from 'antd';
 import { useDispatch } from 'react-redux';
+import { AxiosResponse } from 'axios';
+import { ProductServices } from '@/services/productServices';
+import { ProductCategoryServices } from '@/services/productCategoryServices';
 import {
 	addProduct,
 	addProductVariant,
@@ -8,13 +11,9 @@ import {
 } from '@/reducers/products/productSlice';
 import { closeModal } from '@/reducers/ui/uiSlice';
 import {
-	createProductService,
-	addProductVariantService,
-	getAllProductVariants,
-	updateProductService,
-	updateProductVariantService
-} from '@/services/productServices';
-import { AxiosResponse } from 'axios';
+	addProductCategory,
+	updateProductCategory
+} from '@/reducers/productCategories/productCategorySlice';
 
 notification.config({
 	placement: 'topRight',
@@ -58,7 +57,7 @@ const useForm = () => {
 
 	const submitCreateProduct = async (values: SubmitProductDto) => {
 		await handleSubmit({
-			serviceFn: createProductService,
+			serviceFn: ProductServices.createProduct,
 			values,
 			onSuccess: res => dispatch(addProduct(res.data.newProduct))
 		});
@@ -70,10 +69,11 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				updateProductService(valuesToUpdate, productId),
+				ProductServices.updateProduct(valuesToUpdate, productId),
 			values,
 			onSuccess: async () => {
-				const productVariantsData = await getAllProductVariants();
+				const productVariantsData =
+					await ProductServices.getAllProductVariants();
 				dispatch(getProductVariants(productVariantsData));
 			}
 		});
@@ -85,10 +85,11 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				updateProductVariantService(valuesToUpdate, productVariantId),
+				ProductServices.updateProductVariant(valuesToUpdate, productVariantId),
 			values,
 			onSuccess: async () => {
-				const productVariantsData = await getAllProductVariants();
+				const productVariantsData =
+					await ProductServices.getAllProductVariants();
 				dispatch(getProductVariants(productVariantsData));
 			}
 		});
@@ -100,9 +101,34 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: async newVariantValues =>
-				addProductVariantService(newVariantValues, productId),
+				ProductServices.addProductVariant(newVariantValues, productId),
 			values,
 			onSuccess: res => dispatch(addProductVariant(res.data.newProductVariant))
+		});
+	};
+
+	const submitCreateProductCategory = async (values: { name: string }) => {
+		await handleSubmit({
+			serviceFn: ProductCategoryServices.createProductCategory,
+			values,
+			onSuccess: res =>
+				dispatch(addProductCategory(res.data.newProductCategory))
+		});
+	};
+
+	const submitUpdateProductCategory = async (
+		values: { name: string },
+		productCategoryId: string
+	) => {
+		await handleSubmit({
+			serviceFn: valuesToUpdate =>
+				ProductCategoryServices.updateProductCategory(
+					valuesToUpdate,
+					productCategoryId
+				),
+			values,
+			onSuccess: res =>
+				dispatch(updateProductCategory(res.data.updatedProductCategory))
 		});
 	};
 
@@ -112,7 +138,9 @@ const useForm = () => {
 		submitCreateProduct,
 		submitUpdateProduct,
 		submitUpdateProductVariant,
-		submitAddProductVariant
+		submitAddProductVariant,
+		submitCreateProductCategory,
+		submitUpdateProductCategory
 	};
 };
 

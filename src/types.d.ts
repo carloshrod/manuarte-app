@@ -91,6 +91,8 @@ interface RootState {
 	product: {
 		products: Product[];
 		productVariants: ProductVariant[];
+	};
+	productCategory: {
 		productCategories: ProductCategory[];
 	};
 }

@@ -5,7 +5,7 @@ const PopConfirm = ({ title, onConfirm, children }: PopconfirmProps) => {
 	return (
 		<Popconfirm
 			title={title}
-			description='¿Estás seguro de que quieres borrar esta presentación del producto?'
+			description='¿Estás seguro de que quieres borrar este elemento?'
 			onConfirm={onConfirm}
 			okText='Sí'
 			okButtonProps={{ style: { width: 50 } }}

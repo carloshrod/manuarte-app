@@ -3,12 +3,12 @@ import { Button, notification, Space, Tooltip } from 'antd';
 import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import PopConfirm from '../../common/PopConfirm';
-import { ProductServices } from '@/services/productServices';
+import { ProductCategoryServices } from '@/services/productCategoryServices';
 import { openModal } from '@/reducers/ui/uiSlice';
-import { removeProduct } from '@/reducers/products/productSlice';
+import { removeProductCategory } from '@/reducers/productCategories/productCategorySlice';
 import { AxiosError } from 'axios';
 
-const ActionsProduct = ({ record }: { record: ProductVariant }) => {
+const ActionsProductCategory = ({ record }: { record: ProductCategory }) => {
 	const isEditable = true;
 	const isDeletable = true;
 	const dispatch = useDispatch();
@@ -16,8 +16,8 @@ const ActionsProduct = ({ record }: { record: ProductVariant }) => {
 	const handleEdit = () => {
 		dispatch(
 			openModal({
-				title: 'Editar producto',
-				content: ModalContent.products,
+				title: 'Editar categoría de producto',
+				content: ModalContent.productCategories,
 				dataToEdit: record
 			})
 		);
@@ -25,17 +25,11 @@ const ActionsProduct = ({ record }: { record: ProductVariant }) => {
 
 	const handleDelete = async () => {
 		try {
-			const res = await ProductServices.deleteProduct(
-				record.productId,
+			const res = await ProductCategoryServices.deleteProductCategory(
 				record.id
 			);
 			if (res.status === 200) {
-				dispatch(
-					removeProduct({
-						productId: res.data.productDeleted ? record.productId : undefined,
-						productVariantId: record.id
-					})
-				);
+				dispatch(removeProductCategory(record.id));
 				notification.success({
 					message: res.data.message
 				});
@@ -64,10 +58,7 @@ const ActionsProduct = ({ record }: { record: ProductVariant }) => {
 					onClick={handleEdit}
 				/>
 			</Tooltip>
-			<PopConfirm
-				title={`${record.productName} - ${record.name}`}
-				onConfirm={handleDelete}
-			>
+			<PopConfirm title={`${record.name}`} onConfirm={handleDelete}>
 				<Tooltip title={isDeletable ? 'Eliminar' : ''}>
 					<Button
 						type='text'
@@ -85,4 +76,4 @@ const ActionsProduct = ({ record }: { record: ProductVariant }) => {
 	);
 };
 
-export default ActionsProduct;
+export default ActionsProductCategory;
