@@ -2,9 +2,9 @@ import useForm from '@/hooks/useForm';
 import { Form, Input, Select } from 'antd';
 import { useEffect } from 'react';
 import FormButtons from '../../common/FormButtons';
-import { getAllProducts } from '@/services/productServices';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '@/reducers/products/productSlice';
+import { ProductServices } from '@/services/productServices';
 
 const ProductVariantForm = () => {
 	const { form, isLoading, submitAddProductVariant } = useForm();
@@ -12,7 +12,7 @@ const ProductVariantForm = () => {
 	const dispatch = useDispatch();
 
 	const fetchProducts = async () => {
-		const data = await getAllProducts();
+		const data = await ProductServices.getAllProducts();
 		dispatch(getProducts(data));
 	};
 
@@ -58,11 +58,13 @@ const ProductVariantForm = () => {
 						}
 					}}
 				>
-					{products.map(product => (
-						<Select.Option key={product.id} value={product.id}>
-							{product.name}
-						</Select.Option>
-					))}
+					{products?.length > 0
+						? products.map(product => (
+								<Select.Option key={product.id} value={product.id}>
+									{product.name}
+								</Select.Option>
+							))
+						: null}
 				</Select>
 			</Form.Item>
 			<Form.Item
@@ -71,7 +73,7 @@ const ProductVariantForm = () => {
 				rules={[
 					{
 						required: true,
-						message: 'La Presentación del producto es requerida'
+						message: 'La presentación del producto es requerida'
 					}
 				]}
 			>

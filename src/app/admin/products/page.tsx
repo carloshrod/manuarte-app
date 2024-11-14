@@ -1,12 +1,11 @@
 import TabsTable from '@/components/admin/products/TabsTable';
-import {
-	getAllProductCategories,
-	getAllProductVariants
-} from '@/services/productServices';
+import { ProductServices } from '@/services/productServices';
+import { ProductCategoryServices } from '@/services/productCategoryServices';
 
 const ProducstPage = async () => {
-	const productVariantsData = await getAllProductVariants();
-	const productCategoriesData = await getAllProductCategories();
+	const productVariantsData = await ProductServices.getAllProductVariants();
+	const productCategoriesData =
+		await ProductCategoryServices.getAllProductCategories();
 
 	return (
 		<section className='flex flex-col gap-4'>

@@ -14,7 +14,7 @@ const ProductForm = () => {
 		submitUpdateProductVariant
 	} = useForm();
 	const { productCategories } = useSelector(
-		(state: RootState) => state.product
+		(state: RootState) => state.productCategory
 	);
 	const {
 		modal: { dataToEdit }
@@ -33,7 +33,7 @@ const ProductForm = () => {
 			};
 			form.setFieldsValue(preparedFields);
 		}
-	}, [dataToEdit]);
+	}, []);
 
 	const onSubmit = (values: SubmitProductDto) => {
 		if (!isUpdating) {
@@ -141,11 +141,13 @@ const ProductForm = () => {
 					}}
 					disabled={inputDisabled}
 				>
-					{productCategories.map(cat => (
-						<Select.Option key={cat.id} value={cat.id}>
-							{cat.name}
-						</Select.Option>
-					))}
+					{productCategories?.length > 0
+						? productCategories.map(cat => (
+								<Select.Option key={cat.id} value={cat.id}>
+									{cat.name}
+								</Select.Option>
+							))
+						: null}
 				</Select>
 			</Form.Item>
 

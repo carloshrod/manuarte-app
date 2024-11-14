@@ -9,10 +9,8 @@ import { MdOutlineCategory } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '@/reducers/ui/uiSlice';
 import { ModalContent } from '@/enums';
-import {
-	getProductCategories,
-	getProductVariants
-} from '@/reducers/products/productSlice';
+import { getProductVariants } from '@/reducers/products/productSlice';
+import { getProductCategories } from '@/reducers/productCategories/productCategorySlice';
 import CustomTable from '../../common/Table';
 
 type TabsTableProps = {
@@ -28,8 +26,9 @@ const TabsTable = ({
 	const [isLoading, setIsLoading] = useState(true);
 	const { productColumns, productCategoryColumns } = useTableColumns();
 	const dispatch = useDispatch();
-	const { productVariants, productCategories } = useSelector(
-		(state: RootState) => state.product
+	const { productVariants } = useSelector((state: RootState) => state.product);
+	const { productCategories } = useSelector(
+		(state: RootState) => state.productCategory
 	);
 
 	useEffect(() => {

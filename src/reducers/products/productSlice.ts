@@ -3,8 +3,7 @@ import { formatProductVariantState } from '../utils';
 
 const initialState = {
 	products: [] as Product[],
-	productVariants: [] as ProductVariant[],
-	productCategories: []
+	productVariants: [] as ProductVariant[]
 };
 
 export const productSlice = createSlice({
@@ -17,10 +16,6 @@ export const productSlice = createSlice({
 
 		getProductVariants: (state, action) => {
 			state.productVariants = action.payload;
-		},
-
-		getProductCategories: (state, action) => {
-			state.productCategories = action.payload;
 		},
 
 		addProduct: (state, action) => {
@@ -54,7 +49,6 @@ export const productSlice = createSlice({
 export const {
 	getProducts,
 	getProductVariants,
-	getProductCategories,
 	addProduct,
 	addProductVariant,
 	removeProduct
