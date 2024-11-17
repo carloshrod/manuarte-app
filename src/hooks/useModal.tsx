@@ -9,7 +9,8 @@ const useModal = () => {
 		[ModalContent.products]: <ProductForm />,
 		[ModalContent.productVariants]: <ProductVariantForm />,
 		[ModalContent.productCategories]: <ProductCategoryForm />,
-		[ModalContent.users]: <p>Form Users</p>
+		[ModalContent.staff]: <p>Form Staff</p>,
+		[ModalContent.customers]: <p>Form Customers</p>
 	};
 
 	return { MODAL_CONTENT };

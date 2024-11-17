@@ -3,5 +3,6 @@ export enum ModalContent {
 	products = 'products',
 	productVariants = 'productVariants',
 	productCategories = 'productCategories',
-	users = 'users'
+	staff = 'staff',
+	customers = 'customers'
 }

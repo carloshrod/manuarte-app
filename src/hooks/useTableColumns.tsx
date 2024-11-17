@@ -3,6 +3,8 @@ import useTable from './useTable';
 import moment from 'moment';
 import ActionsProduct from '@/components/admin/products/ActionsProduct';
 import ActionsProductCategory from '@/components/admin/products/ActionsProductCategory';
+import ActionsStaff from '@/components/admin/users/ActionsStaff';
+import ActionsCustomer from '@/components/admin/users/ActionsCustomer';
 
 const useTableColumns = () => {
 	const { getColumnSearchProps } = useTable();
@@ -106,45 +108,111 @@ const useTableColumns = () => {
 		}
 	];
 
-	const userColumns: TableColumnsType<User> = [
+	const staffColumns: TableColumnsType<Staff> = [
 		{
-			title: '#',
-			dataIndex: 'id',
-			key: 'id',
-			...getColumnSearchProps('id'),
+			title: 'DOCUMENTO',
+			dataIndex: 'docId',
+			key: 'docId',
+			...getColumnSearchProps('docId'),
 			width: 100
+		},
+		{
+			title: 'NOMBRE',
+			dataIndex: 'fullName',
+			key: 'fullName',
+			...getColumnSearchProps('fullName'),
+			width: 120
 		},
 		{
 			title: 'EMAIL',
 			dataIndex: 'email',
 			key: 'email',
 			...getColumnSearchProps('email'),
-			width: 150
+			width: 140
 		},
 		{
-			title: 'FECHA DE CREACIÓN',
-			dataIndex: 'createdDate',
-			key: 'createdDate',
-			sorter: (a: DataTable, b: DataTable) =>
-				moment(a?.createdDate).valueOf() - moment(b?.createdDate).valueOf(),
-			sortDirections: ['descend', 'ascend'],
-			render: (value: string) => (
-				<span>
-					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
-				</span>
-			),
+			title: 'ROL',
+			dataIndex: 'permitName',
+			key: 'permitName',
+			filters: [
+				{
+					text: 'Administrador',
+					value: 'Administrador'
+				},
+				{
+					text: 'Cajero',
+					value: 'Cajero'
+				},
+				{
+					text: 'Bodeguero',
+					value: 'Bodeguero'
+				}
+			],
+			onFilter: (value, record) =>
+				record.permitName.indexOf(value as string) === 0,
 			width: 100
 		},
 		{
 			title: 'ACCIONES',
 			key: 'actions',
 			className: 'actions',
-			render: (_, record: DataTable) => <ActionsProduct record={record} />,
+			render: (_, record: Staff) => <ActionsStaff record={record} />,
 			width: 100
 		}
 	];
 
-	return { productColumns, productCategoryColumns, userColumns };
+	const customerColumns: TableColumnsType<Customer> = [
+		{
+			title: 'DOCUMENTO',
+			dataIndex: 'docId',
+			key: 'docId',
+			...getColumnSearchProps('docId'),
+			width: 100
+		},
+		{
+			title: 'NOMBRE',
+			dataIndex: 'fullName',
+			key: 'fullName',
+			...getColumnSearchProps('fullName'),
+			width: 120
+		},
+		{
+			title: 'EMAIL',
+			dataIndex: 'email',
+			key: 'email',
+			...getColumnSearchProps('email'),
+			width: 140
+		},
+		{
+			title: 'TELÉFONO',
+			dataIndex: 'phoneNumber',
+			key: 'phoneNumber',
+			...getColumnSearchProps('phoneNumber'),
+			width: 100
+		},
+		{
+			title: 'CIUDAD',
+			dataIndex: 'city',
+			key: 'city',
+			...getColumnSearchProps('city'),
+			width: 100,
+			render: value => <p>{value ?? '--'}</p>
+		},
+		{
+			title: 'ACCIONES',
+			key: 'actions',
+			className: 'actions',
+			render: (_, record: Customer) => <ActionsCustomer record={record} />,
+			width: 100
+		}
+	];
+
+	return {
+		productColumns,
+		productCategoryColumns,
+		staffColumns,
+		customerColumns
+	};
 };
 
 export default useTableColumns;

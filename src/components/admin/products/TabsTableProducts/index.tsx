@@ -13,15 +13,15 @@ import { getProductVariants } from '@/reducers/products/productSlice';
 import { getProductCategories } from '@/reducers/productCategories/productCategorySlice';
 import CustomTable from '../../common/Table';
 
-type TabsTableProps = {
+type TabsTableProductsProps = {
 	productVariantsData: ProductVariant[];
 	productCategoriesData: ProductCategory[];
 };
 
-const TabsTable = ({
+const TabsTableProducts = ({
 	productVariantsData,
 	productCategoriesData
-}: TabsTableProps) => {
+}: TabsTableProductsProps) => {
 	const [isProducts, setIsProducts] = useState(true);
 	const [isLoading, setIsLoading] = useState(true);
 	const { productColumns, productCategoryColumns } = useTableColumns();
@@ -129,4 +129,4 @@ const TabsTable = ({
 	);
 };
 
-export default TabsTable;
+export default TabsTableProducts;

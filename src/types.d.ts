@@ -46,37 +46,30 @@ interface ProductCategory {
 	deletedDate?: string;
 }
 
-interface User {
+interface Staff {
 	id: string;
 	email: string;
 	permitPartId: string;
 	isActive: boolean;
 	personId: string;
 	createdDate: string;
-	updatedDate: string;
-	person: {
-		id: string;
-		fullName: string;
-		dni: string;
-		gender: string;
-		birthDate: string;
-		createdDate: string;
-		updatedDate: string;
-	};
-	permitPart: {
-		id: string;
-		name: string;
-		permits: {
-			id: string;
-			name: string;
-			description: null;
-			createdDate: string;
-			updatedDate: string;
-		}[];
-	};
+	fullName: string;
+	docId: string;
+	permitName: string;
 }
 
-type DataTable = ProductVariant | ProductCategory | User;
+interface Customer {
+	id: string;
+	personId: string;
+	email: string;
+	phoneNumber: string;
+	createdDate: string;
+	city: string;
+	fullName: string;
+	docId: string;
+}
+
+type DataTable = ProductVariant | ProductCategory | Staff | Customer;
 
 interface UIModalState {
 	isOpen: boolean;
