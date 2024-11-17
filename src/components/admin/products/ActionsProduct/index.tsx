@@ -1,22 +1,19 @@
 import { ModalContent } from '@/enums';
-import { Button, notification, Space, Tooltip } from 'antd';
-import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
+import { notification } from 'antd';
 import { useDispatch } from 'react-redux';
-import PopConfirm from '../../common/PopConfirm';
 import { ProductServices } from '@/services/productServices';
 import { openModal } from '@/reducers/ui/uiSlice';
 import { removeProduct } from '@/reducers/products/productSlice';
 import { AxiosError } from 'axios';
+import TableActions from '../../common/TableActions';
 
 const ActionsProduct = ({ record }: { record: ProductVariant }) => {
-	const isEditable = true;
-	const isDeletable = true;
 	const dispatch = useDispatch();
 
 	const handleEdit = () => {
 		dispatch(
 			openModal({
-				title: 'Editar producto',
+				title: 'Editar Producto',
 				content: ModalContent.products,
 				dataToEdit: record
 			})
@@ -51,37 +48,11 @@ const ActionsProduct = ({ record }: { record: ProductVariant }) => {
 	};
 
 	return (
-		<Space size='small'>
-			<Tooltip title={isEditable ? 'Editar' : ''}>
-				<Button
-					type='text'
-					icon={
-						<AiOutlineEdit
-							size={20}
-							color={isEditable ? '#0D6EFD' : '#A0AEC0'}
-						/>
-					}
-					onClick={handleEdit}
-				/>
-			</Tooltip>
-			<PopConfirm
-				title={`${record.productName} - ${record.name}`}
-				onConfirm={handleDelete}
-			>
-				<Tooltip title={isDeletable ? 'Eliminar' : ''}>
-					<Button
-						type='text'
-						icon={
-							<AiOutlineDelete
-								size={20}
-								color={isDeletable ? '#E53535' : '#FCBABA'}
-							/>
-						}
-						disabled={!isDeletable}
-					/>
-				</Tooltip>
-			</PopConfirm>
-		</Space>
+		<TableActions
+			onEdit={handleEdit}
+			onDelete={handleDelete}
+			popTitle={`${record.productName} - ${record.name}`}
+		/>
 	);
 };
 
