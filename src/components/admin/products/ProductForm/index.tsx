@@ -39,7 +39,7 @@ const ProductForm = () => {
 		if (!isUpdating) {
 			submitCreateProduct(values);
 		} else {
-			const { productVariantName, ...rest } = values ?? {};
+			const { productVariantName, categoryProductId, ...rest } = values ?? {};
 			const valuesToUpdate = {
 				...rest,
 				productVariant: {
@@ -118,7 +118,7 @@ const ProductForm = () => {
 				label='Categoría'
 				rules={[
 					{
-						required: !inputDisabled,
+						required: !isUpdating,
 						message: 'La categoría del producto es requerida'
 					}
 				]}
@@ -139,7 +139,7 @@ const ProductForm = () => {
 							return false;
 						}
 					}}
-					disabled={inputDisabled}
+					disabled={isUpdating}
 				>
 					{productCategories?.length > 0
 						? productCategories.map(cat => (
