@@ -1,17 +1,20 @@
 import MonthlySalesChart from '@/components/admin/dashboard/MonthlySalesChart';
-import { BillingServices } from '@/services/billingServices';
+import { DashboardServices } from '@/services/dashboardServices';
 import TopSalesCharts from '@/components/admin/dashboard/TopSalesChart';
 import { Tabs, TabsProps } from 'antd';
 import StatsWidgets from '@/components/admin/dashboard/StatsWidgets';
 
 const DashboardPage = async () => {
-	const stats = await BillingServices.getStats();
-	const salesData = await BillingServices.getMonthlySales();
+	const stats = await DashboardServices.getStats();
+	const salesData = await DashboardServices.getMonthlySales();
 	// const now = new Date();
 	// const currentMonth = now.getMonth();
 	const currentMonth = 7;
-	const topSalesCurrentMonth = await BillingServices.getTopSales(currentMonth);
-	const topSalesLastMonth = await BillingServices.getTopSales(currentMonth - 1);
+	const topSalesCurrentMonth =
+		await DashboardServices.getTopSales(currentMonth);
+	const topSalesLastMonth = await DashboardServices.getTopSales(
+		currentMonth - 1
+	);
 
 	const items: TabsProps['items'] = [
 		{

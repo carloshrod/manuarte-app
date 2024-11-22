@@ -5,5 +5,6 @@ export const ENDPOINTS = {
 	PRODUCT_VARIANTS: `${BASE_URL}/product-variants`,
 	PRODUCT_CATEGORIES: `${BASE_URL}/product-categories`,
 	USERS: `${BASE_URL}/users`,
-	CUSTOMERS: `${BASE_URL}/customers`
+	CUSTOMERS: `${BASE_URL}/customers`,
+	DASHBOARD: `${BASE_URL}/dashboard`
 };
