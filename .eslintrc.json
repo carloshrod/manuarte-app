@@ -19,6 +19,8 @@
     "indent": "off",
     "no-undef": "off",
     "multiline-ternary": "off",
-    "quotes": "off"
+    "quotes": "off",
+    "no-multiple-empty-lines": "warn",
+    "no-trailing-spaces": "warn"
   }
 }
