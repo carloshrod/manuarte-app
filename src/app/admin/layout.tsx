@@ -13,6 +13,7 @@ import { menuItems } from './consts';
 import store from '@/reducers/store';
 
 const { Header, Sider, Content } = Layout;
+
 const AdminLayout = ({
 	children
 }: Readonly<{
@@ -110,10 +111,14 @@ const AdminLayout = ({
 					</Header>
 					<Content
 						style={{
+							height: '90vh',
 							padding: 24,
 							minHeight: 280,
 							background: colorBgContainer,
-							borderRadius: borderRadiusLG
+							borderRadius: borderRadiusLG,
+							overflow: 'auto',
+							scrollbarWidth: 'thin',
+							scrollbarGutter: 'stable'
 						}}
 					>
 						{children}
