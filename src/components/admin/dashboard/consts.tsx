@@ -2,7 +2,7 @@ import { BsBoxes } from 'react-icons/bs';
 import { PiUsersThree, PiInvoice } from 'react-icons/pi';
 import { TbFileDollar } from 'react-icons/tb';
 
-export const WIDGET_PROPS = [
+export const STATS_WIDGETS_PROPS = [
 	{
 		icon: (
 			<BsBoxes
@@ -10,8 +10,8 @@ export const WIDGET_PROPS = [
 				className='text-emerald-500 w-12 h-12 mb-3 inline-block'
 			/>
 		),
-		quantity: '250',
-		label: 'Productos'
+		label: 'Productos Activos',
+		data: 'productVariantsCount'
 	},
 	{
 		icon: (
@@ -20,8 +20,8 @@ export const WIDGET_PROPS = [
 				className='text-yellow-500 w-12 h-12 mb-3 inline-block'
 			/>
 		),
-		quantity: '185',
-		label: 'Clientes'
+		label: 'Clientes Activos',
+		data: 'customersCount'
 	},
 	{
 		icon: (
