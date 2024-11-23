@@ -74,14 +74,14 @@ const useTableColumns = () => {
 			dataIndex: 'cId',
 			key: 'cId',
 			...getColumnSearchProps('cId'),
-			width: 100
+			width: 50
 		},
 		{
 			title: 'NOMBRE',
 			dataIndex: 'name',
 			key: 'name',
 			...getColumnSearchProps('name'),
-			width: 150
+			width: 200
 		},
 		{
 			title: 'FECHA DE CREACIÓN',
@@ -95,7 +95,7 @@ const useTableColumns = () => {
 					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
 				</span>
 			),
-			width: 100
+			width: 150
 		},
 		{
 			title: 'ACCIONES',
