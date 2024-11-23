@@ -17,14 +17,16 @@ const CustomTable = ({
 				rowKey='id'
 				columns={columns}
 				dataSource={dataSource}
-				scroll={{ y: 'calc(100vh - 380px)' }}
+				scroll={{
+					y: dataSource.length > 0 ? 'calc(100vh - 380px)' : undefined
+				}}
 				pagination={{
 					locale: { items_per_page: 'por página' }
 				}}
-				style={{ minHeight: 500 }}
+				style={{ minHeight: isLoading ? 'calc(100vh - 300px)' : undefined }}
 				loading={{
 					spinning: isLoading,
-					style: { minHeight: 500 }
+					style: { minHeight: 'calc(100vh - 300px)' }
 				}}
 				locale={{
 					emptyText: !isLoading ? (
@@ -35,7 +37,7 @@ const CustomTable = ({
 								display: 'flex',
 								flexDirection: 'column',
 								justifyContent: 'center',
-								height: 320
+								height: 'calc(100vh - 380px)'
 							}}
 						/>
 					) : null
