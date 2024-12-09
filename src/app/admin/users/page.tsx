@@ -1,6 +1,8 @@
 import TabsTableUsers from '@/components/admin/users/TabsTableUsers';
 import { userServices } from '@/services/userServices';
 
+export const dynamic = 'force-dynamic';
+
 const UsersPage = async () => {
 	const staffData = await userServices.getAllUsers();
 	const customersData = await userServices.getAllCustomers();
