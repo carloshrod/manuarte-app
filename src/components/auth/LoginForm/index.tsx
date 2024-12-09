@@ -1,11 +1,42 @@
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button, Form, Input } from 'antd';
 import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
+import { doCredentialLogin } from '@/app/actions';
 
 const LoginForm = () => {
+	const [isLoading, setIsLoading] = useState(false);
+	const [form] = Form.useForm();
+	const router = useRouter();
+
+	const handleSubmit = async (values: SubmitLoginDto) => {
+		try {
+			setIsLoading(true);
+			const res = await doCredentialLogin({
+				email: values.email,
+				password: values.password
+			});
+
+			if (res) {
+				router.push('/admin/dashboard');
+			}
+		} catch (error) {
+			console.error(error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
 	return (
 		<div className='m-auto max-w-[400px] w-full px-8 py-4 rounded-lg max-md:shadow-2xl'>
-			<Form name='login' className='flex flex-col gap-3'>
+			<Form
+				form={form}
+				name='login'
+				className='flex flex-col gap-3'
+				onFinish={values => handleSubmit(values)}
+			>
 				<div className='mb-8 text-center'>
 					<h3 className='mb-2 text-gray-800 text-3xl font-bold'>
 						Inicio de Sesión
@@ -38,7 +69,13 @@ const LoginForm = () => {
 				</Form.Item>
 
 				<Form.Item>
-					<Button block type='primary' size='large' htmlType='submit'>
+					<Button
+						block
+						type='primary'
+						size='large'
+						htmlType='submit'
+						loading={isLoading}
+					>
 						INICIAR SESIÓN
 					</Button>
 				</Form.Item>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import './globals.css';
+import { SessionProvider } from 'next-auth/react';
 
 const geistSans = localFont({
 	src: './fonts/GeistVF.woff',
@@ -29,7 +30,9 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased font-[family-name:var(--font-geist-sans)]`}
 			>
-				<AntdRegistry>{children}</AntdRegistry>
+				<AntdRegistry>
+					<SessionProvider>{children}</SessionProvider>
+				</AntdRegistry>
 			</body>
 		</html>
 	);

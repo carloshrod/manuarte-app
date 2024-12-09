@@ -1,5 +1,10 @@
 /* eslint-disable no-unused-vars */
 
+interface SubmitLoginDto {
+	email: string;
+	password: string;
+}
+
 interface ProductVariant {
 	id: string;
 	name: string;
@@ -77,6 +82,7 @@ interface UIModalState {
 	content: string | null;
 	dataToEdit?: any;
 }
+
 interface RootState {
 	ui: {
 		modal: UIModalState;

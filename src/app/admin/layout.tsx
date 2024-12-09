@@ -9,8 +9,9 @@ import {
 import { PiUserCircle } from 'react-icons/pi';
 import { Provider } from 'react-redux';
 import CustomModal from '@/components/layout/Modal';
-import { menuItems } from './consts';
+import getMenuItems from '@/components/admin/utils';
 import store from '@/reducers/store';
+import { useSession } from 'next-auth/react';
 
 const { Header, Sider, Content } = Layout;
 
@@ -23,6 +24,12 @@ const AdminLayout = ({
 	const [hide, setHide] = useState(false);
 	const [selectedItem, setSelectedItem] = useState<string[]>([]);
 	const pathname = usePathname();
+	const { data: session, update } = useSession();
+	const menuItems = getMenuItems();
+
+	useEffect(() => {
+		update();
+	}, []);
 
 	const {
 		token: { colorBgContainer, borderRadiusLG }
@@ -106,7 +113,7 @@ const AdminLayout = ({
 								padding: '0 24px'
 							}}
 						>
-							Administrador
+							{session?.user?.email}
 						</Button>
 					</Header>
 					<Content

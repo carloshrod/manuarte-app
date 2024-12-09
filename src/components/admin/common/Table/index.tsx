@@ -18,7 +18,7 @@ const CustomTable = ({
 				columns={columns}
 				dataSource={dataSource}
 				scroll={{
-					y: dataSource.length > 0 ? 'calc(100vh - 380px)' : undefined
+					y: dataSource?.length > 0 ? 'calc(100vh - 380px)' : undefined
 				}}
 				pagination={{
 					locale: { items_per_page: 'por página' }
