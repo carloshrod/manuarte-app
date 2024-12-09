@@ -1,10 +1,10 @@
-import { ENDPOINTS } from '@/config/env';
-import axios from 'axios';
+import { ENV } from '@/config/env';
+import { axiosPrivate } from './axios';
 
 export const userServices = {
 	getAllUsers: async () => {
 		try {
-			const res = await axios.get(ENDPOINTS.USERS);
+			const res = await axiosPrivate.get(ENV.API.USERS, { server: true });
 
 			return res.data;
 		} catch (error) {
@@ -14,7 +14,7 @@ export const userServices = {
 
 	getAllCustomers: async () => {
 		try {
-			const res = await axios.get(ENDPOINTS.CUSTOMERS);
+			const res = await axiosPrivate.get(ENV.API.CUSTOMERS, { server: true });
 
 			return res.data;
 		} catch (error) {

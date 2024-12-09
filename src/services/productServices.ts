@@ -1,10 +1,10 @@
-import axios from 'axios';
-import { ENDPOINTS } from '@/config/env';
+import { ENV } from '@/config/env';
+import { axiosPrivate } from './axios';
 
-export const ProductServices = {
+export const productServices = {
 	getAllProducts: async () => {
 		try {
-			const res = await axios.get(ENDPOINTS.PRODUCTS);
+			const res = await axiosPrivate.get(ENV.API.PRODUCTS);
 
 			return res.data;
 		} catch (error) {
@@ -12,9 +12,9 @@ export const ProductServices = {
 		}
 	},
 
-	getAllProductVariants: async () => {
+	getAllProductVariants: async (server: boolean = true) => {
 		try {
-			const res = await axios.get(ENDPOINTS.PRODUCT_VARIANTS);
+			const res = await axiosPrivate.get(ENV.API.PRODUCT_VARIANTS, { server });
 
 			return res.data;
 		} catch (error) {
@@ -23,19 +23,19 @@ export const ProductServices = {
 	},
 
 	createProduct: async (body: SubmitProductDto) => {
-		return await axios.post(ENDPOINTS.PRODUCTS, body);
+		return await axiosPrivate.post(ENV.API.PRODUCTS, body);
 	},
 
 	updateProduct: async (body: SubmitProductDto, productId: string) => {
-		return await axios.put(`${ENDPOINTS.PRODUCTS}/${productId}`, body);
+		return await axiosPrivate.put(`${ENV.API.PRODUCTS}/${productId}`, body);
 	},
 
 	updateProductVariant: async (
 		body: SubmitProductDto,
 		productVariantId: string
 	) => {
-		return await axios.put(
-			`${ENDPOINTS.PRODUCT_VARIANTS}/${productVariantId}`,
+		return await axiosPrivate.put(
+			`${ENV.API.PRODUCT_VARIANTS}/${productVariantId}`,
 			{
 				name: body?.productVariant?.name
 			}
@@ -43,11 +43,14 @@ export const ProductServices = {
 	},
 
 	addProductVariant: async (body: { name: string }, productId: string) => {
-		return axios.post(`${ENDPOINTS.PRODUCTS}/add-variant/${productId}`, body);
+		return axiosPrivate.post(
+			`${ENV.API.PRODUCTS}/add-variant/${productId}`,
+			body
+		);
 	},
 
 	deleteProduct: async (productId: string, productVariantId: string) => {
-		return await axios.delete(`${ENDPOINTS.PRODUCTS}`, {
+		return await axiosPrivate.delete(`${ENV.API.PRODUCTS}`, {
 			params: {
 				productId,
 				productVariantId

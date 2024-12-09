@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Form, notification } from 'antd';
 import { useDispatch } from 'react-redux';
 import { AxiosResponse } from 'axios';
-import { ProductServices } from '@/services/productServices';
-import { ProductCategoryServices } from '@/services/productCategoryServices';
+import { productServices } from '@/services/productServices';
+import { productCategoryServices } from '@/services/productCategoryServices';
 import {
 	addProduct,
 	addProductVariant,
@@ -57,7 +57,7 @@ const useForm = () => {
 
 	const submitCreateProduct = async (values: SubmitProductDto) => {
 		await handleSubmit({
-			serviceFn: ProductServices.createProduct,
+			serviceFn: productServices.createProduct,
 			values,
 			onSuccess: res => dispatch(addProduct(res.data.newProduct))
 		});
@@ -69,11 +69,11 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				ProductServices.updateProduct(valuesToUpdate, productId),
+				productServices.updateProduct(valuesToUpdate, productId),
 			values,
 			onSuccess: async () => {
 				const productVariantsData =
-					await ProductServices.getAllProductVariants();
+					await productServices.getAllProductVariants(false);
 				dispatch(getProductVariants(productVariantsData));
 			}
 		});
@@ -85,11 +85,11 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				ProductServices.updateProductVariant(valuesToUpdate, productVariantId),
+				productServices.updateProductVariant(valuesToUpdate, productVariantId),
 			values,
 			onSuccess: async () => {
 				const productVariantsData =
-					await ProductServices.getAllProductVariants();
+					await productServices.getAllProductVariants(false);
 				dispatch(getProductVariants(productVariantsData));
 			}
 		});
@@ -101,7 +101,7 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: async newVariantValues =>
-				ProductServices.addProductVariant(newVariantValues, productId),
+				productServices.addProductVariant(newVariantValues, productId),
 			values,
 			onSuccess: res => dispatch(addProductVariant(res.data.newProductVariant))
 		});
@@ -109,7 +109,7 @@ const useForm = () => {
 
 	const submitCreateProductCategory = async (values: { name: string }) => {
 		await handleSubmit({
-			serviceFn: ProductCategoryServices.createProductCategory,
+			serviceFn: productCategoryServices.createProductCategory,
 			values,
 			onSuccess: res =>
 				dispatch(addProductCategory(res.data.newProductCategory))
@@ -122,7 +122,7 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				ProductCategoryServices.updateProductCategory(
+				productCategoryServices.updateProductCategory(
 					valuesToUpdate,
 					productCategoryId
 				),

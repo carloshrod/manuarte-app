@@ -1,11 +1,11 @@
-import { ModalContent } from '@/enums';
 import { notification } from 'antd';
 import { useDispatch } from 'react-redux';
-import { ProductServices } from '@/services/productServices';
+import { productServices } from '@/services/productServices';
 import { openModal } from '@/reducers/ui/uiSlice';
 import { removeProduct } from '@/reducers/products/productSlice';
-import { AxiosError } from 'axios';
 import TableActions from '../../common/TableActions';
+import { AxiosError } from 'axios';
+import { ModalContent } from '@/types/enums';
 
 const ActionsProduct = ({ record }: { record: ProductVariant }) => {
 	const dispatch = useDispatch();
@@ -22,7 +22,7 @@ const ActionsProduct = ({ record }: { record: ProductVariant }) => {
 
 	const handleDelete = async () => {
 		try {
-			const res = await ProductServices.deleteProduct(
+			const res = await productServices.deleteProduct(
 				record.productId,
 				record.id
 			);

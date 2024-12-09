@@ -1,12 +1,12 @@
-import { ModalContent } from '@/enums';
 import { Button, notification, Space, Tooltip } from 'antd';
 import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import PopConfirm from '../../common/PopConfirm';
-import { ProductCategoryServices } from '@/services/productCategoryServices';
+import { productCategoryServices } from '@/services/productCategoryServices';
 import { openModal } from '@/reducers/ui/uiSlice';
 import { removeProductCategory } from '@/reducers/productCategories/productCategorySlice';
 import { AxiosError } from 'axios';
+import { ModalContent } from '@/types/enums';
 
 const ActionsProductCategory = ({ record }: { record: ProductCategory }) => {
 	const isEditable = true;
@@ -25,7 +25,7 @@ const ActionsProductCategory = ({ record }: { record: ProductCategory }) => {
 
 	const handleDelete = async () => {
 		try {
-			const res = await ProductCategoryServices.deleteProductCategory(
+			const res = await productCategoryServices.deleteProductCategory(
 				record.id
 			);
 			if (res.status === 200) {

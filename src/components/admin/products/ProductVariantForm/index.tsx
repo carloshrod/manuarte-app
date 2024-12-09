@@ -1,10 +1,10 @@
-import useForm from '@/hooks/useForm';
-import { Form, Input, Select } from 'antd';
 import { useEffect } from 'react';
-import FormButtons from '../../common/FormButtons';
+import { Form, Input, Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
+import FormButtons from '../../common/FormButtons';
+import useForm from '@/hooks/useForm';
 import { getProducts } from '@/reducers/products/productSlice';
-import { ProductServices } from '@/services/productServices';
+import { productServices } from '@/services/productServices';
 
 const ProductVariantForm = () => {
 	const { form, isLoading, submitAddProductVariant } = useForm();
@@ -12,7 +12,7 @@ const ProductVariantForm = () => {
 	const dispatch = useDispatch();
 
 	const fetchProducts = async () => {
-		const data = await ProductServices.getAllProducts();
+		const data = await productServices.getAllProducts();
 		dispatch(getProducts(data));
 	};
 

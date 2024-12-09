@@ -1,11 +1,13 @@
 import TabsTableProducts from '@/components/admin/products/TabsTableProducts';
-import { ProductServices } from '@/services/productServices';
-import { ProductCategoryServices } from '@/services/productCategoryServices';
+import { productServices } from '@/services/productServices';
+import { productCategoryServices } from '@/services/productCategoryServices';
+
+export const dynamic = 'force-dynamic';
 
 const ProducstPage = async () => {
-	const productVariantsData = await ProductServices.getAllProductVariants();
+	const productVariantsData = await productServices.getAllProductVariants();
 	const productCategoriesData =
-		await ProductCategoryServices.getAllProductCategories();
+		await productCategoryServices.getAllProductCategories();
 
 	return (
 		<section className='flex flex-col gap-4'>

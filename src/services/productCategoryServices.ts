@@ -1,10 +1,12 @@
-import axios from 'axios';
-import { ENDPOINTS } from '@/config/env';
+import { ENV } from '@/config/env';
+import { axiosPrivate } from './axios';
 
-export const ProductCategoryServices = {
+export const productCategoryServices = {
 	getAllProductCategories: async () => {
 		try {
-			const res = await axios.get(ENDPOINTS.PRODUCT_CATEGORIES);
+			const res = await axiosPrivate.get(ENV.API.PRODUCT_CATEGORIES, {
+				server: true
+			});
 
 			return res.data;
 		} catch (error) {
@@ -13,22 +15,22 @@ export const ProductCategoryServices = {
 	},
 
 	createProductCategory: async (body: ProductCategory) => {
-		return await axios.post(ENDPOINTS.PRODUCT_CATEGORIES, body);
+		return await axiosPrivate.post(ENV.API.PRODUCT_CATEGORIES, body);
 	},
 
 	updateProductCategory: async (
 		body: ProductCategory,
 		productCategoryId: string
 	) => {
-		return await axios.put(
-			`${ENDPOINTS.PRODUCT_CATEGORIES}/${productCategoryId}`,
+		return await axiosPrivate.put(
+			`${ENV.API.PRODUCT_CATEGORIES}/${productCategoryId}`,
 			body
 		);
 	},
 
 	deleteProductCategory: async (productCategoryId: string) => {
-		return await axios.delete(
-			`${ENDPOINTS.PRODUCT_CATEGORIES}/${productCategoryId}`
+		return await axiosPrivate.delete(
+			`${ENV.API.PRODUCT_CATEGORIES}/${productCategoryId}`
 		);
 	}
 };
