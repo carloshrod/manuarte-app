@@ -1,7 +1,7 @@
-import { openModal } from '@/reducers/ui/uiSlice';
-import { ModalContent } from '@/enums';
 import { useDispatch } from 'react-redux';
 import TableActions from '../../common/TableActions';
+import { openModal } from '@/reducers/ui/uiSlice';
+import { ModalContent } from '@/types/enums';
 
 const ActionsStaff = ({ record }: { record: Staff }) => {
 	const dispatch = useDispatch();

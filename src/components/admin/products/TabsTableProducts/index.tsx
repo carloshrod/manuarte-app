@@ -1,17 +1,17 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Button, Tabs, TabsProps } from 'antd';
-import useTableColumns from '@/hooks/useTableColumns';
+import { useDispatch, useSelector } from 'react-redux';
 import { IoMdAdd } from 'react-icons/io';
 import { AiOutlineAppstore } from 'react-icons/ai';
 import { BiPackage } from 'react-icons/bi';
 import { MdOutlineCategory } from 'react-icons/md';
-import { useDispatch, useSelector } from 'react-redux';
+import CustomTable from '../../common/Table';
+import useTableColumns from '@/hooks/useTableColumns';
 import { openModal } from '@/reducers/ui/uiSlice';
-import { ModalContent } from '@/enums';
 import { getProductVariants } from '@/reducers/products/productSlice';
 import { getProductCategories } from '@/reducers/productCategories/productCategorySlice';
-import CustomTable from '../../common/Table';
+import { ModalContent } from '@/types/enums';
 
 type TabsTableProductsProps = {
 	productVariantsData: ProductVariant[];

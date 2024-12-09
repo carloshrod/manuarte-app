@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
 import ProductForm from '@/components/admin/products/ProductForm';
 import ProductVariantForm from '@/components/admin/products/ProductVariantForm';
-import { ModalContent } from '@/enums';
 import ProductCategoryForm from '@/components/admin/products/ProductCategoryForm';
+import { ReactNode } from 'react';
+import { ModalContent } from '@/types/enums';
 
 const useModal = () => {
 	const MODAL_CONTENT: Record<ModalContent, ReactNode> = {

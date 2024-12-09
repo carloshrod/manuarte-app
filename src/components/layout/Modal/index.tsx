@@ -2,7 +2,7 @@ import { Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import useModal from '@/hooks/useModal';
 import { closeModal } from '@/reducers/ui/uiSlice';
-import { ModalContent } from '@/enums';
+import { ModalContent } from '@/types/enums';
 
 const CustomModal = () => {
 	const { modal } = useSelector((state: RootState) => state.ui);
