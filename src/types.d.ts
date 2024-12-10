@@ -54,13 +54,13 @@ interface ProductCategory {
 interface Staff {
 	id: string;
 	email: string;
-	permitPartId: string;
+	roleId: string;
 	isActive: boolean;
 	personId: string;
 	createdDate: string;
 	fullName: string;
 	docId: string;
-	permitName: string;
+	roleName: string;
 }
 
 interface Customer {
