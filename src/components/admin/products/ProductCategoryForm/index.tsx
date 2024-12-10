@@ -51,7 +51,10 @@ const ProductCategoryForm = () => {
 				<Input placeholder='Ingresa el nombre de la categoría' />
 			</Form.Item>
 
-			<FormButtons isLoading={isLoading} />
+			<FormButtons
+				label={dataToEdit ? 'Editar' : undefined}
+				isLoading={isLoading}
+			/>
 		</Form>
 	);
 };
