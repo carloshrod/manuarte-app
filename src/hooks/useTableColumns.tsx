@@ -132,24 +132,31 @@ const useTableColumns = () => {
 		},
 		{
 			title: 'ROL',
-			dataIndex: 'permitName',
-			key: 'permitName',
+			dataIndex: 'roleName',
+			key: 'roleName',
 			filters: [
 				{
 					text: 'Administrador',
-					value: 'Administrador'
+					value: 'admin'
 				},
 				{
 					text: 'Cajero',
-					value: 'Cajero'
+					value: 'cajero'
 				},
 				{
 					text: 'Bodeguero',
-					value: 'Bodeguero'
+					value: 'bodeguero'
 				}
 			],
 			onFilter: (value, record) =>
-				record.permitName.indexOf(value as string) === 0,
+				record.roleName.indexOf(value as string) === 0,
+			render: (value: string) => (
+				<span>
+					{value === 'admin'
+						? 'Administrador'
+						: `${value.charAt(0).toUpperCase()}${value.slice(1)}`}
+				</span>
+			),
 			width: 100
 		},
 		{
