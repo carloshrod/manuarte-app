@@ -4,7 +4,7 @@ import { userServices } from '@/services/userServices';
 export const dynamic = 'force-dynamic';
 
 const UsersPage = async () => {
-	const staffData = await userServices.getAllUsers();
+	const staffData = await userServices.getAllStaff();
 	const customersData = await userServices.getAllCustomers();
 
 	return (

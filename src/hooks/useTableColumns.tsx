@@ -111,9 +111,9 @@ const useTableColumns = () => {
 	const staffColumns: TableColumnsType<Staff> = [
 		{
 			title: 'DOCUMENTO',
-			dataIndex: 'docId',
-			key: 'docId',
-			...getColumnSearchProps('docId'),
+			dataIndex: 'dni',
+			key: 'dni',
+			...getColumnSearchProps('dni'),
 			width: 100
 		},
 		{

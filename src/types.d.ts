@@ -63,6 +63,19 @@ interface Staff {
 	roleName: string;
 }
 
+interface Role {
+	id: string;
+	name: string;
+}
+
+interface SubmitStaffDto {
+	fullName: string;
+	dni: string;
+	roleId: string;
+	email: string;
+	password: string;
+}
+
 interface Customer {
 	id: string;
 	personId: string;
@@ -93,5 +106,8 @@ interface RootState {
 	};
 	productCategory: {
 		productCategories: ProductCategory[];
+	};
+	users: {
+		staff: Staff[];
 	};
 }

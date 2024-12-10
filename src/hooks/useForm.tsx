@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Form, notification } from 'antd';
 import { useDispatch } from 'react-redux';
-import { AxiosResponse } from 'axios';
 import { productServices } from '@/services/productServices';
 import { productCategoryServices } from '@/services/productCategoryServices';
+import { userServices } from '@/services/userServices';
 import {
 	addProduct,
 	addProductVariant,
@@ -14,6 +14,8 @@ import {
 	addProductCategory,
 	updateProductCategory
 } from '@/reducers/productCategories/productCategorySlice';
+import { addStaff, updateStaff } from '@/reducers/users/userSlice';
+import { AxiosResponse } from 'axios';
 
 notification.config({
 	placement: 'topRight',
@@ -132,6 +134,26 @@ const useForm = () => {
 		});
 	};
 
+	const submitRegisterStaff = async (values: SubmitStaffDto) => {
+		await handleSubmit({
+			serviceFn: userServices.registerStaff,
+			values,
+			onSuccess: res => dispatch(addStaff(res.data.newUser))
+		});
+	};
+
+	const submitUpdateStaff = async (
+		values: SubmitStaffDto,
+		{ personId, userId }: { personId: string; userId: string }
+	) => {
+		await handleSubmit({
+			serviceFn: valuesToUpdate =>
+				userServices.updateStaff(valuesToUpdate, { personId, userId }),
+			values,
+			onSuccess: res => dispatch(updateStaff(res.data.updatedUser))
+		});
+	};
+
 	return {
 		form,
 		isLoading,
@@ -140,7 +162,9 @@ const useForm = () => {
 		submitUpdateProductVariant,
 		submitAddProductVariant,
 		submitCreateProductCategory,
-		submitUpdateProductCategory
+		submitUpdateProductCategory,
+		submitRegisterStaff,
+		submitUpdateStaff
 	};
 };
 

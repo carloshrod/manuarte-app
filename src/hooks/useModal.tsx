@@ -1,6 +1,7 @@
 import ProductForm from '@/components/admin/products/ProductForm';
 import ProductVariantForm from '@/components/admin/products/ProductVariantForm';
 import ProductCategoryForm from '@/components/admin/products/ProductCategoryForm';
+import StaffForm from '@/components/admin/users/StaffForm';
 import { ReactNode } from 'react';
 import { ModalContent } from '@/types/enums';
 
@@ -9,7 +10,7 @@ const useModal = () => {
 		[ModalContent.products]: <ProductForm />,
 		[ModalContent.productVariants]: <ProductVariantForm />,
 		[ModalContent.productCategories]: <ProductCategoryForm />,
-		[ModalContent.staff]: <p>Form Staff</p>,
+		[ModalContent.staff]: <StaffForm />,
 		[ModalContent.customers]: <p>Form Customers</p>
 	};
 
