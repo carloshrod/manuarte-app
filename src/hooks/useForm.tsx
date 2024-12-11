@@ -15,7 +15,7 @@ import {
 	updateProductCategory
 } from '@/reducers/productCategories/productCategorySlice';
 import { addStaff, updateStaff } from '@/reducers/users/userSlice';
-import { AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 
 notification.config({
 	placement: 'topRight',
@@ -51,7 +51,11 @@ const useForm = () => {
 			}
 		} catch (error) {
 			console.error(error);
-			notification.error({ message: 'Ocurrió un error. Inténtalo más tarde' });
+			const message =
+				error instanceof AxiosError
+					? error?.response?.data.message
+					: 'Ocurrió un error. Inténtalo más tarde';
+			notification.error({ message });
 		} finally {
 			setIsLoading(false);
 		}
