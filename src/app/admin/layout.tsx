@@ -9,7 +9,7 @@ import {
 import { PiUserCircle } from 'react-icons/pi';
 import { Provider } from 'react-redux';
 import CustomModal from '@/components/layout/Modal';
-import getMenuItems from '@/components/admin/utils';
+import getMenuItems from '@/app/admin/getMenuItems';
 import store from '@/reducers/store';
 import { useSession } from 'next-auth/react';
 
