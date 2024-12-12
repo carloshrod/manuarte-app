@@ -5,9 +5,14 @@ import { closeModal } from '@/reducers/ui/uiSlice';
 interface FormButtonsProps {
 	label?: string;
 	isLoading: boolean;
+	disabled?: boolean;
 }
 
-const FormButtons = ({ label = 'Agregar', isLoading }: FormButtonsProps) => {
+const FormButtons = ({
+	label = 'Agregar',
+	isLoading,
+	disabled = false
+}: FormButtonsProps) => {
 	const dispatch = useDispatch();
 
 	return (
@@ -26,6 +31,7 @@ const FormButtons = ({ label = 'Agregar', isLoading }: FormButtonsProps) => {
 				className='w-[130px]'
 				htmlType='submit'
 				loading={isLoading}
+				disabled={disabled}
 			>
 				{label}
 			</Button>
