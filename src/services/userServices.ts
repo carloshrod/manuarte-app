@@ -32,8 +32,30 @@ export const userServices = {
 		}
 	},
 
+	getAssignablePermissions: async (userId: string) => {
+		try {
+			const res = await axiosPrivate.get(
+				`${ENV.API.USERS}/assignable-permissions/${userId}`
+			);
+
+			return res.data;
+		} catch (error) {
+			console.error(error);
+		}
+	},
+
 	registerStaff: async (body: SubmitStaffDto) => {
 		return await axiosPrivate.post(ENV.API.USERS, body);
+	},
+
+	setPermissions: async (
+		body: { extraPermissions: string[] },
+		userId: string
+	) => {
+		return await axiosPrivate.post(
+			`${ENV.API.USERS}/set-permissions/${userId}`,
+			body
+		);
 	},
 
 	updateStaff: async (

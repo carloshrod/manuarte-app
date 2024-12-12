@@ -22,3 +22,8 @@ body {
 .ant-menu-item-active {
   border: 1px solid #1677ff;
 }
+
+.ant-form-item-explain-success {
+  color: #0D6EFD;
+  margin-bottom: 8px;
+}

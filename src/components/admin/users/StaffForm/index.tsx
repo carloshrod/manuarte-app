@@ -4,6 +4,7 @@ import { Form, Input, Select, Switch } from 'antd';
 import { useEffect, useState } from 'react';
 import FormButtons from '../../common/FormButtons';
 import { useSelector } from 'react-redux';
+import { formatRoleName } from '@/utils/utils';
 
 const StaffForm = () => {
 	const { form, isLoading, submitRegisterStaff, submitUpdateStaff } = useForm();
@@ -90,18 +91,11 @@ const StaffForm = () => {
 			>
 				<Select placeholder='Selecciona un rol de usuario' allowClear>
 					{staffRoles?.length > 0
-						? staffRoles.map(role => {
-								const label =
-									role.name === 'admin'
-										? 'Administrador'
-										: `${role.name.charAt(0).toUpperCase()}${role.name.slice(1)}`;
-
-								return (
-									<Select.Option key={role.id} value={role.id}>
-										{label}
-									</Select.Option>
-								);
-							})
+						? staffRoles.map(role => (
+								<Select.Option key={role.id} value={role.id}>
+									{formatRoleName(role.name)}
+								</Select.Option>
+							))
 						: null}
 				</Select>
 			</Form.Item>

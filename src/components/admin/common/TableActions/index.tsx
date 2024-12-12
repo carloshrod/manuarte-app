@@ -1,15 +1,22 @@
 import { Button, Space, Tooltip } from 'antd';
 import React from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
+import { IoKeyOutline } from 'react-icons/io5';
 import PopConfirm from '../PopConfirm';
 
 interface TableActionsProps {
 	onEdit: () => void;
 	onDelete: () => void;
+	onEditPermissions?: () => void;
 	popTitle: string;
 }
 
-const TableActions = ({ onEdit, onDelete, popTitle }: TableActionsProps) => {
+const TableActions = ({
+	onEdit,
+	onEditPermissions,
+	onDelete,
+	popTitle
+}: TableActionsProps) => {
 	const isEditable = true;
 	const isDeletable = true;
 
@@ -27,6 +34,20 @@ const TableActions = ({ onEdit, onDelete, popTitle }: TableActionsProps) => {
 					onClick={onEdit}
 				/>
 			</Tooltip>
+			{onEditPermissions ? (
+				<Tooltip title={isEditable ? 'Editar permisos' : ''}>
+					<Button
+						type='text'
+						icon={
+							<IoKeyOutline
+								size={20}
+								color={isEditable ? '#10b981' : '#d1fae5'}
+							/>
+						}
+						onClick={onEditPermissions}
+					/>
+				</Tooltip>
+			) : null}
 			<PopConfirm title={popTitle} onConfirm={onDelete}>
 				<Tooltip title={isDeletable ? 'Eliminar' : ''}>
 					<Button

@@ -14,7 +14,11 @@ import {
 	addProductCategory,
 	updateProductCategory
 } from '@/reducers/productCategories/productCategorySlice';
-import { addStaff, updateStaff } from '@/reducers/users/userSlice';
+import {
+	addStaff,
+	updateStaff,
+	updateStaffPermissions
+} from '@/reducers/users/userSlice';
 import { AxiosError, AxiosResponse } from 'axios';
 
 notification.config({
@@ -158,6 +162,24 @@ const useForm = () => {
 		});
 	};
 
+	const submitEditPermissions = async (
+		values: { extraPermissions: string[] },
+		userId: string
+	) => {
+		await handleSubmit({
+			serviceFn: valuesToUpdate =>
+				userServices.setPermissions(valuesToUpdate, userId),
+			values,
+			onSuccess: () =>
+				dispatch(
+					updateStaffPermissions({
+						extraPermissions: values.extraPermissions,
+						userId
+					})
+				)
+		});
+	};
+
 	return {
 		form,
 		isLoading,
@@ -168,7 +190,8 @@ const useForm = () => {
 		submitCreateProductCategory,
 		submitUpdateProductCategory,
 		submitRegisterStaff,
-		submitUpdateStaff
+		submitUpdateStaff,
+		submitEditPermissions
 	};
 };
 

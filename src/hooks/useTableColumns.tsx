@@ -5,6 +5,7 @@ import ActionsProduct from '@/components/admin/products/ActionsProduct';
 import ActionsProductCategory from '@/components/admin/products/ActionsProductCategory';
 import ActionsStaff from '@/components/admin/users/ActionsStaff';
 import ActionsCustomer from '@/components/admin/users/ActionsCustomer';
+import { formatRoleName } from '@/utils/utils';
 
 const useTableColumns = () => {
 	const { getColumnSearchProps } = useTable();
@@ -150,13 +151,7 @@ const useTableColumns = () => {
 			],
 			onFilter: (value, record) =>
 				record.roleName.indexOf(value as string) === 0,
-			render: (value: string) => (
-				<span>
-					{value === 'admin'
-						? 'Administrador'
-						: `${value.charAt(0).toUpperCase()}${value.slice(1)}`}
-				</span>
-			),
+			render: (value: string) => formatRoleName(value),
 			width: 100
 		},
 		{

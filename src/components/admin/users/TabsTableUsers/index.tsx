@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Button, Tabs, TabsProps } from 'antd';
 import { IoMdAdd } from 'react-icons/io';
 import { AiOutlineUser } from 'react-icons/ai';
-// import { HiOutlineUser } from 'react-icons/hi';
+import { HiOutlineUser } from 'react-icons/hi';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomTable from '../../common/Table';
 import useTableColumns from '@/hooks/useTableColumns';
@@ -76,22 +76,23 @@ const TabsTableUsers = ({ staffData, customersData }: TabsTableUsersProps) => {
 				<AiOutlineUser size={18} />
 			</Button>
 		</div>
-	) : null;
-	// <Button
-	// 	variant='outlined'
-	// 	color='primary'
-	// 	icon={<IoMdAdd size={18} />}
-	// 	onClick={() =>
-	// 		dispatch(
-	// 			openModal({
-	// 				title: 'Agregar Cliente',
-	// 				content: ModalContent.customers
-	// 			})
-	// 		)
-	// 	}
-	// >
-	// 	Cliente <HiOutlineUser size={18} />
-	// </Button>
+	) : (
+		<Button
+			variant='outlined'
+			color='primary'
+			icon={<IoMdAdd size={18} />}
+			onClick={() =>
+				dispatch(
+					openModal({
+						title: 'Agregar Cliente',
+						content: ModalContent.customers
+					})
+				)
+			}
+		>
+			Cliente <HiOutlineUser size={18} />
+		</Button>
+	);
 
 	return (
 		<Tabs

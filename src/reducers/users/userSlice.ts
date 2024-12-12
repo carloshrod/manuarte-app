@@ -27,10 +27,33 @@ export const userSlice = createSlice({
 			state.staff = state.staff.filter(
 				item => item.personId !== action.payload
 			);
+		},
+
+		updateStaffPermissions: (state, action) => {
+			const { extraPermissions, userId } = action.payload;
+
+			const updatedExtraPermissions = extraPermissions.map(
+				(permissionId: string) => {
+					return {
+						id: permissionId
+					};
+				}
+			);
+
+			state.staff = state.staff.map(item =>
+				item.id === userId
+					? { ...item, extraPermissions: updatedExtraPermissions }
+					: item
+			);
 		}
 	}
 });
 
-export const { getStaff, addStaff, updateStaff, removeStaff } =
-	userSlice.actions;
+export const {
+	getStaff,
+	addStaff,
+	updateStaff,
+	removeStaff,
+	updateStaffPermissions
+} = userSlice.actions;
 export default userSlice.reducer;

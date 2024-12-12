@@ -20,6 +20,16 @@ const ActionsStaff = ({ record }: { record: Staff }) => {
 		);
 	};
 
+	const handleEditPermissions = () => {
+		dispatch(
+			openModal({
+				title: 'Editar Permisos',
+				content: ModalContent.permissions,
+				dataToEdit: record
+			})
+		);
+	};
+
 	const handleDelete = async () => {
 		try {
 			const res = await userServices.deleteStaff(record.personId);
@@ -43,6 +53,7 @@ const ActionsStaff = ({ record }: { record: Staff }) => {
 		<TableActions
 			onEdit={handleEdit}
 			onDelete={handleDelete}
+			onEditPermissions={handleEditPermissions}
 			popTitle={record.fullName}
 		/>
 	);
