@@ -22,7 +22,7 @@ export const formatUserExtraPermissions = (
 	extraPermissions: { id: string; name: string }[]
 ) => {
 	try {
-		return extraPermissions.map(permission => ({
+		return extraPermissions?.map(permission => ({
 			...permission,
 			name: permissionMapping[permission.name] || permission.name
 		}));

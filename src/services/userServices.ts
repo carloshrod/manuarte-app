@@ -58,14 +58,8 @@ export const userServices = {
 		);
 	},
 
-	updateStaff: async (
-		body: SubmitStaffDto,
-		{ personId, userId }: { personId: string; userId: string }
-	) => {
-		return await axiosPrivate.put(
-			`${ENV.API.USERS}/${personId}/${userId}`,
-			body
-		);
+	updateStaff: async (body: SubmitStaffDto, personId: string) => {
+		return await axiosPrivate.put(`${ENV.API.USERS}/${personId}`, body);
 	},
 
 	deleteStaff: async (personId: string) => {

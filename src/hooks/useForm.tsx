@@ -152,11 +152,11 @@ const useForm = () => {
 
 	const submitUpdateStaff = async (
 		values: SubmitStaffDto,
-		{ personId, userId }: { personId: string; userId: string }
+		personId: string
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				userServices.updateStaff(valuesToUpdate, { personId, userId }),
+				userServices.updateStaff(valuesToUpdate, personId),
 			values,
 			onSuccess: res => dispatch(updateStaff(res.data.updatedUser))
 		});

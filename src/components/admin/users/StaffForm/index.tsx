@@ -35,10 +35,7 @@ const StaffForm = () => {
 		if (!dataToEdit) {
 			await submitRegisterStaff(values);
 		} else {
-			await submitUpdateStaff(values, {
-				personId: dataToEdit.personId,
-				userId: dataToEdit.id
-			});
+			await submitUpdateStaff(values, dataToEdit.personId);
 		}
 	};
 
