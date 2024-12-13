@@ -3,8 +3,8 @@ import useTable from './useTable';
 import moment from 'moment';
 import ActionsProduct from '@/components/admin/products/ActionsProduct';
 import ActionsProductCategory from '@/components/admin/products/ActionsProductCategory';
-import ActionsStaff from '@/components/admin/users/ActionsStaff';
-import ActionsCustomer from '@/components/admin/users/ActionsCustomer';
+import StaffActions from '@/components/admin/users/StaffActions';
+import CustomersActions from '@/components/admin/users/CustomersActions';
 import { formatRoleName } from '@/utils/utils';
 
 const useTableColumns = () => {
@@ -158,7 +158,7 @@ const useTableColumns = () => {
 			title: 'ACCIONES',
 			key: 'actions',
 			className: 'actions',
-			render: (_, record: Staff) => <ActionsStaff record={record} />,
+			render: (_, record: Staff) => <StaffActions record={record} />,
 			width: 100
 		}
 	];
@@ -166,9 +166,9 @@ const useTableColumns = () => {
 	const customerColumns: TableColumnsType<Customer> = [
 		{
 			title: 'DOCUMENTO',
-			dataIndex: 'docId',
-			key: 'docId',
-			...getColumnSearchProps('docId'),
+			dataIndex: 'dni',
+			key: 'dni',
+			...getColumnSearchProps('dni'),
 			width: 100
 		},
 		{
@@ -204,7 +204,7 @@ const useTableColumns = () => {
 			title: 'ACCIONES',
 			key: 'actions',
 			className: 'actions',
-			render: (_, record: Customer) => <ActionsCustomer record={record} />,
+			render: (_, record: Customer) => <CustomersActions record={record} />,
 			width: 100
 		}
 	];

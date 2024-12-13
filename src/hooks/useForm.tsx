@@ -15,7 +15,9 @@ import {
 	updateProductCategory
 } from '@/reducers/productCategories/productCategorySlice';
 import {
+	addCustomer,
 	addStaff,
+	updateCustomer,
 	updateStaff,
 	updateStaffPermissions
 } from '@/reducers/users/userSlice';
@@ -180,6 +182,26 @@ const useForm = () => {
 		});
 	};
 
+	const submitRegisterCustomer = async (values: SubmitCustomerDto) => {
+		await handleSubmit({
+			serviceFn: userServices.registerCustomer,
+			values,
+			onSuccess: res => dispatch(addCustomer(res.data.newCustomer))
+		});
+	};
+
+	const submitUpdateCustomer = async (
+		values: SubmitCustomerDto,
+		personId: string
+	) => {
+		await handleSubmit({
+			serviceFn: valuesToUpdate =>
+				userServices.updateCustomer(valuesToUpdate, personId),
+			values,
+			onSuccess: res => dispatch(updateCustomer(res.data.updatedCustomer))
+		});
+	};
+
 	return {
 		form,
 		isLoading,
@@ -191,7 +213,9 @@ const useForm = () => {
 		submitUpdateProductCategory,
 		submitRegisterStaff,
 		submitUpdateStaff,
-		submitEditPermissions
+		submitEditPermissions,
+		submitRegisterCustomer,
+		submitUpdateCustomer
 	};
 };
 

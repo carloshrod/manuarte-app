@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CustomTable from '../../common/Table';
 import useTableColumns from '@/hooks/useTableColumns';
 import { openModal } from '@/reducers/ui/uiSlice';
-import { getStaff } from '@/reducers/users/userSlice';
+import { getCustomers, getStaff } from '@/reducers/users/userSlice';
 import { ModalContent } from '@/types/enums';
 
 type TabsTableUsersProps = {
@@ -20,11 +20,12 @@ const TabsTableUsers = ({ staffData, customersData }: TabsTableUsersProps) => {
 	const [isStaff, setIsStaff] = useState(true);
 	const [isLoading, setIsLoading] = useState(true);
 	const { staffColumns, customerColumns } = useTableColumns();
-	const { staff } = useSelector((state: RootState) => state.users);
+	const { staff, customers } = useSelector((state: RootState) => state.users);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		dispatch(getStaff(staffData));
+		dispatch(getCustomers(customersData));
 		setIsLoading(false);
 	}, []);
 
@@ -50,7 +51,7 @@ const TabsTableUsers = ({ staffData, customersData }: TabsTableUsersProps) => {
 			children: (
 				<CustomTable
 					columns={customerColumns}
-					dataSource={customersData}
+					dataSource={customers}
 					isLoading={isLoading}
 				/>
 			)
@@ -84,7 +85,7 @@ const TabsTableUsers = ({ staffData, customersData }: TabsTableUsersProps) => {
 			onClick={() =>
 				dispatch(
 					openModal({
-						title: 'Agregar Cliente',
+						title: 'Registrar Cliente',
 						content: ModalContent.customers
 					})
 				)

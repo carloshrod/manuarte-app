@@ -64,5 +64,17 @@ export const userServices = {
 
 	deleteStaff: async (personId: string) => {
 		return await axiosPrivate.delete(`${ENV.API.USERS}/${personId}`);
+	},
+
+	registerCustomer: async (body: SubmitCustomerDto) => {
+		return await axiosPrivate.post(ENV.API.CUSTOMERS, body);
+	},
+
+	updateCustomer: async (body: SubmitCustomerDto, personId: string) => {
+		return await axiosPrivate.put(`${ENV.API.CUSTOMERS}/${personId}`, body);
+	},
+
+	deleteCustomer: async (personId: string) => {
+		return await axiosPrivate.delete(`${ENV.API.CUSTOMERS}/${personId}`);
 	}
 };

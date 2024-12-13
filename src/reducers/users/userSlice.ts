@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-	staff: [] as Staff[]
+	staff: [] as Staff[],
+	customers: [] as Customer[]
 };
 
 export const userSlice = createSlice({
@@ -45,6 +46,27 @@ export const userSlice = createSlice({
 					? { ...item, extraPermissions: updatedExtraPermissions }
 					: item
 			);
+		},
+
+		getCustomers: (state, action) => {
+			state.customers = action.payload;
+		},
+
+		addCustomer: (state, action) => {
+			state.customers = [action.payload, ...state.customers];
+		},
+
+		updateCustomer: (state, action) => {
+			const updatedCustomer = action.payload;
+			state.customers = state.customers.map(item =>
+				item.id === updatedCustomer.id ? updatedCustomer : item
+			);
+		},
+
+		removeCustomer: (state, action) => {
+			state.customers = state.customers.filter(
+				item => item.personId !== action.payload
+			);
 		}
 	}
 });
@@ -54,6 +76,10 @@ export const {
 	addStaff,
 	updateStaff,
 	removeStaff,
-	updateStaffPermissions
+	updateStaffPermissions,
+	getCustomers,
+	addCustomer,
+	updateCustomer,
+	removeCustomer
 } = userSlice.actions;
 export default userSlice.reducer;

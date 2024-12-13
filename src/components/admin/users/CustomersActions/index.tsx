@@ -1,30 +1,20 @@
 import { useDispatch } from 'react-redux';
-import { notification } from 'antd';
 import TableActions from '../../common/TableActions';
 import { openModal } from '@/reducers/ui/uiSlice';
-import { removeStaff } from '@/reducers/users/userSlice';
-import { userServices } from '@/services/userServices';
-import { AxiosError } from 'axios';
 import { ModalContent } from '@/types/enums';
+import { notification } from 'antd';
+import { AxiosError } from 'axios';
+import { removeCustomer } from '@/reducers/users/userSlice';
+import { userServices } from '@/services/userServices';
 
-const ActionsStaff = ({ record }: { record: Staff }) => {
+const CustomersActions = ({ record }: { record: Customer }) => {
 	const dispatch = useDispatch();
 
 	const handleEdit = () => {
 		dispatch(
 			openModal({
-				title: 'Editar Staff',
-				content: ModalContent.staff,
-				dataToEdit: record
-			})
-		);
-	};
-
-	const handleEditPermissions = () => {
-		dispatch(
-			openModal({
-				title: 'Editar Permisos',
-				content: ModalContent.permissions,
+				title: 'Editar Cliente',
+				content: ModalContent.customers,
 				dataToEdit: record
 			})
 		);
@@ -32,9 +22,9 @@ const ActionsStaff = ({ record }: { record: Staff }) => {
 
 	const handleDelete = async () => {
 		try {
-			const res = await userServices.deleteStaff(record.personId);
+			const res = await userServices.deleteCustomer(record.personId);
 			if (res.status === 200) {
-				dispatch(removeStaff(record.personId));
+				dispatch(removeCustomer(record.personId));
 				notification.success({
 					message: res.data.message
 				});
@@ -53,10 +43,9 @@ const ActionsStaff = ({ record }: { record: Staff }) => {
 		<TableActions
 			onEdit={handleEdit}
 			onDelete={handleDelete}
-			onEditPermissions={handleEditPermissions}
 			popTitle={record.fullName}
 		/>
 	);
 };
 
-export default ActionsStaff;
+export default CustomersActions;

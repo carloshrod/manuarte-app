@@ -84,7 +84,16 @@ interface Customer {
 	createdDate: string;
 	city: string;
 	fullName: string;
-	docId: string;
+	dni: string;
+}
+
+interface SubmitCustomerDto {
+	fullName: string;
+	dni: string;
+	email: string;
+	phoneNumber: string;
+	location: string;
+	city: string;
 }
 
 type DataTable = ProductVariant | ProductCategory | Staff | Customer;
@@ -109,5 +118,6 @@ interface RootState {
 	};
 	users: {
 		staff: Staff[];
+		customers: Customer[];
 	};
 }

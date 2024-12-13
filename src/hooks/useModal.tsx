@@ -5,6 +5,7 @@ import StaffForm from '@/components/admin/users/StaffForm';
 import { ReactNode } from 'react';
 import { ModalContent } from '@/types/enums';
 import PermissionsForm from '@/components/admin/users/PermissionsForm';
+import CustomersForm from '@/components/admin/users/CustomersForm';
 
 const useModal = () => {
 	const MODAL_CONTENT: Record<ModalContent, ReactNode> = {
@@ -13,7 +14,7 @@ const useModal = () => {
 		[ModalContent.productCategories]: <ProductCategoryForm />,
 		[ModalContent.staff]: <StaffForm />,
 		[ModalContent.permissions]: <PermissionsForm />,
-		[ModalContent.customers]: <p>Form Customers</p>
+		[ModalContent.customers]: <CustomersForm />
 	};
 
 	return { MODAL_CONTENT };
