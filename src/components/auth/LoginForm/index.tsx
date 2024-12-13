@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, notification } from 'antd';
 import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
 import { doCredentialLogin } from '@/app/actions';
@@ -21,9 +21,18 @@ const LoginForm = () => {
 
 			if (res) {
 				router.push('/admin/dashboard');
+				notification.success({ message: 'Bienvenido!' });
+				return;
 			}
+
+			notification.error({
+				message: 'Credenciales inválidas. Inténtalo de nuevo!'
+			});
 		} catch (error) {
 			console.error(error);
+			notification.error({
+				message: 'Ocurrió un error inesperado. Inténtalo más tarde!'
+			});
 		} finally {
 			setIsLoading(false);
 		}
