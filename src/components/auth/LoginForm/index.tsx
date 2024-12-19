@@ -5,6 +5,8 @@ import { Button, Form, Input, notification } from 'antd';
 import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
 import { doCredentialLogin } from '@/app/actions';
+import { getSession } from 'next-auth/react';
+import { AUTH_RULES } from '@/utils/utils';
 
 const LoginForm = () => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +22,11 @@ const LoginForm = () => {
 			});
 
 			if (res) {
-				router.push('/admin/dashboard');
+				const session = await getSession();
+				const roleName = session?.user?.roleName as string;
+				const redirectTo = AUTH_RULES[roleName].defaultPath ?? '/auth/login';
+
+				router.push(redirectTo);
 				notification.success({ message: 'Bienvenido!' });
 				return;
 			}

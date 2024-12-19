@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import LoginForm from '@/components/auth/LoginForm';
 
-const LoginPage = () => {
+const LoginPage = async () => {
 	return (
 		<main className='min-h-screen flex flex-col items-center justify-center p-6'>
 			<div className='grow grid md:grid-cols-2 items-center gap-4 max-md:gap-8 max-w-6xl max-md:max-w-lg w-full'>

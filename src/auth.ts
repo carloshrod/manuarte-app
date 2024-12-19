@@ -56,8 +56,10 @@ export const {
 					accessTokenExpires: decodedToken.exp && decodedToken.exp * 1000,
 					refreshToken: user.refreshToken,
 					user: {
-						userId: user.userId,
-						email: user.email
+						id: user.userId,
+						email: user.email,
+						roleName: decodedToken.user.roleName,
+						extraPermissions: decodedToken.user.extraPermissions
 					}
 				};
 			}
@@ -75,7 +77,7 @@ export const {
 				!token.accessToken ||
 				Date.now() > (token.accessTokenExpires as number)
 			) {
-				console.log('Token expiró, intentando renovar...');
+				// console.log('Token expiró, intentando renovar...');
 				return await authServices.refreshTokens(token);
 			}
 

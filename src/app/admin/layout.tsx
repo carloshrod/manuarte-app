@@ -1,7 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
-import { Button, Layout, Menu, theme } from 'antd';
+import { Button, Layout, Skeleton, theme } from 'antd';
 import {
 	TbLayoutSidebarLeftCollapseFilled,
 	TbLayoutSidebarRightCollapseFilled
@@ -9,9 +8,10 @@ import {
 import { PiUserCircle } from 'react-icons/pi';
 import { Provider } from 'react-redux';
 import CustomModal from '@/components/layout/Modal';
-import getMenuItems from '@/app/admin/getMenuItems';
 import store from '@/reducers/store';
 import { useSession } from 'next-auth/react';
+import { formatRoleName } from '@/utils/utils';
+import SidebarMenu from '../../components/layout/SidebarMenu';
 
 const { Header, Sider, Content } = Layout;
 
@@ -22,10 +22,7 @@ const AdminLayout = ({
 }>) => {
 	const [collapsed, setCollapsed] = useState(false);
 	const [hide, setHide] = useState(false);
-	const [selectedItem, setSelectedItem] = useState<string[]>([]);
-	const pathname = usePathname();
 	const { data: session, update } = useSession();
-	const menuItems = getMenuItems();
 
 	useEffect(() => {
 		update();
@@ -34,25 +31,6 @@ const AdminLayout = ({
 	const {
 		token: { colorBgContainer, borderRadiusLG }
 	} = theme.useToken();
-
-	const getInitialSelectedItem = (pathname: string) => {
-		return (
-			menuItems.find(item =>
-				typeof item.label === 'string'
-					? item.label === pathname
-					: item.label.props.href === pathname
-			)?.key || '1'
-		);
-	};
-
-	useEffect(() => {
-		const newSelectedItem = [getInitialSelectedItem(pathname)];
-		setSelectedItem(newSelectedItem);
-	}, [pathname]);
-
-	const handleMenuSelect = ({ key }: { key: string }) => {
-		if (key !== '9') setSelectedItem([key]);
-	};
 
 	return (
 		<Provider store={store}>
@@ -71,14 +49,7 @@ const AdminLayout = ({
 					<h1 className='text-center p-4 text-2xl text-white font-bold'>
 						{collapsed ? 'M' : 'MANUARTE'}
 					</h1>
-					<Menu
-						theme='dark'
-						mode='inline'
-						defaultSelectedKeys={['1']}
-						selectedKeys={selectedItem}
-						onSelect={handleMenuSelect}
-						items={menuItems}
-					/>
+					<SidebarMenu session={session} />
 				</Sider>
 				<Layout>
 					<Header
@@ -113,7 +84,16 @@ const AdminLayout = ({
 								padding: '0 24px'
 							}}
 						>
-							{session?.user?.email}
+							{session ? (
+								<div>
+									<span className='font-bold me-2'>
+										{formatRoleName(session?.user?.roleName as string)}:
+									</span>{' '}
+									{session?.user?.email}
+								</div>
+							) : (
+								<Skeleton.Button active style={{ width: 200 }} />
+							)}
 						</Button>
 					</Header>
 					<Content

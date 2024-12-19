@@ -5,5 +5,6 @@ export enum ModalContent {
 	productCategories = 'productCategories',
 	staff = 'staff',
 	permissions = 'permissions',
-	customers = 'customers'
+	customers = 'customers',
+	logout = 'logout'
 }

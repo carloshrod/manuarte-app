@@ -2,6 +2,8 @@ import axios from 'axios';
 import { ENV } from '@/config/env';
 import { auth } from '@/auth';
 import { getSession } from 'next-auth/react';
+// import { authServices } from './authServices';
+// import { doLogout } from '@/app/actions';
 
 const BASE_URL = ENV.BASE_URL;
 
@@ -42,3 +44,21 @@ axiosPrivate.interceptors.request.use(
 		return Promise.reject(error);
 	}
 );
+
+// axiosPrivate.interceptors.response.use(
+// 	response => response,
+// 	async error => {
+// 		console.log('Interceptor response');
+// 		console.log(error.response.status);
+// 		if (error?.response?.status === 403 || error?.response?.status === 401) {
+// 			const session = await auth();
+// 			console.log({ session });
+// 			const res = await authServices.logout(session?.refreshToken as string);
+// 			console.log(res.status);
+// 			if (res.status === 204) {
+// 				await doLogout();
+// 			}
+// 		}
+// 		return Promise.reject(error);
+// 	}
+// );

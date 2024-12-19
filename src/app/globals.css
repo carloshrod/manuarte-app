@@ -19,8 +19,12 @@ body {
   }
 }
 
+.ant-menu-item {
+  outline: 1px solid transparent;
+}
+
 .ant-menu-item-active {
-  border: 1px solid #1677ff;
+  outline: 1px solid #1677ff;
 }
 
 .ant-form-item-explain-success {
