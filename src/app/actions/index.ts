@@ -1,5 +1,6 @@
 'use server';
 import { signIn, signOut } from '@/auth';
+import { ROUTES } from '@/utils/routes';
 
 export async function doCredentialLogin(values: SubmitLoginDto) {
 	try {
@@ -16,5 +17,5 @@ export async function doCredentialLogin(values: SubmitLoginDto) {
 }
 
 export async function doLogout() {
-	await signOut({ redirectTo: '/auth/login' });
+	await signOut({ redirectTo: ROUTES.LOGIN });
 }

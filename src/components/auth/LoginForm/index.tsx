@@ -7,6 +7,7 @@ import { RiLockPasswordFill } from 'react-icons/ri';
 import { doCredentialLogin } from '@/app/actions';
 import { getSession } from 'next-auth/react';
 import { AUTH_RULES } from '@/utils/utils';
+import { ROUTES } from '@/utils/routes';
 
 const LoginForm = () => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +25,7 @@ const LoginForm = () => {
 			if (res) {
 				const session = await getSession();
 				const roleName = session?.user?.roleName as string;
-				const redirectTo = AUTH_RULES[roleName].defaultPath ?? '/auth/login';
+				const redirectTo = AUTH_RULES[roleName].defaultPath ?? ROUTES.LOGIN;
 
 				router.push(redirectTo);
 				notification.success({ message: 'Bienvenido!' });

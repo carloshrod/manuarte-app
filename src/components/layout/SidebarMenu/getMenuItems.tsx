@@ -7,6 +7,17 @@ import { GiCardboardBox } from 'react-icons/gi';
 import { RiExchangeBoxLine } from 'react-icons/ri';
 import { Session } from 'next-auth';
 import { AUTH_RULES } from '@/utils/utils';
+import { ROUTES } from '@/utils/routes';
+
+const {
+	DASHBOARD,
+	PRODUCTS,
+	USERS,
+	QUOTES,
+	INVOICES,
+	STOCK,
+	STOCK_TRANSACTIONS
+} = ROUTES;
 
 const getMenuItems = (session: Session) => {
 	const { user } = session ?? {};
@@ -16,58 +27,58 @@ const getMenuItems = (session: Session) => {
 	const roleRules = AUTH_RULES[roleName] || { allowedPaths: [] };
 
 	const permissionToPathMap: Record<string, string> = {
-		'product-read': '/admin/products',
-		'estimate-read': '/admin/quotes',
-		'billing-read': '/admin/invoices',
-		'stock-read': '/admin/stock',
-		'transaction-read': '/admin/stock-transfers',
-		'user-read': '/admin/users',
-		'customer-read': '/admin/users',
-		'dashboard-read': '/admin/dashboard'
+		'dashboard-read': DASHBOARD,
+		'product-read': PRODUCTS,
+		'user-read': USERS,
+		'customer-read': USERS,
+		'estimate-read': QUOTES,
+		'billing-read': INVOICES,
+		'stock-read': STOCK,
+		'transaction-read': STOCK_TRANSACTIONS
 	};
 
 	const allMenuItems = [
 		{
 			key: '1',
 			icon: <GrDashboard style={{ fontSize: 20 }} />,
-			label: <Link href='/admin/dashboard'>Dashboard</Link>,
-			path: '/admin/dashboard'
+			label: <Link href={DASHBOARD}>Dashboard</Link>,
+			path: DASHBOARD
 		},
 		{
 			key: '2',
 			icon: <BsBoxes style={{ fontSize: 20 }} />,
-			label: <Link href='/admin/products'>Productos</Link>,
-			path: '/admin/products'
+			label: <Link href={PRODUCTS}>Productos</Link>,
+			path: PRODUCTS
 		},
 		{
 			key: '3',
 			icon: <PiUsersThree style={{ fontSize: 20 }} />,
-			label: <Link href='/admin/users'>Users</Link>,
-			path: '/admin/users'
+			label: <Link href={USERS}>Users</Link>,
+			path: USERS
 		},
 		{
 			key: '4',
 			icon: <TbFileDollar style={{ fontSize: 20 }} />,
-			label: <Link href='/admin/quotes'>Cotizaciones</Link>,
-			path: '/admin/quotes'
+			label: <Link href={QUOTES}>Cotizaciones</Link>,
+			path: QUOTES
 		},
 		{
 			key: '5',
 			icon: <PiInvoice style={{ fontSize: 20 }} />,
-			label: <Link href='/admin/invoices'>Facturas</Link>,
-			path: '/admin/invoices'
+			label: <Link href={INVOICES}>Facturas</Link>,
+			path: INVOICES
 		},
 		{
 			key: '6',
 			icon: <GiCardboardBox style={{ fontSize: 20 }} />,
-			label: <Link href='/admin/stock'>Stock</Link>,
-			path: '/admin/stock'
+			label: <Link href={STOCK}>Stock</Link>,
+			path: STOCK
 		},
 		{
 			key: '7',
 			icon: <RiExchangeBoxLine style={{ fontSize: 20 }} />,
-			label: <Link href='/admin/stock-transfers'>Despachos</Link>,
-			path: '/admin/stock-transfers'
+			label: <Link href={STOCK_TRANSACTIONS}>Despachos</Link>,
+			path: STOCK_TRANSACTIONS
 		}
 	];
 

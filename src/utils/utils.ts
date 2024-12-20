@@ -1,3 +1,5 @@
+import { ROUTES } from './routes';
+
 export const formatRoleName = (roleName: string) => {
 	return `${roleName?.charAt(0).toUpperCase()}${roleName?.slice(1)}` || '';
 };
@@ -47,28 +49,28 @@ export const AUTH_RULES: Record<
 	{ defaultPath: string; allowedPaths: string[] }
 > = {
 	admin: {
-		defaultPath: '/admin/dashboard',
+		defaultPath: ROUTES.DASHBOARD,
 		allowedPaths: [
-			'/admin/dashboard',
-			'/admin/products',
-			'/admin/users',
-			'/admin/quotes',
-			'/admin/invoices',
-			'/admin/stock',
-			'/admin/stock-transfers'
+			ROUTES.DASHBOARD,
+			ROUTES.PRODUCTS,
+			ROUTES.USERS,
+			ROUTES.QUOTES,
+			ROUTES.INVOICES,
+			ROUTES.STOCK,
+			ROUTES.STOCK_TRANSACTIONS
 		]
 	},
 	cajero: {
-		defaultPath: '/admin/quotes',
+		defaultPath: ROUTES.QUOTES,
 		allowedPaths: [
-			'/admin/quotes',
-			'/admin/invoices',
-			'/admin/stock',
-			'/admin/stock-transfers'
+			ROUTES.QUOTES,
+			ROUTES.INVOICES,
+			ROUTES.STOCK,
+			ROUTES.STOCK_TRANSACTIONS
 		]
 	},
 	bodeguero: {
-		defaultPath: '/admin/products',
-		allowedPaths: ['/admin/products', '/admin/stock', '/admin/stock-transfers']
+		defaultPath: ROUTES.PRODUCTS,
+		allowedPaths: [ROUTES.PRODUCTS, ROUTES.STOCK, ROUTES.STOCK_TRANSACTIONS]
 	}
 };

@@ -3,6 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { authServices } from './services/authServices';
 import { authConfig } from './config/auth';
 import { jwtDecode } from 'jwt-decode';
+import { ROUTES } from './utils/routes';
 
 export const {
 	handlers: { GET, POST },
@@ -43,7 +44,7 @@ export const {
 		maxAge: 30 * 24 * 60 * 60
 	},
 	pages: {
-		signIn: '/auth/login'
+		signIn: ROUTES.LOGIN
 	},
 	callbacks: {
 		async jwt({ token, account, user }) {

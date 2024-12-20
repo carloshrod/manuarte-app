@@ -1,31 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from './auth';
 import { AUTH_RULES } from './utils/utils';
+import { ROUTES } from './utils/routes';
+
+const { LOGIN, PRODUCTS, QUOTES, INVOICES, STOCK, STOCK_TRANSACTIONS } = ROUTES;
 
 export async function middleware(req: NextRequest) {
 	const session = await auth();
 	const requestedPage = req.nextUrl.pathname;
 
-	if (!session && requestedPage !== '/auth/login') {
-		return NextResponse.redirect(new URL('/auth/login', req.url));
+	if (!session && requestedPage !== LOGIN) {
+		return NextResponse.redirect(new URL(LOGIN, req.url));
 	}
 
 	const roleName = session?.user?.roleName as string;
 	const extraPermissions = session?.user?.extraPermissions || [];
 
 	const roleRules = AUTH_RULES[roleName] || {
-		defaultPath: '/auth/login',
+		defaultPath: LOGIN,
 		allowedPaths: []
 	};
 
 	const hasRoleAccess = roleRules.allowedPaths.includes(requestedPage);
 	const hasExtraPermissionAccess = extraPermissions.some(permission => {
 		const permissionToPathMap: Record<string, string> = {
-			'product-read': '/admin/products',
-			'estimate-read': '/admin/quotes',
-			'billing-read': '/admin/invoices',
-			'stock-read': '/admin/stock',
-			'transaction-read': '/admin/stock-transfers'
+			'product-read': PRODUCTS,
+			'estimate-read': QUOTES,
+			'billing-read': INVOICES,
+			'stock-read': STOCK,
+			'transaction-read': STOCK_TRANSACTIONS
 		};
 		return permissionToPathMap[permission] === requestedPage;
 	});
@@ -39,8 +42,7 @@ export async function middleware(req: NextRequest) {
 		return NextResponse.redirect(new URL(roleRules.defaultPath, req.url));
 	}
 
-	// Si está en login pero ya tiene sesión, redirigir según su rol
-	if (session && requestedPage === '/auth/login') {
+	if (session && requestedPage === LOGIN) {
 		return NextResponse.redirect(new URL(roleRules.defaultPath, req.url));
 	}
 
