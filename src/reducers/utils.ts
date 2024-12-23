@@ -10,8 +10,8 @@ export const formatProductVariantState = (
 				productName: product.name,
 				name: productVariant.name,
 				productDescription: product.description,
-				categoryProductId: product.categoryProductId,
-				categoryProductName: product.categoryProductName
+				productCategoryId: product.productCategoryId,
+				productCategoryName: product.productCategoryName
 			}));
 		}
 

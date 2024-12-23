@@ -42,9 +42,9 @@ const useTableColumns = () => {
 
 		{
 			title: 'CATEGORÍA',
-			dataIndex: 'categoryProductName',
-			key: 'categoryProductName',
-			...getColumnSearchProps('categoryProductName'),
+			dataIndex: 'productCategoryName',
+			key: 'productCategoryName',
+			...getColumnSearchProps('productCategoryName'),
 			width: 150
 		},
 		{

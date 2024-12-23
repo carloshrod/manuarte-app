@@ -22,8 +22,8 @@ interface Product {
 	id: string;
 	name: string;
 	description: string;
-	categoryProductId: string;
-	categoryProductName: string;
+	productCategoryId: string;
+	productCategoryName: string;
 	productVariants: ProductVariant[];
 }
 
@@ -31,7 +31,7 @@ interface SubmitProductDto {
 	type?: 'create' | 'update' | 'updateVariant';
 	name: string;
 	description: string;
-	categoryProductId?: string;
+	productCategoryId?: string;
 	productVariants?: string[];
 	productVariantName?: string;
 	productVariant?: {

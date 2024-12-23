@@ -27,7 +27,7 @@ const ProductForm = () => {
 			const preparedFields = {
 				name: dataToEdit.productName,
 				description: dataToEdit.productDescription,
-				categoryProductId: dataToEdit.categoryProductId,
+				productCategoryId: dataToEdit.productCategoryId,
 				productVariants: [dataToEdit.name],
 				productVariantName: dataToEdit.name
 			};
@@ -39,7 +39,7 @@ const ProductForm = () => {
 		if (!isUpdating) {
 			submitCreateProduct(values);
 		} else {
-			const { productVariantName, categoryProductId, ...rest } = values ?? {};
+			const { productVariantName, productCategoryId, ...rest } = values ?? {};
 			const valuesToUpdate = {
 				...rest,
 				productVariant: {
@@ -114,7 +114,7 @@ const ProductForm = () => {
 				/>
 			</Form.Item>
 			<Form.Item
-				name='categoryProductId'
+				name='productCategoryId'
 				label='Categoría'
 				rules={[
 					{
