@@ -3,7 +3,8 @@ import { auth } from './auth';
 import { AUTH_RULES } from './utils/utils';
 import { ROUTES } from './utils/routes';
 
-const { LOGIN, PRODUCTS, QUOTES, INVOICES, STOCK, STOCK_TRANSACTIONS } = ROUTES;
+const { LOGIN, PRODUCTS, QUOTE_SHOPS, INVOICES, STOCK, STOCK_TRANSACTIONS } =
+	ROUTES;
 
 export async function middleware(req: NextRequest) {
 	const session = await auth();
@@ -21,11 +22,12 @@ export async function middleware(req: NextRequest) {
 		allowedPaths: []
 	};
 
-	const hasRoleAccess = roleRules.allowedPaths.includes(requestedPage);
+	const hasRoleAccess = isPathAllowed(requestedPage, roleRules.allowedPaths);
+
 	const hasExtraPermissionAccess = extraPermissions.some(permission => {
 		const permissionToPathMap: Record<string, string> = {
 			'product-read': PRODUCTS,
-			'estimate-read': QUOTES,
+			'estimate-read': QUOTE_SHOPS,
 			'billing-read': INVOICES,
 			'stock-read': STOCK,
 			'transaction-read': STOCK_TRANSACTIONS
@@ -50,3 +52,16 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = { matcher: ['/admin/:path*', '/auth/login'] };
+
+function isPathAllowed(requestedPage: string, allowedPaths: string[]): boolean {
+	return allowedPaths.some(allowedPath => {
+		if (allowedPath.includes('[')) {
+			// Convertir la ruta dinámica en un regex
+			const dynamicRegex = new RegExp(
+				'^' + allowedPath.replace(/\[.*?\]/g, '[^/]+') + '$'
+			);
+			return dynamicRegex.test(requestedPage);
+		}
+		return allowedPath === requestedPage;
+	});
+}
