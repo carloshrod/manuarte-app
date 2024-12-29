@@ -13,7 +13,7 @@ const {
 	DASHBOARD,
 	PRODUCTS,
 	USERS,
-	QUOTES,
+	QUOTE_SHOPS,
 	INVOICES,
 	STOCK,
 	STOCK_TRANSACTIONS
@@ -31,56 +31,11 @@ const getMenuItems = (session: Session) => {
 		'product-read': PRODUCTS,
 		'user-read': USERS,
 		'customer-read': USERS,
-		'estimate-read': QUOTES,
+		'estimate-read': QUOTE_SHOPS,
 		'billing-read': INVOICES,
 		'stock-read': STOCK,
 		'transaction-read': STOCK_TRANSACTIONS
 	};
-
-	const allMenuItems = [
-		{
-			key: '1',
-			icon: <GrDashboard style={{ fontSize: 20 }} />,
-			label: <Link href={DASHBOARD}>Dashboard</Link>,
-			path: DASHBOARD
-		},
-		{
-			key: '2',
-			icon: <BsBoxes style={{ fontSize: 20 }} />,
-			label: <Link href={PRODUCTS}>Productos</Link>,
-			path: PRODUCTS
-		},
-		{
-			key: '3',
-			icon: <PiUsersThree style={{ fontSize: 20 }} />,
-			label: <Link href={USERS}>Users</Link>,
-			path: USERS
-		},
-		{
-			key: '4',
-			icon: <TbFileDollar style={{ fontSize: 20 }} />,
-			label: <Link href={QUOTES}>Cotizaciones</Link>,
-			path: QUOTES
-		},
-		{
-			key: '5',
-			icon: <PiInvoice style={{ fontSize: 20 }} />,
-			label: <Link href={INVOICES}>Facturas</Link>,
-			path: INVOICES
-		},
-		{
-			key: '6',
-			icon: <GiCardboardBox style={{ fontSize: 20 }} />,
-			label: <Link href={STOCK}>Stock</Link>,
-			path: STOCK
-		},
-		{
-			key: '7',
-			icon: <RiExchangeBoxLine style={{ fontSize: 20 }} />,
-			label: <Link href={STOCK_TRANSACTIONS}>Despachos</Link>,
-			path: STOCK_TRANSACTIONS
-		}
-	];
 
 	const filteredItems = allMenuItems.filter(item => {
 		const hasRoleAccess = roleRules.allowedPaths?.includes(item.path);
@@ -105,3 +60,48 @@ const getMenuItems = (session: Session) => {
 };
 
 export default getMenuItems;
+
+export const allMenuItems = [
+	{
+		key: '1',
+		icon: <GrDashboard style={{ fontSize: 20 }} />,
+		label: <Link href={DASHBOARD}>Dashboard</Link>,
+		path: DASHBOARD
+	},
+	{
+		key: '2',
+		icon: <BsBoxes style={{ fontSize: 20 }} />,
+		label: <Link href={PRODUCTS}>Productos</Link>,
+		path: PRODUCTS
+	},
+	{
+		key: '3',
+		icon: <PiUsersThree style={{ fontSize: 20 }} />,
+		label: <Link href={USERS}>Usuarios</Link>,
+		path: USERS
+	},
+	{
+		key: '4',
+		icon: <TbFileDollar style={{ fontSize: 20 }} />,
+		label: <Link href={QUOTE_SHOPS}>Cotizaciones</Link>,
+		path: QUOTE_SHOPS
+	},
+	{
+		key: '5',
+		icon: <PiInvoice style={{ fontSize: 20 }} />,
+		label: <Link href={INVOICES}>Facturas</Link>,
+		path: INVOICES
+	},
+	{
+		key: '6',
+		icon: <GiCardboardBox style={{ fontSize: 20 }} />,
+		label: <Link href={STOCK}>Stock</Link>,
+		path: STOCK
+	},
+	{
+		key: '7',
+		icon: <RiExchangeBoxLine style={{ fontSize: 20 }} />,
+		label: <Link href={STOCK_TRANSACTIONS}>Despachos</Link>,
+		path: STOCK_TRANSACTIONS
+	}
+];

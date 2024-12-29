@@ -1,7 +1,7 @@
 import { Menu, Skeleton } from 'antd';
 import { Session } from 'next-auth';
 import { useEffect, useState } from 'react';
-import getMenuItems from './getMenuItems';
+import getMenuItems, { allMenuItems } from './getMenuItems';
 import { useDispatch } from 'react-redux';
 import { openModal } from '@/reducers/ui/uiSlice';
 import { usePathname } from 'next/navigation';
@@ -9,21 +9,20 @@ import { ModalContent } from '@/types/enums';
 
 const SidebarMenu = ({ session }: { session: Session | null }) => {
 	const menuItems = getMenuItems(session as Session);
-	const [selectedItem, setSelectedItem] = useState<string[]>([]);
+	const [selectedItems, setSelectedItems] = useState<string[]>([]);
 	const dispatch = useDispatch();
 	const pathname = usePathname();
 
-	const getInitialSelectedItem = (pathname: string) => {
-		return menuItems.find(item => item.path === pathname)?.key || '1';
-	};
-
 	useEffect(() => {
-		const newSelectedItem = [getInitialSelectedItem(pathname)];
-		setSelectedItem(newSelectedItem);
-	}, [pathname, session]);
+		const selectedItem =
+			allMenuItems.find(item => {
+				return pathname.startsWith(item.path);
+			})?.key || '';
+		setSelectedItems([selectedItem]);
+	}, [pathname]);
 
 	const handleMenuSelect = ({ key }: { key: string }) => {
-		if (key !== 'logout') setSelectedItem([key]);
+		if (key !== 'logout') setSelectedItems([key]);
 	};
 
 	const handleConfirmLogout = ({ key }: { key: string }) => {
@@ -43,7 +42,7 @@ const SidebarMenu = ({ session }: { session: Session | null }) => {
 			theme='dark'
 			mode='inline'
 			defaultSelectedKeys={session ? ['1'] : []}
-			selectedKeys={session ? selectedItem : undefined}
+			selectedKeys={session ? selectedItems : undefined}
 			onSelect={handleMenuSelect}
 			items={menuItems}
 			onClick={handleConfirmLogout}
