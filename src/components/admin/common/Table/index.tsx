@@ -4,12 +4,14 @@ interface CustomTableProps {
 	columns: TableColumnsType<any>;
 	dataSource: DataTable[];
 	isLoading?: boolean;
+	scrollMinus?: number;
 }
 
 const CustomTable = ({
 	columns,
 	dataSource,
-	isLoading = false
+	isLoading = false,
+	scrollMinus = 380
 }: CustomTableProps) => {
 	return (
 		<div className='shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-2 px-4 rounded-lg'>
@@ -18,7 +20,10 @@ const CustomTable = ({
 				columns={columns}
 				dataSource={dataSource}
 				scroll={{
-					y: dataSource?.length > 0 ? 'calc(100vh - 380px)' : undefined
+					y:
+						dataSource?.length > 0
+							? `calc(100vh - ${scrollMinus}px)`
+							: undefined
 				}}
 				pagination={{
 					locale: { items_per_page: 'por página' }
