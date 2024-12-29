@@ -10,7 +10,7 @@ import { Provider } from 'react-redux';
 import CustomModal from '@/components/layout/Modal';
 import store from '@/reducers/store';
 import { useSession } from 'next-auth/react';
-import { formatRoleName } from '@/utils/utils';
+import { formatToTitleCase } from '@/utils/utils';
 import SidebarMenu from '../../components/layout/SidebarMenu';
 
 const { Header, Sider, Content } = Layout;
@@ -87,7 +87,7 @@ const AdminLayout = ({
 							{session ? (
 								<div>
 									<span className='font-bold me-2'>
-										{formatRoleName(session?.user?.roleName as string)}:
+										{formatToTitleCase(session?.user?.roleName as string)}:
 									</span>{' '}
 									{session?.user?.email}
 								</div>

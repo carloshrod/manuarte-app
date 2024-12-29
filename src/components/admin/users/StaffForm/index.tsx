@@ -4,7 +4,7 @@ import { Form, Input, Select, Switch } from 'antd';
 import { useEffect, useState } from 'react';
 import FormButtons from '../../common/FormButtons';
 import { useSelector } from 'react-redux';
-import { formatRoleName } from '@/utils/utils';
+import { formatToTitleCase } from '@/utils/utils';
 
 const StaffForm = () => {
 	const { form, isLoading, submitRegisterStaff, submitUpdateStaff } = useForm();
@@ -90,7 +90,7 @@ const StaffForm = () => {
 					{staffRoles?.length > 0
 						? staffRoles.map(role => (
 								<Select.Option key={role.id} value={role.id}>
-									{formatRoleName(role.name)}
+									{formatToTitleCase(role.name)}
 								</Select.Option>
 							))
 						: null}

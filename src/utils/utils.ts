@@ -1,7 +1,26 @@
 import { ROUTES } from './routes';
 
-export const formatRoleName = (roleName: string) => {
-	return `${roleName?.charAt(0).toUpperCase()}${roleName?.slice(1)}` || '';
+export const formatToTitleCase = (str: string) => {
+	if (!/\s/.test(str)) {
+		return (
+			`${str?.charAt(0).toUpperCase()}${str?.slice(1).toLowerCase()}` || ''
+		);
+	}
+
+	return str
+		.split(' ')
+		.map(
+			word => `${word?.charAt(0).toUpperCase()}${word?.slice(1).toLowerCase()}`
+		)
+		.join(' ');
+};
+
+export const STATUS_MAP: Record<string, string> = {
+	ACCEPTED: 'ACEPTADA',
+	PENDING: 'POR PAGAR',
+	CANCELED: 'CANCELEDA',
+	REVISION: 'EN REVISIÓN',
+	OVERDUE: 'VENCIDA'
 };
 
 export const generatePermissionOptions = (
@@ -54,16 +73,20 @@ export const AUTH_RULES: Record<
 			ROUTES.DASHBOARD,
 			ROUTES.PRODUCTS,
 			ROUTES.USERS,
+			ROUTES.QUOTE_SHOPS,
 			ROUTES.QUOTES,
+			ROUTES.QUOTE_DETAIL,
 			ROUTES.INVOICES,
 			ROUTES.STOCK,
 			ROUTES.STOCK_TRANSACTIONS
 		]
 	},
 	cajero: {
-		defaultPath: ROUTES.QUOTES,
+		defaultPath: ROUTES.QUOTE_SHOPS,
 		allowedPaths: [
+			ROUTES.QUOTE_SHOPS,
 			ROUTES.QUOTES,
+			ROUTES.QUOTE_DETAIL,
 			ROUTES.INVOICES,
 			ROUTES.STOCK,
 			ROUTES.STOCK_TRANSACTIONS

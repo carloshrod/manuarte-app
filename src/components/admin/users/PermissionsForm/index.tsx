@@ -4,7 +4,7 @@ import { BiUserCircle } from 'react-icons/bi';
 import FormButtons from '../../common/FormButtons';
 import { useSelector } from 'react-redux';
 import {
-	formatRoleName,
+	formatToTitleCase,
 	formatUserExtraPermissions,
 	generatePermissionOptions
 } from '@/utils/utils';
@@ -64,7 +64,7 @@ const PermissionsForm = () => {
 					color='#10b981'
 					style={{ display: 'flex', gap: 4, alignItems: 'center' }}
 				>
-					{formatRoleName(dataToEdit?.roleName)}
+					{formatToTitleCase(dataToEdit?.roleName)}
 				</Tag>
 			</div>
 
