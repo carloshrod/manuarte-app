@@ -1,14 +1,18 @@
-import { QRCode, Space, TableColumnsType } from 'antd';
-import useTable from './useTable';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Button, QRCode, Space, TableColumnsType } from 'antd';
+import { BsFileEarmarkPdf } from 'react-icons/bs';
 import moment from 'moment';
 import ActionsProduct from '@/components/admin/products/ActionsProduct';
 import ActionsProductCategory from '@/components/admin/products/ActionsProductCategory';
 import StaffActions from '@/components/admin/users/StaffActions';
 import CustomersActions from '@/components/admin/users/CustomersActions';
-import { formatRoleName } from '@/utils/utils';
+import useTable from './useTable';
+import { formatToTitleCase, STATUS_MAP } from '@/utils/utils';
 
 const useTableColumns = () => {
 	const { getColumnSearchProps } = useTable();
+	const pathname = usePathname();
 
 	const productColumns: TableColumnsType<ProductVariant> = [
 		{
@@ -88,7 +92,7 @@ const useTableColumns = () => {
 			title: 'FECHA DE CREACIÓN',
 			dataIndex: 'createdDate',
 			key: 'createdDate',
-			sorter: (a: DataTable, b: DataTable) =>
+			sorter: (a: ProductCategory, b: ProductCategory) =>
 				moment(a?.createdDate).valueOf() - moment(b?.createdDate).valueOf(),
 			sortDirections: ['descend', 'ascend'],
 			render: (value: string) => (
@@ -151,7 +155,7 @@ const useTableColumns = () => {
 			],
 			onFilter: (value, record) =>
 				record.roleName.indexOf(value as string) === 0,
-			render: (value: string) => formatRoleName(value),
+			render: (value: string) => formatToTitleCase(value),
 			width: 100
 		},
 		{
@@ -209,11 +213,101 @@ const useTableColumns = () => {
 		}
 	];
 
+	const quoteColumns: TableColumnsType<Quote> = [
+		{
+			title: 'SERIAL',
+			dataIndex: 'serialNumber',
+			key: 'serialNumber',
+			...getColumnSearchProps('serialNumber')
+		},
+		{
+			title: 'ESTADO',
+			dataIndex: 'status',
+			key: 'status',
+			filters: [
+				{
+					text: 'POR PAGAR',
+					value: 'PENDING'
+				},
+				{
+					text: 'ACEPTADA',
+					value: 'ACCEPTED'
+				},
+				{
+					text: 'CANCELADA',
+					value: 'CANCELED'
+				},
+				{
+					text: 'EN REVISIÓN',
+					value: 'REVISION'
+				},
+				{
+					text: 'VENCIDA',
+					value: 'OVERDUE'
+				}
+			],
+			onFilter: (value, record) => record.status.indexOf(value as string) === 0,
+			render: value => STATUS_MAP[value]
+		},
+		{
+			title: 'CLIENTE',
+			dataIndex: 'customerName',
+			key: 'customerName',
+			...getColumnSearchProps('customerName'),
+			render: (value: string) =>
+				value ? formatToTitleCase(value) : 'Consumidor final'
+		},
+		{
+			title: 'FECHA DE VENCIMIENTO',
+			dataIndex: 'dueDate',
+			key: 'dueDate',
+			sorter: (a: Quote, b: Quote) =>
+				moment(a?.dueDate).valueOf() - moment(b?.dueDate).valueOf(),
+			sortDirections: ['descend', 'ascend'],
+			render: (value: string) => (
+				<span>
+					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
+				</span>
+			)
+		},
+		{
+			title: 'PDF',
+			dataIndex: 'id',
+			key: 'id',
+			render: (value: string, record: Quote) => {
+				return (
+					<span>
+						{value ? (
+							<Link href={`${pathname}/${record.serialNumber}`}>
+								<Button
+									variant='filled'
+									color='danger'
+									icon={<BsFileEarmarkPdf size={24} />}
+								/>
+							</Link>
+						) : (
+							'--'
+						)}
+					</span>
+				);
+			},
+			width: 70
+		}
+		// {
+		// 	title: 'ACCIONES',
+		// 	key: 'actions',
+		// 	className: 'actions',
+		// 	render: (_, record: Quote) => <CustomersActions record={record} />,
+		// 	width: 100
+		// }
+	];
+
 	return {
 		productColumns,
 		productCategoryColumns,
 		staffColumns,
-		customerColumns
+		customerColumns,
+		quoteColumns
 	};
 };
 

@@ -96,7 +96,45 @@ interface SubmitCustomerDto {
 	city: string;
 }
 
-type DataTable = ProductVariant | ProductCategory | Staff | Customer;
+interface Shop {
+	id: string;
+	name: string;
+	slug: string;
+}
+
+enum EstimateStatus {
+	ACCEPTED = 'ACCEPTED',
+	PENDING = 'PENDING',
+	CANCELED = 'CANCELED',
+	REVISION = 'REVISION',
+	OVERDUE = 'OVERDUE'
+}
+
+interface QuoteItem {
+	id: string;
+	name: string;
+	quantity: string;
+	price: string;
+	totalPrice: string;
+}
+
+interface Quote {
+	id: string;
+	serialNumber: string;
+	status: EstimateStatus;
+	currency: string;
+	customerId: string;
+	customerName: string;
+	customerDni: string;
+	customerEmail: string;
+	customerPhoneNumber: string;
+	shopId: string;
+	dueDate: string;
+	updatedDate: string;
+	items: QuoteItem[];
+}
+
+type DataTable = ProductVariant | ProductCategory | Staff | Customer | Quote;
 
 interface UIModalState {
 	isOpen: boolean;
