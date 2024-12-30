@@ -8,7 +8,7 @@ import { removeProductCategory } from '@/reducers/productCategories/productCateg
 import { AxiosError } from 'axios';
 import { ModalContent } from '@/types/enums';
 
-const ActionsProductCategory = ({ record }: { record: ProductCategory }) => {
+const ProductCategoryActions = ({ record }: { record: ProductCategory }) => {
 	const isEditable = true;
 	const isDeletable = true;
 	const dispatch = useDispatch();
@@ -76,4 +76,4 @@ const ActionsProductCategory = ({ record }: { record: ProductCategory }) => {
 	);
 };
 
-export default ActionsProductCategory;
+export default ProductCategoryActions;

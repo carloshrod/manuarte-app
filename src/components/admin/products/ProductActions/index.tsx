@@ -7,7 +7,7 @@ import TableActions from '../../common/TableActions';
 import { AxiosError } from 'axios';
 import { ModalContent } from '@/types/enums';
 
-const ActionsProduct = ({ record }: { record: ProductVariant }) => {
+const ProductActions = ({ record }: { record: ProductVariant }) => {
 	const dispatch = useDispatch();
 
 	const handleEdit = () => {
@@ -56,4 +56,4 @@ const ActionsProduct = ({ record }: { record: ProductVariant }) => {
 	);
 };
 
-export default ActionsProduct;
+export default ProductActions;
