@@ -143,9 +143,12 @@ interface UIModalState {
 	dataToEdit?: any;
 }
 
+interface UIDrawerState extends UIModalState {}
+
 interface RootState {
 	ui: {
 		modal: UIModalState;
+		drawer: UIDrawerState;
 	};
 	product: {
 		products: Product[];

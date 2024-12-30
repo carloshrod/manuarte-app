@@ -1,9 +1,7 @@
-import { Button } from 'antd';
 import { IoStorefrontOutline } from 'react-icons/io5';
-import { IoMdAdd } from 'react-icons/io';
-import { TbFileDollar } from 'react-icons/tb';
 import QuotesTable from '@/components/admin/quotes/QuotesTable';
 import GoBack from '@/components/admin/common/GoBack';
+import OpenDrawerButton from '@/components/admin/common/OpenDrawerButton';
 import { quoteServices } from '@/services/quoteServices';
 
 interface QuotesPageProps {
@@ -31,22 +29,7 @@ const QuotesPage = async (props: QuotesPageProps) => {
 						<IoStorefrontOutline /> {shopName}
 					</span>
 				</div>
-				<Button
-					variant='outlined'
-					color='primary'
-					icon={<IoMdAdd size={18} />}
-					// onClick={() =>
-					// 	dispatch(
-					// 		openModal({
-					// 			title: 'Agregar Producto',
-					// 			content: ModalContent.products
-					// 		})
-					// 	)
-					// }
-				>
-					<p className='max-sm:hidden'>Cotización</p>
-					<TbFileDollar size={18} />
-				</Button>
+				<OpenDrawerButton title='Crear Cotización' />
 			</div>
 			<QuotesTable quotes={quotes} />
 		</section>

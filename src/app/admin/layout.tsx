@@ -7,11 +7,12 @@ import {
 } from 'react-icons/tb';
 import { PiUserCircle } from 'react-icons/pi';
 import { Provider } from 'react-redux';
-import CustomModal from '@/components/layout/Modal';
-import store from '@/reducers/store';
 import { useSession } from 'next-auth/react';
-import { formatToTitleCase } from '@/utils/utils';
 import SidebarMenu from '../../components/layout/SidebarMenu';
+import CustomModal from '@/components/layout/Modal';
+import CustomDrawer from '@/components/layout/Drawer';
+import store from '@/reducers/store';
+import { formatToTitleCase } from '@/utils/utils';
 
 const { Header, Sider, Content } = Layout;
 
@@ -53,7 +54,7 @@ const AdminLayout = ({
 				</Sider>
 				<Layout>
 					<Header
-						style={{ padding: 0, background: colorBgContainer }}
+						style={{ padding: 0, background: colorBgContainer, zIndex: 1 }}
 						className='flex justify-end md:justify-between drop-shadow-md'
 					>
 						{!hide ? (
@@ -98,6 +99,7 @@ const AdminLayout = ({
 					</Header>
 					<Content
 						style={{
+							position: 'relative',
 							height: '89vh',
 							padding: 24,
 							minHeight: 280,
@@ -108,6 +110,7 @@ const AdminLayout = ({
 							scrollbarGutter: 'stable'
 						}}
 					>
+						<CustomDrawer />
 						{children}
 					</Content>
 				</Layout>

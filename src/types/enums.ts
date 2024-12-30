@@ -8,3 +8,7 @@ export enum ModalContent {
 	customers = 'customers',
 	logout = 'logout'
 }
+
+export enum DrawerContent {
+	quotes = 'quotes'
+}
