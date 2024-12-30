@@ -3,12 +3,13 @@ import { usePathname } from 'next/navigation';
 import { Button, QRCode, Space, TableColumnsType } from 'antd';
 import { BsFileEarmarkPdf } from 'react-icons/bs';
 import moment from 'moment';
-import ActionsProduct from '@/components/admin/products/ActionsProduct';
-import ActionsProductCategory from '@/components/admin/products/ActionsProductCategory';
+import ProductActions from '@/components/admin/products/ProductActions';
+import ProductCategoryActions from '@/components/admin/products/ProductCategoryActions';
 import StaffActions from '@/components/admin/users/StaffActions';
 import CustomersActions from '@/components/admin/users/CustomersActions';
 import useTable from './useTable';
 import { formatToTitleCase, STATUS_MAP } from '@/utils/utils';
+import QuotesActions from '@/components/admin/quotes/QuotesActions';
 
 const useTableColumns = () => {
 	const { getColumnSearchProps } = useTable();
@@ -68,7 +69,7 @@ const useTableColumns = () => {
 			title: 'ACCIONES',
 			key: 'actions',
 			className: 'actions',
-			render: (_, record: ProductVariant) => <ActionsProduct record={record} />,
+			render: (_, record: ProductVariant) => <ProductActions record={record} />,
 			width: 100
 		}
 	];
@@ -107,7 +108,7 @@ const useTableColumns = () => {
 			key: 'actions',
 			className: 'actions',
 			render: (_, record: ProductCategory) => (
-				<ActionsProductCategory record={record} />
+				<ProductCategoryActions record={record} />
 			),
 			width: 100
 		}
@@ -218,7 +219,8 @@ const useTableColumns = () => {
 			title: 'SERIAL',
 			dataIndex: 'serialNumber',
 			key: 'serialNumber',
-			...getColumnSearchProps('serialNumber')
+			...getColumnSearchProps('serialNumber'),
+			width: 200
 		},
 		{
 			title: 'ESTADO',
@@ -247,7 +249,8 @@ const useTableColumns = () => {
 				}
 			],
 			onFilter: (value, record) => record.status.indexOf(value as string) === 0,
-			render: value => STATUS_MAP[value]
+			render: value => STATUS_MAP[value],
+			width: 200
 		},
 		{
 			title: 'CLIENTE',
@@ -255,7 +258,8 @@ const useTableColumns = () => {
 			key: 'customerName',
 			...getColumnSearchProps('customerName'),
 			render: (value: string) =>
-				value ? formatToTitleCase(value) : 'Consumidor final'
+				value ? formatToTitleCase(value) : 'Consumidor final',
+			width: 300
 		},
 		{
 			title: 'FECHA DE VENCIMIENTO',
@@ -268,7 +272,8 @@ const useTableColumns = () => {
 				<span>
 					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
 				</span>
-			)
+			),
+			width: 240
 		},
 		{
 			title: 'PDF',
@@ -291,15 +296,15 @@ const useTableColumns = () => {
 					</span>
 				);
 			},
-			width: 70
+			width: 120
+		},
+		{
+			title: 'ACCIONES',
+			key: 'actions',
+			className: 'actions',
+			render: (_, record: Quote) => <QuotesActions record={record} />,
+			width: 120
 		}
-		// {
-		// 	title: 'ACCIONES',
-		// 	key: 'actions',
-		// 	className: 'actions',
-		// 	render: (_, record: Quote) => <CustomersActions record={record} />,
-		// 	width: 100
-		// }
 	];
 
 	return {
