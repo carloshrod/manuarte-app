@@ -48,7 +48,7 @@ const CustomersForm = () => {
 			</Form.Item>
 			<Form.Item
 				name='dni'
-				label='Documento'
+				label='Nro. de Documento'
 				rules={[
 					{
 						required: true,
