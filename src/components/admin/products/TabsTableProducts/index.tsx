@@ -1,17 +1,16 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Button, Tabs, TabsProps } from 'antd';
+import { Tabs, TabsProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { IoMdAdd } from 'react-icons/io';
 import { AiOutlineAppstore } from 'react-icons/ai';
 import { BiPackage } from 'react-icons/bi';
 import { MdOutlineCategory } from 'react-icons/md';
 import CustomTable from '../../common/Table';
 import useTableColumns from '@/hooks/useTableColumns';
-import { openModal } from '@/reducers/ui/uiSlice';
 import { getProductVariants } from '@/reducers/products/productSlice';
 import { getProductCategories } from '@/reducers/productCategories/productCategorySlice';
 import { ModalContent } from '@/types/enums';
+import AddButton from '../../common/AddButton';
 
 type TabsTableProductsProps = {
 	productVariantsData: ProductVariant[];
@@ -68,55 +67,26 @@ const TabsTableProducts = ({
 
 	const operations = isProducts ? (
 		<div className='flex gap-2 max-[460px]:flex-col'>
-			<Button
-				variant='outlined'
-				color='primary'
-				icon={<IoMdAdd size={18} />}
-				onClick={() =>
-					dispatch(
-						openModal({
-							title: 'Agregar Presentación de Producto',
-							content: ModalContent.productVariants
-						})
-					)
-				}
-			>
-				<p className='max-sm:hidden'>Presentación</p>{' '}
-				<AiOutlineAppstore size={18} />
-			</Button>
-			<Button
-				variant='outlined'
-				color='primary'
-				icon={<IoMdAdd size={18} />}
-				onClick={() =>
-					dispatch(
-						openModal({
-							title: 'Agregar Producto',
-							content: ModalContent.products
-						})
-					)
-				}
-			>
-				<p className='max-sm:hidden'>Producto</p>
-				<BiPackage size={18} />
-			</Button>
+			<AddButton
+				title='Agregar Presentación de Producto'
+				modalContent={ModalContent.productVariants}
+				buttonLabel='Presentación'
+				appendIcon={<AiOutlineAppstore size={18} />}
+			/>
+			<AddButton
+				title='Agregar Producto'
+				modalContent={ModalContent.products}
+				buttonLabel='Producto'
+				appendIcon={<BiPackage size={18} />}
+			/>
 		</div>
 	) : (
-		<Button
-			variant='outlined'
-			color='primary'
-			icon={<IoMdAdd size={18} />}
-			onClick={() =>
-				dispatch(
-					openModal({
-						title: 'Agregar Categoría de Producto',
-						content: ModalContent.productCategories
-					})
-				)
-			}
-		>
-			Categoría <MdOutlineCategory size={18} />
-		</Button>
+		<AddButton
+			title='Agregar Categoría de Producto'
+			modalContent={ModalContent.productCategories}
+			buttonLabel='Categoría'
+			appendIcon={<MdOutlineCategory size={18} />}
+		/>
 	);
 
 	return (

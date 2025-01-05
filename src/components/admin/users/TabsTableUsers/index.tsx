@@ -1,15 +1,14 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Button, Tabs, TabsProps } from 'antd';
-import { IoMdAdd } from 'react-icons/io';
+import { Tabs, TabsProps } from 'antd';
 import { AiOutlineUser } from 'react-icons/ai';
 import { HiOutlineUser } from 'react-icons/hi';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomTable from '../../common/Table';
 import useTableColumns from '@/hooks/useTableColumns';
-import { openModal } from '@/reducers/ui/uiSlice';
 import { getCustomers, getStaff } from '@/reducers/users/userSlice';
 import { ModalContent } from '@/types/enums';
+import AddButton from '../../common/AddButton';
 
 type TabsTableUsersProps = {
 	staffData: Staff[];
@@ -59,40 +58,19 @@ const TabsTableUsers = ({ staffData, customersData }: TabsTableUsersProps) => {
 	];
 
 	const operations = isStaff ? (
-		<div className='flex gap-2 max-[460px]:flex-col'>
-			<Button
-				variant='outlined'
-				color='primary'
-				icon={<IoMdAdd size={18} />}
-				onClick={() =>
-					dispatch(
-						openModal({
-							title: 'Agregar Staff',
-							content: ModalContent.staff
-						})
-					)
-				}
-			>
-				Staff
-				<AiOutlineUser size={18} />
-			</Button>
-		</div>
+		<AddButton
+			title='Agregar Staff'
+			modalContent={ModalContent.staff}
+			buttonLabel='Staff'
+			appendIcon={<AiOutlineUser size={18} />}
+		/>
 	) : (
-		<Button
-			variant='outlined'
-			color='primary'
-			icon={<IoMdAdd size={18} />}
-			onClick={() =>
-				dispatch(
-					openModal({
-						title: 'Registrar Cliente',
-						content: ModalContent.customers
-					})
-				)
-			}
-		>
-			Cliente <HiOutlineUser size={18} />
-		</Button>
+		<AddButton
+			title='Registrar Cliente'
+			modalContent={ModalContent.customers}
+			buttonLabel='Cliente'
+			appendIcon={<HiOutlineUser size={18} />}
+		/>
 	);
 
 	return (
