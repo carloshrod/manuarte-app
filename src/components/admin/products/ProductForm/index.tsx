@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Form, Input, Select, Switch } from 'antd';
 import { useSelector } from 'react-redux';
-import ProductVariantsInputList from '../ProductVariantsInputList';
+import ProductVariantFormList from '../ProductVariantFormList';
 import FormButtons from '../../common/FormButtons';
 import useForm from '@/hooks/useForm';
 
@@ -162,7 +162,7 @@ const ProductForm = () => {
 					<Input placeholder='Ingresa el nombre del producto' />
 				</Form.Item>
 			) : (
-				<ProductVariantsInputList isUpdating={isUpdating} />
+				<ProductVariantFormList isUpdating={isUpdating} />
 			)}
 
 			<FormButtons
