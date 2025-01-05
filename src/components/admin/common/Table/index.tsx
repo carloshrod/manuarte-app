@@ -1,4 +1,5 @@
 import { Empty, Table, TableColumnsType } from 'antd';
+import { useMediaQuery } from 'react-responsive';
 
 interface CustomTableProps {
 	columns: TableColumnsType<any>;
@@ -13,6 +14,8 @@ const CustomTable = ({
 	isLoading = false,
 	scrollMinus = 380
 }: CustomTableProps) => {
+	const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+
 	return (
 		<div className='shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-2 px-4 rounded-lg'>
 			<Table<DataTable>
@@ -26,7 +29,8 @@ const CustomTable = ({
 							: undefined
 				}}
 				pagination={{
-					locale: { items_per_page: 'por página' }
+					locale: { items_per_page: '/ página' },
+					size: isMobile ? 'small' : 'default'
 				}}
 				style={{ minHeight: isLoading ? 'calc(100vh - 300px)' : undefined }}
 				loading={{
