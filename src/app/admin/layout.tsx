@@ -93,7 +93,14 @@ const AdminLayout = ({
 									{session?.user?.email}
 								</div>
 							) : (
-								<Skeleton.Button active style={{ width: 200 }} />
+								<Skeleton.Button
+									active
+									style={{
+										width: 200,
+										display: 'flex',
+										justifyItems: 'center'
+									}}
+								/>
 							)}
 						</Button>
 					</Header>
