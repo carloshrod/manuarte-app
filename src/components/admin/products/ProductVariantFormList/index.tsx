@@ -2,7 +2,7 @@ import { Button, Form, Input } from 'antd';
 import { IoAdd, IoRemoveCircleOutline } from 'react-icons/io5';
 import { AiOutlineAppstore } from 'react-icons/ai';
 
-const ProductVariantsInputList = ({ isUpdating }: { isUpdating: boolean }) => {
+const ProductVariantFormList = ({ isUpdating }: { isUpdating: boolean }) => {
 	const label = isUpdating ? 'Presentación' : 'Presentaciones';
 	const validateMsg = isUpdating
 		? 'La presentación del producto es requerida'
@@ -51,7 +51,12 @@ const ProductVariantsInputList = ({ isUpdating }: { isUpdating: boolean }) => {
 								color='primary'
 								variant='dashed'
 								onClick={() => add()}
-								icon={<IoAdd size={20} />}
+								icon={
+									<IoAdd
+										size={20}
+										style={{ display: 'flex', alignItems: 'center' }}
+									/>
+								}
 								className='mt-4'
 							>
 								<span>Presentación</span> <AiOutlineAppstore size={20} />
@@ -65,4 +70,4 @@ const ProductVariantsInputList = ({ isUpdating }: { isUpdating: boolean }) => {
 	);
 };
 
-export default ProductVariantsInputList;
+export default ProductVariantFormList;
