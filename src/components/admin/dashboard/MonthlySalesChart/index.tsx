@@ -8,6 +8,7 @@ import {
 	XAxis,
 	YAxis
 } from 'recharts';
+import { Empty } from 'antd';
 import FlagCol from '../Flags/FlagCol';
 import FlagEcu from '../Flags/FlagEcu';
 
@@ -62,7 +63,13 @@ const MonthlySalesChart = ({ data = [], country }: MonthlySalesChartProps) => {
 						<Bar dataKey={dataKey} fill={fill} />
 					</BarChart>
 				</ResponsiveContainer>
-			) : null}
+			) : (
+				<Empty
+					image={Empty.PRESENTED_IMAGE_DEFAULT}
+					description={<p>{`No hay datos para mostrar`}</p>}
+					className='mt-6'
+				/>
+			)}
 		</div>
 	);
 };
