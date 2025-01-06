@@ -23,17 +23,19 @@ const FormButtons = ({
 				ghost
 				onClick={() => dispatch(closeModal())}
 				className='w-[130px] mr-6'
+				style={{ fontWeight: 600 }}
 			>
-				Cancelar
+				CANCELAR
 			</Button>
 			<Button
 				type='primary'
 				className='w-[130px]'
+				style={{ fontWeight: 600 }}
 				htmlType='submit'
 				loading={isLoading}
 				disabled={disabled}
 			>
-				{label}
+				{label.toUpperCase()}
 			</Button>
 		</Form.Item>
 	);
