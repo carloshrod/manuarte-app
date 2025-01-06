@@ -22,10 +22,10 @@ const QuotesPage = async (props: QuotesPageProps) => {
 			<div className='flex justify-between items-center'>
 				<div className='flex flex-wrap items-center'>
 					<GoBack />
-					<h2 className='text-lg min-[796px]:text-2xl font-semibold ps-4'>
+					<h2 className='min-[478px]:text-lg min-[796px]:text-2xl font-semibold ps-4'>
 						Cotizaciones:
 					</h2>
-					<span className='flex gap-1 items-center ps-4 max-[555px]:mt-2 text-lg min-[796px]:text-2xl font-semibold'>
+					<span className='flex gap-1 items-center ps-4 max-[555px]:mt-2 min-[478px]:text-lg min-[796px]:text-2xl font-semibold'>
 						<IoStorefrontOutline /> {shopName}
 					</span>
 				</div>
