@@ -11,7 +11,7 @@ const QuotesActions = ({ record }: { record: Quote }) => {
 	const handleEdit = () => {
 		dispatch(
 			openDrawer({
-				title: 'Editar Cotización',
+				title: `Editar Cotización - ${record.serialNumber}`,
 				content: DrawerContent.quotes,
 				dataToEdit: record
 			})
