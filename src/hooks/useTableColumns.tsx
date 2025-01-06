@@ -250,7 +250,7 @@ const useTableColumns = () => {
 			],
 			onFilter: (value, record) => record.status.indexOf(value as string) === 0,
 			render: value => STATUS_MAP[value],
-			width: 200
+			width: 180
 		},
 		{
 			title: 'CLIENTE',
@@ -259,7 +259,7 @@ const useTableColumns = () => {
 			...getColumnSearchProps('customerName'),
 			render: (value: string) =>
 				value ? formatToTitleCase(value) : 'Consumidor final',
-			width: 300
+			width: 280
 		},
 		{
 			title: 'FECHA DE VENCIMIENTO',
@@ -287,7 +287,12 @@ const useTableColumns = () => {
 								<Button
 									variant='filled'
 									color='danger'
-									icon={<BsFileEarmarkPdf size={24} />}
+									icon={
+										<BsFileEarmarkPdf
+											size={24}
+											style={{ display: 'flex', alignItems: 'center' }}
+										/>
+									}
 								/>
 							</Link>
 						) : (
