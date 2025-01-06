@@ -12,7 +12,9 @@ const OpenDrawerButton = ({ title }: { title: string }) => {
 		<Button
 			variant='outlined'
 			color='primary'
-			icon={<IoMdAdd size={18} />}
+			icon={
+				<IoMdAdd size={18} style={{ display: 'flex', alignItems: 'center' }} />
+			}
 			onClick={() =>
 				dispatch(
 					openDrawer({
