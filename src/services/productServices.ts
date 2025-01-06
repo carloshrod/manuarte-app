@@ -22,6 +22,27 @@ export const productServices = {
 		}
 	},
 
+	getProductsWithStockInfo: async ({
+		shopSlug,
+		search
+	}: {
+		shopSlug: string;
+		search: string;
+	}) => {
+		try {
+			const res = await axiosPrivate.get(
+				`${ENV.API.PRODUCT_VARIANTS}/stock-info`,
+				{
+					params: { shopSlug, search }
+				}
+			);
+
+			return res.data;
+		} catch (error) {
+			console.error(error);
+		}
+	},
+
 	createProduct: async (body: SubmitProductDto) => {
 		return await axiosPrivate.post(ENV.API.PRODUCTS, body);
 	},
