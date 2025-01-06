@@ -18,6 +18,13 @@ interface ProductVariant {
 	productName?: string;
 }
 
+interface ProductVariantWithStock extends ProductVariant {
+	quantity: number;
+	currency: string;
+	price: number;
+	totalPrice: number;
+}
+
 interface Product {
 	id: string;
 	name: string;

@@ -1,9 +1,10 @@
+import QuoteForm from '@/components/admin/quotes/QuoteForm';
 import { DrawerContent } from '@/types/enums';
 import { ReactNode } from 'react';
 
 const useDrawer = () => {
 	const DRAWER_CONTENT: Record<DrawerContent, ReactNode> = {
-		[DrawerContent.quotes]: <p>Quote Form</p>
+		[DrawerContent.quotes]: <QuoteForm />
 	};
 
 	return { DRAWER_CONTENT };
