@@ -48,7 +48,12 @@ const QuotePDFContainer = ({ quote, shopSlug }: QuotePDFContainerProps) => {
 					<Button
 						variant='outlined'
 						color='primary'
-						icon={<IoDownloadOutline size={18} />}
+						icon={
+							<IoDownloadOutline
+								size={18}
+								style={{ display: 'flex', alignItems: 'center' }}
+							/>
+						}
 						onClick={() => downloadPDF()}
 					>
 						Descargar
@@ -56,7 +61,12 @@ const QuotePDFContainer = ({ quote, shopSlug }: QuotePDFContainerProps) => {
 					<Button
 						variant='outlined'
 						color='primary'
-						icon={<BsSendArrowDown size={18} />}
+						icon={
+							<BsSendArrowDown
+								size={18}
+								style={{ display: 'flex', alignItems: 'center' }}
+							/>
+						}
 						onClick={sendDocument}
 					>
 						Enviar
@@ -65,7 +75,12 @@ const QuotePDFContainer = ({ quote, shopSlug }: QuotePDFContainerProps) => {
 				<Button
 					variant='outlined'
 					color='primary'
-					icon={<PiInvoice size={18} />}
+					icon={
+						<PiInvoice
+							size={18}
+							style={{ display: 'flex', alignItems: 'center' }}
+						/>
+					}
 				>
 					Generar Factura
 				</Button>
