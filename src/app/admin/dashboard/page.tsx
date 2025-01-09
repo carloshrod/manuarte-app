@@ -7,10 +7,7 @@ import { Tabs, TabsProps } from 'antd';
 export const dynamic = 'force-dynamic';
 
 const DashboardPage = async () => {
-	// const now = new Date();
-	// const currentMonth = now.getMonth();
-	const currentMonth = 7;
-	const stats = await dashboardServices.getStats(currentMonth);
+	const stats = await dashboardServices.getStats();
 
 	const items: TabsProps['items'] = [
 		{

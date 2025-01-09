@@ -4,11 +4,10 @@ import { axiosPrivate } from './axios';
 const { API } = ENV;
 
 export const dashboardServices = {
-	getStats: async (month: number) => {
+	getStats: async () => {
 		try {
 			const res = await axiosPrivate.get(`${API.DASHBOARD}/stats`, {
-				server: true,
-				params: { month }
+				server: true
 			});
 
 			if (res.status === 200) {
