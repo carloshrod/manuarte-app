@@ -1,21 +1,24 @@
 'use client';
 import useTableColumns from '@/hooks/useTableColumns';
 import CustomTable from '../../common/Table';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getQuotes } from '@/reducers/quotes/quoteSlice';
 
-const QuotesTable = ({ quotes }: { quotes: DataTable[] }) => {
+const QuotesTable = ({ quotesData }: { quotesData: DataTable[] }) => {
 	const { quoteColumns } = useTableColumns();
-	const [isLoading, setIsLoading] = useState(true);
+	const dispatch = useDispatch();
+	const { quotes } = useSelector((state: RootState) => state.quote);
 
 	useEffect(() => {
-		setIsLoading(false);
+		dispatch(getQuotes(quotesData));
 	}, []);
 
 	return (
 		<CustomTable
 			columns={quoteColumns}
-			dataSource={!isLoading ? quotes : []}
-			isLoading={isLoading}
+			dataSource={quotes ?? []}
+			isLoading={quotes?.length === 0}
 			scrollMinus={335}
 		/>
 	);

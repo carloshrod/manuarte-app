@@ -1,24 +1,30 @@
 import { Button, Form, FormInstance, Input, InputNumber, Tooltip } from 'antd';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { QUOTE_PRODUCTS_INPUTS_PROPS } from '../consts';
-import InputSearch from '../InputSearch';
+import SearchProducts from '../SearchProducts';
+import { Dispatch, SetStateAction } from 'react';
+import { formatInputCurrency } from '@/utils/utils';
 
 interface ProductFormListProps {
 	form: FormInstance;
 	updateCalculations: () => void;
+	itemsError: boolean;
+	setItemsError: Dispatch<SetStateAction<boolean>>;
 }
 
 const ProductFormList = ({
 	form,
-	updateCalculations
+	updateCalculations,
+	itemsError,
+	setItemsError
 }: ProductFormListProps) => {
-	const updateSubtotal = (name: number) => {
-		const products: ProductVariantWithStock[] = form.getFieldValue('products');
-		const product = products[name];
-		const totalPrice = product?.quantity * product?.price || 0;
+	const updateTotalPrice = (name: number) => {
+		const items: ProductVariantWithStock[] = form.getFieldValue('items');
+		const item = items[name];
+		const totalPrice = item?.quantity * item?.price || 0;
 
 		form.setFieldsValue({
-			products: products.map((field, index) =>
+			items: items.map((field, index) =>
 				index === name ? { ...field, totalPrice } : field
 			)
 		});
@@ -31,21 +37,22 @@ const ProductFormList = ({
 		field: string,
 		value: number | null
 	) => {
-		const products = form.getFieldValue('products');
-		products[name][field] = value;
+		const items = form.getFieldValue('items');
+		items[name][field] = value;
 
-		updateSubtotal(name);
+		updateTotalPrice(name);
 	};
 
 	return (
-		<Form.List name='products'>
+		<Form.List name='items'>
 			{(fields, { add, remove }) => {
 				return (
 					<>
-						<InputSearch
+						<SearchProducts
 							form={form}
 							add={add}
 							updateCalculations={updateCalculations}
+							setItemsError={setItemsError}
 						/>
 
 						<div className='overflow-x-auto custom-scrollbar'>
@@ -80,11 +87,7 @@ const ProductFormList = ({
 															min={1}
 															formatter={
 																currencyField
-																	? value =>
-																			`$ ${value}`.replace(
-																				/\B(?=(\d{3})+(?!\d))/g,
-																				','
-																			)
+																	? value => formatInputCurrency(value)
 																	: undefined
 															}
 															variant={
@@ -130,13 +133,13 @@ const ProductFormList = ({
 									</div>
 								);
 							})}
-							{/* {itemError ? (
-            <Form.Item style={{ textAlign: 'end' }}>
-              <Form.ErrorList
-                errors={['Es necesario al menos un artículo']}
-              />
-            </Form.Item>
-          ) : null} */}
+							{itemsError ? (
+								<Form.Item>
+									<Form.ErrorList
+										errors={['Es necesario al menos un producto']}
+									/>
+								</Form.Item>
+							) : null}
 						</div>
 					</>
 				);

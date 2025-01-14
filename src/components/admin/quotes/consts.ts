@@ -6,7 +6,7 @@ export const CUSTOMER_INPUTS_PROPS = [
 		placeholder: 'Ingresa el número de documento'
 	},
 	{
-		name: 'name',
+		name: 'fullName',
 		label: 'Nombre',
 		ruleMsg: 'El nombre del cliente es requerido',
 		placeholder: 'Ingresa el nombre completo'
@@ -24,7 +24,7 @@ export const CUSTOMER_INPUTS_PROPS = [
 		placeholder: 'Ingresa el número de teléfono'
 	},
 	{
-		name: 'address',
+		name: 'location',
 		label: 'Dirección',
 		ruleMsg: 'La dirección es requerida',
 		placeholder: 'Ingresa la dirección'
@@ -42,15 +42,8 @@ export const QUOTE_PRODUCTS_INPUTS_PROPS = [
 		name: 'name',
 		label: 'Nombre',
 		type: 'text',
-		minWidth: 300,
-		width: '30%'
-	},
-	{
-		name: 'iva',
-		label: 'IVA',
-		type: 'text',
-		minWidth: 80,
-		width: '10%'
+		minWidth: 380,
+		width: '40%'
 	},
 	{
 		name: 'quantity',
@@ -127,11 +120,11 @@ export const QUOTE_CALCULATIONS_INPUTS_PROPS = [
 		label: 'Subtotal',
 		readOnly: true
 	},
-	{
-		name: 'iva',
-		label: 'IVA (19%)',
-		readOnly: true
-	},
+	// {
+	// 	name: 'iva',
+	// 	label: 'IVA (19%)',
+	// 	readOnly: true
+	// },
 	{
 		name: 'shipping',
 		label: 'Flete',

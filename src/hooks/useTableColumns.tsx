@@ -257,7 +257,7 @@ const useTableColumns = () => {
 			dataIndex: 'customerName',
 			key: 'customerName',
 			...getColumnSearchProps('customerName'),
-			render: (value: string) =>
+			render: (value: string = 'Consumidor final') =>
 				value ? formatToTitleCase(value) : 'Consumidor final',
 			width: 280
 		},
@@ -301,14 +301,14 @@ const useTableColumns = () => {
 					</span>
 				);
 			},
-			width: 120
+			width: 100
 		},
 		{
 			title: 'ACCIONES',
 			key: 'actions',
 			className: 'actions',
 			render: (_, record: Quote) => <QuotesActions record={record} />,
-			width: 120
+			width: 100
 		}
 	];
 

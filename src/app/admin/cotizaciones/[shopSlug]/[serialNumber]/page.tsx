@@ -17,7 +17,7 @@ const QuoteDetailPage = async (props: QuoteDetailPageProps) => {
 		params: { shopSlug, serialNumber }
 	} = props;
 	const shopName = shopSlug.toUpperCase().replace('-', ' ');
-	const quote = await quoteServices.getOne(serialNumber);
+	const quote = await quoteServices.getOneQuote({ serialNumber });
 
 	return (
 		<div className='flex flex-col gap-6'>

@@ -20,16 +20,18 @@ const QuotePDFContainer = ({ quote, shopSlug }: QuotePDFContainerProps) => {
 		.join('')
 		.toUpperCase();
 
+	const customerName = quote?.fullName?.toUpperCase() ?? 'CONSUMIDOR FINAL';
+
 	const downloadPDF = useReactToPrint({
 		contentRef,
 		bodyClass: 'p-4',
-		documentTitle: `${shopAbbr}-CT${quote.serialNumber}-${quote.customerName.toUpperCase()}`
+		documentTitle: `${shopAbbr}-CT${quote.serialNumber}-${customerName}`
 	});
 
 	const sendDocument = async () => {
-		if (quote.customerPhoneNumber) {
+		if (quote?.phoneNumber) {
 			const countryCode = quote.currency === 'COP' ? '57' : '593';
-			const phoneNumber = `${countryCode}${quote.customerPhoneNumber}`;
+			const phoneNumber = `${countryCode}${quote.phoneNumber}`;
 			const message = 'Hola, aquí tienes el documento solicitado';
 			const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 

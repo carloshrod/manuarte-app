@@ -19,7 +19,7 @@ const TabsTableUsers = ({ staffData, customersData }: TabsTableUsersProps) => {
 	const [isStaff, setIsStaff] = useState(true);
 	const [isLoading, setIsLoading] = useState(true);
 	const { staffColumns, customerColumns } = useTableColumns();
-	const { staff, customers } = useSelector((state: RootState) => state.users);
+	const { staff, customers } = useSelector((state: RootState) => state.user);
 	const dispatch = useDispatch();
 
 	useEffect(() => {

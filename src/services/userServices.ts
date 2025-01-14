@@ -76,5 +76,15 @@ export const userServices = {
 
 	deleteCustomer: async (personId: string) => {
 		return await axiosPrivate.delete(`${ENV.API.CUSTOMERS}/${personId}`);
+	},
+
+	searchCustomer: async (search: string) => {
+		const res = await axiosPrivate.get(`${ENV.API.CUSTOMERS}/search`, {
+			params: { search }
+		});
+
+		if (res.status === 200) {
+			return res.data;
+		}
 	}
 };

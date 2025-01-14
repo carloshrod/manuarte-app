@@ -19,6 +19,7 @@ interface ProductVariant {
 }
 
 interface ProductVariantWithStock extends ProductVariant {
+	productVariantId: string;
 	quantity: number;
 	currency: string;
 	price: number;
@@ -94,6 +95,10 @@ interface Customer {
 	dni: string;
 }
 
+interface ExistingCustomer extends Customer {
+	customerId: string;
+}
+
 interface SubmitCustomerDto {
 	fullName: string;
 	dni: string;
@@ -101,6 +106,8 @@ interface SubmitCustomerDto {
 	phoneNumber: string;
 	location: string;
 	city: string;
+	personId: string?;
+	customerId: string?;
 }
 
 interface Shop {
@@ -109,7 +116,7 @@ interface Shop {
 	slug: string;
 }
 
-enum EstimateStatus {
+enum QuoteStatus {
 	ACCEPTED = 'ACCEPTED',
 	PENDING = 'PENDING',
 	CANCELED = 'CANCELED',
@@ -120,25 +127,38 @@ enum EstimateStatus {
 interface QuoteItem {
 	id: string;
 	name: string;
-	quantity: string;
-	price: string;
-	totalPrice: string;
+	quantity: number;
+	price: number;
+	totalPrice: number;
 }
 
 interface Quote {
 	id: string;
 	serialNumber: string;
-	status: EstimateStatus;
+	status: QuoteStatus;
 	currency: string;
 	customerId: string;
+	fullName: string;
 	customerName: string;
-	customerDni: string;
-	customerEmail: string;
-	customerPhoneNumber: string;
+	dni: string;
+	email: string;
+	phoneNumber: string;
 	shopId: string;
 	dueDate: string;
 	updatedDate: string;
 	items: QuoteItem[];
+	shipping: number;
+}
+
+interface SubmitQuoteDto extends SubmitCustomerDto {
+	shopSlug?: string;
+	shopId?: string;
+	items: ProductVariantWithStock[];
+	status: QuoteStatus;
+	dueDate: string;
+	shipping: string;
+	subtotal?: string;
+	total?: string;
 }
 
 type DataTable = ProductVariant | ProductCategory | Staff | Customer | Quote;
@@ -150,7 +170,10 @@ interface UIModalState {
 	dataToEdit?: any;
 }
 
-interface UIDrawerState extends UIModalState {}
+interface UIDrawerState extends UIModalState {
+	customerInfo: ExistingCustomer;
+	noCustomer: boolean;
+}
 
 interface RootState {
 	ui: {
@@ -164,8 +187,11 @@ interface RootState {
 	productCategory: {
 		productCategories: ProductCategory[];
 	};
-	users: {
+	user: {
 		staff: Staff[];
 		customers: Customer[];
+	};
+	quote: {
+		quotes: Quote[];
 	};
 }

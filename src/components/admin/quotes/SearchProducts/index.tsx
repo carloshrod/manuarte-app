@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { productServices } from '@/services/productServices';
 import {
 	Button,
 	Col,
@@ -16,19 +15,26 @@ import {
 import { MehOutlined } from '@ant-design/icons';
 import { StoreValue } from 'antd/es/form/interface';
 import { BsPlusSquare } from 'react-icons/bs';
+import { getProductsData } from '../utils';
 
 type AddItemFormListFn = (
 	defaultValue?: StoreValue,
 	insertIndex?: number
 ) => void;
 
-interface InputSearchProps {
+interface SearchProductsProps {
 	form: FormInstance;
 	add: AddItemFormListFn;
 	updateCalculations: () => void;
+	setItemsError: Dispatch<SetStateAction<boolean>>;
 }
 
-const InputSearch = ({ form, add, updateCalculations }: InputSearchProps) => {
+const SearchProducts = ({
+	form,
+	add,
+	updateCalculations,
+	setItemsError
+}: SearchProductsProps) => {
 	const params = useParams() ?? {};
 	const [productsOptions, setProductsOptions] = useState<
 		SelectProps['options']
@@ -39,58 +45,43 @@ const InputSearch = ({ form, add, updateCalculations }: InputSearchProps) => {
 	const [productsData, setProductsData] = useState<ProductVariant[]>([]);
 	const [selectedProduct, setSelectedProduct] =
 		useState<ProductVariantWithStock | null>(null);
+	const itemsList = Form.useWatch('items', form);
 
 	let timeout: ReturnType<typeof setTimeout> | null;
-	let currentValue: string;
 
-	const fetchProducts = (value: string) => {
+	const handleSearch = (newValue: string) => {
+		setIsSearching(true);
 		if (timeout) {
 			clearTimeout(timeout);
 			timeout = null;
 		}
-		currentValue = value;
+		const currentValue = newValue;
 
-		const getProductsData = async () => {
-			if (!value || value.length < 3) {
+		if (newValue) {
+			if (newValue.length < 3) {
 				setProductsOptions([]);
 				setIsSearching(false);
 				return;
 			}
-
 			setHasSearched(true);
 
-			try {
-				const data = await productServices.getProductsWithStockInfo({
-					shopSlug: params?.shopSlug as string,
-					search: value
+			timeout = setTimeout(async () => {
+				const res = await getProductsData({
+					currentValue,
+					newValue,
+					shopSlug: params?.shopSlug as string
 				});
 
-				if (currentValue === value) {
-					const formattedData = data.map((item: any) => ({
-						value: item.id,
-						label: `${item.productName} ${item.name}`
-					}));
-					setProductsOptions(formattedData);
-					setProductsData(data);
+				if (res) {
+					setProductsOptions(res.formattedData);
+					setProductsData(res.data);
 				}
-			} catch (error) {
-				console.error(error);
-			} finally {
 				setIsSearching(false);
-			}
-		};
-
-		if (value) {
-			timeout = setTimeout(getProductsData, 500);
+			}, 500);
 		} else {
 			setProductsOptions([]);
 			setIsSearching(false);
 		}
-	};
-
-	const handleSearch = (newValue: string) => {
-		setIsSearching(true);
-		fetchProducts(newValue);
 	};
 
 	const handleChange = (newValue: string) => {
@@ -99,15 +90,15 @@ const InputSearch = ({ form, add, updateCalculations }: InputSearchProps) => {
 		setSelectedProduct(product as ProductVariantWithStock);
 	};
 
-	const productsList = Form.useWatch('products', form);
 	const handleAddProduct = (add: AddItemFormListFn) => {
 		if (selectedProduct) {
 			if (selectedProduct.quantity === 0) {
 				return notification.error({ message: 'Producto sin stock!' });
 			}
 
-			const inList = productsList.some(
-				(product: ProductVariantWithStock) => product.id === selectedProduct.id
+			const inList = itemsList.some(
+				(product: ProductVariantWithStock) =>
+					product.productVariantId === selectedProduct.id
 			);
 			if (inList) {
 				return notification.error({
@@ -115,8 +106,10 @@ const InputSearch = ({ form, add, updateCalculations }: InputSearchProps) => {
 				});
 			}
 
+			setItemsError(false);
+
 			add({
-				id: selectedProduct.id,
+				productVariantId: selectedProduct.id,
 				name: `${selectedProduct.productName} ${selectedProduct.name}`,
 				iva: 'NO',
 				quantity: 1,
@@ -187,4 +180,4 @@ const InputSearch = ({ form, add, updateCalculations }: InputSearchProps) => {
 	);
 };
 
-export default InputSearch;
+export default SearchProducts;

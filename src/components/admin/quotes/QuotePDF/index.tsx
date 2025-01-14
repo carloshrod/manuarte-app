@@ -17,19 +17,19 @@ const QuotePDF = ({ quote, pdfRef }: { quote: Quote; pdfRef: any }) => {
 		{
 			key: '2',
 			label: 'Cliente:',
-			children: formatToTitleCase(quote?.customerName) ?? 'Consumidor Final',
+			children: formatToTitleCase(quote?.fullName) ?? 'Consumidor Final',
 			span: 3
 		},
 		{
 			key: '3',
 			label: 'Nro. de Documento:',
-			children: quote?.customerDni,
+			children: quote?.dni ?? 'NA',
 			span: 3
 		},
 		{
 			key: '4',
 			label: 'Correo:',
-			children: quote?.customerEmail?.toLowerCase(),
+			children: quote?.email?.toLowerCase() ?? 'NA',
 			span: 3
 		},
 		{
@@ -79,7 +79,9 @@ const QuotePDF = ({ quote, pdfRef }: { quote: Quote; pdfRef: any }) => {
 			</section>
 
 			{/* Table */}
-			{quote?.items.length > 0 ? <PDFTable items={quote?.items} /> : null}
+			{quote?.items.length > 0 ? (
+				<PDFTable items={quote?.items} shipping={quote.shipping} />
+			) : null}
 
 			<p className='my-16'>
 				<span className='font-bold'>Nota:</span> La moneda asociada a esta

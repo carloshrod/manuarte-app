@@ -15,7 +15,7 @@ const QuotesPage = async (props: QuotesPageProps) => {
 		params: { shopSlug }
 	} = props;
 	const shopName = shopSlug.toUpperCase().replace('-', ' ');
-	const quotes = await quoteServices.getAll(shopSlug);
+	const quotesData = await quoteServices.getAllQuotes(shopSlug);
 
 	return (
 		<section className='flex flex-col gap-6'>
@@ -31,7 +31,7 @@ const QuotesPage = async (props: QuotesPageProps) => {
 				</div>
 				<OpenDrawerButton title='Crear Cotización' />
 			</div>
-			<QuotesTable quotes={quotes} />
+			<QuotesTable quotesData={quotesData} />
 		</section>
 	);
 };

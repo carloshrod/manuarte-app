@@ -1,5 +1,6 @@
 import { Form, InputNumber } from 'antd';
 import { QUOTE_CALCULATIONS_INPUTS_PROPS } from '../consts';
+import { formatInputCurrency } from '@/utils/utils';
 
 const CalculationInputs = ({
 	updateCalculations
@@ -17,9 +18,8 @@ const CalculationInputs = ({
 					labelCol={{ span: 8 }}
 				>
 					<InputNumber
-						formatter={value =>
-							`$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-						}
+						min={0}
+						formatter={value => formatInputCurrency(value)}
 						variant={item.readOnly ? 'borderless' : 'outlined'}
 						style={{
 							width: '100%',

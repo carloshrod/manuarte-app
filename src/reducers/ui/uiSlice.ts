@@ -11,7 +11,9 @@ const initialState = {
 		isOpen: false,
 		title: null,
 		content: null,
-		dataToEdit: null
+		dataToEdit: null,
+		customerInfo: null,
+		noCustomer: false
 	}
 };
 
@@ -20,11 +22,10 @@ export const uiSlice = createSlice({
 	initialState,
 	reducers: {
 		openModal: (state, action) => {
-			const { isOpen } = state.modal;
 			const { title, content, dataToEdit = null } = action.payload;
 
 			state.modal = {
-				isOpen: !isOpen,
+				isOpen: true,
 				title,
 				content,
 				dataToEdit
@@ -36,14 +37,26 @@ export const uiSlice = createSlice({
 		},
 
 		openDrawer: (state, action) => {
-			const { isOpen } = state.drawer;
 			const { title, content, dataToEdit = null } = action.payload;
+			const noCustomer = dataToEdit && Boolean(!dataToEdit?.customerId);
 
 			state.drawer = {
-				isOpen: !isOpen,
+				...state.drawer,
+				isOpen: true,
 				title,
 				content,
-				dataToEdit
+				dataToEdit,
+				noCustomer
+			};
+		},
+
+		updateDrawer: (state, action) => {
+			const { customerInfo = null, noCustomer = false } = action.payload;
+
+			state.drawer = {
+				...state.drawer,
+				customerInfo,
+				noCustomer
 			};
 		},
 
@@ -53,6 +66,6 @@ export const uiSlice = createSlice({
 	}
 });
 
-export const { openModal, closeModal, openDrawer, closeDrawer } =
+export const { openModal, closeModal, openDrawer, updateDrawer, closeDrawer } =
 	uiSlice.actions;
 export default uiSlice.reducer;

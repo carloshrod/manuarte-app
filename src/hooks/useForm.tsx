@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Form, notification } from 'antd';
 import { useDispatch } from 'react-redux';
+import { AxiosError, AxiosResponse } from 'axios';
 import { productServices } from '@/services/productServices';
 import { productCategoryServices } from '@/services/productCategoryServices';
 import { userServices } from '@/services/userServices';
@@ -9,7 +10,7 @@ import {
 	addProductVariant,
 	getProductVariants
 } from '@/reducers/products/productSlice';
-import { closeModal } from '@/reducers/ui/uiSlice';
+import { closeDrawer, closeModal } from '@/reducers/ui/uiSlice';
 import {
 	addProductCategory,
 	updateProductCategory
@@ -21,7 +22,8 @@ import {
 	updateStaff,
 	updateStaffPermissions
 } from '@/reducers/users/userSlice';
-import { AxiosError, AxiosResponse } from 'axios';
+import { quoteServices } from '@/services/quoteServices';
+import { addQuote, editQuote } from '@/reducers/quotes/quoteSlice';
 
 notification.config({
 	placement: 'topRight',
@@ -32,17 +34,20 @@ interface handleSubmitProps {
 	serviceFn: (values: any) => Promise<AxiosResponse>;
 	values: any;
 	onSuccess: (res: AxiosResponse) => void;
+	modal?: boolean;
 }
 
 const useForm = () => {
 	const [form] = Form.useForm();
 	const [isLoading, setIsLoading] = useState(false);
+	const [itemsError, setItemsError] = useState(false);
 	const dispatch = useDispatch();
 
 	const handleSubmit = async ({
 		serviceFn,
 		values,
-		onSuccess
+		onSuccess,
+		modal = true
 	}: handleSubmitProps) => {
 		try {
 			setIsLoading(true);
@@ -53,7 +58,7 @@ const useForm = () => {
 					message: res.data.message ?? 'Operación realizada con éxito'
 				});
 				onSuccess(res);
-				dispatch(closeModal());
+				dispatch(modal ? closeModal() : closeDrawer());
 			}
 		} catch (error) {
 			console.error(error);
@@ -202,9 +207,40 @@ const useForm = () => {
 		});
 	};
 
+	const submitCreateQuote = async (values: SubmitQuoteDto) => {
+		if (values?.items?.length < 1) {
+			setItemsError(true);
+			return;
+		}
+
+		await handleSubmit({
+			serviceFn: quoteServices.createQuote,
+			values,
+			onSuccess: res => dispatch(addQuote(res.data.newQuote)),
+			modal: false
+		});
+	};
+
+	const submitUpdateQuote = async (values: SubmitQuoteDto, quoteId: string) => {
+		if (values?.items?.length < 1) {
+			setItemsError(true);
+			return;
+		}
+
+		await handleSubmit({
+			serviceFn: valuesToUpdate =>
+				quoteServices.updateQuote(valuesToUpdate, quoteId),
+			values,
+			onSuccess: res => dispatch(editQuote(res.data.updatedQuote)),
+			modal: false
+		});
+	};
+
 	return {
 		form,
 		isLoading,
+		itemsError,
+		setItemsError,
 		submitCreateProduct,
 		submitUpdateProduct,
 		submitUpdateProductVariant,
@@ -215,7 +251,9 @@ const useForm = () => {
 		submitUpdateStaff,
 		submitEditPermissions,
 		submitRegisterCustomer,
-		submitUpdateCustomer
+		submitUpdateCustomer,
+		submitCreateQuote,
+		submitUpdateQuote
 	};
 };
 
