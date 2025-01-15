@@ -6,8 +6,7 @@ export const quoteServices = {
 	getAllQuotes: async (shopSlug: string) => {
 		try {
 			const res = await axiosPrivate.get(ENV.API.QUOTES, {
-				params: { shopSlug },
-				server: true
+				params: { shopSlug }
 			});
 
 			return res.data;

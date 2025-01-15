@@ -2,7 +2,7 @@ import { IoStorefrontOutline } from 'react-icons/io5';
 import QuotesTable from '@/components/admin/quotes/QuotesTable';
 import GoBack from '@/components/admin/common/GoBack';
 import OpenDrawerButton from '@/components/admin/common/OpenDrawerButton';
-import { quoteServices } from '@/services/quoteServices';
+import { auth } from '@/auth';
 
 interface QuotesPageProps {
 	params: {
@@ -15,13 +15,14 @@ const QuotesPage = async (props: QuotesPageProps) => {
 		params: { shopSlug }
 	} = props;
 	const shopName = shopSlug.toUpperCase().replace('-', ' ');
-	const quotesData = await quoteServices.getAllQuotes(shopSlug);
+	const session = await auth();
+	const isAdmin = !session?.user?.shop;
 
 	return (
 		<section className='flex flex-col gap-6'>
 			<div className='flex justify-between items-center'>
 				<div className='flex flex-wrap items-center'>
-					<GoBack />
+					{isAdmin ? <GoBack /> : null}
 					<h2 className='min-[478px]:text-lg min-[796px]:text-2xl font-semibold ps-4'>
 						Cotizaciones:
 					</h2>
@@ -31,7 +32,7 @@ const QuotesPage = async (props: QuotesPageProps) => {
 				</div>
 				<OpenDrawerButton title='Crear Cotización' />
 			</div>
-			<QuotesTable quotesData={quotesData} />
+			<QuotesTable shopSlug={shopSlug} />
 		</section>
 	);
 };

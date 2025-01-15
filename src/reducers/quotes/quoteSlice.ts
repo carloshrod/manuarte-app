@@ -19,8 +19,8 @@ const quoteSlice = createSlice({
 		editQuote: (state, action) => {
 			const updatedQuote = action.payload;
 
-			state.quotes = state.quotes.map(item =>
-				item.id === updatedQuote.id ? updatedQuote : item
+			state.quotes = state.quotes.map(quote =>
+				quote.id === updatedQuote.id ? updatedQuote : quote
 			);
 		},
 
