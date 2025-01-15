@@ -15,7 +15,7 @@ const SidebarMenu = ({ session }: { session: Session | null }) => {
 
 	useEffect(() => {
 		const selectedItem =
-			allMenuItems.find(item => {
+			allMenuItems().find(item => {
 				return pathname.startsWith(item.path);
 			})?.key || '';
 		setSelectedItems([selectedItem]);

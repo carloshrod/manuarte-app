@@ -8,6 +8,7 @@ declare module 'jwt-decode' {
 			email: string;
 			roleId: string;
 			roleName: string;
+			shop: string;
 			extraPermissions: string[];
 		};
 	}

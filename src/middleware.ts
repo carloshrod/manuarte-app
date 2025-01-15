@@ -3,8 +3,7 @@ import { auth } from './auth';
 import { AUTH_RULES } from './utils/utils';
 import { ROUTES } from './utils/routes';
 
-const { LOGIN, PRODUCTS, QUOTE_SHOPS, INVOICES, STOCK, STOCK_TRANSACTIONS } =
-	ROUTES;
+const { LOGIN, PRODUCTS, USERS } = ROUTES;
 
 export async function middleware(req: NextRequest) {
 	const session = await auth();
@@ -15,9 +14,10 @@ export async function middleware(req: NextRequest) {
 	}
 
 	const roleName = session?.user?.roleName as string;
+	const shop = session?.user?.shop as string;
 	const extraPermissions = session?.user?.extraPermissions || [];
 
-	const roleRules = AUTH_RULES[roleName] || {
+	const roleRules = AUTH_RULES(shop)[roleName] || {
 		defaultPath: LOGIN,
 		allowedPaths: []
 	};
@@ -27,10 +27,7 @@ export async function middleware(req: NextRequest) {
 	const hasExtraPermissionAccess = extraPermissions.some(permission => {
 		const permissionToPathMap: Record<string, string> = {
 			'product-read': PRODUCTS,
-			'estimate-read': QUOTE_SHOPS,
-			'billing-read': INVOICES,
-			'stock-read': STOCK,
-			'transaction-read': STOCK_TRANSACTIONS
+			'customer-read': USERS
 		};
 		return permissionToPathMap[permission] === requestedPage;
 	});

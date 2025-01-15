@@ -92,37 +92,37 @@ const permissionMapping: Record<string, string> = {
 	'customer-delete': 'Eliminar clientes'
 };
 
-export const AUTH_RULES: Record<
-	string,
-	{ defaultPath: string; allowedPaths: string[] }
-> = {
-	admin: {
-		defaultPath: ROUTES.DASHBOARD,
-		allowedPaths: [
-			ROUTES.DASHBOARD,
-			ROUTES.PRODUCTS,
-			ROUTES.USERS,
-			ROUTES.QUOTE_SHOPS,
-			ROUTES.QUOTES,
-			ROUTES.QUOTE_DETAIL,
-			ROUTES.INVOICES,
-			ROUTES.STOCK,
-			ROUTES.STOCK_TRANSACTIONS
-		]
-	},
-	cajero: {
-		defaultPath: ROUTES.QUOTE_SHOPS,
-		allowedPaths: [
-			ROUTES.QUOTE_SHOPS,
-			ROUTES.QUOTES,
-			ROUTES.QUOTE_DETAIL,
-			ROUTES.INVOICES,
-			ROUTES.STOCK,
-			ROUTES.STOCK_TRANSACTIONS
-		]
-	},
-	bodeguero: {
-		defaultPath: ROUTES.PRODUCTS,
-		allowedPaths: [ROUTES.PRODUCTS, ROUTES.STOCK, ROUTES.STOCK_TRANSACTIONS]
-	}
+export const AUTH_RULES = (
+	shop: string
+): Record<string, { defaultPath: string; allowedPaths: string[] }> => {
+	return {
+		admin: {
+			defaultPath: ROUTES.DASHBOARD,
+			allowedPaths: [
+				ROUTES.DASHBOARD,
+				ROUTES.PRODUCTS,
+				ROUTES.USERS,
+				ROUTES.QUOTE_SHOPS,
+				ROUTES.QUOTES,
+				ROUTES.QUOTE_DETAIL,
+				ROUTES.INVOICES,
+				ROUTES.STOCK,
+				ROUTES.STOCK_TRANSACTIONS
+			]
+		},
+		cajero: {
+			defaultPath: `${ROUTES.QUOTE_SHOPS}/${shop}`,
+			allowedPaths: [
+				`${ROUTES.QUOTE_SHOPS}/${shop}`,
+				ROUTES.QUOTE_DETAIL,
+				`${ROUTES.INVOICES}/${shop}`,
+				ROUTES.STOCK,
+				ROUTES.STOCK_TRANSACTIONS
+			]
+		},
+		bodeguero: {
+			defaultPath: ROUTES.PRODUCTS,
+			allowedPaths: [ROUTES.PRODUCTS, ROUTES.STOCK, ROUTES.STOCK_TRANSACTIONS]
+		}
+	};
 };

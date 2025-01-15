@@ -60,6 +60,7 @@ export const {
 						id: user.userId,
 						email: user.email,
 						roleName: decodedToken.user.roleName,
+						shop: decodedToken.user.shop,
 						extraPermissions: decodedToken.user.extraPermissions
 					}
 				};
