@@ -80,6 +80,7 @@ interface SubmitStaffDto {
 	fullName: string;
 	dni: string;
 	roleId: string;
+	shopId?: string;
 	email: string;
 	password: string;
 }

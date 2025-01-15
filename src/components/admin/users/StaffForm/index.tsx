@@ -1,15 +1,18 @@
+import { useEffect, useState } from 'react';
+import { Form, Input, Select, Switch } from 'antd';
+import { useSelector } from 'react-redux';
+import FormButtons from '../../common/FormButtons';
 import useForm from '@/hooks/useForm';
 import { userServices } from '@/services/userServices';
-import { Form, Input, Select, Switch } from 'antd';
-import { useEffect, useState } from 'react';
-import FormButtons from '../../common/FormButtons';
-import { useSelector } from 'react-redux';
+import { shopServices } from '@/services/shopServices';
 import { formatToTitleCase } from '@/utils/utils';
 
 const StaffForm = () => {
 	const { form, isLoading, submitRegisterStaff, submitUpdateStaff } = useForm();
 	const [staffRoles, setStaffRoles] = useState<Role[]>([]);
+	const [shops, setShops] = useState<Shop[]>([]);
 	const [editPassword, setEditPassword] = useState(false);
+	const [selectedRole, setSelectedRole] = useState('');
 	const {
 		modal: { dataToEdit }
 	} = useSelector((state: RootState) => state.ui);
@@ -21,12 +24,29 @@ const StaffForm = () => {
 		}
 	};
 
+	const fetchShops = async () => {
+		const data = await shopServices.getAll(false);
+		if (data.length > 0) {
+			setShops(data);
+		}
+	};
+
 	useEffect(() => {
 		if (dataToEdit) {
 			form.setFieldsValue(dataToEdit);
 		}
 		fetchRoles();
+		fetchShops();
 	}, []);
+
+	useEffect(() => {
+		if (dataToEdit && staffRoles.length > 0) {
+			const roleName = getRoleSelectedName(dataToEdit?.roleId);
+			if (roleName) {
+				setSelectedRole(roleName);
+			}
+		}
+	}, [dataToEdit, staffRoles]);
 
 	const onSubmit = async (values: SubmitStaffDto) => {
 		if ('confirmPassword' in values) {
@@ -42,6 +62,37 @@ const StaffForm = () => {
 	const onChangeSwitch = (checked: boolean) => {
 		setEditPassword(checked);
 	};
+
+	const getRoleSelectedName = (roleId: string) => {
+		return staffRoles.find(role => role.id === roleId)?.name ?? '';
+	};
+
+	const roleHandleChange = (value: string) => {
+		const roleSelected = getRoleSelectedName(value);
+		if (roleSelected) {
+			setSelectedRole(roleSelected);
+		}
+
+		if (roleSelected === 'admin') {
+			form.setFieldsValue({ shopId: undefined });
+		}
+	};
+
+	const roleOptions = staffRoles.map(role => {
+		return {
+			value: role.id,
+			label: formatToTitleCase(role.name)
+		};
+	});
+
+	const shopOptions = shops.map(shop => {
+		return {
+			value: shop.id,
+			label: formatToTitleCase(shop.name)
+		};
+	});
+
+	const isShopDisabled = selectedRole === 'admin' || selectedRole === '';
 
 	return (
 		<Form
@@ -86,16 +137,42 @@ const StaffForm = () => {
 					}
 				]}
 			>
-				<Select placeholder='Selecciona un rol de usuario' allowClear>
-					{staffRoles?.length > 0
-						? staffRoles.map(role => (
-								<Select.Option key={role.id} value={role.id}>
-									{formatToTitleCase(role.name)}
-								</Select.Option>
-							))
-						: null}
-				</Select>
+				<Select
+					placeholder='Selecciona un rol de usuario'
+					allowClear
+					options={roleOptions}
+					onChange={value => roleHandleChange(value)}
+				/>
 			</Form.Item>
+
+			<Form.Item
+				name='shopId'
+				label='Tienda'
+				rules={[
+					{
+						required: !isShopDisabled,
+						message: !isShopDisabled ? 'La tienda es requerida' : ''
+					}
+				]}
+			>
+				<Select
+					placeholder='Selecciona una tienda'
+					allowClear
+					filterOption={(input, option) => {
+						try {
+							const label = (option?.label as string)?.toLowerCase();
+
+							return label?.includes(input.toLowerCase());
+						} catch (error) {
+							console.error(error);
+							return false;
+						}
+					}}
+					options={shopOptions}
+					disabled={isShopDisabled}
+				/>
+			</Form.Item>
+
 			<Form.Item
 				name='email'
 				label='Email'
