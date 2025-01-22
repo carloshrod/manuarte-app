@@ -1,5 +1,5 @@
 import { openDrawer } from '@/reducers/ui/uiSlice';
-import TableActions from '../../common/TableActions';
+import TableActions from '../../common/ui/TableActions';
 import { useDispatch } from 'react-redux';
 import { DrawerContent } from '@/types/enums';
 import { AxiosError } from 'axios';
@@ -15,7 +15,7 @@ const QuotesActions = ({ record }: { record: Quote }) => {
 			openDrawer({
 				title: `Editar Cotización - ${record.serialNumber}`,
 				content: DrawerContent.quotes,
-				dataToEdit: await quoteServices.getOneQuote({
+				dataToEdit: await quoteServices.getOne({
 					serialNumber: record.serialNumber,
 					server: false
 				})
@@ -25,7 +25,7 @@ const QuotesActions = ({ record }: { record: Quote }) => {
 
 	const handleDelete = async () => {
 		try {
-			const res = await quoteServices.deleteQuote(record.id);
+			const res = await quoteServices.delete(record.id);
 			if (res.status === 200) {
 				dispatch(removeQuote(record.id));
 				notification.success({

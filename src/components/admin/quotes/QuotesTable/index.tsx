@@ -1,6 +1,6 @@
 'use client';
 import useTableColumns from '@/hooks/useTableColumns';
-import CustomTable from '../../common/Table';
+import CustomTable from '../../common/display-data/Table';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getQuotes } from '@/reducers/quotes/quoteSlice';
@@ -15,7 +15,7 @@ const QuotesTable = ({ shopSlug }: { shopSlug: string }) => {
 	const fetchQuotes = async () => {
 		setIsLoading(true);
 		if (shopSlug) {
-			const data = await quoteServices.getAllQuotes(shopSlug);
+			const data = await quoteServices.getAll(shopSlug);
 			dispatch(getQuotes(data));
 		}
 	};
@@ -24,7 +24,7 @@ const QuotesTable = ({ shopSlug }: { shopSlug: string }) => {
 		fetchQuotes();
 		setTimeout(() => {
 			setIsLoading(false);
-		}, 500);
+		}, 300);
 	}, []);
 
 	return (

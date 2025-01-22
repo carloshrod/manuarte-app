@@ -79,7 +79,7 @@ const QuotePDF = ({ quote, pdfRef }: { quote: Quote; pdfRef: any }) => {
 			</section>
 
 			{/* Table */}
-			{quote?.items.length > 0 ? (
+			{quote?.items?.length > 0 ? (
 				<PDFTable items={quote?.items} shipping={quote.shipping} />
 			) : null}
 

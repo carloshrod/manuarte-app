@@ -1,9 +1,8 @@
-import { IoStorefrontOutline } from 'react-icons/io5';
-import GoBack from '@/components/admin/common/GoBack';
-import { quoteServices } from '@/services/quoteServices';
-import QuotePDFContainer from '@/components/admin/quotes/QuotePDFContainer';
-import { TbFileDollar } from 'react-icons/tb';
 import { Tag } from 'antd';
+import { IoStorefrontOutline } from 'react-icons/io5';
+import { TbFileDollar } from 'react-icons/tb';
+import PDFContainer from '@/components/admin/common/layout/PDFContainer';
+import GoBack from '@/components/admin/common/ui/GoBack';
 
 interface QuoteDetailPageProps {
 	params: {
@@ -12,12 +11,11 @@ interface QuoteDetailPageProps {
 	};
 }
 
-const QuoteDetailPage = async (props: QuoteDetailPageProps) => {
+const QuoteDetailPage = (props: QuoteDetailPageProps) => {
 	const {
 		params: { shopSlug, serialNumber }
 	} = props;
 	const shopName = shopSlug.toUpperCase().replace('-', ' ');
-	const quote = await quoteServices.getOneQuote({ serialNumber });
 
 	return (
 		<div className='flex flex-col gap-6'>
@@ -36,13 +34,17 @@ const QuoteDetailPage = async (props: QuoteDetailPageProps) => {
 						style={{ padding: '0 12px' }}
 					>
 						<span className='flex gap-2 items-center text-lg'>
-							<TbFileDollar size={24} /># {quote?.serialNumber}
+							<TbFileDollar size={24} /># {serialNumber}
 						</span>
 					</Tag>
 				</div>
 			</div>
 
-			<QuotePDFContainer quote={quote} shopSlug={shopSlug} />
+			<PDFContainer
+				shopSlug={shopSlug}
+				serialNumber={serialNumber}
+				isQuote={true}
+			/>
 		</div>
 	);
 };

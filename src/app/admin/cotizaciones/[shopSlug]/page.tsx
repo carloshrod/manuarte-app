@@ -1,7 +1,7 @@
 import { IoStorefrontOutline } from 'react-icons/io5';
 import QuotesTable from '@/components/admin/quotes/QuotesTable';
-import GoBack from '@/components/admin/common/GoBack';
-import OpenDrawerButton from '@/components/admin/common/OpenDrawerButton';
+import GoBack from '@/components/admin/common/ui/GoBack';
+import OpenDrawerButton from '@/components/admin/common/ui/OpenDrawerButton';
 import { auth } from '@/auth';
 
 interface QuotesPageProps {
@@ -30,7 +30,7 @@ const QuotesPage = async (props: QuotesPageProps) => {
 						<IoStorefrontOutline /> {shopName}
 					</span>
 				</div>
-				<OpenDrawerButton title='Crear Cotización' />
+				<OpenDrawerButton isQuote={true} />
 			</div>
 			<QuotesTable shopSlug={shopSlug} />
 		</section>
