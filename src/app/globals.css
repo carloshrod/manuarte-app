@@ -49,3 +49,12 @@ body {
 .ant-drawer-body::-webkit-scrollbar-thumb:hover {
 	background-color: #a3a3a3;
 }
+
+.textRight .ant-input-number-input {
+	text-align: right !important;
+}
+
+.textCenter .ant-input-number-input,
+.textCenter .ant-input {
+	text-align: center !important;
+}
