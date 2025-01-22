@@ -1,12 +1,9 @@
-import { Form, InputNumber } from 'antd';
-import { QUOTE_CALCULATIONS_INPUTS_PROPS } from '../consts';
+import { Form, FormInstance, InputNumber } from 'antd';
+import { QUOTE_CALCULATIONS_INPUTS_PROPS } from '@/components/admin/consts';
 import { formatInputCurrency } from '@/utils/utils';
+import { updateCalculations } from '@/components/admin/utils';
 
-const CalculationInputs = ({
-	updateCalculations
-}: {
-	updateCalculations: () => void;
-}) => {
+const CalculationInputs = ({ form }: { form: FormInstance }) => {
 	return (
 		<div>
 			{QUOTE_CALCULATIONS_INPUTS_PROPS.map((item, index) => (
@@ -21,12 +18,13 @@ const CalculationInputs = ({
 						min={0}
 						formatter={value => formatInputCurrency(value)}
 						variant={item.readOnly ? 'borderless' : 'outlined'}
+						className='textRight'
 						style={{
 							width: '100%',
 							backgroundColor: item.readOnly ? '#e5e5e5' : undefined
 						}}
 						readOnly={item.readOnly}
-						onChange={updateCalculations}
+						onChange={() => updateCalculations(form)}
 					/>
 				</Form.Item>
 			))}

@@ -5,35 +5,44 @@ import { IoKeyOutline } from 'react-icons/io5';
 import PopConfirm from '../PopConfirm';
 
 interface TableActionsProps {
-	onEdit: () => void;
+	onEdit?: () => void;
 	onDelete: () => void;
 	onEditPermissions?: () => void;
 	popTitle: string;
+	popDescription?: string;
+	isEditable?: boolean;
+	isDeletable?: boolean;
 }
 
 const TableActions = ({
 	onEdit,
 	onEditPermissions,
 	onDelete,
-	popTitle
+	popTitle,
+	popDescription = '¿Estás seguro de que quieres borrar este elemento?',
+	isEditable = true,
+	isDeletable = true
 }: TableActionsProps) => {
-	const isEditable = true;
-	const isDeletable = true;
+	const onDeleteTooltip = popDescription.includes('anular')
+		? 'Anular'
+		: 'Eliminar';
 
 	return (
 		<Space size='small'>
-			<Tooltip title={isEditable ? 'Editar' : ''}>
-				<Button
-					type='text'
-					icon={
-						<AiOutlineEdit
-							size={20}
-							color={isEditable ? '#0D6EFD' : '#A0AEC0'}
-						/>
-					}
-					onClick={onEdit}
-				/>
-			</Tooltip>
+			{onEdit ? (
+				<Tooltip title={isEditable ? 'Editar' : ''}>
+					<Button
+						type='text'
+						icon={
+							<AiOutlineEdit
+								size={20}
+								color={isEditable ? '#0D6EFD' : '#A0AEC0'}
+							/>
+						}
+						onClick={onEdit}
+					/>
+				</Tooltip>
+			) : null}
 			{onEditPermissions ? (
 				<Tooltip title={isEditable ? 'Editar permisos' : ''}>
 					<Button
@@ -45,11 +54,16 @@ const TableActions = ({
 							/>
 						}
 						onClick={onEditPermissions}
+						disabled={!isEditable}
 					/>
 				</Tooltip>
 			) : null}
-			<PopConfirm title={popTitle} onConfirm={onDelete}>
-				<Tooltip title={isDeletable ? 'Eliminar' : ''}>
+			<PopConfirm
+				title={popTitle}
+				description={popDescription}
+				onConfirm={onDelete}
+			>
+				<Tooltip title={isDeletable ? onDeleteTooltip : ''}>
 					<Button
 						type='text'
 						icon={

@@ -14,7 +14,7 @@ const {
 	PRODUCTS,
 	USERS,
 	QUOTE_SHOPS,
-	INVOICES,
+	BILLING_SHOPS,
 	STOCK,
 	STOCK_TRANSACTIONS
 } = ROUTES;
@@ -58,6 +58,7 @@ export default getMenuItems;
 
 export const allMenuItems = (shop?: string) => {
 	const QUOTE_PATH = !shop ? QUOTE_SHOPS : `${QUOTE_SHOPS}/${shop}`;
+	const BILLING_PATH = !shop ? BILLING_SHOPS : `${BILLING_SHOPS}/${shop}`;
 
 	return [
 		{
@@ -87,8 +88,8 @@ export const allMenuItems = (shop?: string) => {
 		{
 			key: '5',
 			icon: <PiInvoice style={{ fontSize: 20 }} />,
-			label: <Link href={INVOICES}>Facturas</Link>,
-			path: INVOICES
+			label: <Link href={BILLING_PATH}>Facturas</Link>,
+			path: BILLING_PATH
 		},
 		{
 			key: '6',

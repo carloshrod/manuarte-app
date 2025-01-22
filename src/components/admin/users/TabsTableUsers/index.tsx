@@ -4,11 +4,11 @@ import { Tabs, TabsProps } from 'antd';
 import { AiOutlineUser } from 'react-icons/ai';
 import { HiOutlineUser } from 'react-icons/hi';
 import { useDispatch, useSelector } from 'react-redux';
-import CustomTable from '../../common/Table';
+import CustomTable from '../../common/display-data/Table';
+import AddButton from '../../common/ui/AddButton';
 import useTableColumns from '@/hooks/useTableColumns';
 import { getCustomers, getStaff } from '@/reducers/users/userSlice';
 import { ModalContent } from '@/types/enums';
-import AddButton from '../../common/AddButton';
 
 type TabsTableUsersProps = {
 	staffData: Staff[];

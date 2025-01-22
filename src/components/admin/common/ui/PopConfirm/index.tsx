@@ -1,11 +1,16 @@
 import { Popconfirm, PopconfirmProps } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 
-const PopConfirm = ({ title, onConfirm, children }: PopconfirmProps) => {
+const PopConfirm = ({
+	title,
+	onConfirm,
+	description,
+	children
+}: PopconfirmProps) => {
 	return (
 		<Popconfirm
 			title={title}
-			description='¿Estás seguro de que quieres borrar este elemento?'
+			description={description}
 			onConfirm={onConfirm}
 			okText='Sí'
 			okButtonProps={{ style: { width: 50 } }}

@@ -1,15 +1,15 @@
-import useForm from '@/hooks/useForm';
+import { useEffect, useState } from 'react';
 import { Form, Select, Tag } from 'antd';
 import { BiUserCircle } from 'react-icons/bi';
-import FormButtons from '../../common/FormButtons';
 import { useSelector } from 'react-redux';
+import FormButtons from '../../common/ui/FormButtons';
+import useForm from '@/hooks/useForm';
+import { userServices } from '@/services/userServices';
 import {
 	formatToTitleCase,
 	formatUserExtraPermissions,
 	generatePermissionOptions
 } from '@/utils/utils';
-import { userServices } from '@/services/userServices';
-import { useEffect, useState } from 'react';
 
 const PermissionsForm = () => {
 	const { form, isLoading, submitEditPermissions } = useForm();

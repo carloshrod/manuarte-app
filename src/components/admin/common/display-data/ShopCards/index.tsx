@@ -1,9 +1,8 @@
-import { shopServices } from '@/services/shopServices';
-import { ROUTES } from '@/utils/routes';
 import Link from 'next/link';
+import { shopServices } from '@/services/shopServices';
 import { IoStorefrontOutline } from 'react-icons/io5';
 
-const ShopCards = async () => {
+const ShopCards = async ({ route }: { route: string }) => {
 	const shops: Shop[] = await shopServices.getAll();
 
 	return (
@@ -13,7 +12,7 @@ const ShopCards = async () => {
 				{shops?.length > 0 &&
 					shops?.map(shop => (
 						<div key={shop.id} className='p-6 text-center sm:w-1/2 w-full'>
-							<Link href={`${ROUTES.QUOTE_SHOPS}/${shop.slug}`}>
+							<Link href={`${route}/${shop.slug}`}>
 								<div className='max-h-[200px] shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-12 rounded-lg transform transition duration-300 hover:scale-105'>
 									<IoStorefrontOutline
 										size={50}

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Form, Input, Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import FormButtons from '../../common/FormButtons';
+import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import { getProducts } from '@/reducers/products/productSlice';
 import { productServices } from '@/services/productServices';

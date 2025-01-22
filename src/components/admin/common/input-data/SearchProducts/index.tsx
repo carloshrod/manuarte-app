@@ -15,7 +15,7 @@ import {
 import { MehOutlined } from '@ant-design/icons';
 import { StoreValue } from 'antd/es/form/interface';
 import { BsPlusSquare } from 'react-icons/bs';
-import { getProductsData } from '../utils';
+import { getProductsData, updateCalculations } from '@/components/admin/utils';
 
 type AddItemFormListFn = (
 	defaultValue?: StoreValue,
@@ -25,15 +25,17 @@ type AddItemFormListFn = (
 interface SearchProductsProps {
 	form: FormInstance;
 	add: AddItemFormListFn;
-	updateCalculations: () => void;
 	setItemsError: Dispatch<SetStateAction<boolean>>;
+	isQuote: boolean;
+	setSelectedProducts: Dispatch<SetStateAction<Record<string, number>>>;
 }
 
 const SearchProducts = ({
 	form,
 	add,
-	updateCalculations,
-	setItemsError
+	setItemsError,
+	isQuote,
+	setSelectedProducts
 }: SearchProductsProps) => {
 	const params = useParams() ?? {};
 	const [productsOptions, setProductsOptions] = useState<
@@ -92,8 +94,15 @@ const SearchProducts = ({
 
 	const handleAddProduct = (add: AddItemFormListFn) => {
 		if (selectedProduct) {
-			if (selectedProduct.quantity === 0) {
-				return notification.error({ message: 'Producto sin stock!' });
+			if (!isQuote) {
+				if (selectedProduct.quantity === 0) {
+					return notification.error({ message: 'Producto sin stock!' });
+				}
+
+				setSelectedProducts(prev => ({
+					...prev,
+					[selectedProduct.id]: selectedProduct.quantity
+				}));
 			}
 
 			const inList = itemsList.some(
@@ -110,6 +119,7 @@ const SearchProducts = ({
 
 			add({
 				productVariantId: selectedProduct.id,
+				stockItemId: selectedProduct.stockItemId,
 				name: `${selectedProduct.productName} ${selectedProduct.name}`,
 				iva: 'NO',
 				quantity: 1,
@@ -117,7 +127,7 @@ const SearchProducts = ({
 				price: selectedProduct.price,
 				totalPrice: selectedProduct.price
 			});
-			updateCalculations();
+			updateCalculations(form);
 			setSelectedProduct(null);
 			setSearch('');
 			setHasSearched(false);

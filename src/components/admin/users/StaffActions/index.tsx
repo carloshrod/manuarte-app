@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { notification } from 'antd';
-import TableActions from '../../common/TableActions';
+import TableActions from '../../common/ui/TableActions';
 import { openModal } from '@/reducers/ui/uiSlice';
 import { removeStaff } from '@/reducers/users/userSlice';
 import { userServices } from '@/services/userServices';

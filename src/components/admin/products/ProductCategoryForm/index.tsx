@@ -1,8 +1,8 @@
-import { Form, Input } from 'antd';
-import FormButtons from '../../common/FormButtons';
-import useForm from '@/hooks/useForm';
-import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { Form, Input } from 'antd';
+import { useSelector } from 'react-redux';
+import FormButtons from '../../common/ui/FormButtons';
+import useForm from '@/hooks/useForm';
 
 const ProductCategoryForm = () => {
 	const {

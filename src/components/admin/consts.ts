@@ -37,13 +37,13 @@ export const CUSTOMER_INPUTS_PROPS = [
 	}
 ];
 
-export const QUOTE_PRODUCTS_INPUTS_PROPS = [
+export const PRODUCTS_LIST_INPUTS_PROPS = [
 	{
 		name: 'name',
 		label: 'Nombre',
 		type: 'text',
-		minWidth: 380,
-		width: '40%'
+		minWidth: 360,
+		width: '45%'
 	},
 	{
 		name: 'quantity',
@@ -68,14 +68,14 @@ export const QUOTE_PRODUCTS_INPUTS_PROPS = [
 		ruleMsg: 'El precio es requerido',
 		placeholder: 'Ingresa el precio del producto',
 		minWidth: 120,
-		width: '20%'
+		width: '15%'
 	},
 	{
 		name: 'totalPrice',
 		label: 'Precio Total',
 		type: 'number',
 		minWidth: 120,
-		width: '20%'
+		width: '15%'
 	}
 ];
 
@@ -120,11 +120,6 @@ export const QUOTE_CALCULATIONS_INPUTS_PROPS = [
 		label: 'Subtotal',
 		readOnly: true
 	},
-	// {
-	// 	name: 'iva',
-	// 	label: 'IVA (19%)',
-	// 	readOnly: true
-	// },
 	{
 		name: 'shipping',
 		label: 'Flete',
@@ -135,4 +130,24 @@ export const QUOTE_CALCULATIONS_INPUTS_PROPS = [
 		label: 'Total',
 		readOnly: true
 	}
+];
+
+export const quoteStatusOptions = [
+	{ value: 'PENDING', label: 'Por pagar' },
+	{ value: 'ACCEPTED', label: 'Aceptada' },
+	{ value: 'REVISION', label: 'En revisión' }
+];
+
+export const billingStatusOptions = [
+	{ value: 'PAID', label: 'Pagada' },
+	{ value: 'PENDING_PAYMENT', label: 'Pago pendiente' }
+];
+
+export const paymentMethodOptions = [
+	{ value: 'CASH', label: 'Efectivo' },
+	{ value: 'BANK_TRANSFER', label: 'Transferencia' },
+	{ value: 'CREDIT_CARD', label: 'Tarjeta De Crédito' },
+	{ value: 'DEBIT_CARD', label: 'Tarjeta De Débito' },
+	{ value: 'PAYPAL', label: 'Paypal' },
+	{ value: 'OTHER', label: 'Otro' }
 ];

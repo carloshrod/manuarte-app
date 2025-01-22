@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { Form, Input } from 'antd';
+import { useSelector } from 'react-redux';
+import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
-import FormButtons from '../../common/FormButtons';
 
 const CustomersForm = () => {
 	const { form, isLoading, submitRegisterCustomer, submitUpdateCustomer } =

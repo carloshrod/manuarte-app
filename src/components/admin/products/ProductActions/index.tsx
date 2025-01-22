@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { productServices } from '@/services/productServices';
 import { openModal } from '@/reducers/ui/uiSlice';
 import { removeProduct } from '@/reducers/products/productSlice';
-import TableActions from '../../common/TableActions';
+import TableActions from '../../common/ui/TableActions';
 import { AxiosError } from 'axios';
 import { ModalContent } from '@/types/enums';
 

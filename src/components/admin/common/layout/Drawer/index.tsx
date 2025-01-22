@@ -1,11 +1,11 @@
-import SearchCustomer from '@/components/admin/quotes/SearchCustomer';
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { Checkbox, CheckboxProps, Drawer } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import SearchCustomer from '@/components/admin/common/input-data/SearchCustomer';
 import useDrawer from '@/hooks/useDrawer';
 import { closeDrawer, updateDrawer } from '@/reducers/ui/uiSlice';
 import { DrawerContent } from '@/types/enums';
-import { Checkbox, CheckboxProps, Drawer } from 'antd';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 const CustomDrawer = () => {
 	const {

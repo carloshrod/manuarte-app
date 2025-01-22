@@ -5,12 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineAppstore } from 'react-icons/ai';
 import { BiPackage } from 'react-icons/bi';
 import { MdOutlineCategory } from 'react-icons/md';
-import CustomTable from '../../common/Table';
+import CustomTable from '../../common/display-data/Table';
 import useTableColumns from '@/hooks/useTableColumns';
 import { getProductVariants } from '@/reducers/products/productSlice';
 import { getProductCategories } from '@/reducers/productCategories/productCategorySlice';
 import { ModalContent } from '@/types/enums';
-import AddButton from '../../common/AddButton';
+import AddButton from '../../common/ui/AddButton';
 
 type TabsTableProductsProps = {
 	productVariantsData: ProductVariant[];

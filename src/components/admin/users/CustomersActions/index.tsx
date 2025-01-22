@@ -1,11 +1,11 @@
-import { useDispatch } from 'react-redux';
-import TableActions from '../../common/TableActions';
-import { openModal } from '@/reducers/ui/uiSlice';
-import { ModalContent } from '@/types/enums';
 import { notification } from 'antd';
+import { useDispatch } from 'react-redux';
 import { AxiosError } from 'axios';
+import TableActions from '../../common/ui/TableActions';
+import { openModal } from '@/reducers/ui/uiSlice';
 import { removeCustomer } from '@/reducers/users/userSlice';
 import { userServices } from '@/services/userServices';
+import { ModalContent } from '@/types/enums';
 
 const CustomersActions = ({ record }: { record: Customer }) => {
 	const dispatch = useDispatch();

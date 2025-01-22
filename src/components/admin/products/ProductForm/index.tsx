@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Form, Input, Select, Switch } from 'antd';
 import { useSelector } from 'react-redux';
 import ProductVariantFormList from '../ProductVariantFormList';
-import FormButtons from '../../common/FormButtons';
+import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
 
 const ProductForm = () => {

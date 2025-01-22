@@ -1,23 +1,28 @@
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Button, Form, FormInstance, Input, InputNumber, Tooltip } from 'antd';
 import { AiOutlineDelete } from 'react-icons/ai';
-import { QUOTE_PRODUCTS_INPUTS_PROPS } from '../consts';
 import SearchProducts from '../SearchProducts';
-import { Dispatch, SetStateAction } from 'react';
 import { formatInputCurrency } from '@/utils/utils';
+import { updateCalculations } from '@/components/admin/utils';
+import { PRODUCTS_LIST_INPUTS_PROPS } from '@/components/admin/consts';
 
 interface ProductFormListProps {
 	form: FormInstance;
-	updateCalculations: () => void;
 	itemsError: boolean;
 	setItemsError: Dispatch<SetStateAction<boolean>>;
+	isQuote: boolean;
 }
 
 const ProductFormList = ({
 	form,
-	updateCalculations,
 	itemsError,
-	setItemsError
+	setItemsError,
+	isQuote
 }: ProductFormListProps) => {
+	const [selectedProducts, setSelectedProducts] = useState<
+		Record<string, number>
+	>({});
+
 	const updateTotalPrice = (name: number) => {
 		const items: ProductVariantWithStock[] = form.getFieldValue('items');
 		const item = items[name];
@@ -29,7 +34,7 @@ const ProductFormList = ({
 			)
 		});
 
-		updateCalculations();
+		updateCalculations(form);
 	};
 
 	const handleValueChange = (
@@ -51,40 +56,61 @@ const ProductFormList = ({
 						<SearchProducts
 							form={form}
 							add={add}
-							updateCalculations={updateCalculations}
 							setItemsError={setItemsError}
+							isQuote={isQuote}
+							setSelectedProducts={setSelectedProducts}
 						/>
 
 						<div className='overflow-x-auto custom-scrollbar'>
 							{fields.map(({ key, name, ...restField }) => {
+								const item = form.getFieldValue('items')[name];
+								const maxQuantity =
+									selectedProducts[item?.productVariantId] || 1;
+
 								return (
 									<div key={key} className='flex items-center gap-2'>
-										{QUOTE_PRODUCTS_INPUTS_PROPS?.map((item, index) => {
+										{PRODUCTS_LIST_INPUTS_PROPS?.map((input, index) => {
 											const editableField =
-												item.name === 'quantity' || item.name === 'price';
+												input.name === 'quantity' || input.name === 'price';
 											const currencyField =
-												item.name === 'price' || item.name === 'totalPrice';
+												input.name === 'price' || input.name === 'totalPrice';
 
 											return (
 												<Form.Item
 													{...restField}
-													key={`${item.name}-${index}`}
-													name={[name, item.name]}
-													label={name === 0 ? item.label : null}
+													key={`${input.name}-${index}`}
+													name={[name, input.name]}
+													label={name === 0 ? input.label : null}
 													rules={[
 														{
 															required: editableField,
 															message: ''
+														},
+														{
+															validator: (_, value) => {
+																if (
+																	!isQuote &&
+																	input.name === 'quantity' &&
+																	value &&
+																	value > maxQuantity
+																) {
+																	return Promise.reject(
+																		new Error(`Stock: ${maxQuantity}`)
+																	);
+																}
+																return Promise.resolve();
+															}
 														}
 													]}
 													style={{
-														width: item.width,
-														minWidth: item.minWidth
+														width: input.width,
+														minWidth: input.minWidth
 													}}
 												>
-													{item.type === 'number' ? (
+													{input.type === 'number' ? (
 														<InputNumber
 															min={1}
+															controls={!currencyField}
 															formatter={
 																currencyField
 																	? value => formatInputCurrency(value)
@@ -92,6 +118,9 @@ const ProductFormList = ({
 															}
 															variant={
 																!editableField ? 'borderless' : undefined
+															}
+															className={
+																currencyField ? 'textRight' : 'textCenter'
 															}
 															style={{
 																width: '100%',
@@ -101,14 +130,18 @@ const ProductFormList = ({
 															}}
 															readOnly={!editableField}
 															onChange={value => {
-																handleValueChange(name, item.name, value);
+																handleValueChange(name, input.name, value);
 															}}
 														/>
 													) : (
 														<Input
 															variant='borderless'
 															style={{
-																backgroundColor: '#e5e5e5'
+																backgroundColor: '#e5e5e5',
+																textAlign:
+																	input.name === 'currency'
+																		? 'center'
+																		: undefined
 															}}
 															readOnly={true}
 															onChange={() => null}
@@ -126,7 +159,7 @@ const ProductFormList = ({
 												icon={<AiOutlineDelete size={28} color={'#E53535'} />}
 												onClick={() => {
 													remove(name);
-													updateCalculations();
+													updateCalculations(form);
 												}}
 											/>
 										</Tooltip>

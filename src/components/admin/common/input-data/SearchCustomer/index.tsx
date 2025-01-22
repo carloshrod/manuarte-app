@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Select, SelectProps, Spin } from 'antd';
 import { MehOutlined } from '@ant-design/icons';
-import { getCustomersData } from '../utils';
 import { useDispatch } from 'react-redux';
 import { updateDrawer } from '@/reducers/ui/uiSlice';
+import { getCustomersData } from '@/components/admin/utils';
 
 const SearchCustomer = () => {
 	const [customersOptions, setCustomersOptions] = useState<

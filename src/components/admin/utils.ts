@@ -1,5 +1,21 @@
 import { productServices } from '@/services/productServices';
 import { userServices } from '@/services/userServices';
+import { FormInstance } from 'antd';
+
+export const updateCalculations = (form: FormInstance) => {
+	const items: ProductVariantWithStock[] = form.getFieldValue('items') || [];
+	const shipping = parseFloat(form.getFieldValue('shipping')) || 0;
+
+	const subtotal = items.reduce((total, item) => {
+		const totalPrice = item?.totalPrice || 0;
+		return Number(total) + Number(totalPrice);
+	}, 0);
+
+	form.setFieldsValue({
+		subtotal,
+		total: subtotal + shipping
+	});
+};
 
 export const getProductsData = async ({
 	currentValue,
@@ -20,7 +36,7 @@ export const getProductsData = async ({
 		if (currentValue === newValue) {
 			formattedData = data.map((item: any) => ({
 				value: item.id,
-				label: `${item.productName} ${item.name}`
+				label: `${item.productName} ${item.name} - (${item.quantity} unds)`
 			}));
 		}
 
