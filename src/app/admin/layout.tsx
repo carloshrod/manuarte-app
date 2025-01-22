@@ -8,9 +8,9 @@ import {
 import { PiUserCircle } from 'react-icons/pi';
 import { Provider } from 'react-redux';
 import { useSession } from 'next-auth/react';
-import SidebarMenu from '../../components/layout/SidebarMenu';
-import CustomModal from '@/components/layout/Modal';
-import CustomDrawer from '@/components/layout/Drawer';
+import SidebarMenu from '../../components/admin/common/layout/SidebarMenu';
+import CustomModal from '@/components/admin/common/layout/Modal';
+import CustomDrawer from '@/components/admin/common/layout/Drawer';
 import store from '@/reducers/store';
 import { formatToTitleCase } from '@/utils/utils';
 
