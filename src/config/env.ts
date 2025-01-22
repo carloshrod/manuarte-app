@@ -9,6 +9,7 @@ export const ENV = {
 		USERS: `/users`,
 		CUSTOMERS: `/customers`,
 		SHOPS: `/shops`,
-		QUOTES: `/quotes`
+		QUOTES: `/quotes`,
+		BILLINGS: `/billings`
 	}
 };

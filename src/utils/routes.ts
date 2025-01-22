@@ -7,7 +7,9 @@ export const ROUTES = {
 	QUOTE_SHOPS: '/admin/cotizaciones',
 	QUOTES: '/admin/cotizaciones/[shopSlug]',
 	QUOTE_DETAIL: '/admin/cotizaciones/[shopSlug]/[serialNumber]',
-	INVOICES: '/admin/facturas',
+	BILLING_SHOPS: '/admin/facturas',
+	BILLINGS: '/admin/facturas/[shopSlug]',
+	BILLING_DETAIL: '/admin/facturas/[shopSlug]/[serialNumber]',
 	STOCK: '/admin/stock',
 	STOCK_TRANSACTIONS: '/admin/movimientos-stock'
 };
