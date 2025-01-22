@@ -24,6 +24,7 @@ interface ProductVariantWithStock extends ProductVariant {
 	currency: string;
 	price: number;
 	totalPrice: number;
+	stockItemId: string;
 }
 
 interface Product {
@@ -136,15 +137,15 @@ interface QuoteItem {
 interface Quote {
 	id: string;
 	serialNumber: string;
+	shopId: string;
+	customerId: string;
 	status: QuoteStatus;
 	currency: string;
-	customerId: string;
 	fullName: string;
 	customerName: string;
 	dni: string;
 	email: string;
 	phoneNumber: string;
-	shopId: string;
 	dueDate: string;
 	updatedDate: string;
 	items: QuoteItem[];
@@ -162,7 +163,46 @@ interface SubmitQuoteDto extends SubmitCustomerDto {
 	total?: string;
 }
 
-type DataTable = ProductVariant | ProductCategory | Staff | Customer | Quote;
+enum BillingStatus {
+	PAID = 'PAID',
+	PENDING_PAYMENT = 'PENDING_PAYMENT',
+	CANCELED = 'CANCELED'
+}
+
+enum PaymentMethod {
+	BANK_TRANSFER = 'BANK_TRANSFER',
+	CASH = 'CASH',
+	CREDIT_CARD = 'CREDIT_CARD',
+	DEBIT_CARD = 'DEBIT_CARD',
+	PAYPAL = 'PAYPAL',
+	OTHER = 'OTHER'
+}
+
+interface BillingItem extends QuoteItem {}
+interface Billing extends Omit<Quote, 'status'> {
+	status: BillingStatus;
+	paymentMethod: PaymentMethod;
+}
+
+interface SubmitBillingDto extends SubmitCustomerDto {
+	shopSlug?: string;
+	shopId?: string;
+	items: ProductVariantWithStock[];
+	status: BillingStatus;
+	paymentMethod: PaymentMethod;
+	shipping: string;
+	subtotal?: string;
+	total: string;
+	currency: string;
+}
+
+type DataTable =
+	| ProductVariant
+	| ProductCategory
+	| Staff
+	| Customer
+	| Quote
+	| Billing;
 
 interface UIModalState {
 	isOpen: boolean;
@@ -194,5 +234,8 @@ interface RootState {
 	};
 	quote: {
 		quotes: Quote[];
+	};
+	billing: {
+		billings: Billing[];
 	};
 }
