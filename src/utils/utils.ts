@@ -44,12 +44,27 @@ export const formatInputCurrency = (value: number | undefined) => {
 		: `$ ${formattedInteger}`;
 };
 
-export const STATUS_MAP: Record<string, string> = {
+export const QUOTE_STATUS_MAP: Record<string, string> = {
 	ACCEPTED: 'ACEPTADA',
 	PENDING: 'POR PAGAR',
-	CANCELED: 'CANCELEDA',
+	CANCELED: 'CANCELADA',
 	REVISION: 'EN REVISIÓN',
 	OVERDUE: 'VENCIDA'
+};
+
+export const BILLING_STATUS_MAP: Record<string, string> = {
+	PAID: 'PAGADA',
+	PENDING_PAYMENT: 'PAGO PENDIENTE',
+	CANCELED: 'CANCELADA'
+};
+
+export const PAYMENT_METHOD_MAP: Record<string, string> = {
+	BANK_TRANSFER: 'TRANSFERENCIA',
+	CASH: 'EFECTIVO',
+	CREDIT_CARD: 'TARJETA DE CRÉDITO',
+	DEBIT_CARD: 'TARJETA DE DÉBITO',
+	PAYPAL: 'PAYPAL',
+	OTHER: 'OTRO'
 };
 
 export const generatePermissionOptions = (
@@ -105,7 +120,9 @@ export const AUTH_RULES = (
 				ROUTES.QUOTE_SHOPS,
 				ROUTES.QUOTES,
 				ROUTES.QUOTE_DETAIL,
-				ROUTES.INVOICES,
+				ROUTES.BILLING_SHOPS,
+				ROUTES.BILLINGS,
+				ROUTES.BILLING_DETAIL,
 				ROUTES.STOCK,
 				ROUTES.STOCK_TRANSACTIONS
 			]
@@ -115,7 +132,8 @@ export const AUTH_RULES = (
 			allowedPaths: [
 				`${ROUTES.QUOTE_SHOPS}/${shop}`,
 				ROUTES.QUOTE_DETAIL,
-				`${ROUTES.INVOICES}/${shop}`,
+				`${ROUTES.BILLING_SHOPS}/${shop}`,
+				ROUTES.BILLING_DETAIL,
 				ROUTES.STOCK,
 				ROUTES.STOCK_TRANSACTIONS
 			]

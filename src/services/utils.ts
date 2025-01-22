@@ -37,3 +37,47 @@ export const mapQuoteBody = (body: SubmitQuoteDto) => {
 		}
 	};
 };
+
+export const mapBillingBody = (body: SubmitBillingDto) => {
+	const {
+		personId,
+		customerId,
+		shopSlug,
+		shopId,
+		items,
+		status,
+		paymentMethod,
+		shipping,
+		total,
+		currency,
+		fullName,
+		dni,
+		email,
+		phoneNumber,
+		location,
+		city
+	} = body;
+
+	return {
+		billingData: {
+			shopSlug,
+			shopId,
+			items,
+			status,
+			paymentMethod,
+			shipping,
+			total,
+			currency
+		},
+		customerData: {
+			personId,
+			customerId,
+			fullName,
+			dni,
+			email,
+			phoneNumber,
+			location,
+			city
+		}
+	};
+};

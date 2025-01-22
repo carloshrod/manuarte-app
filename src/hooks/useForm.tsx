@@ -24,6 +24,8 @@ import {
 } from '@/reducers/users/userSlice';
 import { quoteServices } from '@/services/quoteServices';
 import { addQuote, editQuote } from '@/reducers/quotes/quoteSlice';
+import { billingServices } from '@/services/billingServices';
+import { addBilling } from '@/reducers/billings/billingSlice';
 
 notification.config({
 	placement: 'topRight',
@@ -60,6 +62,7 @@ const useForm = () => {
 				onSuccess(res);
 				dispatch(modal ? closeModal() : closeDrawer());
 			}
+			return res;
 		} catch (error) {
 			console.error(error);
 			const message =
@@ -214,7 +217,7 @@ const useForm = () => {
 		}
 
 		await handleSubmit({
-			serviceFn: quoteServices.createQuote,
+			serviceFn: quoteServices.create,
 			values,
 			onSuccess: res => dispatch(addQuote(res.data.newQuote)),
 			modal: false
@@ -229,10 +232,30 @@ const useForm = () => {
 
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				quoteServices.updateQuote(valuesToUpdate, quoteId),
+				quoteServices.update(valuesToUpdate, quoteId),
 			values,
 			onSuccess: res => dispatch(editQuote(res.data.updatedQuote)),
 			modal: false
+		});
+	};
+
+	const submitCreateBilling = async ({
+		values,
+		modal = false
+	}: {
+		values: SubmitBillingDto;
+		modal?: boolean;
+	}) => {
+		if (values?.items?.length < 1) {
+			setItemsError(true);
+			return;
+		}
+
+		return await handleSubmit({
+			serviceFn: billingServices.create,
+			values,
+			onSuccess: res => dispatch(addBilling(res.data.newBilling)),
+			modal
 		});
 	};
 
@@ -253,7 +276,8 @@ const useForm = () => {
 		submitRegisterCustomer,
 		submitUpdateCustomer,
 		submitCreateQuote,
-		submitUpdateQuote
+		submitUpdateQuote,
+		submitCreateBilling
 	};
 };
 
