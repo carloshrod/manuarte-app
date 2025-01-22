@@ -3,7 +3,7 @@ import { axiosPrivate } from './axios';
 import { mapQuoteBody } from './utils';
 
 export const quoteServices = {
-	getAllQuotes: async (shopSlug: string) => {
+	getAll: async (shopSlug: string) => {
 		try {
 			const res = await axiosPrivate.get(ENV.API.QUOTES, {
 				params: { shopSlug }
@@ -15,17 +15,14 @@ export const quoteServices = {
 		}
 	},
 
-	getOneQuote: async ({
-		serialNumber,
-		server = true
+	getOne: async ({
+		serialNumber
 	}: {
 		serialNumber: string;
 		server?: boolean;
 	}) => {
 		try {
-			const res = await axiosPrivate.get(`${ENV.API.QUOTES}/${serialNumber}`, {
-				server
-			});
+			const res = await axiosPrivate.get(`${ENV.API.QUOTES}/${serialNumber}`);
 
 			return res.data;
 		} catch (error) {
@@ -33,17 +30,17 @@ export const quoteServices = {
 		}
 	},
 
-	createQuote: async (body: SubmitQuoteDto) => {
+	create: async (body: SubmitQuoteDto) => {
 		const mappedBody = mapQuoteBody(body);
 		return await axiosPrivate.post(ENV.API.QUOTES, mappedBody);
 	},
 
-	updateQuote: async (body: SubmitQuoteDto, quoteId: string) => {
+	update: async (body: SubmitQuoteDto, quoteId: string) => {
 		const mappedBody = mapQuoteBody(body);
 		return await axiosPrivate.put(`${ENV.API.QUOTES}/${quoteId}`, mappedBody);
 	},
 
-	deleteQuote: async (quoteId: string) => {
+	delete: async (quoteId: string) => {
 		return axiosPrivate.delete(`${ENV.API.QUOTES}/${quoteId}`);
 	}
 };
