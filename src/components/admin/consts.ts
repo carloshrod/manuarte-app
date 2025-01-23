@@ -146,8 +146,8 @@ export const billingStatusOptions = [
 export const paymentMethodOptions = [
 	{ value: 'CASH', label: 'Efectivo' },
 	{ value: 'BANK_TRANSFER', label: 'Transferencia' },
-	{ value: 'CREDIT_CARD', label: 'Tarjeta De Crédito' },
 	{ value: 'DEBIT_CARD', label: 'Tarjeta De Débito' },
+	{ value: 'CREDIT_CARD', label: 'Tarjeta De Crédito' },
 	{ value: 'PAYPAL', label: 'Paypal' },
 	{ value: 'OTHER', label: 'Otro' }
 ];

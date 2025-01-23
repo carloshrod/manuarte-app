@@ -6,7 +6,7 @@ export enum ModalContent {
 	staff = 'staff',
 	permissions = 'permissions',
 	customers = 'customers',
-	generateBilling = 'generateBilling',
+	billings = 'billings',
 	logout = 'logout'
 }
 

@@ -35,6 +35,13 @@ export const billingServices = {
 		return await axiosPrivate.post(ENV.API.BILLINGS, mappedBody);
 	},
 
+	update: async (
+		body: { status: string; paymentMethod: string },
+		billingId: string
+	) => {
+		return await axiosPrivate.put(`${ENV.API.BILLINGS}/${billingId}`, body);
+	},
+
 	cancel: async (serialNumber: string) => {
 		return await axiosPrivate.delete(`${ENV.API.BILLINGS}/${serialNumber}`);
 	}

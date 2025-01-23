@@ -97,7 +97,7 @@ const PDFActions = ({
 						dispatch(
 							openModal({
 								title: 'Generar Factura',
-								content: ModalContent.generateBilling,
+								content: ModalContent.billings,
 								dataToEdit: data
 							})
 						)

@@ -47,7 +47,7 @@ export const formatInputCurrency = (value: number | undefined) => {
 export const QUOTE_STATUS_MAP: Record<string, string> = {
 	ACCEPTED: 'ACEPTADA',
 	PENDING: 'POR PAGAR',
-	CANCELED: 'CANCELADA',
+	CANCELED: 'ANULADA',
 	REVISION: 'EN REVISIÓN',
 	OVERDUE: 'VENCIDA'
 };
@@ -55,7 +55,7 @@ export const QUOTE_STATUS_MAP: Record<string, string> = {
 export const BILLING_STATUS_MAP: Record<string, string> = {
 	PAID: 'PAGADA',
 	PENDING_PAYMENT: 'PAGO PENDIENTE',
-	CANCELED: 'CANCELADA'
+	CANCELED: 'ANULADA'
 };
 
 export const PAYMENT_METHOD_MAP: Record<string, string> = {

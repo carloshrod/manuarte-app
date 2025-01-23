@@ -16,6 +16,14 @@ const billingSlice = createSlice({
 			state.billings = [action.payload, ...state.billings];
 		},
 
+		updateBilling: (state, action) => {
+			const { id, status, paymentMethod } = action.payload;
+
+			state.billings = state.billings.map(billing =>
+				billing.id === id ? { ...billing, status, paymentMethod } : billing
+			);
+		},
+
 		cancelBilling: (state, action) => {
 			const canceledBilling = action.payload;
 			state.billings = state.billings.map(billing =>
@@ -25,5 +33,6 @@ const billingSlice = createSlice({
 	}
 });
 
-export const { setBillings, addBilling, cancelBilling } = billingSlice.actions;
+export const { setBillings, addBilling, updateBilling, cancelBilling } =
+	billingSlice.actions;
 export default billingSlice.reducer;

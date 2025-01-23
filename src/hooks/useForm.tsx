@@ -23,9 +23,9 @@ import {
 	updateStaffPermissions
 } from '@/reducers/users/userSlice';
 import { quoteServices } from '@/services/quoteServices';
-import { addQuote, editQuote } from '@/reducers/quotes/quoteSlice';
+import { addQuote, updateQuote } from '@/reducers/quotes/quoteSlice';
 import { billingServices } from '@/services/billingServices';
-import { addBilling } from '@/reducers/billings/billingSlice';
+import { addBilling, updateBilling } from '@/reducers/billings/billingSlice';
 
 notification.config({
 	placement: 'topRight',
@@ -234,7 +234,7 @@ const useForm = () => {
 			serviceFn: valuesToUpdate =>
 				quoteServices.update(valuesToUpdate, quoteId),
 			values,
-			onSuccess: res => dispatch(editQuote(res.data.updatedQuote)),
+			onSuccess: res => dispatch(updateQuote(res.data.updatedQuote)),
 			modal: false
 		});
 	};
@@ -259,6 +259,19 @@ const useForm = () => {
 		});
 	};
 
+	const submitUpdateBilling = async (
+		values: { status: string; paymentMethod: string },
+		billingId: string
+	) => {
+		await handleSubmit({
+			serviceFn: valuesToUpdate =>
+				billingServices.update(valuesToUpdate, billingId),
+			values,
+			onSuccess: _res => dispatch(updateBilling({ id: billingId, ...values })),
+			modal: true
+		});
+	};
+
 	return {
 		form,
 		isLoading,
@@ -277,7 +290,8 @@ const useForm = () => {
 		submitUpdateCustomer,
 		submitCreateQuote,
 		submitUpdateQuote,
-		submitCreateBilling
+		submitCreateBilling,
+		submitUpdateBilling
 	};
 };
 

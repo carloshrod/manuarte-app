@@ -336,7 +336,11 @@ const useTableColumns = () => {
 					value: 'PAID'
 				},
 				{
-					text: 'CANCELADA',
+					text: 'PAGO PENDIENTE',
+					value: 'PENDING_PAYMENT'
+				},
+				{
+					text: 'ANULADA',
 					value: 'CANCELED'
 				}
 			],
@@ -358,12 +362,12 @@ const useTableColumns = () => {
 					value: 'BANK_TRANSFER'
 				},
 				{
-					text: 'TARJETA DE CRÉDITO',
-					value: 'CREDIT_CARD'
-				},
-				{
 					text: 'TARJETA DE DÉBITO',
 					value: 'DEBIT_CARD'
+				},
+				{
+					text: 'TARJETA DE CRÉDITO',
+					value: 'CREDIT_CARD'
 				},
 				{
 					text: 'PAYPAL',

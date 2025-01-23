@@ -3,11 +3,26 @@ import { useDispatch } from 'react-redux';
 import { AxiosError } from 'axios';
 import TableActions from '../../common/ui/TableActions';
 import { billingServices } from '@/services/billingServices';
-import { BillingStatus } from '@/types/enums';
+import { BillingStatus, ModalContent } from '@/types/enums';
 import { cancelBilling } from '@/reducers/billings/billingSlice';
+import { openModal } from '@/reducers/ui/uiSlice';
 
 const BillingsActions = ({ record }: { record: Billing }) => {
 	const dispatch = useDispatch();
+
+	const handleEdit = () => {
+		dispatch(
+			openModal({
+				title: 'Editar Factura',
+				content: ModalContent.billings,
+				dataToEdit: {
+					...record,
+					fullName: record?.customerName,
+					isUpdating: true
+				}
+			})
+		);
+	};
 
 	const handleCancel = async () => {
 		try {
@@ -32,9 +47,11 @@ const BillingsActions = ({ record }: { record: Billing }) => {
 
 	return (
 		<TableActions
+			onEdit={handleEdit}
 			onDelete={handleCancel}
 			popTitle={`${record.serialNumber} - ${record.customerName ?? 'Consumidor final'}`}
 			popDescription='¿Estás seguro de que quieres anular esta factura?'
+			isEditable={isCancelable}
 			isDeletable={isCancelable}
 		/>
 	);

@@ -40,6 +40,7 @@ const TableActions = ({
 							/>
 						}
 						onClick={onEdit}
+						disabled={!isEditable}
 					/>
 				</Tooltip>
 			) : null}

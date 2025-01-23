@@ -16,7 +16,7 @@ const quoteSlice = createSlice({
 			state.quotes = [action.payload, ...state.quotes];
 		},
 
-		editQuote: (state, action) => {
+		updateQuote: (state, action) => {
 			const updatedQuote = action.payload;
 
 			state.quotes = state.quotes.map(quote =>
@@ -30,6 +30,6 @@ const quoteSlice = createSlice({
 	}
 });
 
-export const { getQuotes, addQuote, editQuote, removeQuote } =
+export const { getQuotes, addQuote, updateQuote, removeQuote } =
 	quoteSlice.actions;
 export default quoteSlice.reducer;

@@ -7,7 +7,7 @@ import { ModalContent } from '@/types/enums';
 import PermissionsForm from '@/components/admin/users/PermissionsForm';
 import CustomersForm from '@/components/admin/users/CustomersForm';
 import ConfirmLogout from '@/components/admin/common/layout/SidebarMenu/ConfirmLogout';
-import GenerateBillingForm from '@/components/admin/common/input-data/GenerateBillingForm';
+import BillingModalForm from '@/components/admin/common/input-data/BillingModalForm';
 
 const useModal = () => {
 	const MODAL_CONTENT: Record<ModalContent, ReactNode> = {
@@ -17,7 +17,7 @@ const useModal = () => {
 		[ModalContent.staff]: <StaffForm />,
 		[ModalContent.permissions]: <PermissionsForm />,
 		[ModalContent.customers]: <CustomersForm />,
-		[ModalContent.generateBilling]: <GenerateBillingForm />,
+		[ModalContent.billings]: <BillingModalForm />,
 		[ModalContent.logout]: <ConfirmLogout />
 	};
 
