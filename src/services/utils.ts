@@ -6,7 +6,6 @@ export const mapQuoteBody = (body: SubmitQuoteDto) => {
 		shopId,
 		items,
 		status,
-		dueDate,
 		shipping,
 		fullName,
 		dni,
@@ -22,7 +21,6 @@ export const mapQuoteBody = (body: SubmitQuoteDto) => {
 			shopId,
 			items,
 			status,
-			dueDate,
 			shipping
 		},
 		customerData: {
