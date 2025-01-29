@@ -30,8 +30,8 @@ const PDFTable = ({ items, shipping = 0 }: PDFTableProps) => {
 							<td className='px-4 py-2'>{index + 1}</td>
 							<td className='px-4 py-2'>{item.name}</td>
 							<td className='px-4 py-2'>{item.quantity}</td>
-							<td className='px-4 py-2'>${formatCurrency(item.price)}</td>
-							<td className='px-4 py-2'>${formatCurrency(item.totalPrice)}</td>
+							<td className='px-4 py-2'>{formatCurrency(item.price)}</td>
+							<td className='px-4 py-2'>{formatCurrency(item.totalPrice)}</td>
 						</tr>
 					))}
 				</tbody>
@@ -39,19 +39,17 @@ const PDFTable = ({ items, shipping = 0 }: PDFTableProps) => {
 					<tr>
 						<td rowSpan={3} colSpan={3}></td>
 						<td className='px-4 py-2 font-bold border-b-2'>SUBTOTAL</td>
-						<td className='px-4 py-2 border-b-2'>
-							${formatCurrency(subtotal)}
-						</td>
+						<td className='px-4 py-2 border-b-2'>{formatCurrency(subtotal)}</td>
 					</tr>
 					<tr>
 						<td className='px-4 py-2 font-bold border-b-2'>Flete</td>
 						<td className='px-4 py-2 border-b-2'>
-							${formatCurrency(shipping) ?? 0}
+							{formatCurrency(shipping) ?? 0}
 						</td>
 					</tr>
 					<tr>
 						<td className='px-4 py-2 font-bold border-b-2'>TOTAL</td>
-						<td className='px-4 py-2 border-b-2'>${formatCurrency(total)}</td>
+						<td className='px-4 py-2 border-b-2'>{formatCurrency(total)}</td>
 					</tr>
 				</tbody>
 			</table>

@@ -1,9 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { formatToTitleCase, PAYMENT_METHOD_MAP } from '@/utils/utils';
-import { Descriptions, DescriptionsProps } from 'antd';
+import { Descriptions, DescriptionsProps, Divider } from 'antd';
 import moment from 'moment';
 import PDFTable from '../../quotes/QuotePDF/PDFTable';
 import { BillingStatus } from '@/types/enums';
+import TermsCol from '../../Terms/TermsCol';
+import TermsEcu from '../../Terms/TermsEcu';
 
 const BillingPDF = ({ billing, pdfRef }: { billing: Billing; pdfRef: any }) => {
 	const billingInfo: DescriptionsProps['items'] = [
@@ -21,12 +23,18 @@ const BillingPDF = ({ billing, pdfRef }: { billing: Billing; pdfRef: any }) => {
 		},
 		{
 			key: '3',
-			label: 'Correo:',
-			children: billing?.email?.toLowerCase() ?? 'NA',
+			label: 'Teléfono:',
+			children: billing?.phoneNumber ?? '--',
 			span: 3
 		},
 		{
 			key: '4',
+			label: 'Dirección:',
+			children: formatToTitleCase(billing?.location) ?? '--',
+			span: 3
+		},
+		{
+			key: '5',
 			label: 'Fecha:',
 			children:
 				moment(billing?.updatedDate).startOf('day').format('YYYY/MM/DD') ??
@@ -40,11 +48,6 @@ const BillingPDF = ({ billing, pdfRef }: { billing: Billing; pdfRef: any }) => {
 			span: 3
 		}
 	];
-
-	const CURRENCY_NAME: Record<string, string> = {
-		COP: 'pesos colombianos',
-		USD: 'dólares'
-	};
 
 	const isCanceled = billing?.status === BillingStatus.CANCELED;
 
@@ -94,15 +97,10 @@ const BillingPDF = ({ billing, pdfRef }: { billing: Billing; pdfRef: any }) => {
 				<PDFTable items={billing?.items} shipping={billing.shipping} />
 			) : null}
 
-			<p className='my-16'>
-				<span className='font-bold'>Nota:</span> La moneda asociada a esta
-				factura es{' '}
-				<span className='font-bold'>
-					{CURRENCY_NAME[billing?.currency]} ({billing?.currency})
-				</span>
-				. La aplicación del Impuesto al Valor Agregado (IVA) puede variar, ya
-				sea aplicándose o no, dependiendo de la naturaleza de los productos.
-			</p>
+			<Divider />
+
+			{/* Terms */}
+			{billing?.currency === 'COP' ? <TermsCol /> : <TermsEcu />}
 		</div>
 	);
 };

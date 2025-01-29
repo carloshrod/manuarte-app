@@ -21,11 +21,7 @@ const PDFActions = ({
 }) => {
 	const dispatch = useDispatch();
 
-	const shopAbbr = shopSlug
-		.split('-')
-		.map(word => word.charAt(0))
-		.join('')
-		.toUpperCase();
+	const city = data?.city?.toUpperCase() ?? 'NA';
 	const customerName = data?.fullName?.toUpperCase() ?? 'CONSUMIDOR FINAL';
 	const currency = shopSlug.includes('quito') ? 'USD' : 'COP';
 	const isCanceled = data?.status === BillingStatus.CANCELED;
@@ -33,7 +29,7 @@ const PDFActions = ({
 	const downloadPDF = useReactToPrint({
 		contentRef,
 		bodyClass: 'p-4',
-		documentTitle: `${shopAbbr}-CT${data?.serialNumber}-${customerName}`
+		documentTitle: `${city} - ${customerName}`
 	});
 
 	const sendDocument = async () => {

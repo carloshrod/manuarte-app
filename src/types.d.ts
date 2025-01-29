@@ -146,6 +146,8 @@ interface Quote {
 	dni: string;
 	email: string;
 	phoneNumber: string;
+	location: string;
+	city: string;
 	updatedDate: string;
 	items: QuoteItem[];
 	shipping: number;
