@@ -11,6 +11,7 @@ import { formatToTitleCase } from '@/utils/utils';
 import { ROUTES } from '@/utils/routes';
 import { BillingStatus, PaymentMethod } from '@/types/enums';
 import { useEffect } from 'react';
+import { quoteServices } from '@/services/quoteServices';
 
 const BillingModalForm = () => {
 	const { form, isLoading, submitCreateBilling, submitUpdateBilling } =
@@ -52,6 +53,8 @@ const BillingModalForm = () => {
 				modal: true
 			});
 			if (res?.status === 201) {
+				const quoteId = dataToEdit.id;
+				await quoteServices.delete(quoteId);
 				push(`${ROUTES.BILLING_SHOPS}/${params?.shopSlug}`);
 			}
 		} else {
