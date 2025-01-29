@@ -1,7 +1,6 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import {
-	Button,
 	Col,
 	Form,
 	FormInstance,
@@ -9,12 +8,10 @@ import {
 	Row,
 	Select,
 	SelectProps,
-	Spin,
-	Tooltip
+	Spin
 } from 'antd';
 import { MehOutlined } from '@ant-design/icons';
 import { StoreValue } from 'antd/es/form/interface';
-import { BsPlusSquare } from 'react-icons/bs';
 import { getProductsData, updateCalculations } from '@/components/admin/utils';
 
 type AddItemFormListFn = (
@@ -41,7 +38,6 @@ const SearchProducts = ({
 	const [productsOptions, setProductsOptions] = useState<
 		SelectProps['options']
 	>([]);
-	const [search, setSearch] = useState<string>('');
 	const [isSearching, setIsSearching] = useState(false);
 	const [hasSearched, setHasSearched] = useState(false);
 	const [productsData, setProductsData] = useState<ProductVariant[]>([]);
@@ -86,12 +82,6 @@ const SearchProducts = ({
 		}
 	};
 
-	const handleChange = (newValue: string) => {
-		setSearch(newValue);
-		const product = productsData?.find(p => p.id === newValue);
-		setSelectedProduct(product as ProductVariantWithStock);
-	};
-
 	const handleAddProduct = (add: AddItemFormListFn) => {
 		if (selectedProduct) {
 			if (!isQuote) {
@@ -128,13 +118,23 @@ const SearchProducts = ({
 				totalPrice: selectedProduct.price
 			});
 			updateCalculations(form);
-			setSelectedProduct(null);
-			setSearch('');
+		}
+	};
+
+	const handleSelect = (newValue: string) => {
+		const product = productsData?.find(p => p.id === newValue);
+		setSelectedProduct(product as ProductVariantWithStock);
+	};
+
+	useEffect(() => {
+		if (selectedProduct) {
+			handleAddProduct(add);
 			setHasSearched(false);
 			setProductsOptions([]);
 			setProductsData([]);
+			setSelectedProduct(null);
 		}
-	};
+	}, [selectedProduct]);
 
 	const searchingOrNoContent = isSearching ? (
 		<div className='flex justify-center text-center'>
@@ -151,18 +151,21 @@ const SearchProducts = ({
 
 	return (
 		<Row gutter={8} wrap={false}>
-			<Col xs={23} sm={12} lg={8}>
-				<Form.Item name='product' label='Buscar producto'>
+			<Col span={24}>
+				<Form.Item
+					name='product'
+					label='Buscar producto'
+					style={{ maxWidth: 500 }}
+				>
 					<Select
 						allowClear
 						showSearch
-						value={search}
 						placeholder='Nombre o código del producto'
 						defaultActiveFirstOption={false}
 						suffixIcon={null}
 						filterOption={false}
 						onSearch={handleSearch}
-						onChange={handleChange}
+						onSelect={handleSelect}
 						notFoundContent={searchingOrNoContent}
 						options={(productsOptions || []).map(d => ({
 							value: d.value,
@@ -170,21 +173,6 @@ const SearchProducts = ({
 						}))}
 					/>
 				</Form.Item>
-			</Col>
-			<Col style={{ display: 'flex', alignItems: 'center' }}>
-				<Tooltip title='Agregar producto'>
-					<Button
-						type='text'
-						icon={
-							<BsPlusSquare
-								size={22}
-								color='#0D6EFD'
-								style={{ display: 'flex', alignItems: 'center' }}
-							/>
-						}
-						onClick={() => handleAddProduct(add)}
-					/>
-				</Tooltip>
 			</Col>
 		</Row>
 	);
