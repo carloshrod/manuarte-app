@@ -1,4 +1,4 @@
-import { DatePicker, Form, Select } from 'antd';
+import { Form, Select } from 'antd';
 import { ReactNode } from 'react';
 import {
 	FOOTER_PRODUCTS_INPUTS_PROPS,
@@ -31,18 +31,7 @@ const DrawerFormFooter = ({ isQuote, children }: DrawerFormFooterProps) => {
 								<Form.Item name='status' label='Estado' layout='horizontal'>
 									<Select options={statusOptions} />
 								</Form.Item>
-								{isQuote ? (
-									<Form.Item
-										name='dueDate'
-										label='Vencimiento'
-										layout='horizontal'
-									>
-										<DatePicker
-											style={{ width: '100%' }}
-											placeholder='Seleccione una fecha...'
-										/>
-									</Form.Item>
-								) : (
+								{!isQuote ? (
 									<Form.Item
 										name='paymentMethod'
 										label='Método de Pago'
@@ -50,7 +39,7 @@ const DrawerFormFooter = ({ isQuote, children }: DrawerFormFooterProps) => {
 									>
 										<Select options={paymentMethodOptions} />
 									</Form.Item>
-								)}
+								) : null}
 							</>
 						) : index === 5 ? (
 							// Calculation Inputs

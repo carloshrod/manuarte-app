@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { Button, Divider, Form } from 'antd';
 import { useSelector } from 'react-redux';
-import moment from 'moment';
 import CustomerInfoInputs from '../../common/input-data/CustomerInfoInputs';
 import ProductFormList from '../../common/input-data/ProductFormList';
 import DrawerFormFooter from '../../common/input-data/DrawerFormFooter';
@@ -34,7 +33,6 @@ const QuoteForm = () => {
 
 			const preparedFields = {
 				...fieldsData,
-				dueDate: moment(fieldsData?.dueDate) ?? undefined,
 				items: fieldsData?.items?.map((item: QuoteItem) => {
 					return {
 						...item,

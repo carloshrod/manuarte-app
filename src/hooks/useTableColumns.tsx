@@ -10,6 +10,7 @@ import CustomersActions from '@/components/admin/users/CustomersActions';
 import useTable from './useTable';
 import {
 	BILLING_STATUS_MAP,
+	formatCurrency,
 	formatToTitleCase,
 	PAYMENT_METHOD_MAP,
 	QUOTE_STATUS_MAP
@@ -41,6 +42,7 @@ const useTableColumns = () => {
 			dataIndex: 'name',
 			key: 'name',
 			...getColumnSearchProps('name'),
+			render: value => formatToTitleCase(value),
 			width: 120
 		},
 		{
@@ -256,7 +258,7 @@ const useTableColumns = () => {
 			],
 			onFilter: (value, record) => record.status.indexOf(value as string) === 0,
 			render: value => QUOTE_STATUS_MAP[value],
-			width: 120
+			width: 140
 		},
 		{
 			title: 'CLIENTE',
@@ -265,21 +267,21 @@ const useTableColumns = () => {
 			...getColumnSearchProps('customerName'),
 			render: (value: string = 'Consumidor final') =>
 				value ? formatToTitleCase(value) : 'Consumidor final',
-			width: 280
+			width: 300
 		},
 		{
-			title: 'FECHA DE VENCIMIENTO',
-			dataIndex: 'dueDate',
-			key: 'dueDate',
+			title: 'FECHA',
+			dataIndex: 'updatedDate',
+			key: 'updatedDate',
 			sorter: (a: Quote, b: Quote) =>
-				moment(a?.dueDate).valueOf() - moment(b?.dueDate).valueOf(),
+				moment(a?.updatedDate).valueOf() - moment(b?.updatedDate).valueOf(),
 			sortDirections: ['descend', 'ascend'],
 			render: (value: string) => (
 				<span>
 					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
 				</span>
 			),
-			width: 240
+			width: 140
 		},
 		{
 			title: 'PDF',
@@ -314,7 +316,7 @@ const useTableColumns = () => {
 			key: 'actions',
 			className: 'actions',
 			render: (_, record: Quote) => <QuotesActions record={record} />,
-			width: 100
+			width: 140
 		}
 	];
 
@@ -443,13 +445,86 @@ const useTableColumns = () => {
 		}
 	];
 
+	const stockItemsColumns: TableColumnsType<StockItem> = [
+		{
+			title: 'PRODUCTO',
+			dataIndex: 'productName',
+			key: 'productName',
+			...getColumnSearchProps('productName'),
+			render: value => formatToTitleCase(value),
+			width: 250
+		},
+		{
+			title: 'PRESENTACIÓN',
+			dataIndex: 'productVariantName',
+			key: 'productVariantName',
+			...getColumnSearchProps('productVariantName'),
+			render: value => formatToTitleCase(value),
+			width: 120
+		},
+		{
+			title: 'MONEDA',
+			dataIndex: 'currency',
+			key: 'currency',
+			width: 90
+		},
+		{
+			title: 'PRECIO',
+			dataIndex: 'price',
+			key: 'price',
+			render: (value: string) => formatCurrency(value) ?? '--',
+			width: 100
+		},
+		{
+			title: 'CANTIDAD',
+			dataIndex: 'quantity',
+			key: 'quantity',
+			width: 100
+		},
+		{
+			title: 'COSTO',
+			dataIndex: 'cost',
+			key: 'cost',
+			render: (value: string) => formatCurrency(value) ?? '--',
+			width: 100
+		},
+		{
+			title: 'COSTO TOTAL',
+			dataIndex: 'cost',
+			key: 'cost',
+			render: (value, record) => {
+				if (!value || !record.quantity) return '$0';
+
+				const totalCost = Number(value) * Number(record.quantity);
+
+				return formatCurrency(totalCost);
+			},
+			width: 100
+		},
+		{
+			title: 'FECHA DE ACTUALIZACIÓN',
+			dataIndex: 'updatedDate',
+			key: 'updatedDate',
+			sorter: (a: StockItem, b: StockItem) =>
+				moment(a?.updatedDate).valueOf() - moment(b?.updatedDate).valueOf(),
+			sortDirections: ['descend', 'ascend'],
+			render: (value: string) => (
+				<span>
+					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
+				</span>
+			),
+			width: 150
+		}
+	];
+
 	return {
 		productColumns,
 		productCategoryColumns,
 		staffColumns,
 		customerColumns,
 		quoteColumns,
-		billingColumns
+		billingColumns,
+		stockItemsColumns
 	};
 };
 
