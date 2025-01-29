@@ -146,7 +146,6 @@ interface Quote {
 	dni: string;
 	email: string;
 	phoneNumber: string;
-	dueDate: string;
 	updatedDate: string;
 	items: QuoteItem[];
 	shipping: number;
@@ -157,7 +156,6 @@ interface SubmitQuoteDto extends SubmitCustomerDto {
 	shopId?: string;
 	items: ProductVariantWithStock[];
 	status: QuoteStatus;
-	dueDate: string;
 	shipping: string;
 	subtotal?: string;
 	total?: string;
@@ -196,13 +194,34 @@ interface SubmitBillingDto extends SubmitCustomerDto {
 	currency: string;
 }
 
+interface StockItem {
+	id: string;
+	productName: string;
+	productVariantName: string;
+	productVariantId: string;
+	currency: string;
+	price: number;
+	quantity: number;
+	cost: number;
+	updatedDate: string;
+}
+
+interface StockItemDto {
+	productVariantId: string;
+	price: number;
+	quantity: number;
+	cost: number;
+	isSubjectToVAT: boolean;
+}
+
 type DataTable =
 	| ProductVariant
 	| ProductCategory
 	| Staff
 	| Customer
 	| Quote
-	| Billing;
+	| Billing
+	| StockItem;
 
 interface UIModalState {
 	isOpen: boolean;
@@ -237,5 +256,8 @@ interface RootState {
 	};
 	billing: {
 		billings: Billing[];
+	};
+	stock: {
+		stockItems: StockItem[];
 	};
 }
