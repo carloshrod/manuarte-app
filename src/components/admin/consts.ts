@@ -14,7 +14,6 @@ export const CUSTOMER_INPUTS_PROPS = [
 	{
 		name: 'email',
 		label: 'Email',
-		ruleMsg: 'El email es requerido',
 		placeholder: 'Ingresa el email'
 	},
 	{

@@ -11,7 +11,7 @@ const CustomerInfoInputs = () => {
 						label={item.label}
 						rules={[
 							{
-								required: true,
+								required: 'ruleMsg' in item,
 								message: item.ruleMsg
 							}
 						]}
