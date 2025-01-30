@@ -1,11 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import { formatToTitleCase, PAYMENT_METHOD_MAP } from '@/utils/utils';
 import { Descriptions, DescriptionsProps, Divider } from 'antd';
 import moment from 'moment';
-import PDFTable from '../../quotes/QuotePDF/PDFTable';
-import { BillingStatus } from '@/types/enums';
+import PDFTable from '../../common/display-data/PDFTable';
 import TermsCol from '../../Terms/TermsCol';
 import TermsEcu from '../../Terms/TermsEcu';
+import { formatToTitleCase, PAYMENT_METHOD_MAP } from '@/utils/utils';
+import { BillingStatus } from '@/types/enums';
 
 const BillingPDF = ({ billing, pdfRef }: { billing: Billing; pdfRef: any }) => {
 	const billingInfo: DescriptionsProps['items'] = [
@@ -44,7 +44,9 @@ const BillingPDF = ({ billing, pdfRef }: { billing: Billing; pdfRef: any }) => {
 		{
 			key: '5',
 			label: 'Método de Pago:',
-			children: formatToTitleCase(PAYMENT_METHOD_MAP[billing?.paymentMethod]),
+			children: billing?.paymentMethod?.includes('TRANSFER')
+				? 'Transferencia'
+				: formatToTitleCase(PAYMENT_METHOD_MAP[billing?.paymentMethod]),
 			span: 3
 		}
 	];

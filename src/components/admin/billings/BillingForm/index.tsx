@@ -65,7 +65,6 @@ const BillingForm = () => {
 			initialValues={{
 				items: [],
 				status: 'PAID',
-				paymentMethod: 'CASH',
 				subtotal: 0,
 				shipping: 0,
 				total: 0
@@ -83,7 +82,7 @@ const BillingForm = () => {
 				isQuote={false}
 			/>
 
-			<DrawerFormFooter isQuote={false}>
+			<DrawerFormFooter isQuote={false} shopSlug={params?.shopSlug as string}>
 				<CalculationInputs form={form} />
 			</DrawerFormFooter>
 

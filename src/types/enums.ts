@@ -7,6 +7,7 @@ export enum ModalContent {
 	permissions = 'permissions',
 	customers = 'customers',
 	billings = 'billings',
+	stockItems = 'stockItems',
 	logout = 'logout'
 }
 
@@ -30,10 +31,18 @@ export enum BillingStatus {
 }
 
 export enum PaymentMethod {
-	BANK_TRANSFER = 'BANK_TRANSFER',
 	CASH = 'CASH',
-	CREDIT_CARD = 'CREDIT_CARD',
+	BANK_TRANSFER = 'BANK_TRANSFER',
+	BANK_TRANSFER_RT = 'BANK_TRANSFER_RT',
+	BANK_TRANSFER_RBT = 'BANK_TRANSFER_RBT',
 	DEBIT_CARD = 'DEBIT_CARD',
+	CREDIT_CARD = 'CREDIT_CARD',
+	NEQUI = 'NEQUI',
+	BOLD = 'BOLD',
+	EFECTY = 'EFECTY',
+	WOMPI = 'WOMPI',
+	PAYPHONE = 'PAYPHONE',
 	PAYPAL = 'PAYPAL',
+	BANK_DEPOSIT = 'BANK_DEPOSIT',
 	OTHER = 'OTHER'
 }

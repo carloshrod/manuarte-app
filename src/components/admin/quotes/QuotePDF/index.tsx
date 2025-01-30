@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import { Descriptions, DescriptionsProps, Divider } from 'antd';
-import PDFTable from './PDFTable';
 import moment from 'moment';
-import { formatToTitleCase } from '@/utils/utils';
+import PDFTable from '../../common/display-data/PDFTable';
 import TermsCol from '../../Terms/TermsCol';
 import TermsEcu from '../../Terms/TermsEcu';
+import { formatToTitleCase } from '@/utils/utils';
 
 const QuotePDF = ({ quote, pdfRef }: { quote: Quote; pdfRef: any }) => {
 	const quoteInfo: DescriptionsProps['items'] = [

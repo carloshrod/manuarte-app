@@ -131,22 +131,33 @@ export const QUOTE_CALCULATIONS_INPUTS_PROPS = [
 	}
 ];
 
-export const quoteStatusOptions = [
+export const QUOTE_STATUS_OPTIONS = [
 	{ value: 'PENDING', label: 'Por pagar' },
 	{ value: 'ACCEPTED', label: 'Aceptada' },
 	{ value: 'REVISION', label: 'En revisión' }
 ];
 
-export const billingStatusOptions = [
+export const BILLING_STATUS_OPTIONS = [
 	{ value: 'PAID', label: 'Pagada' },
 	{ value: 'PENDING_PAYMENT', label: 'Pago pendiente' }
 ];
 
-export const paymentMethodOptions = [
+export const COL_PAYMENT_METHOD_OPTIONS = [
 	{ value: 'CASH', label: 'Efectivo' },
-	{ value: 'BANK_TRANSFER', label: 'Transferencia' },
-	{ value: 'DEBIT_CARD', label: 'Tarjeta De Débito' },
-	{ value: 'CREDIT_CARD', label: 'Tarjeta De Crédito' },
-	{ value: 'PAYPAL', label: 'Paypal' },
+	{ value: 'BANK_TRANSFER_RT', label: 'Transferencia RT' },
+	{ value: 'BANK_TRANSFER_RBT', label: 'Transferencia Robert' },
+	{ value: 'NEQUI', label: 'Nequi' },
+	{ value: 'BOLD', label: 'Bold' },
+	{ value: 'EFECTY', label: 'Efecty' },
+	{ value: 'WOMPI', label: 'Wompi' },
+	{ value: 'OTHER', label: 'Otro' }
+];
+
+export const ECU_PAYMENT_METHOD_OPTIONS = [
+	{ value: 'CASH', label: 'Efectivo' },
+	{ value: 'BANK_TRANSFER_RT', label: 'Transferencia RT' },
+	{ value: 'BANK_TRANSFER_RBT', label: 'Transferencia Robert' },
+	{ value: 'PAYPHONE', label: 'PayPhone' },
+	{ value: 'BANK_DEPOSIT', label: 'Depósito' },
 	{ value: 'OTHER', label: 'Otro' }
 ];

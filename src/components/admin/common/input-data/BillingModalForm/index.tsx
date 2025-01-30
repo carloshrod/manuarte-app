@@ -4,12 +4,13 @@ import { useSelector } from 'react-redux';
 import FormButtons from '../../ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import {
-	billingStatusOptions,
-	paymentMethodOptions
+	BILLING_STATUS_OPTIONS,
+	COL_PAYMENT_METHOD_OPTIONS,
+	ECU_PAYMENT_METHOD_OPTIONS
 } from '@/components/admin/consts';
 import { formatToTitleCase } from '@/utils/utils';
 import { ROUTES } from '@/utils/routes';
-import { BillingStatus, PaymentMethod } from '@/types/enums';
+import { BillingStatus } from '@/types/enums';
 import { useEffect } from 'react';
 import { quoteServices } from '@/services/quoteServices';
 
@@ -68,8 +69,7 @@ const BillingModalForm = () => {
 			form={form}
 			name='form_in_modal'
 			initialValues={{
-				status: BillingStatus.PAID,
-				paymentMethod: PaymentMethod.CASH
+				status: BillingStatus.PAID
 			}}
 			onFinish={values => onSubmit(values)}
 		>
@@ -88,11 +88,35 @@ const BillingModalForm = () => {
 				</div>
 			</div>
 
-			<Form.Item name='status' label='Estado'>
-				<Select options={billingStatusOptions} />
+			<Form.Item
+				name='status'
+				label='Estado'
+				rules={[
+					{
+						required: true,
+						message: 'El estado de la factura es requerido'
+					}
+				]}
+			>
+				<Select options={BILLING_STATUS_OPTIONS} />
 			</Form.Item>
-			<Form.Item name='paymentMethod' label='Método de Pago'>
-				<Select options={paymentMethodOptions} />
+			<Form.Item
+				name='paymentMethod'
+				label='Método de Pago'
+				rules={[
+					{
+						required: true,
+						message: 'El método de pago es requerido'
+					}
+				]}
+			>
+				<Select
+					options={
+						!params?.shopSlug?.includes('quito')
+							? COL_PAYMENT_METHOD_OPTIONS
+							: ECU_PAYMENT_METHOD_OPTIONS
+					}
+				/>
 			</Form.Item>
 
 			<FormButtons

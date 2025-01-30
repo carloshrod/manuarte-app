@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { Button, QRCode, Space, TableColumnsType } from 'antd';
 import { BsFileEarmarkPdf } from 'react-icons/bs';
 import moment from 'moment';
@@ -17,10 +17,12 @@ import {
 } from '@/utils/utils';
 import QuotesActions from '@/components/admin/quotes/QuotesActions';
 import BillingsActions from '@/components/admin/billings/BillingsActions';
+import { COL_PAYMENT_METHOD_FILTER, ECU_PAYMENT_METHOD_FILTER } from './utils';
 
 const useTableColumns = () => {
 	const { getColumnSearchProps } = useTable();
 	const pathname = usePathname();
+	const params = useParams();
 
 	const productColumns: TableColumnsType<ProductVariant> = [
 		{
@@ -354,32 +356,9 @@ const useTableColumns = () => {
 			title: 'MÉTODO DE PAGO',
 			dataIndex: 'paymentMethod',
 			key: 'paymentMethod',
-			filters: [
-				{
-					text: 'EFECTIVO',
-					value: 'CASH'
-				},
-				{
-					text: 'TRANSFERENCIA',
-					value: 'BANK_TRANSFER'
-				},
-				{
-					text: 'TARJETA DE DÉBITO',
-					value: 'DEBIT_CARD'
-				},
-				{
-					text: 'TARJETA DE CRÉDITO',
-					value: 'CREDIT_CARD'
-				},
-				{
-					text: 'PAYPAL',
-					value: 'PAYPAL'
-				},
-				{
-					text: 'OTRO',
-					value: 'OTHER'
-				}
-			],
+			filters: !params?.shopSlug?.includes('quito')
+				? COL_PAYMENT_METHOD_FILTER
+				: ECU_PAYMENT_METHOD_FILTER,
 			onFilter: (value, record) =>
 				record.paymentMethod.indexOf(value as string) === 0,
 			render: value => PAYMENT_METHOD_MAP[value],

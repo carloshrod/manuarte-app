@@ -1,9 +1,19 @@
 import { ROUTES } from './routes';
 
+const units = ['cc', 'kg', 'mm', 'cm', 'm', 'l', 'ml'];
+
 export const formatToTitleCase = (str: string) => {
 	if (!str) return null;
 
+	const unitSet = new Set(units.map(unit => unit.toLowerCase()));
+
+	const isUnit = (word: string) => unitSet.has(word.toLowerCase());
+
 	if (!/\s/.test(str)) {
+		if (isUnit(str)) {
+			return str.toLowerCase();
+		}
+
 		return (
 			`${str?.charAt(0).toUpperCase()}${str?.slice(1).toLowerCase()}` || ''
 		);
@@ -11,8 +21,10 @@ export const formatToTitleCase = (str: string) => {
 
 	return str
 		.split(' ')
-		.map(
-			word => `${word?.charAt(0).toUpperCase()}${word?.slice(1).toLowerCase()}`
+		.map(word =>
+			isUnit(word)
+				? word.toLowerCase()
+				: `${word?.charAt(0).toUpperCase()}${word?.slice(1).toLowerCase()}`
 		)
 		.join(' ');
 };
@@ -26,8 +38,8 @@ export const formatCurrency = (amount: number | string) => {
 	const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
 	return decimalPart && +decimalPart > 0
-		? `${formattedInteger},${decimalPart.padEnd(2, '0')}`
-		: formattedInteger;
+		? `$${formattedInteger},${decimalPart.padEnd(2, '0')}`
+		: `$${formattedInteger}`;
 };
 
 export const formatInputCurrency = (value: number | undefined) => {
@@ -59,11 +71,19 @@ export const BILLING_STATUS_MAP: Record<string, string> = {
 };
 
 export const PAYMENT_METHOD_MAP: Record<string, string> = {
-	BANK_TRANSFER: 'TRANSFERENCIA',
 	CASH: 'EFECTIVO',
-	CREDIT_CARD: 'TARJETA DE CRÉDITO',
-	DEBIT_CARD: 'TARJETA DE DÉBITO',
+	BANK_TRANSFER: 'TRANSFERENCIA',
+	BANK_TRANSFER_RT: 'TRANSFERENCIA RT',
+	BANK_TRANSFER_RBT: 'TRANSFERENCIA RBT',
+	DEBIT_CARD: 'TARJETA DÉBITO',
+	CREDIT_CARD: 'TARJETA CRÉDITO',
+	NEQUI: 'NEQUI',
+	BOLD: 'BOLD',
+	EFECTY: 'EFECTY',
+	WOMPI: 'WOMPI',
+	PAYPHONE: 'PAYPHONE',
 	PAYPAL: 'PAYPAL',
+	BANK_DEPOSIT: 'DEPÓSITO',
 	OTHER: 'OTRO'
 };
 
@@ -123,7 +143,8 @@ export const AUTH_RULES = (
 				ROUTES.BILLING_SHOPS,
 				ROUTES.BILLINGS,
 				ROUTES.BILLING_DETAIL,
-				ROUTES.STOCK,
+				ROUTES.STOCKS,
+				ROUTES.STOCK_ITEMS,
 				ROUTES.STOCK_TRANSACTIONS
 			]
 		},
@@ -134,13 +155,17 @@ export const AUTH_RULES = (
 				ROUTES.QUOTE_DETAIL,
 				`${ROUTES.BILLING_SHOPS}/${shop}`,
 				ROUTES.BILLING_DETAIL,
-				ROUTES.STOCK,
+				`${ROUTES.STOCKS}/${shop}`,
 				ROUTES.STOCK_TRANSACTIONS
 			]
 		},
 		bodeguero: {
 			defaultPath: ROUTES.PRODUCTS,
-			allowedPaths: [ROUTES.PRODUCTS, ROUTES.STOCK, ROUTES.STOCK_TRANSACTIONS]
+			allowedPaths: [
+				ROUTES.PRODUCTS,
+				`${ROUTES.STOCKS}/${shop}`,
+				ROUTES.STOCK_TRANSACTIONS
+			]
 		}
 	};
 };
