@@ -2,12 +2,14 @@ import { Button, Space, Tooltip } from 'antd';
 import React from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import { IoKeyOutline } from 'react-icons/io5';
+import { TbCancel } from 'react-icons/tb';
 import PopConfirm from '../PopConfirm';
 
 interface TableActionsProps {
 	onEdit?: () => void;
-	onDelete: () => void;
 	onEditPermissions?: () => void;
+	onDelete?: () => void;
+	onCancel?: () => void;
 	popTitle: string;
 	popDescription?: string;
 	isEditable?: boolean;
@@ -18,14 +20,13 @@ const TableActions = ({
 	onEdit,
 	onEditPermissions,
 	onDelete,
+	onCancel,
 	popTitle,
 	popDescription = '¿Estás seguro de que quieres borrar este elemento?',
 	isEditable = true,
 	isDeletable = true
 }: TableActionsProps) => {
-	const onDeleteTooltip = popDescription.includes('anular')
-		? 'Anular'
-		: 'Eliminar';
+	const isCancel = popDescription.includes('anular');
 
 	return (
 		<Space size='small'>
@@ -44,6 +45,7 @@ const TableActions = ({
 					/>
 				</Tooltip>
 			) : null}
+
 			{onEditPermissions ? (
 				<Tooltip title={isEditable ? 'Editar permisos' : ''}>
 					<Button
@@ -59,24 +61,46 @@ const TableActions = ({
 					/>
 				</Tooltip>
 			) : null}
-			<PopConfirm
-				title={popTitle}
-				description={popDescription}
-				onConfirm={onDelete}
-			>
-				<Tooltip title={isDeletable ? onDeleteTooltip : ''}>
-					<Button
-						type='text'
-						icon={
-							<AiOutlineDelete
-								size={20}
-								color={isDeletable ? '#E53535' : '#FCBABA'}
-							/>
-						}
-						disabled={!isDeletable}
-					/>
-				</Tooltip>
-			</PopConfirm>
+
+			{onDelete ? (
+				<PopConfirm
+					title={popTitle}
+					description={popDescription}
+					onConfirm={onDelete}
+				>
+					<Tooltip title={isDeletable || !isCancel ? 'Eliminar' : ''}>
+						<Button
+							type='text'
+							icon={
+								<AiOutlineDelete
+									size={20}
+									color={isDeletable || !isCancel ? '#E53535' : '#FCBABA'}
+								/>
+							}
+						/>
+					</Tooltip>
+				</PopConfirm>
+			) : null}
+
+			{onCancel ? (
+				<PopConfirm
+					title={popTitle}
+					description={popDescription}
+					onConfirm={onCancel}
+				>
+					<Tooltip title={isDeletable ? 'Anular' : ''}>
+						<Button
+							type='text'
+							icon={
+								<TbCancel
+									size={20}
+									color={isDeletable ? '#E53535' : '#FCBABA'}
+								/>
+							}
+						/>
+					</Tooltip>
+				</PopConfirm>
+			) : null}
 		</Space>
 	);
 };

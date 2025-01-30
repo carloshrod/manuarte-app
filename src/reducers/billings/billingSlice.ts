@@ -29,10 +29,21 @@ const billingSlice = createSlice({
 			state.billings = state.billings.map(billing =>
 				billing.id === canceledBilling.id ? canceledBilling : billing
 			);
+		},
+
+		removeBilling: (state, action) => {
+			state.billings = state.billings.filter(
+				billing => billing.id !== action.payload
+			);
 		}
 	}
 });
 
-export const { setBillings, addBilling, updateBilling, cancelBilling } =
-	billingSlice.actions;
+export const {
+	setBillings,
+	addBilling,
+	updateBilling,
+	cancelBilling,
+	removeBilling
+} = billingSlice.actions;
 export default billingSlice.reducer;

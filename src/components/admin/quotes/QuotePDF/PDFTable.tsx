@@ -13,7 +13,7 @@ const PDFTable = ({ items, shipping = 0 }: PDFTableProps) => {
 	const total = subtotal + shipping;
 
 	return (
-		<div>
+		<div className='mb-16'>
 			<table className='w-full border-collapse text-left'>
 				<thead>
 					<tr className='border-b-2'>
@@ -42,7 +42,7 @@ const PDFTable = ({ items, shipping = 0 }: PDFTableProps) => {
 						<td className='px-4 py-2 border-b-2'>{formatCurrency(subtotal)}</td>
 					</tr>
 					<tr>
-						<td className='px-4 py-2 font-bold border-b-2'>Flete</td>
+						<td className='px-4 py-2 font-bold border-b-2'>FLETE</td>
 						<td className='px-4 py-2 border-b-2'>
 							{formatCurrency(shipping) ?? 0}
 						</td>

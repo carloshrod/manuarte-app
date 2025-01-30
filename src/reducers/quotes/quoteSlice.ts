@@ -25,7 +25,7 @@ const quoteSlice = createSlice({
 		},
 
 		removeQuote: (state, action) => {
-			state.quotes = state.quotes.filter(item => item.id !== action.payload);
+			state.quotes = state.quotes.filter(quote => quote.id !== action.payload);
 		}
 	}
 });
