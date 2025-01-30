@@ -22,20 +22,19 @@ export const productServices = {
 		}
 	},
 
-	getProductsWithStockInfo: async ({
+	searchProductVariants: async ({
 		shopSlug,
-		search
+		search,
+		missingProducts = false
 	}: {
 		shopSlug: string;
 		search: string;
+		missingProducts?: boolean;
 	}) => {
 		try {
-			const res = await axiosPrivate.get(
-				`${ENV.API.PRODUCT_VARIANTS}/stock-info`,
-				{
-					params: { shopSlug, search }
-				}
-			);
+			const res = await axiosPrivate.get(`${ENV.API.PRODUCT_VARIANTS}/search`, {
+				params: { shopSlug, search, missingProducts }
+			});
 
 			return res.data;
 		} catch (error) {
