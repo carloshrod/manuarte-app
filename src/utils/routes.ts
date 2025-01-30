@@ -10,6 +10,7 @@ export const ROUTES = {
 	BILLING_SHOPS: '/admin/facturas',
 	BILLINGS: '/admin/facturas/[shopSlug]',
 	BILLING_DETAIL: '/admin/facturas/[shopSlug]/[serialNumber]',
-	STOCK: '/admin/stock',
+	STOCKS: '/admin/stock',
+	STOCK_ITEMS: '/admin/stock/[shopSlug]',
 	STOCK_TRANSACTIONS: '/admin/movimientos-stock'
 };
