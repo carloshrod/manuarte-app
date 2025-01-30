@@ -15,7 +15,7 @@ const {
 	USERS,
 	QUOTE_SHOPS,
 	BILLING_SHOPS,
-	STOCK,
+	STOCKS,
 	STOCK_TRANSACTIONS
 } = ROUTES;
 
@@ -59,6 +59,7 @@ export default getMenuItems;
 export const allMenuItems = (shop?: string) => {
 	const QUOTE_PATH = !shop ? QUOTE_SHOPS : `${QUOTE_SHOPS}/${shop}`;
 	const BILLING_PATH = !shop ? BILLING_SHOPS : `${BILLING_SHOPS}/${shop}`;
+	const STOCK_PATH = !shop ? STOCKS : `${STOCKS}/${shop}`;
 
 	return [
 		{
@@ -94,8 +95,8 @@ export const allMenuItems = (shop?: string) => {
 		{
 			key: '6',
 			icon: <GiCardboardBox style={{ fontSize: 20 }} />,
-			label: <Link href={STOCK}>Stock</Link>,
-			path: STOCK
+			label: <Link href={STOCK_PATH}>Stock</Link>,
+			path: STOCK_PATH
 		},
 		{
 			key: '7',
