@@ -10,13 +10,13 @@ import {
 
 interface DrawerFormFooterProps {
 	isQuote: boolean;
-	shopSlug: string;
+	shopSlug?: string;
 	children: ReactNode;
 }
 
 const DrawerFormFooter = ({
 	isQuote,
-	shopSlug,
+	shopSlug = '',
 	children
 }: DrawerFormFooterProps) => {
 	const statusOptions = isQuote ? QUOTE_STATUS_OPTIONS : BILLING_STATUS_OPTIONS;
