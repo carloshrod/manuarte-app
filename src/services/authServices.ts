@@ -2,6 +2,8 @@ import { ENV } from '@/config/env';
 import axios from './axios';
 import { jwtDecode } from 'jwt-decode';
 
+export const runtime = 'nodejs';
+
 export const authServices = {
 	login: async (body: SubmitLoginDto) => {
 		return await axios.post(`${ENV.API.AUTH}/login`, body);

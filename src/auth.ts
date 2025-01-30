@@ -5,6 +5,8 @@ import { authConfig } from './config/auth';
 import { jwtDecode } from 'jwt-decode';
 import { ROUTES } from './utils/routes';
 
+export const runtime = 'nodejs';
+
 export const {
 	handlers: { GET, POST },
 	signIn,
@@ -67,8 +69,8 @@ export const {
 			}
 
 			// if (token.accessTokenExpires) {
-			// 	const expirationTimestamp = token.accessTokenExpires; // Milisegundos
-			// 	const expirationDate = new Date(expirationTimestamp as string); // Convertir a fecha legible
+			// 	const expirationTimestamp = token.accessTokenExpires;
+			// 	const expirationDate = new Date(expirationTimestamp as string);
 			// 	console.log(
 			// 		'********************* El accessToken vence el:',
 			// 		expirationDate.toString()

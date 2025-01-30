@@ -5,6 +5,8 @@ import { getSession } from 'next-auth/react';
 // import { authServices } from './authServices';
 // import { doLogout } from '@/app/actions';
 
+export const runtime = 'nodejs';
+
 const BASE_URL = ENV.BASE_URL;
 
 export default axios.create({
