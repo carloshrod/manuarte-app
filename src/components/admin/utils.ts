@@ -20,24 +20,31 @@ export const updateCalculations = (form: FormInstance) => {
 export const getProductsData = async ({
 	currentValue,
 	newValue,
-	shopSlug
+	shopSlug,
+	missingProducts
 }: {
 	currentValue: string;
 	newValue: string;
 	shopSlug: string;
+	missingProducts?: boolean;
 }) => {
 	try {
-		const data = await productServices.getProductsWithStockInfo({
+		const data = await productServices.searchProductVariants({
 			shopSlug: shopSlug as string,
-			search: newValue
+			search: newValue,
+			missingProducts
 		});
 
 		let formattedData;
 		if (currentValue === newValue) {
-			formattedData = data.map((item: any) => ({
-				value: item.id,
-				label: `${item.productName} ${item.name} - (${item.quantity} unds)`
-			}));
+			formattedData = data.map((item: any) => {
+				const quantity = 'quantity' in item ? `- (${item?.quantity} unds)` : '';
+
+				return {
+					value: item.id,
+					label: `${item.productName} ${item.name} ${quantity}`
+				};
+			});
 		}
 
 		return { formattedData, data };
