@@ -8,6 +8,7 @@ import PermissionsForm from '@/components/admin/users/PermissionsForm';
 import CustomersForm from '@/components/admin/users/CustomersForm';
 import ConfirmLogout from '@/components/admin/common/layout/SidebarMenu/ConfirmLogout';
 import BillingModalForm from '@/components/admin/common/input-data/BillingModalForm';
+import StockItemForm from '@/components/admin/stock/StockItemForm';
 
 const useModal = () => {
 	const MODAL_CONTENT: Record<ModalContent, ReactNode> = {
@@ -18,6 +19,7 @@ const useModal = () => {
 		[ModalContent.permissions]: <PermissionsForm />,
 		[ModalContent.customers]: <CustomersForm />,
 		[ModalContent.billings]: <BillingModalForm />,
+		[ModalContent.stockItems]: <StockItemForm />,
 		[ModalContent.logout]: <ConfirmLogout />
 	};
 
