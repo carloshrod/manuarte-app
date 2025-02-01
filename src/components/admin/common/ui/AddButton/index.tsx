@@ -1,3 +1,4 @@
+'use client';
 import { openModal } from '@/reducers/ui/uiSlice';
 import { ModalContent } from '@/types/enums';
 import { Button } from 'antd';
