@@ -5,6 +5,7 @@ import productCategoriesReducer from './productCategories/productCategorySlice';
 import usersReducer from './users/userSlice';
 import quotesReducer from './quotes/quoteSlice';
 import billingsReducer from './billings/billingSlice';
+import stocksReducer from './stockItems/stockItemSlice';
 
 const store = configureStore({
 	reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
 		productCategory: productCategoriesReducer,
 		user: usersReducer,
 		quote: quotesReducer,
-		billing: billingsReducer
+		billing: billingsReducer,
+		stock: stocksReducer
 	}
 });
 

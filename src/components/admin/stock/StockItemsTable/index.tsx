@@ -15,7 +15,7 @@ const StockItemsTable = ({ shopSlug }: { shopSlug: string }) => {
 	const fetchStockItems = async () => {
 		setIsLoading(true);
 		if (shopSlug) {
-			const data = await stockServices.getAll(shopSlug);
+			const data = await stockServices.getAllItems(shopSlug);
 			dispatch(setStockItems(data));
 		}
 	};

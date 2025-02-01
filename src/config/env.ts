@@ -10,6 +10,7 @@ export const ENV = {
 		CUSTOMERS: `/customers`,
 		SHOPS: `/shops`,
 		QUOTES: `/quotes`,
-		BILLINGS: `/billings`
+		BILLINGS: `/billings`,
+		STOCK_ITEMS: `/stock-items`
 	}
 };
