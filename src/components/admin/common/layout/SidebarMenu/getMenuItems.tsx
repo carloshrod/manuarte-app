@@ -23,6 +23,7 @@ const getMenuItems = (session: Session) => {
 	const { user } = session ?? {};
 	const roleName = user?.roleName as string;
 	const shop = user?.shop as string;
+	const mainStock = user?.mainStock;
 	const extraPermissions = user?.extraPermissions as string[];
 
 	const roleRules = AUTH_RULES(shop)[roleName] || { allowedPaths: [] };
@@ -32,7 +33,7 @@ const getMenuItems = (session: Session) => {
 		'customer-read': USERS
 	};
 
-	const filteredItems = allMenuItems(shop).filter(item => {
+	const filteredItems = allMenuItems(shop, mainStock).filter(item => {
 		const hasRoleAccess = roleRules.allowedPaths?.includes(item.path);
 
 		const hasExtraPermissionAccess = Object.entries(permissionToPathMap).some(
@@ -56,7 +57,7 @@ const getMenuItems = (session: Session) => {
 
 export default getMenuItems;
 
-export const allMenuItems = (shop?: string) => {
+export const allMenuItems = (shop?: string, mainStock?: boolean) => {
 	const QUOTE_PATH = !shop ? QUOTE_SHOPS : `${QUOTE_SHOPS}/${shop}`;
 	const BILLING_PATH = !shop ? BILLING_SHOPS : `${BILLING_SHOPS}/${shop}`;
 	const STOCK_PATH = !shop ? STOCKS : `${STOCKS}/${shop}`;
@@ -95,7 +96,16 @@ export const allMenuItems = (shop?: string) => {
 		{
 			key: '6',
 			icon: <GiCardboardBox style={{ fontSize: 20 }} />,
-			label: <Link href={STOCK_PATH}>Stock</Link>,
+			label: (
+				<Link
+					href={{
+						pathname: STOCK_PATH,
+						query: mainStock ? { main: true } : undefined
+					}}
+				>
+					Stock
+				</Link>
+			),
 			path: STOCK_PATH
 		},
 		{

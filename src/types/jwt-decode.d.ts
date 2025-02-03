@@ -9,6 +9,7 @@ declare module 'jwt-decode' {
 			roleId: string;
 			roleName: string;
 			shop: string;
+			mainStock: boolean;
 			extraPermissions: string[];
 		};
 	}

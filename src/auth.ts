@@ -63,6 +63,7 @@ export const {
 						email: user.email,
 						roleName: decodedToken.user.roleName,
 						shop: decodedToken.user.shop,
+						mainStock: decodedToken.user.mainStock,
 						extraPermissions: decodedToken.user.extraPermissions
 					}
 				};
@@ -81,7 +82,6 @@ export const {
 				!token.accessToken ||
 				Date.now() > (token.accessTokenExpires as number)
 			) {
-				// console.log('Token expiró, intentando renovar...');
 				return await authServices.refreshTokens(token);
 			}
 

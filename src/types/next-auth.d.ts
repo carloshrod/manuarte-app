@@ -9,6 +9,7 @@ declare module 'next-auth' {
 			roleId: string;
 			roleName: string;
 			shop: string;
+			mainStock: boolean;
 			extraPermissions: string[];
 			accessToken?: string;
 			refreshToken?: string;

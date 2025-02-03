@@ -27,7 +27,6 @@ export const authServices = {
 			});
 
 			if (res.status === 200) {
-				console.log('New accessToken en services: ', res.data.accessToken);
 				const decodedToken = jwtDecode(res.data.accessToken);
 
 				return {
