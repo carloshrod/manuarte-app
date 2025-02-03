@@ -37,6 +37,7 @@ const CustomDrawer = () => {
 		<Drawer
 			title={title}
 			onClose={() => dispatch(closeDrawer())}
+			keyboard={false}
 			open={isOpen}
 			getContainer={false}
 			rootStyle={{
