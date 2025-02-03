@@ -16,6 +16,7 @@ const CalculationInputs = ({ form }: { form: FormInstance }) => {
 				>
 					<InputNumber
 						min={0}
+						controls={false}
 						formatter={value => formatInputCurrency(value)}
 						variant={item.readOnly ? 'borderless' : 'outlined'}
 						className='textRight'

@@ -8,13 +8,13 @@ const GoBack = () => {
 
 	return (
 		<Button
-			icon={<IoChevronBack size={24} />}
 			shape='circle'
 			variant='filled'
 			color='primary'
-			style={{ padding: 8 }}
 			onClick={() => router.back()}
-		/>
+		>
+			<IoChevronBack size={24} />
+		</Button>
 	);
 };
 

@@ -119,9 +119,7 @@ const ProductFormList = ({
 															variant={
 																!editableField ? 'borderless' : undefined
 															}
-															className={
-																currencyField ? 'textRight' : 'textCenter'
-															}
+															className={`textRight ${currencyField ? '' : 'extraPadding'}`}
 															style={{
 																width: '100%',
 																backgroundColor: !editableField
