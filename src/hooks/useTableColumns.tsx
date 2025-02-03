@@ -18,6 +18,7 @@ import {
 import QuotesActions from '@/components/admin/quotes/QuotesActions';
 import BillingsActions from '@/components/admin/billings/BillingsActions';
 import { COL_PAYMENT_METHOD_FILTER, ECU_PAYMENT_METHOD_FILTER } from './utils';
+import StockItemActions from '@/components/admin/stock/StockItemActions';
 
 const useTableColumns = () => {
 	const { getColumnSearchProps } = useTable();
@@ -445,7 +446,7 @@ const useTableColumns = () => {
 			title: 'MONEDA',
 			dataIndex: 'currency',
 			key: 'currency',
-			width: 90
+			width: 100
 		},
 		{
 			title: 'PRECIO',
@@ -458,7 +459,7 @@ const useTableColumns = () => {
 			title: 'CANTIDAD',
 			dataIndex: 'quantity',
 			key: 'quantity',
-			width: 100
+			width: 110
 		},
 		{
 			title: 'COSTO',
@@ -493,6 +494,13 @@ const useTableColumns = () => {
 				</span>
 			),
 			width: 150
+		},
+		{
+			title: 'ACCIONES',
+			key: 'actions',
+			className: 'actions',
+			render: (_, record: StockItem) => <StockItemActions record={record} />,
+			width: 100
 		}
 	];
 

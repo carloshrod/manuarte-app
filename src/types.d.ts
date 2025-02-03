@@ -116,6 +116,7 @@ interface Shop {
 	id: string;
 	name: string;
 	slug: string;
+	mainStock?: boolean;
 }
 
 enum QuoteStatus {
@@ -216,12 +217,12 @@ interface StockItem {
 	updatedDate: string;
 }
 
-interface StockItemDto {
+interface SubmitStockItemDto {
 	productVariantId: string;
 	price: number;
 	quantity: number;
 	cost: number;
-	isSubjectToVAT: boolean;
+	shopSlug: string;
 }
 
 type DataTable =

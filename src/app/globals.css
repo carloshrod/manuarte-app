@@ -54,6 +54,10 @@ body {
 	text-align: right !important;
 }
 
+.extraPadding:hover {
+	padding-right: 16px !important;
+}
+
 .textCenter .ant-input-number-input,
 .textCenter .ant-input {
 	text-align: center !important;

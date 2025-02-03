@@ -1,14 +1,16 @@
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
-import { Form, Select, SelectProps, Spin } from 'antd';
+import { useEffect, useState } from 'react';
+import { useParams, useSearchParams } from 'next/navigation';
+import { Form, Input, InputNumber, Select, SelectProps, Spin } from 'antd';
 import { MehOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
+import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import { getProductsData } from '../../utils';
-import FormButtons from '../../common/ui/FormButtons';
-import { useSelector } from 'react-redux';
+import { formatInputCurrency } from '@/utils/utils';
 
 const StockItemForm = () => {
-	const { form, isLoading } = useForm();
+	const { form, isLoading, submitCreateStockItem, submitUpdateStockItem } =
+		useForm();
 	const {
 		modal: { dataToEdit }
 	} = useSelector((state: RootState) => state.ui);
@@ -20,9 +22,37 @@ const StockItemForm = () => {
 	const [hasSearched, setHasSearched] = useState(false);
 	useState<ProductVariantWithStock | null>(null);
 	const params = useParams() ?? {};
+	const searchParams = useSearchParams();
+	const isMainStock = searchParams.get('main') === 'true';
 
-	const onSubmit = async (values: StockItemDto) => {
-		console.log(values);
+	useEffect(() => {
+		if (dataToEdit) {
+			form.setFieldsValue({
+				product: `${dataToEdit?.productName} ${dataToEdit?.productVariantName}`,
+				quantity: dataToEdit?.quantity,
+				price: dataToEdit?.price,
+				cost: dataToEdit?.cost
+			});
+		}
+	}, []);
+
+	const onSubmit = async (values: SubmitStockItemDto) => {
+		if (!dataToEdit) {
+			await submitCreateStockItem({
+				...values,
+				shopSlug: params?.shopSlug as string
+			});
+		} else {
+			if ('product' in values) delete values.product;
+			await submitUpdateStockItem(
+				{
+					...values,
+					productVariantId: dataToEdit.productVariantId,
+					shopSlug: params?.shopSlug as string
+				},
+				dataToEdit.id
+			);
+		}
 	};
 
 	let timeout: ReturnType<typeof setTimeout> | null;
@@ -83,29 +113,105 @@ const StockItemForm = () => {
 		<Form
 			layout='vertical'
 			form={form}
-			name='form_in_modal'
-			// initialValues={}
-			clearOnDestroy
+			initialValues={{
+				quantity: 0,
+				price: 0,
+				cost: 0
+			}}
 			onFinish={values => onSubmit(values)}
 		>
-			<Form.Item name='productVariantId' label='Buscar producto'>
-				<Select
-					allowClear
-					showSearch
-					value={search}
-					placeholder='Nombre o código del producto'
-					defaultActiveFirstOption={false}
-					suffixIcon={null}
-					filterOption={false}
-					onSearch={handleSearch}
-					onChange={handleChange}
-					notFoundContent={searchingOrNoContent}
-					options={(productsOptions || []).map(d => ({
-						value: d.value,
-						label: d.label
-					}))}
-				/>
-			</Form.Item>
+			{!dataToEdit ? (
+				<Form.Item
+					name='productVariantId'
+					label='Buscar producto'
+					rules={[
+						{
+							required: true,
+							message: 'El producto es requerido'
+						}
+					]}
+				>
+					<Select
+						allowClear
+						showSearch
+						value={search}
+						placeholder='Nombre o código del producto'
+						defaultActiveFirstOption={false}
+						suffixIcon={null}
+						filterOption={false}
+						onSearch={handleSearch}
+						onChange={handleChange}
+						notFoundContent={searchingOrNoContent}
+						options={(productsOptions || []).map(d => ({
+							value: d.value,
+							label: d.label
+						}))}
+					/>
+				</Form.Item>
+			) : (
+				<Form.Item name='product' label='Producto'>
+					<Input
+						readOnly
+						style={{
+							backgroundColor: '#e5e5e5'
+						}}
+					/>
+				</Form.Item>
+			)}
+			<div className='flex gap-4 justify-between'>
+				<Form.Item
+					name='quantity'
+					label='Cantidad'
+					rules={[
+						{
+							required: true,
+							message: 'La cantidad es requerida'
+						}
+					]}
+				>
+					<InputNumber
+						min={0}
+						className={`textRight ${isMainStock ? 'extraPadding' : ''}`}
+						disabled={!isMainStock}
+					/>
+				</Form.Item>
+				<Form.Item
+					name='price'
+					label='Precio'
+					rules={[
+						{
+							required: true,
+							message: 'El precio es requerido'
+						}
+					]}
+				>
+					<InputNumber
+						min={0}
+						controls={false}
+						className='textRight'
+						style={{ width: 150 }}
+						formatter={value => formatInputCurrency(value)}
+					/>
+				</Form.Item>
+				<Form.Item
+					name='cost'
+					label='Costo'
+					rules={[
+						{
+							required: true,
+							message: 'El costo es requerido'
+						}
+					]}
+				>
+					<InputNumber
+						min={0}
+						controls={false}
+						className='textRight'
+						style={{ width: 150 }}
+						formatter={value => formatInputCurrency(value)}
+					/>
+				</Form.Item>
+			</div>
 			<FormButtons
 				label={dataToEdit ? 'Editar' : undefined}
 				isLoading={isLoading}
