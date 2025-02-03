@@ -26,6 +26,11 @@ import { quoteServices } from '@/services/quoteServices';
 import { addQuote, updateQuote } from '@/reducers/quotes/quoteSlice';
 import { billingServices } from '@/services/billingServices';
 import { addBilling, updateBilling } from '@/reducers/billings/billingSlice';
+import { stockItemServices } from '@/services/stockItemServices';
+import {
+	addStockItem,
+	updateStockItem
+} from '@/reducers/stockItems/stockItemSlice';
 
 notification.config({
 	placement: 'topRight',
@@ -272,6 +277,26 @@ const useForm = () => {
 		});
 	};
 
+	const submitCreateStockItem = async (values: SubmitStockItemDto) => {
+		await handleSubmit({
+			serviceFn: stockItemServices.create,
+			values,
+			onSuccess: res => dispatch(addStockItem(res.data.newStockItem))
+		});
+	};
+
+	const submitUpdateStockItem = async (
+		values: SubmitStockItemDto,
+		stockItemId: string
+	) => {
+		await handleSubmit({
+			serviceFn: valuesToUpdate =>
+				stockItemServices.update(valuesToUpdate, stockItemId),
+			values,
+			onSuccess: res => dispatch(updateStockItem(res.data.updatedStockItem))
+		});
+	};
+
 	return {
 		form,
 		isLoading,
@@ -291,7 +316,9 @@ const useForm = () => {
 		submitCreateQuote,
 		submitUpdateQuote,
 		submitCreateBilling,
-		submitUpdateBilling
+		submitUpdateBilling,
+		submitCreateStockItem,
+		submitUpdateStockItem
 	};
 };
 
