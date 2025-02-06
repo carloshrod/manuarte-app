@@ -21,10 +21,15 @@ body {
 
 .ant-menu-item {
 	outline: 1px solid transparent;
+	padding: 0 0 0 22px !important;
 }
 
 .ant-menu-item-active {
 	outline: 1px solid #1677ff;
+}
+
+.ant-menu-title-content {
+	margin: 0 0 0 6px !important;
 }
 
 .ant-form-item-explain-success {

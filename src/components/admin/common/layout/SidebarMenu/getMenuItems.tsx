@@ -49,7 +49,7 @@ const getMenuItems = (session: Session) => {
 		{
 			key: 'logout',
 			icon: <TbLogout2 style={{ fontSize: 20 }} />,
-			label: 'Cerrar sesión',
+			label: 'Cerrar Sesión',
 			path: ''
 		}
 	];
@@ -111,7 +111,7 @@ export const allMenuItems = (shop?: string, mainStock?: boolean) => {
 		{
 			key: '7',
 			icon: <RiExchangeBoxLine style={{ fontSize: 20 }} />,
-			label: <Link href={STOCK_TRANSACTIONS}>Despachos</Link>,
+			label: <Link href={STOCK_TRANSACTIONS}>Movimientos Stock</Link>,
 			path: STOCK_TRANSACTIONS
 		}
 	];

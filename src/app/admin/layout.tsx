@@ -37,7 +37,7 @@ const AdminLayout = ({
 		<Provider store={store}>
 			<Layout style={{ minHeight: '100vh' }}>
 				<Sider
-					className='p-2'
+					className='p-1'
 					trigger={null}
 					collapsible
 					collapsed={collapsed}
