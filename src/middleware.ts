@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from './auth';
-import { AUTH_RULES } from './utils/utils';
+import { AUTH_RULES } from './utils/auth';
 import { ROUTES } from './utils/routes';
 
 const { LOGIN, PRODUCTS, USERS } = ROUTES;

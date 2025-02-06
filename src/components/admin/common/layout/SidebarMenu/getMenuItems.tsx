@@ -6,7 +6,7 @@ import { TbFileDollar, TbLogout2 } from 'react-icons/tb';
 import { GiCardboardBox } from 'react-icons/gi';
 import { RiExchangeBoxLine } from 'react-icons/ri';
 import { Session } from 'next-auth';
-import { AUTH_RULES } from '@/utils/utils';
+import { AUTH_RULES } from '@/utils/auth';
 import { ROUTES } from '@/utils/routes';
 
 const {
@@ -16,7 +16,7 @@ const {
 	QUOTE_SHOPS,
 	BILLING_SHOPS,
 	STOCKS,
-	STOCK_TRANSACTIONS
+	TRANSACTIONS
 } = ROUTES;
 
 const getMenuItems = (session: Session) => {
@@ -111,8 +111,8 @@ export const allMenuItems = (shop?: string, mainStock?: boolean) => {
 		{
 			key: '7',
 			icon: <RiExchangeBoxLine style={{ fontSize: 20 }} />,
-			label: <Link href={STOCK_TRANSACTIONS}>Movimientos Stock</Link>,
-			path: STOCK_TRANSACTIONS
+			label: <Link href={TRANSACTIONS}>Movimientos Stock</Link>,
+			path: TRANSACTIONS
 		}
 	];
 };

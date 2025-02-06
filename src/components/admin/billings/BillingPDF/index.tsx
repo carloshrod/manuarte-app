@@ -4,7 +4,8 @@ import moment from 'moment';
 import PDFTable from '../../common/display-data/PDFTable';
 import TermsCol from '../../Terms/TermsCol';
 import TermsEcu from '../../Terms/TermsEcu';
-import { formatToTitleCase, PAYMENT_METHOD_MAP } from '@/utils/utils';
+import { PAYMENT_METHOD_MAP } from '@/utils/mappings';
+import { formatToTitleCase } from '@/utils/formats';
 import { BillingStatus } from '@/types/enums';
 
 const BillingPDF = ({ billing, pdfRef }: { billing: Billing; pdfRef: any }) => {

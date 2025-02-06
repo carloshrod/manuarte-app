@@ -6,7 +6,7 @@ import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
 import { doCredentialLogin } from '@/app/actions';
 import { getSession } from 'next-auth/react';
-import { AUTH_RULES } from '@/utils/utils';
+import { AUTH_RULES } from '@/utils/auth';
 import { ROUTES } from '@/utils/routes';
 
 const LoginForm = () => {

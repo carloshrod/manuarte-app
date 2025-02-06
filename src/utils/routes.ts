@@ -12,5 +12,5 @@ export const ROUTES = {
 	BILLING_DETAIL: '/admin/facturas/[shopSlug]/[serialNumber]',
 	STOCKS: '/admin/stock',
 	STOCK_ITEMS: '/admin/stock/[shopSlug]',
-	STOCK_TRANSACTIONS: '/admin/movimientos-stock'
+	TRANSACTIONS: '/admin/movimientos-stock'
 };

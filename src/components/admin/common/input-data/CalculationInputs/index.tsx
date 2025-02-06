@@ -1,6 +1,6 @@
 import { Form, FormInstance, InputNumber } from 'antd';
 import { QUOTE_CALCULATIONS_INPUTS_PROPS } from '@/components/admin/consts';
-import { formatInputCurrency } from '@/utils/utils';
+import { formatInputCurrency } from '@/utils/formats';
 import { updateCalculations } from '@/components/admin/utils';
 
 const CalculationInputs = ({ form }: { form: FormInstance }) => {

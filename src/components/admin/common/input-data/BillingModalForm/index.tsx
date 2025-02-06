@@ -8,7 +8,7 @@ import {
 	COL_PAYMENT_METHOD_OPTIONS,
 	ECU_PAYMENT_METHOD_OPTIONS
 } from '@/components/admin/consts';
-import { formatToTitleCase } from '@/utils/utils';
+import { formatToTitleCase } from '@/utils/formats';
 import { ROUTES } from '@/utils/routes';
 import { BillingStatus } from '@/types/enums';
 import { useEffect } from 'react';

@@ -8,13 +8,12 @@ import ProductCategoryActions from '@/components/admin/products/ProductCategoryA
 import StaffActions from '@/components/admin/users/StaffActions';
 import CustomersActions from '@/components/admin/users/CustomersActions';
 import useTable from './useTable';
+import { formatCurrency, formatToTitleCase } from '@/utils/formats';
 import {
 	BILLING_STATUS_MAP,
-	formatCurrency,
-	formatToTitleCase,
 	PAYMENT_METHOD_MAP,
 	QUOTE_STATUS_MAP
-} from '@/utils/utils';
+} from '@/utils/mappings';
 import QuotesActions from '@/components/admin/quotes/QuotesActions';
 import BillingsActions from '@/components/admin/billings/BillingsActions';
 import { COL_PAYMENT_METHOD_FILTER, ECU_PAYMENT_METHOD_FILTER } from './utils';

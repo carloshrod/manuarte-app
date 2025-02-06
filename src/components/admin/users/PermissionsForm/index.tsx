@@ -5,11 +5,8 @@ import { useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import { userServices } from '@/services/userServices';
-import {
-	formatToTitleCase,
-	formatUserExtraPermissions,
-	generatePermissionOptions
-} from '@/utils/utils';
+import { generatePermissionOptions } from '@/utils/auth';
+import { formatToTitleCase, formatUserExtraPermissions } from '@/utils/formats';
 
 const PermissionsForm = () => {
 	const { form, isLoading, submitEditPermissions } = useForm();

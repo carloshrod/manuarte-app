@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import { Button, Form, FormInstance, Input, InputNumber, Tooltip } from 'antd';
 import { AiOutlineDelete } from 'react-icons/ai';
 import SearchProducts from '../SearchProducts';
-import { formatInputCurrency } from '@/utils/utils';
+import { formatInputCurrency } from '@/utils/formats';
 import { updateCalculations } from '@/components/admin/utils';
 import { PRODUCTS_LIST_INPUTS_PROPS } from '@/components/admin/consts';
 

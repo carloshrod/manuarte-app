@@ -4,7 +4,7 @@ import moment from 'moment';
 import PDFTable from '../../common/display-data/PDFTable';
 import TermsCol from '../../Terms/TermsCol';
 import TermsEcu from '../../Terms/TermsEcu';
-import { formatToTitleCase } from '@/utils/utils';
+import { formatToTitleCase } from '@/utils/formats';
 
 const QuotePDF = ({ quote, pdfRef }: { quote: Quote; pdfRef: any }) => {
 	const quoteInfo: DescriptionsProps['items'] = [

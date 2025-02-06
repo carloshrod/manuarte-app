@@ -5,7 +5,7 @@ import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import { userServices } from '@/services/userServices';
 import { shopServices } from '@/services/shopServices';
-import { formatToTitleCase } from '@/utils/utils';
+import { formatToTitleCase } from '@/utils/formats';
 
 const StaffForm = () => {
 	const { form, isLoading, submitRegisterStaff, submitUpdateStaff } = useForm();

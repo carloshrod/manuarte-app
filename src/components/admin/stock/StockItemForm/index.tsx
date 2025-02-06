@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import { getProductsData } from '../../utils';
-import { formatInputCurrency } from '@/utils/utils';
+import { formatInputCurrency } from '@/utils/formats';
 
 const StockItemForm = () => {
 	const { form, isLoading, submitCreateStockItem, submitUpdateStockItem } =

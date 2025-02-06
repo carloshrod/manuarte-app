@@ -12,7 +12,7 @@ import SidebarMenu from '../../components/admin/common/layout/SidebarMenu';
 import CustomModal from '@/components/admin/common/layout/Modal';
 import CustomDrawer from '@/components/admin/common/layout/Drawer';
 import store from '@/reducers/store';
-import { formatToTitleCase } from '@/utils/utils';
+import { formatToTitleCase } from '@/utils/formats';
 
 const { Header, Sider, Content } = Layout;
 
