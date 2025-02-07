@@ -31,7 +31,7 @@ const TopSalesCharts = ({ data }: TopSalesChartProps) => {
 
 	return (
 		<div className='flex max-lg:flex-wrap gap-8 p-8'>
-			{data.topCOP.length > 0 || data.topUSD.length > 0 ? (
+			{data?.topCOP?.length > 0 || data?.topUSD?.length > 0 ? (
 				<>
 					{/* Colombia */}
 					{data.topCOP.length > 0 && (
