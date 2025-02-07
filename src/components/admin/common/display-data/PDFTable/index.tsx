@@ -10,7 +10,7 @@ const PDFTable = ({ items, shipping = 0 }: PDFTableProps) => {
 		return acc + Number(item.totalPrice);
 	}, 0);
 
-	const total = subtotal + shipping;
+	const total = subtotal + Number(shipping);
 
 	return (
 		<div className='mb-16'>
