@@ -36,6 +36,10 @@ const TransactionsProductFormList = ({
 }: TransactionsProductFormListProps) => {
 	const [selectedProduct, setSelectedProduct] =
 		useState<ProductVariantWithStock | null>(null);
+	const [addedProducts, setAddedProducts] = useState<Record<string, number>>(
+		{}
+	);
+
 	const {
 		drawer: { content }
 	} = useSelector((state: RootState) => state.ui);
@@ -99,6 +103,11 @@ const TransactionsProductFormList = ({
 					}
 				}
 
+				setAddedProducts(prev => ({
+					...prev,
+					[selectedProduct.id]: selectedProduct.quantity
+				}));
+
 				setItemsError(false);
 
 				add({
@@ -127,6 +136,9 @@ const TransactionsProductFormList = ({
 
 						<div className='overflow-x-auto custom-scrollbar'>
 							{fields.reverse().map(({ key, name, ...restField }) => {
+								const item = form.getFieldValue('items')[name];
+								const maxQuantity = addedProducts[item?.productVariantId] || 1;
+
 								return (
 									<div key={key} className='flex items-center gap-2'>
 										{TRANSACTIONS_PRODUCTS_LIST_INPUTS_PROPS?.map(
@@ -145,6 +157,21 @@ const TransactionsProductFormList = ({
 															{
 																required: editableField,
 																message: ''
+															},
+															{
+																validator: (_, value) => {
+																	if (
+																		content !== DrawerContent.enterBySupplier &&
+																		input.name === 'quantity' &&
+																		value &&
+																		value > maxQuantity
+																	) {
+																		return Promise.reject(
+																			new Error(`Stock: ${maxQuantity}`)
+																		);
+																	}
+																	return Promise.resolve();
+																}
 															}
 														]}
 														style={{
