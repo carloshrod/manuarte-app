@@ -26,8 +26,8 @@ const TransactionsForm = () => {
 
 	const stockOptions = shops?.map(shop => {
 		return {
-			value: shop.stockId,
-			label: formatToTitleCase(shop.name)
+			value: shop?.stockId,
+			label: formatToTitleCase(shop?.stockName)
 		};
 	});
 
@@ -49,7 +49,9 @@ const TransactionsForm = () => {
 					type: TransactionType.ENTER
 				},
 				shops
-			)
+			),
+		[DrawerContent.exit]: async (values: SubmitTransactionDto) =>
+			await submitTransaction({ ...values, type: TransactionType.EXIT }, shops)
 	};
 
 	return (
@@ -57,7 +59,6 @@ const TransactionsForm = () => {
 			layout='vertical'
 			form={form}
 			initialValues={{
-				supplierId: '5feee178-3140-44d7-80ce-67db48fd8789',
 				items: []
 			}}
 			onFinish={values => SUBMITS[content as string](values)}
@@ -79,6 +80,7 @@ const TransactionsForm = () => {
 								className='flex-1'
 							>
 								<Select
+									placeholder='Seleccionar proveedor...'
 									options={[
 										{
 											value: '5feee178-3140-44d7-80ce-67db48fd8789',
@@ -165,7 +167,7 @@ const TransactionsForm = () => {
 				) : null}
 
 				{content === DrawerContent.exit ? (
-					<Col span={12}>
+					<Col xs={24} sm={12}>
 						<Form.Item
 							name='fromId'
 							label='Stock'

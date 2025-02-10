@@ -117,8 +117,8 @@ interface Shop {
 	id: string;
 	name: string;
 	slug: string;
-	stockId?: string;
-	stockName?: string;
+	stockId: string;
+	stockName: string;
 	mainStock?: boolean;
 }
 

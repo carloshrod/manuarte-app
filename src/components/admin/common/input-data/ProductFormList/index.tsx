@@ -34,11 +34,11 @@ const ProductFormList = ({
 	setItemsError,
 	isQuote
 }: ProductFormListProps) => {
-	const [selectedProducts, setSelectedProducts] = useState<
-		Record<string, number>
-	>({});
 	const [selectedProduct, setSelectedProduct] =
 		useState<ProductVariantWithStock | null>(null);
+	const [addedProducts, setAddedProducts] = useState<Record<string, number>>(
+		{}
+	);
 	const params = useParams();
 	const itemsList = Form.useWatch('items', form);
 
@@ -74,7 +74,7 @@ const ProductFormList = ({
 					return notification.error({ message: 'Producto sin stock!' });
 				}
 
-				setSelectedProducts(prev => ({
+				setAddedProducts(prev => ({
 					...prev,
 					[selectedProduct.id]: selectedProduct.quantity
 				}));
@@ -121,8 +121,7 @@ const ProductFormList = ({
 						<div className='overflow-x-auto custom-scrollbar'>
 							{fields.map(({ key, name, ...restField }) => {
 								const item = form.getFieldValue('items')[name];
-								const maxQuantity =
-									selectedProducts[item?.productVariantId] || 1;
+								const maxQuantity = addedProducts[item?.productVariantId] || 1;
 
 								return (
 									<div key={key} className='flex items-center gap-2'>

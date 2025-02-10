@@ -313,10 +313,10 @@ const useForm = () => {
 			values,
 			onSuccess: res => {
 				const fromName = shops.find(
-					shop => shop.stockId === res.data.newTransaction.fromId
+					shop => shop.stockId === res.data.newTransaction?.fromId
 				)?.stockName;
 				const toName = shops.find(
-					shop => shop.stockId === res.data.newTransaction.toId
+					shop => shop.stockId === res.data.newTransaction?.toId
 				)?.stockName;
 				const newTransaction = { ...res.data.newTransaction, fromName, toName };
 
