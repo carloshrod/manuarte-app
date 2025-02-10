@@ -4,13 +4,15 @@ import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import { IoKeyOutline } from 'react-icons/io5';
 import { TbCancel } from 'react-icons/tb';
 import PopConfirm from '../PopConfirm';
+import { ImEye } from 'react-icons/im';
 
 interface TableActionsProps {
 	onEdit?: () => void;
+	onShowDetails?: () => void;
 	onEditPermissions?: () => void;
 	onDelete?: () => void;
 	onCancel?: () => void;
-	popTitle: string;
+	popTitle?: string;
 	popDescription?: string;
 	isEditable?: boolean;
 	isDeletable?: boolean;
@@ -18,6 +20,7 @@ interface TableActionsProps {
 
 const TableActions = ({
 	onEdit,
+	onShowDetails,
 	onEditPermissions,
 	onDelete,
 	onCancel,
@@ -41,6 +44,19 @@ const TableActions = ({
 							/>
 						}
 						onClick={onEdit}
+						disabled={!isEditable}
+					/>
+				</Tooltip>
+			) : null}
+
+			{onShowDetails ? (
+				<Tooltip title={isEditable ? 'Mostrar detalles' : ''}>
+					<Button
+						type='text'
+						icon={
+							<ImEye size={20} color={isEditable ? '#0D6EFD' : '#A0AEC0'} />
+						}
+						onClick={onShowDetails}
 						disabled={!isEditable}
 					/>
 				</Tooltip>

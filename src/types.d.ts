@@ -258,6 +258,15 @@ interface SubmitTransactionDto {
 	items: ProductVariantWithStock[];
 }
 
+interface TransactionItem {
+	id: string;
+	productVariantId: string;
+	productVariantName: string;
+	productName: string;
+	quantity: string;
+	totalQuantity: string;
+}
+
 type DataTable =
 	| ProductVariant
 	| ProductCategory

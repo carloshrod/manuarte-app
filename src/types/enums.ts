@@ -17,7 +17,8 @@ export enum DrawerContent {
 	enterBySupplier = 'enterBySupplier',
 	transfer = 'transfer',
 	enter = 'enter',
-	exit = 'exit'
+	exit = 'exit',
+	transactionDetails = 'transactionDetails'
 }
 
 export enum QuoteStatus {

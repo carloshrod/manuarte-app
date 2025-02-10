@@ -39,3 +39,14 @@ export const PERMISSION_MAP: Record<string, string> = {
 	'customer-update': 'Editar clientes',
 	'customer-delete': 'Eliminar clientes'
 };
+
+export const STATES_MAP: Record<string, string> = {
+	SUCCESS: 'Realizado',
+	PROGRESS: 'En Progreso'
+};
+
+export const TYPES_MAP: Record<string, string> = {
+	ENTER: 'Entrada',
+	EXIT: 'Salida',
+	TRANSFER: 'Transferencia'
+};

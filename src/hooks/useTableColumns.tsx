@@ -12,12 +12,15 @@ import { formatCurrency, formatToTitleCase } from '@/utils/formats';
 import {
 	BILLING_STATUS_MAP,
 	PAYMENT_METHOD_MAP,
-	QUOTE_STATUS_MAP
+	QUOTE_STATUS_MAP,
+	STATES_MAP,
+	TYPES_MAP
 } from '@/utils/mappings';
 import QuotesActions from '@/components/admin/quotes/QuotesActions';
 import BillingsActions from '@/components/admin/billings/BillingsActions';
 import { COL_PAYMENT_METHOD_FILTER, ECU_PAYMENT_METHOD_FILTER } from './utils';
 import StockItemActions from '@/components/admin/stock/StockItemActions';
+import TransactionActions from '@/components/admin/transactions/TransactionAction';
 
 const useTableColumns = () => {
 	const { getColumnSearchProps } = useTable();
@@ -509,14 +512,7 @@ const useTableColumns = () => {
 				}
 			],
 			onFilter: (value, record) => record.state.indexOf(value as string) === 0,
-			render: value => {
-				const STATES_MAP: Record<string, string> = {
-					SUCCESS: 'Realizado',
-					PROGRESS: 'En Progreso'
-				};
-
-				return STATES_MAP[value];
-			},
+			render: value => STATES_MAP[value],
 			width: 100
 		},
 		{
@@ -538,15 +534,7 @@ const useTableColumns = () => {
 				}
 			],
 			onFilter: (value, record) => record.type.indexOf(value as string) === 0,
-			render: value => {
-				const TYPES_MAP: Record<string, string> = {
-					ENTER: 'Entrada',
-					EXIT: 'Salida',
-					TRANSFER: 'Transferencia'
-				};
-
-				return TYPES_MAP[value];
-			},
+			render: value => TYPES_MAP[value],
 			width: 100
 		},
 		{
@@ -624,14 +612,16 @@ const useTableColumns = () => {
 				</span>
 			),
 			width: 150
+		},
+		{
+			title: 'ACCIONES',
+			key: 'actions',
+			className: 'actions',
+			render: (_, record: Transaction) => (
+				<TransactionActions record={record} />
+			),
+			width: 100
 		}
-		// {
-		// 	title: 'ACCIONES',
-		// 	key: 'actions',
-		// 	className: 'actions',
-		// 	render: (_, record: Transaction) => <StockItemActions record={record} />,
-		// 	width: 100
-		// }
 	];
 
 	return {
