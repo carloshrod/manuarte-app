@@ -25,6 +25,7 @@ interface ProductVariantWithStock extends ProductVariant {
 	price: number;
 	totalPrice: number;
 	stockItemId: string;
+	stocks: string[];
 }
 
 interface Product {
@@ -116,6 +117,8 @@ interface Shop {
 	id: string;
 	name: string;
 	slug: string;
+	stockId?: string;
+	stockName?: string;
 	mainStock?: boolean;
 }
 
@@ -225,6 +228,36 @@ interface SubmitStockItemDto {
 	shopSlug: string;
 }
 
+interface Transaction {
+	id: string;
+	name: string;
+	state: string;
+	type: string;
+	fromName: string;
+	fromId: string;
+	toName: string;
+	toId: string;
+	description: string;
+	shippingDate: string;
+	createdDate: string;
+	updatedDate: string;
+}
+
+enum TransactionType {
+	ENTER = 'ENTER',
+	TRANSFER = 'TRANSFER',
+	EXIT = 'EXIT'
+}
+
+interface SubmitTransactionDto {
+	supplierId: string;
+	fromId: string;
+	toId: string;
+	description: string;
+	type: TransactionType;
+	items: ProductVariantWithStock[];
+}
+
 type DataTable =
 	| ProductVariant
 	| ProductCategory
@@ -232,7 +265,8 @@ type DataTable =
 	| Customer
 	| Quote
 	| Billing
-	| StockItem;
+	| StockItem
+	| Transaction;
 
 interface UIModalState {
 	isOpen: boolean;
@@ -270,5 +304,11 @@ interface RootState {
 	};
 	stock: {
 		stockItems: StockItem[];
+	};
+	transaction: {
+		transactions: Transaction[];
+	};
+	shop: {
+		shops: Shop[];
 	};
 }

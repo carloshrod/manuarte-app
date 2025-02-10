@@ -6,6 +6,8 @@ import usersReducer from './users/userSlice';
 import quotesReducer from './quotes/quoteSlice';
 import billingsReducer from './billings/billingSlice';
 import stocksReducer from './stockItems/stockItemSlice';
+import transactionsReducer from './transactions/transactionSlice';
+import shopsReducer from './shops/shopSlice';
 
 const store = configureStore({
 	reducer: {
@@ -15,7 +17,9 @@ const store = configureStore({
 		user: usersReducer,
 		quote: quotesReducer,
 		billing: billingsReducer,
-		stock: stocksReducer
+		stock: stocksReducer,
+		transaction: transactionsReducer,
+		shop: shopsReducer
 	}
 });
 

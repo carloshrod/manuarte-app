@@ -25,7 +25,7 @@ export const getProductsData = async ({
 }: {
 	currentValue: string;
 	newValue: string;
-	shopSlug: string;
+	shopSlug?: string;
 	missingProducts?: boolean;
 }) => {
 	try {

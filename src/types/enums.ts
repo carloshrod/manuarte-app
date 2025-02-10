@@ -13,7 +13,11 @@ export enum ModalContent {
 
 export enum DrawerContent {
 	quotes = 'quotes',
-	billings = 'billings'
+	billings = 'billings',
+	enterBySupplier = 'enterBySupplier',
+	transfer = 'transfer',
+	enter = 'enter',
+	exit = 'exit'
 }
 
 export enum QuoteStatus {
@@ -45,4 +49,10 @@ export enum PaymentMethod {
 	PAYPAL = 'PAYPAL',
 	BANK_DEPOSIT = 'BANK_DEPOSIT',
 	OTHER = 'OTHER'
+}
+
+export enum TransactionType {
+	ENTER = 'ENTER',
+	TRANSFER = 'TRANSFER',
+	EXIT = 'EXIT'
 }

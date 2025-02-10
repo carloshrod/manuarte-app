@@ -62,3 +62,7 @@ body {
 .extraPadding:hover {
 	padding-right: 16px !important;
 }
+
+.ant-drawer-close:hover {
+	background-color: #E53535 !important;
+}

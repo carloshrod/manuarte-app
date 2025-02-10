@@ -439,7 +439,7 @@ const useTableColumns = () => {
 			key: 'productVariantName',
 			...getColumnSearchProps('productVariantName'),
 			render: value => formatToTitleCase(value),
-			width: 120
+			width: 140
 		},
 		{
 			title: 'MONEDA',
@@ -452,20 +452,23 @@ const useTableColumns = () => {
 			dataIndex: 'price',
 			key: 'price',
 			render: (value: string) => formatCurrency(value) ?? '--',
-			width: 100
+			width: 100,
+			align: 'center'
 		},
 		{
 			title: 'CANTIDAD',
 			dataIndex: 'quantity',
 			key: 'quantity',
-			width: 110
+			width: 110,
+			align: 'center'
 		},
 		{
 			title: 'COSTO',
 			dataIndex: 'cost',
 			key: 'cost',
 			render: (value: string) => formatCurrency(value) ?? '--',
-			width: 100
+			width: 100,
+			align: 'center'
 		},
 		{
 			title: 'COSTO TOTAL',
@@ -478,21 +481,8 @@ const useTableColumns = () => {
 
 				return formatCurrency(totalCost);
 			},
-			width: 100
-		},
-		{
-			title: 'FECHA DE ACTUALIZACIÓN',
-			dataIndex: 'updatedDate',
-			key: 'updatedDate',
-			sorter: (a: StockItem, b: StockItem) =>
-				moment(a?.updatedDate).valueOf() - moment(b?.updatedDate).valueOf(),
-			sortDirections: ['descend', 'ascend'],
-			render: (value: string) => (
-				<span>
-					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
-				</span>
-			),
-			width: 150
+			width: 100,
+			align: 'center'
 		},
 		{
 			title: 'ACCIONES',
@@ -503,6 +493,147 @@ const useTableColumns = () => {
 		}
 	];
 
+	const transactionsColumns: TableColumnsType<Transaction> = [
+		{
+			title: 'ESTADO',
+			dataIndex: 'state',
+			key: 'state',
+			filters: [
+				{
+					text: 'Realizado',
+					value: 'SUCCESS'
+				},
+				{
+					text: 'En Progreso',
+					value: 'PROGRESS'
+				}
+			],
+			onFilter: (value, record) => record.state.indexOf(value as string) === 0,
+			render: value => {
+				const STATES_MAP: Record<string, string> = {
+					SUCCESS: 'Realizado',
+					PROGRESS: 'En Progreso'
+				};
+
+				return STATES_MAP[value];
+			},
+			width: 100
+		},
+		{
+			title: 'TIPO',
+			dataIndex: 'type',
+			key: 'type',
+			filters: [
+				{
+					text: 'Entrada',
+					value: 'ENTER'
+				},
+				{
+					text: 'Salida',
+					value: 'EXIT'
+				},
+				{
+					text: 'Transferencia',
+					value: 'TRANSFER'
+				}
+			],
+			onFilter: (value, record) => record.type.indexOf(value as string) === 0,
+			render: value => {
+				const TYPES_MAP: Record<string, string> = {
+					ENTER: 'Entrada',
+					EXIT: 'Salida',
+					TRANSFER: 'Transferencia'
+				};
+
+				return TYPES_MAP[value];
+			},
+			width: 100
+		},
+		{
+			title: 'ORIGEN',
+			dataIndex: 'fromName',
+			key: 'fromName',
+			filters: [
+				{
+					text: 'Fabrica Cascajal',
+					value: 'Fabrica Cascajal'
+				},
+				{
+					text: 'Barranquilla',
+					value: 'Barranquilla'
+				},
+				{
+					text: 'Cartagena',
+					value: 'Cartagena'
+				},
+				{
+					text: 'Quito',
+					value: 'Quito'
+				}
+			],
+			onFilter: (value, record) =>
+				record?.fromName?.indexOf(value as string) === 0,
+			render: (value: string) => value ?? '--',
+			width: 100
+		},
+		{
+			title: 'DESTINO',
+			dataIndex: 'toName',
+			key: 'toName',
+			filters: [
+				{
+					text: 'Fabrica Cascajal',
+					value: 'Fabrica Cascajal'
+				},
+				{
+					text: 'Barranquilla',
+					value: 'Barranquilla'
+				},
+				{
+					text: 'Cartagena',
+					value: 'Cartagena'
+				},
+				{
+					text: 'Quito',
+					value: 'Quito'
+				}
+			],
+			onFilter: (value, record) =>
+				record?.toName?.indexOf(value as string) === 0,
+			render: (value: string) => value ?? '--',
+			width: 100
+		},
+		{
+			title: 'DESCRIPCIÓN',
+			dataIndex: 'description',
+			key: 'description',
+			render: (value: string) =>
+				value ? `${value.charAt(0).toUpperCase()}${value.slice(1)}` : '--',
+			width: 250
+		},
+		{
+			title: 'FECHA DE CREACIÓN',
+			dataIndex: 'createdDate',
+			key: 'createdDate',
+			sorter: (a: Transaction, b: Transaction) =>
+				moment(a?.createdDate).valueOf() - moment(b?.createdDate).valueOf(),
+			sortDirections: ['descend', 'ascend'],
+			render: (value: string) => (
+				<span>
+					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
+				</span>
+			),
+			width: 150
+		}
+		// {
+		// 	title: 'ACCIONES',
+		// 	key: 'actions',
+		// 	className: 'actions',
+		// 	render: (_, record: Transaction) => <StockItemActions record={record} />,
+		// 	width: 100
+		// }
+	];
+
 	return {
 		productColumns,
 		productCategoryColumns,
@@ -510,7 +641,8 @@ const useTableColumns = () => {
 		customerColumns,
 		quoteColumns,
 		billingColumns,
-		stockItemsColumns
+		stockItemsColumns,
+		transactionsColumns
 	};
 };
 

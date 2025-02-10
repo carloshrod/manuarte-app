@@ -6,6 +6,8 @@ import SearchCustomer from '@/components/admin/common/input-data/SearchCustomer'
 import useDrawer from '@/hooks/useDrawer';
 import { closeDrawer, updateDrawer } from '@/reducers/ui/uiSlice';
 import { DrawerContent } from '@/types/enums';
+import { ROUTES } from '@/utils/routes';
+import { useMediaQuery } from 'react-responsive';
 
 const CustomDrawer = () => {
 	const {
@@ -15,6 +17,7 @@ const CustomDrawer = () => {
 	const { DRAWER_CONTENT } = useDrawer();
 	const pathname = usePathname();
 	const [checked, setChecked] = useState(false);
+	const isMedium = useMediaQuery({ query: '(max-width: 1024px)' });
 
 	useEffect(() => {
 		dispatch(closeDrawer());
@@ -33,29 +36,34 @@ const CustomDrawer = () => {
 		setChecked(noCustomer);
 	}, [noCustomer]);
 
+	const isTransactions = pathname === ROUTES.TRANSACTIONS;
+
 	return (
 		<Drawer
 			title={title}
 			onClose={() => dispatch(closeDrawer())}
 			keyboard={false}
+			maskClosable={false}
 			open={isOpen}
 			getContainer={false}
 			rootStyle={{
 				position: 'absolute',
-				marginTop: 2
+				marginTop: 1
 			}}
-			width='100%'
+			width={isTransactions && !isMedium ? '50%' : '100%'}
 			height='100%'
-			placement='top'
+			placement={isTransactions ? 'right' : 'top'}
 			extra={
-				<div className='flex gap-2 items-center'>
-					{!noCustomer ? <SearchCustomer /> : null}
-					{!dataToEdit || noCustomer ? (
-						<Checkbox checked={checked} onChange={onChange}>
-							Consumidor final
-						</Checkbox>
-					) : null}
-				</div>
+				isTransactions ? null : (
+					<div className='flex gap-2 items-center'>
+						{!noCustomer ? <SearchCustomer /> : null}
+						{!dataToEdit || noCustomer ? (
+							<Checkbox checked={checked} onChange={onChange}>
+								Consumidor final
+							</Checkbox>
+						) : null}
+					</div>
+				)
 			}
 		>
 			{drawerContent}

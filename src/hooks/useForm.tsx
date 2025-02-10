@@ -31,6 +31,8 @@ import {
 	addStockItem,
 	updateStockItem
 } from '@/reducers/stockItems/stockItemSlice';
+import { transactionServices } from '@/services/transactionServices';
+import { addTransaction } from '@/reducers/transactions/transactionSlice';
 
 notification.config({
 	placement: 'topRight',
@@ -297,6 +299,33 @@ const useForm = () => {
 		});
 	};
 
+	const submitTransaction = async (
+		values: SubmitTransactionDto,
+		shops: Shop[]
+	) => {
+		if (values?.items?.length < 1) {
+			setItemsError(true);
+			return;
+		}
+
+		await handleSubmit({
+			serviceFn: transactionServices.create,
+			values,
+			onSuccess: res => {
+				const fromName = shops.find(
+					shop => shop.stockId === res.data.newTransaction.fromId
+				)?.stockName;
+				const toName = shops.find(
+					shop => shop.stockId === res.data.newTransaction.toId
+				)?.stockName;
+				const newTransaction = { ...res.data.newTransaction, fromName, toName };
+
+				dispatch(addTransaction(newTransaction));
+			},
+			modal: false
+		});
+	};
+
 	return {
 		form,
 		isLoading,
@@ -318,7 +347,8 @@ const useForm = () => {
 		submitCreateBilling,
 		submitUpdateBilling,
 		submitCreateStockItem,
-		submitUpdateStockItem
+		submitUpdateStockItem,
+		submitTransaction
 	};
 };
 

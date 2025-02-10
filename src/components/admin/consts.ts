@@ -78,6 +78,23 @@ export const PRODUCTS_LIST_INPUTS_PROPS = [
 	}
 ];
 
+export const TRANSACTIONS_PRODUCTS_LIST_INPUTS_PROPS = [
+	{
+		name: 'name',
+		label: 'Nombre',
+		type: 'text',
+		width: '80%'
+	},
+	{
+		name: 'quantity',
+		label: 'Cantidad',
+		type: 'number',
+		ruleMsg: 'La cantidad es requerida',
+		placeholder: 'Ingresa la cantidad del producto',
+		width: '15%'
+	}
+];
+
 export const FOOTER_PRODUCTS_INPUTS_PROPS = [
 	{
 		name: 'left',
