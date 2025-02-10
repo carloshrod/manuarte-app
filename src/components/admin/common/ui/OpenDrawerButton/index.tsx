@@ -1,40 +1,51 @@
 'use client';
-import { openDrawer } from '@/reducers/ui/uiSlice';
-import { DrawerContent } from '@/types/enums';
 import { Button } from 'antd';
 import { IoMdAdd } from 'react-icons/io';
-import { PiInvoice } from 'react-icons/pi';
-import { TbFileDollar } from 'react-icons/tb';
 import { useDispatch } from 'react-redux';
+import { openDrawer } from '@/reducers/ui/uiSlice';
+import { DrawerContent } from '@/types/enums';
+import { ReactNode } from 'react';
 
-const OpenDrawerButton = ({ isQuote }: { isQuote: boolean }) => {
+interface OpenDrawerButtonProps {
+	title: string;
+	drawerContent: DrawerContent;
+	buttonLabel: string;
+	prependIcon?: boolean;
+	appendIcon: ReactNode;
+}
+
+const OpenDrawerButton = ({
+	title,
+	drawerContent,
+	buttonLabel,
+	prependIcon = true,
+	appendIcon
+}: OpenDrawerButtonProps) => {
 	const dispatch = useDispatch();
-
-	const label = isQuote ? 'Cotización' : 'Factura';
-	const contentDrawer = isQuote ? DrawerContent.quotes : DrawerContent.billings;
 
 	return (
 		<Button
 			variant='outlined'
 			color='primary'
 			icon={
-				<IoMdAdd size={18} style={{ display: 'flex', alignItems: 'center' }} />
+				prependIcon ? (
+					<IoMdAdd
+						size={18}
+						style={{ display: 'flex', alignItems: 'center' }}
+					/>
+				) : null
 			}
 			onClick={() =>
 				dispatch(
 					openDrawer({
-						title: `Crear ${label}`,
-						content: contentDrawer
+						title,
+						content: drawerContent
 					})
 				)
 			}
 		>
-			<p className='max-sm:hidden'>{label}</p>
-			{label === 'Factura' ? (
-				<PiInvoice size={18} />
-			) : (
-				<TbFileDollar size={18} />
-			)}
+			<p className='max-sm:hidden'>{buttonLabel}</p>
+			{appendIcon}
 		</Button>
 	);
 };

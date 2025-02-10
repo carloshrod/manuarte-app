@@ -1,8 +1,10 @@
 import { IoStorefrontOutline } from 'react-icons/io5';
+import { PiInvoice } from 'react-icons/pi';
 import { auth } from '@/auth';
 import BillingsTable from '@/components/admin/billings/BillingsTable';
 import GoBack from '@/components/admin/common/ui/GoBack';
 import OpenDrawerButton from '@/components/admin/common/ui/OpenDrawerButton';
+import { DrawerContent } from '@/types/enums';
 
 interface QuotesPageProps {
 	params: {
@@ -30,7 +32,12 @@ const BillingsPage = async (props: QuotesPageProps) => {
 						<IoStorefrontOutline /> {shopName}
 					</span>
 				</div>
-				<OpenDrawerButton isQuote={false} />
+				<OpenDrawerButton
+					title='Crear Factura'
+					drawerContent={DrawerContent.billings}
+					buttonLabel='Factura'
+					appendIcon={<PiInvoice size={18} />}
+				/>
 			</div>
 			<BillingsTable shopSlug={shopSlug} />
 		</section>

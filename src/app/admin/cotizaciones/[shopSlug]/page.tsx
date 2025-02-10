@@ -1,8 +1,10 @@
 import { IoStorefrontOutline } from 'react-icons/io5';
+import { TbFileDollar } from 'react-icons/tb';
+import { auth } from '@/auth';
 import QuotesTable from '@/components/admin/quotes/QuotesTable';
 import GoBack from '@/components/admin/common/ui/GoBack';
 import OpenDrawerButton from '@/components/admin/common/ui/OpenDrawerButton';
-import { auth } from '@/auth';
+import { DrawerContent } from '@/types/enums';
 
 interface QuotesPageProps {
 	params: {
@@ -30,7 +32,12 @@ const QuotesPage = async (props: QuotesPageProps) => {
 						<IoStorefrontOutline /> {shopName}
 					</span>
 				</div>
-				<OpenDrawerButton isQuote={true} />
+				<OpenDrawerButton
+					title='Crear Cotización'
+					drawerContent={DrawerContent.quotes}
+					buttonLabel='Cotización'
+					appendIcon={<TbFileDollar size={18} />}
+				/>
 			</div>
 			<QuotesTable shopSlug={shopSlug} />
 		</section>
