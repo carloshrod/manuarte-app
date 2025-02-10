@@ -1,10 +1,20 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { Button, Form, FormInstance, Input, InputNumber, Tooltip } from 'antd';
+import {
+	Button,
+	Form,
+	FormInstance,
+	Input,
+	InputNumber,
+	notification,
+	Tooltip
+} from 'antd';
 import { AiOutlineDelete } from 'react-icons/ai';
-import SearchProducts from '../SearchProducts';
+import SearchAndAddProducts from '../SearchAndAddProducts';
 import { formatInputCurrency } from '@/utils/formats';
 import { updateCalculations } from '@/components/admin/utils';
 import { PRODUCTS_LIST_INPUTS_PROPS } from '@/components/admin/consts';
+import { StoreValue } from 'antd/es/form/interface';
+import { useParams } from 'next/navigation';
 
 interface ProductFormListProps {
 	form: FormInstance;
@@ -12,6 +22,11 @@ interface ProductFormListProps {
 	setItemsError: Dispatch<SetStateAction<boolean>>;
 	isQuote: boolean;
 }
+
+type AddItemFormListFn = (
+	defaultValue?: StoreValue,
+	insertIndex?: number
+) => void;
 
 const ProductFormList = ({
 	form,
@@ -22,6 +37,10 @@ const ProductFormList = ({
 	const [selectedProducts, setSelectedProducts] = useState<
 		Record<string, number>
 	>({});
+	const [selectedProduct, setSelectedProduct] =
+		useState<ProductVariantWithStock | null>(null);
+	const params = useParams();
+	const itemsList = Form.useWatch('items', form);
 
 	const updateTotalPrice = (name: number) => {
 		const items: ProductVariantWithStock[] = form.getFieldValue('items');
@@ -48,17 +67,55 @@ const ProductFormList = ({
 		updateTotalPrice(name);
 	};
 
+	const handleAddProduct = (add: AddItemFormListFn) => {
+		if (selectedProduct) {
+			if (!isQuote) {
+				if (selectedProduct.quantity === 0) {
+					return notification.error({ message: 'Producto sin stock!' });
+				}
+
+				setSelectedProducts(prev => ({
+					...prev,
+					[selectedProduct.id]: selectedProduct.quantity
+				}));
+			}
+
+			const inList = itemsList.some(
+				(product: ProductVariantWithStock) =>
+					product.productVariantId === selectedProduct.id
+			);
+			if (inList) {
+				return notification.error({
+					message: 'El producto ya se encuentra en la lista!'
+				});
+			}
+
+			setItemsError(false);
+
+			add({
+				productVariantId: selectedProduct.id,
+				stockItemId: selectedProduct.stockItemId,
+				name: `${selectedProduct.productName} ${selectedProduct.name}`,
+				iva: 'NO',
+				quantity: 1,
+				currency: selectedProduct.currency,
+				price: selectedProduct.price,
+				totalPrice: selectedProduct.price
+			});
+			updateCalculations(form);
+		}
+	};
+
 	return (
 		<Form.List name='items'>
 			{(fields, { add, remove }) => {
 				return (
 					<>
-						<SearchProducts
-							form={form}
-							add={add}
-							setItemsError={setItemsError}
-							isQuote={isQuote}
-							setSelectedProducts={setSelectedProducts}
+						<SearchAndAddProducts
+							onAdd={() => handleAddProduct(add)}
+							selectedProduct={selectedProduct}
+							setSelectedProduct={setSelectedProduct}
+							shopSlug={params?.shopSlug as string}
 						/>
 
 						<div className='overflow-x-auto custom-scrollbar'>
