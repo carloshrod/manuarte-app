@@ -1,12 +1,14 @@
 import useForm from '@/hooks/useForm';
-import { Button, Col, Form, Input, Row, Select } from 'antd';
+import { Button, Col, Divider, Form, Input, Row, Select } from 'antd';
 import { HiChevronDoubleRight } from 'react-icons/hi';
 import TransactionsProductFormList from '../../common/input-data/TransactionsProductFormList';
 import { useSelector } from 'react-redux';
 import { DrawerContent, TransactionType } from '@/types/enums';
 import { useWatch } from 'antd/es/form/Form';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { formatToTitleCase } from '@/utils/formats';
+import { transactionServices } from '@/services/transactionServices';
+import moment from 'moment';
 
 const TransactionsForm = () => {
 	const { form, isLoading, itemsError, setItemsError, submitTransaction } =
@@ -15,6 +17,10 @@ const TransactionsForm = () => {
 		drawer: { content }
 	} = useSelector((state: RootState) => state.ui);
 	const { shops } = useSelector((state: RootState) => state.shop);
+	const [transfers, setTransfers] = useState<Transaction[]>([]);
+	const [selectedTransfer, setSelectedTransfer] = useState<Transaction | null>(
+		null
+	);
 
 	useEffect(() => {
 		if (shops?.length > 0 && content === DrawerContent.transfer) {
@@ -23,6 +29,47 @@ const TransactionsForm = () => {
 			});
 		}
 	}, []);
+
+	const handleStockToChange = async (toId: string) => {
+		if (content === DrawerContent.enter && toId) {
+			const data = toId && (await transactionServices.getAll(toId));
+			if (data) {
+				setTransfers(data);
+			}
+
+			setSelectedTransfer(null);
+			form.setFieldsValue({ transferId: undefined });
+		}
+	};
+
+	const transferId = useWatch('transferId', form);
+	useEffect(() => {
+		if (content === DrawerContent.enter && transferId) {
+			const fetchItems = async () => {
+				const items: TransactionItem[] =
+					transferId && (await transactionServices.getItems(transferId));
+
+				form.setFieldsValue({
+					items:
+						items?.length > 0 &&
+						items?.map(item => {
+							return {
+								quantity: item?.quantity,
+								productVariantId: item?.productVariantId,
+								stockItemId: item?.stockItemId,
+								name: `${item?.productName} ${item?.productVariantName}`
+							};
+						})
+				});
+			};
+
+			fetchItems();
+			const transfer = transfers?.find(transf => transf.id === transferId);
+			if (transfer) {
+				setSelectedTransfer(transfer);
+			}
+		}
+	}, [transferId]);
 
 	const stockOptions = shops?.map(shop => {
 		return {
@@ -36,23 +83,65 @@ const TransactionsForm = () => {
 		opt => opt.value !== fromId
 	);
 
+	const transferOptions = transfers?.map(transf => {
+		return {
+			value: transf?.id,
+			label: formatToTitleCase(transf?.description)
+		};
+	});
+
 	const fromShopSlug = fromId
 		? shops?.find(shop => shop.stockId === fromId)?.slug
 		: undefined;
 
-	const SUBMITS: Record<string, (values: SubmitTransactionDto) => void> = {
-		[DrawerContent.enterBySupplier]: async (values: SubmitTransactionDto) =>
-			await submitTransaction(
-				{
-					...values,
-					toId: shops?.find(shop => shop.mainStock)?.stockId as string,
-					type: TransactionType.ENTER
-				},
-				shops
-			),
-		[DrawerContent.exit]: async (values: SubmitTransactionDto) =>
-			await submitTransaction({ ...values, type: TransactionType.EXIT }, shops)
+	const SUBMITS: Record<
+		string,
+		{ fn: (values: SubmitTransactionDto) => void; label: string }
+	> = {
+		[DrawerContent.enterBySupplier]: {
+			fn: async (values: SubmitTransactionDto) =>
+				await submitTransaction(
+					{
+						...values,
+						toId: shops?.find(shop => shop.mainStock)?.stockId as string,
+						type: TransactionType.ENTER
+					},
+					shops
+				),
+			label: 'INGRESAR'
+		},
+		[DrawerContent.transfer]: {
+			fn: async (values: SubmitTransactionDto) =>
+				await submitTransaction(
+					{ ...values, type: TransactionType.TRANSFER },
+					shops
+				),
+			label: 'TRANSFERIR'
+		},
+		[DrawerContent.enter]: {
+			fn: async (values: SubmitTransactionDto) =>
+				await submitTransaction(
+					{
+						...values,
+						fromId: selectedTransfer?.fromId as string,
+						type: TransactionType.ENTER,
+						description: `Ingreso: ${selectedTransfer?.description}`
+					},
+					shops
+				),
+			label: 'INGRESAR'
+		},
+		[DrawerContent.exit]: {
+			fn: async (values: SubmitTransactionDto) =>
+				await submitTransaction(
+					{ ...values, type: TransactionType.EXIT },
+					shops
+				),
+			label: 'EGRESAR'
+		}
 	};
+
+	const submit = SUBMITS[content as string];
 
 	return (
 		<Form
@@ -61,7 +150,7 @@ const TransactionsForm = () => {
 			initialValues={{
 				items: []
 			}}
-			onFinish={values => SUBMITS[content as string](values)}
+			onFinish={values => submit?.fn(values) ?? null}
 			className='h-full flex flex-col justify-between'
 		>
 			<Row gutter={16} className='items-center'>
@@ -121,7 +210,14 @@ const TransactionsForm = () => {
 								]}
 								className='flex-1'
 							>
-								<Select options={stockOptions} />
+								<Select
+									options={stockOptions}
+									onChange={value => {
+										if (value === form.getFieldValue('toId')) {
+											form.setFieldsValue({ toId: undefined });
+										}
+									}}
+								/>
 							</Form.Item>
 							<HiChevronDoubleRight
 								size={24}
@@ -148,22 +244,63 @@ const TransactionsForm = () => {
 				) : null}
 
 				{content === DrawerContent.enter ? (
-					<Col span={24}>
-						<div className='flex justify-between gap-4 pb-4'>
-							<div className='flex flex-col flex-1 gap-2'>
-								<span>Destino</span>
-								<span className='px-3 py-1 bg-[#e5e5e5] rounded-md'>
-									Seleccionar bodega de destino
-								</span>
-							</div>
-							<div className='flex flex-col flex-1 gap-2'>
-								<span>Lista de transferencias</span>
-								<span className='px-3 py-1 bg-[#e5e5e5] rounded-md'>
-									Seleccionar...
-								</span>
-							</div>
-						</div>
-					</Col>
+					<>
+						<Col span={12}>
+							<Form.Item
+								name='toId'
+								label='Destino'
+								rules={[
+									{
+										required: true,
+										message: 'El destino es requerido'
+									}
+								]}
+							>
+								<Select
+									placeholder='Seleccionar destino...'
+									options={stockOptions}
+									onChange={value => handleStockToChange(value)}
+								/>
+							</Form.Item>
+						</Col>
+						<Col span={24}>
+							<Form.Item
+								name='transferId'
+								label='Lista de transferencias'
+								rules={[
+									{
+										required: true,
+										message: 'La transferencia es requerida'
+									}
+								]}
+							>
+								<Select
+									placeholder='Seleccionar transferencia...'
+									options={transferOptions}
+								/>
+							</Form.Item>
+						</Col>
+						{selectedTransfer?.id ? (
+							<Col span={24}>
+								<div className='flex justify-between gap-4 mb-4'>
+									<div className='flex flex-col flex-1 gap-2'>
+										<span>Origen</span>
+										<span className='px-3 py-1 bg-[#e5e5e5] rounded-md'>
+											{selectedTransfer?.fromName}
+										</span>
+									</div>
+									<div className='flex flex-col flex-1 gap-2'>
+										<span>Fecha</span>
+										<span className='px-3 py-1 bg-[#e5e5e5] rounded-md'>
+											{moment(selectedTransfer?.createdDate)
+												.startOf('day')
+												.format('YYYY/MM/DD')}
+										</span>
+									</div>
+								</div>
+							</Col>
+						) : null}
+					</>
 				) : null}
 
 				{content === DrawerContent.exit ? (
@@ -187,8 +324,8 @@ const TransactionsForm = () => {
 					</Col>
 				) : null}
 
-				{content !== DrawerContent.enter ? (
-					<>
+				<>
+					{content !== DrawerContent.enter ? (
 						<Col span={24}>
 							<Form.Item
 								name='description'
@@ -203,18 +340,25 @@ const TransactionsForm = () => {
 								<Input.TextArea placeholder='Ingresa una descripción' />
 							</Form.Item>
 						</Col>
-						<Col span={24}>
-							{content === DrawerContent.enterBySupplier || fromId ? (
-								<TransactionsProductFormList
-									form={form}
-									itemsError={itemsError}
-									setItemsError={setItemsError}
-									fromShopSlug={fromShopSlug}
-								/>
-							) : null}
-						</Col>
-					</>
-				) : null}
+					) : null}
+
+					{selectedTransfer?.id ? (
+						<Divider orientation='left'>Productos</Divider>
+					) : null}
+
+					<Col span={24}>
+						{content === DrawerContent.enterBySupplier ||
+						fromId ||
+						selectedTransfer?.id ? (
+							<TransactionsProductFormList
+								form={form}
+								itemsError={itemsError}
+								setItemsError={setItemsError}
+								fromShopSlug={fromShopSlug}
+							/>
+						) : null}
+					</Col>
+				</>
 			</Row>
 
 			<div className='flex flex-col items-end py-4 bg-white'>
@@ -225,7 +369,7 @@ const TransactionsForm = () => {
 					htmlType='submit'
 					loading={isLoading}
 				>
-					ENVIAR
+					{submit?.label ?? 'ENVIAR'}
 				</Button>
 			</div>
 		</Form>

@@ -32,7 +32,10 @@ import {
 	updateStockItem
 } from '@/reducers/stockItems/stockItemSlice';
 import { transactionServices } from '@/services/transactionServices';
-import { addTransaction } from '@/reducers/transactions/transactionSlice';
+import {
+	addTransaction,
+	updateTransactionState
+} from '@/reducers/transactions/transactionSlice';
 
 notification.config({
 	placement: 'topRight',
@@ -321,6 +324,12 @@ const useForm = () => {
 				const newTransaction = { ...res.data.newTransaction, fromName, toName };
 
 				dispatch(addTransaction(newTransaction));
+
+				if (values?.transferId) {
+					dispatch(
+						updateTransactionState({ id: values?.transferId, state: 'SUCCESS' })
+					);
+				}
 			},
 			modal: false
 		});

@@ -39,16 +39,17 @@ const TransactionsProductFormList = ({
 	const [addedProducts, setAddedProducts] = useState<Record<string, number>>(
 		{}
 	);
-
 	const {
 		drawer: { content }
 	} = useSelector((state: RootState) => state.ui);
-	const itemsList = Form.useWatch('items', form);
+	const itemsList: ProductVariantWithStock[] = Form.useWatch('items', form);
 	const toId = useWatch('toId', form);
+	const fromId = useWatch('fromId', form);
+	const isEnter = content === DrawerContent.enter;
 
 	useEffect(() => {
 		form.setFieldsValue({ items: [] });
-	}, [toId]);
+	}, [fromId, toId]);
 
 	const shopSlug =
 		content === DrawerContent.enterBySupplier
@@ -122,17 +123,27 @@ const TransactionsProductFormList = ({
 		}
 	};
 
+	const productsCount = itemsList?.reduce((acc, item) => {
+		return acc + Number(item.quantity);
+	}, 0);
+
 	return (
 		<Form.List name='items'>
 			{(fields, { add, remove }) => {
 				return (
 					<>
-						<SearchAndAddProducts
-							onAdd={() => handleAddProduct(add)}
-							selectedProduct={selectedProduct}
-							setSelectedProduct={setSelectedProduct}
-							shopSlug={shopSlug}
-						/>
+						{!isEnter ? (
+							<SearchAndAddProducts
+								onAdd={() => handleAddProduct(add)}
+								selectedProduct={selectedProduct}
+								setSelectedProduct={setSelectedProduct}
+								shopSlug={shopSlug}
+							/>
+						) : null}
+
+						{itemsList?.length > 0 ? (
+							<p className='pb-6'># Total de Items: {productsCount}</p>
+						) : null}
 
 						<div className='overflow-x-auto custom-scrollbar'>
 							{fields.reverse().map(({ key, name, ...restField }) => {
@@ -143,7 +154,7 @@ const TransactionsProductFormList = ({
 									<div key={key} className='flex items-center gap-2'>
 										{TRANSACTIONS_PRODUCTS_LIST_INPUTS_PROPS?.map(
 											(input, index) => {
-												const editableField = input.name === 'quantity';
+												const isQuantity = input.name === 'quantity';
 
 												return (
 													<Form.Item
@@ -155,14 +166,15 @@ const TransactionsProductFormList = ({
 														}
 														rules={[
 															{
-																required: editableField,
+																required: isQuantity && !isEnter,
 																message: ''
 															},
 															{
 																validator: (_, value) => {
 																	if (
 																		content !== DrawerContent.enterBySupplier &&
-																		input.name === 'quantity' &&
+																		content !== DrawerContent.enter &&
+																		isQuantity &&
 																		value &&
 																		value > maxQuantity
 																	) {
@@ -181,17 +193,15 @@ const TransactionsProductFormList = ({
 														{input.type === 'number' ? (
 															<InputNumber
 																min={1}
-																variant={
-																	!editableField ? 'borderless' : undefined
-																}
-																className='textRight extraPadding'
+																variant={isEnter ? 'borderless' : undefined}
+																className={`textRight ${isEnter ? '' : 'extraPadding'}`}
 																style={{
 																	width: '100%',
-																	backgroundColor: !editableField
+																	backgroundColor: isEnter
 																		? '#e5e5e5'
 																		: undefined
 																}}
-																readOnly={!editableField}
+																readOnly={isEnter}
 															/>
 														) : (
 															<Input
@@ -211,18 +221,20 @@ const TransactionsProductFormList = ({
 												);
 											}
 										)}
-										<Tooltip title='Eliminar producto'>
-											<Button
-												style={{
-													marginTop: name === fields?.length - 1 ? 4 : -24
-												}}
-												type='text'
-												icon={<AiOutlineDelete size={28} color={'#E53535'} />}
-												onClick={() => {
-													remove(name);
-												}}
-											/>
-										</Tooltip>
+										{!isEnter ? (
+											<Tooltip title='Eliminar producto'>
+												<Button
+													style={{
+														marginTop: name === fields?.length - 1 ? 4 : -24
+													}}
+													type='text'
+													icon={<AiOutlineDelete size={28} color={'#E53535'} />}
+													onClick={() => {
+														remove(name);
+													}}
+												/>
+											</Tooltip>
+										) : null}
 									</div>
 								);
 							})}

@@ -94,7 +94,7 @@ const TransactionDetails = () => {
 					</div>
 				</Col>
 				<Divider orientation='left'>Productos</Divider>
-				<TransactionsItemList items={items} />
+				<TransactionsItemList items={items} type={dataToEdit?.type} />
 			</Row>
 			<div className='flex flex-col items-end py-4 bg-white'>
 				<Button

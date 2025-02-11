@@ -256,11 +256,13 @@ interface SubmitTransactionDto {
 	description: string;
 	type: TransactionType;
 	items: ProductVariantWithStock[];
+	transferId?: string;
 }
 
 interface TransactionItem {
 	id: string;
 	productVariantId: string;
+	stockItemId: string;
 	productVariantName: string;
 	productName: string;
 	quantity: string;

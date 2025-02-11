@@ -2,9 +2,11 @@ import { ENV } from '@/config/env';
 import { axiosPrivate } from './axios';
 
 export const transactionServices = {
-	getAll: async () => {
+	getAll: async (toId?: string) => {
 		try {
-			const res = await axiosPrivate.get(ENV.API.TRANSACTIONS);
+			const res = await axiosPrivate.get(ENV.API.TRANSACTIONS, {
+				params: { toId }
+			});
 
 			return res.data;
 		} catch (error) {

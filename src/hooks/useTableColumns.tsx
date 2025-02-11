@@ -513,7 +513,7 @@ const useTableColumns = () => {
 			],
 			onFilter: (value, record) => record.state.indexOf(value as string) === 0,
 			render: value => STATES_MAP[value],
-			width: 100
+			width: 120
 		},
 		{
 			title: 'TIPO',
@@ -535,7 +535,7 @@ const useTableColumns = () => {
 			],
 			onFilter: (value, record) => record.type.indexOf(value as string) === 0,
 			render: value => TYPES_MAP[value],
-			width: 100
+			width: 120
 		},
 		{
 			title: 'ORIGEN',
@@ -562,7 +562,7 @@ const useTableColumns = () => {
 			onFilter: (value, record) =>
 				record?.fromName?.indexOf(value as string) === 0,
 			render: (value: string) => value ?? '--',
-			width: 100
+			width: 120
 		},
 		{
 			title: 'DESTINO',
@@ -589,7 +589,7 @@ const useTableColumns = () => {
 			onFilter: (value, record) =>
 				record?.toName?.indexOf(value as string) === 0,
 			render: (value: string) => value ?? '--',
-			width: 100
+			width: 120
 		},
 		{
 			title: 'DESCRIPCIÓN',
