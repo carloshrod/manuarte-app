@@ -24,10 +24,22 @@ const transactionSlice = createSlice({
 					? { ...trans, state: transactionUpdated.state }
 					: trans
 			);
+		},
+
+		updateTransaction: (state, action) => {
+			const transactionUpdated = action.payload;
+
+			state.transactions = state.transactions.map(trans =>
+				trans.id === transactionUpdated.id ? transactionUpdated : trans
+			);
 		}
 	}
 });
 
-export const { setTransactions, addTransaction, updateTransactionState } =
-	transactionSlice.actions;
+export const {
+	setTransactions,
+	addTransaction,
+	updateTransactionState,
+	updateTransaction
+} = transactionSlice.actions;
 export default transactionSlice.reducer;

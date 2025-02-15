@@ -445,12 +445,6 @@ const useTableColumns = () => {
 			width: 140
 		},
 		{
-			title: 'MONEDA',
-			dataIndex: 'currency',
-			key: 'currency',
-			width: 100
-		},
-		{
 			title: 'PRECIO',
 			dataIndex: 'price',
 			key: 'price',
@@ -620,7 +614,8 @@ const useTableColumns = () => {
 			render: (_, record: Transaction) => (
 				<TransactionActions record={record} />
 			),
-			width: 100
+			width: 80,
+			align: 'center'
 		}
 	];
 

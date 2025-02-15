@@ -50,14 +50,13 @@ const TableActions = ({
 			) : null}
 
 			{onShowDetails ? (
-				<Tooltip title={isEditable ? 'Mostrar detalles' : ''}>
+				<Tooltip title='Mostrar detalles'>
 					<Button
 						type='text'
 						icon={
-							<ImEye size={20} color={isEditable ? '#0D6EFD' : '#A0AEC0'} />
+							<ImEye size={20} color='#0D6EFD' />
 						}
 						onClick={onShowDetails}
-						disabled={!isEditable}
 					/>
 				</Tooltip>
 			) : null}

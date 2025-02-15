@@ -34,6 +34,7 @@ import {
 import { transactionServices } from '@/services/transactionServices';
 import {
 	addTransaction,
+	updateTransaction,
 	updateTransactionState
 } from '@/reducers/transactions/transactionSlice';
 
@@ -308,7 +309,6 @@ const useForm = () => {
 	) => {
 		if (values?.items?.length < 1) {
 			setItemsError(true);
-			return;
 		}
 
 		await handleSubmit({
@@ -321,15 +321,56 @@ const useForm = () => {
 				const toName = shops.find(
 					shop => shop.stockId === res.data.newTransaction?.toId
 				)?.stockName;
-				const newTransaction = { ...res.data.newTransaction, fromName, toName };
+
+				const newTransaction = {
+					...res.data.newTransaction,
+					fromName,
+					toName
+				};
 
 				dispatch(addTransaction(newTransaction));
 
 				if (values?.transferId) {
 					dispatch(
-						updateTransactionState({ id: values?.transferId, state: 'SUCCESS' })
+						updateTransactionState({
+							id: values?.transferId,
+							state: 'SUCCESS'
+						})
 					);
 				}
+			},
+			modal: false
+		});
+	};
+
+	const submitUpdateTransaction = async (
+		values: SubmitTransactionDto,
+		transactionId: string,
+		shops: Shop[]
+	) => {
+		if (values?.items?.length < 1) {
+			setItemsError(true);
+		}
+
+		await handleSubmit({
+			serviceFn: valuesToUpdate =>
+				transactionServices.update(valuesToUpdate, transactionId),
+			values,
+			onSuccess: res => {
+				const fromName = shops.find(
+					shop => shop.stockId === res.data.updatedTransaction?.fromId
+				)?.stockName;
+				const toName = shops.find(
+					shop => shop.stockId === res.data.updatedTransaction?.toId
+				)?.stockName;
+
+				const updatedTransaction = {
+					...res.data.updatedTransaction,
+					fromName,
+					toName
+				};
+
+				dispatch(updateTransaction(updatedTransaction));
 			},
 			modal: false
 		});
@@ -357,7 +398,8 @@ const useForm = () => {
 		submitUpdateBilling,
 		submitCreateStockItem,
 		submitUpdateStockItem,
-		submitTransaction
+		submitTransaction,
+		submitUpdateTransaction
 	};
 };
 

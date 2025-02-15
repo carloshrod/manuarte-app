@@ -40,7 +40,7 @@ const TransactionsProductFormList = ({
 		{}
 	);
 	const {
-		drawer: { content }
+		drawer: { content, dataToEdit }
 	} = useSelector((state: RootState) => state.ui);
 	const itemsList: ProductVariantWithStock[] = Form.useWatch('items', form);
 	const toId = useWatch('toId', form);
@@ -48,7 +48,9 @@ const TransactionsProductFormList = ({
 	const isEnter = content === DrawerContent.enter;
 
 	useEffect(() => {
-		form.setFieldsValue({ items: [] });
+		if (!dataToEdit) {
+			form.setFieldsValue({ items: [] });
+		}
 	}, [fromId, toId]);
 
 	const shopSlug =
@@ -132,7 +134,7 @@ const TransactionsProductFormList = ({
 			{(fields, { add, remove }) => {
 				return (
 					<>
-						{!isEnter ? (
+						{!isEnter && !dataToEdit ? (
 							<SearchAndAddProducts
 								onAdd={() => handleAddProduct(add)}
 								selectedProduct={selectedProduct}
@@ -148,7 +150,9 @@ const TransactionsProductFormList = ({
 						<div className='overflow-x-auto custom-scrollbar'>
 							{fields.reverse().map(({ key, name, ...restField }) => {
 								const item = form.getFieldValue('items')[name];
-								const maxQuantity = addedProducts[item?.productVariantId] || 1;
+								const maxQuantity = !dataToEdit
+									? addedProducts[item?.productVariantId]
+									: item?.totalQuantity || 1;
 
 								return (
 									<div key={key} className='flex items-center gap-2'>
@@ -221,7 +225,7 @@ const TransactionsProductFormList = ({
 												);
 											}
 										)}
-										{!isEnter ? (
+										{!isEnter && !dataToEdit ? (
 											<Tooltip title='Eliminar producto'>
 												<Button
 													style={{

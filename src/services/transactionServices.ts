@@ -14,10 +14,13 @@ export const transactionServices = {
 		}
 	},
 
-	getItems: async (transactionId: string) => {
+	getItems: async (transactionId: string, stockId: string) => {
 		try {
 			const res = await axiosPrivate.get(
-				`${ENV.API.TRANSACTIONS}/items/${transactionId}`
+				`${ENV.API.TRANSACTIONS}/items/${transactionId}`,
+				{
+					params: { stockId }
+				}
 			);
 
 			return res.data;
@@ -28,5 +31,12 @@ export const transactionServices = {
 
 	create: async (body: SubmitTransactionDto) => {
 		return await axiosPrivate.post(ENV.API.TRANSACTIONS, body);
+	},
+
+	update: async (body: SubmitTransactionDto, transactionId: string) => {
+		return await axiosPrivate.put(
+			`${ENV.API.TRANSACTIONS}/transfer/${transactionId}`,
+			body
+		);
 	}
 };

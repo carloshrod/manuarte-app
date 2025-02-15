@@ -11,10 +11,16 @@ import { transactionServices } from '@/services/transactionServices';
 import moment from 'moment';
 
 const TransactionsForm = () => {
-	const { form, isLoading, itemsError, setItemsError, submitTransaction } =
-		useForm();
 	const {
-		drawer: { content }
+		form,
+		isLoading,
+		itemsError,
+		setItemsError,
+		submitTransaction,
+		submitUpdateTransaction
+	} = useForm();
+	const {
+		drawer: { content, dataToEdit }
 	} = useSelector((state: RootState) => state.ui);
 	const { shops } = useSelector((state: RootState) => state.shop);
 	const [transfers, setTransfers] = useState<Transaction[]>([]);
@@ -26,6 +32,24 @@ const TransactionsForm = () => {
 		if (shops?.length > 0 && content === DrawerContent.transfer) {
 			form.setFieldsValue({
 				fromId: shops?.find(shop => shop.mainStock)?.stockId
+			});
+		}
+
+		if (dataToEdit) {
+			form.setFieldsValue({
+				fromId: dataToEdit?.fromId,
+				toId: dataToEdit?.toId,
+				description: dataToEdit?.description,
+				items: dataToEdit?.items?.map((item: TransactionItem) => {
+					return {
+						id: item?.id,
+						quantity: item?.quantity,
+						totalQuantity: item?.totalQuantity,
+						productVariantId: item?.productVariantId,
+						stockItemId: item?.stockItemId,
+						name: `${item?.productName} ${item?.productVariantName}`
+					};
+				})
 			});
 		}
 	}, []);
@@ -45,21 +69,20 @@ const TransactionsForm = () => {
 	const transferId = useWatch('transferId', form);
 	useEffect(() => {
 		if (content === DrawerContent.enter && transferId) {
+			const toId = form.getFieldValue('toId');
 			const fetchItems = async () => {
 				const items: TransactionItem[] =
-					transferId && (await transactionServices.getItems(transferId));
+					transferId && (await transactionServices.getItems(transferId, toId));
 
 				form.setFieldsValue({
-					items:
-						items?.length > 0 &&
-						items?.map(item => {
-							return {
-								quantity: item?.quantity,
-								productVariantId: item?.productVariantId,
-								stockItemId: item?.stockItemId,
-								name: `${item?.productName} ${item?.productVariantName}`
-							};
-						})
+					items: items?.map(item => {
+						return {
+							quantity: item?.quantity,
+							productVariantId: item?.productVariantId,
+							stockItemId: item?.stockItemId,
+							name: `${item?.productName} ${item?.productVariantName}`
+						};
+					})
 				});
 			};
 
@@ -111,12 +134,17 @@ const TransactionsForm = () => {
 			label: 'INGRESAR'
 		},
 		[DrawerContent.transfer]: {
-			fn: async (values: SubmitTransactionDto) =>
-				await submitTransaction(
-					{ ...values, type: TransactionType.TRANSFER },
-					shops
-				),
-			label: 'TRANSFERIR'
+			fn: async (values: SubmitTransactionDto) => {
+				if (!dataToEdit) {
+					await submitTransaction(
+						{ ...values, type: TransactionType.TRANSFER },
+						shops
+					);
+				} else {
+					await submitUpdateTransaction({ ...values }, dataToEdit?.id, shops);
+				}
+			},
+			label: dataToEdit ? 'EDITAR' : 'TRANSFERIR'
 		},
 		[DrawerContent.enter]: {
 			fn: async (values: SubmitTransactionDto) =>
@@ -208,7 +236,7 @@ const TransactionsForm = () => {
 										message: 'El origen es requerido'
 									}
 								]}
-								className='flex-1'
+								className='flex-1 custom-disabled-select'
 							>
 								<Select
 									options={stockOptions}
@@ -217,6 +245,7 @@ const TransactionsForm = () => {
 											form.setFieldsValue({ toId: undefined });
 										}
 									}}
+									disabled={dataToEdit}
 								/>
 							</Form.Item>
 							<HiChevronDoubleRight
@@ -232,11 +261,12 @@ const TransactionsForm = () => {
 										message: 'El destino es requerido'
 									}
 								]}
-								className='flex-1'
+								className='flex-1 custom-disabled-select'
 							>
 								<Select
 									placeholder='Seleccionar destino...'
 									options={filteredStockOptions}
+									disabled={dataToEdit}
 								/>
 							</Form.Item>
 						</div>
@@ -349,7 +379,8 @@ const TransactionsForm = () => {
 					<Col span={24}>
 						{content === DrawerContent.enterBySupplier ||
 						fromId ||
-						selectedTransfer?.id ? (
+						selectedTransfer?.id ||
+						dataToEdit ? (
 							<TransactionsProductFormList
 								form={form}
 								itemsError={itemsError}

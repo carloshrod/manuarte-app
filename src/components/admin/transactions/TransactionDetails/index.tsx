@@ -1,11 +1,12 @@
-import { closeDrawer } from '@/reducers/ui/uiSlice';
-import { transactionServices } from '@/services/transactionServices';
-import { STATES_MAP, TYPES_MAP } from '@/utils/mappings';
-import { Button, Col, Divider, Row } from 'antd';
-import moment from 'moment';
 import { useEffect, useState } from 'react';
+import { Button, Col, Divider, Row } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
 import TransactionsItemList from '../TransactionItemsList';
+import { transactionServices } from '@/services/transactionServices';
+import { closeDrawer, openDrawer } from '@/reducers/ui/uiSlice';
+import { STATES_MAP, TYPES_MAP } from '@/utils/mappings';
+import { DrawerContent, TransactionType } from '@/types/enums';
 
 const TransactionDetails = () => {
 	const {
@@ -14,8 +15,13 @@ const TransactionDetails = () => {
 	const [items, setItems] = useState<TransactionItem[]>([]);
 	const dispatch = useDispatch();
 
+	const stockId =
+		dataToEdit?.type === TransactionType.ENTER
+			? dataToEdit?.toId
+			: dataToEdit?.fromId;
+
 	const fetchItems = async () => {
-		const data = await transactionServices.getItems(dataToEdit?.id);
+		const data = await transactionServices.getItems(dataToEdit?.id, stockId);
 		if (data) {
 			setItems(data);
 		}
@@ -39,6 +45,20 @@ const TransactionDetails = () => {
 	const supplierName = suppliers.find(
 		supl => supl.id === dataToEdit?.supplierId
 	)?.name;
+
+	const isTransferInProgress =
+		dataToEdit?.type === TransactionType.TRANSFER &&
+		dataToEdit?.state === 'PROGRESS';
+
+	const handleEdit = () => {
+		dispatch(
+			openDrawer({
+				title: 'Transacción',
+				content: DrawerContent.transfer,
+				dataToEdit: { ...dataToEdit, items }
+			})
+		);
+	};
 
 	return (
 		<div className='h-full flex flex-col justify-between'>
@@ -96,7 +116,7 @@ const TransactionDetails = () => {
 				<Divider orientation='left'>Productos</Divider>
 				<TransactionsItemList items={items} type={dataToEdit?.type} />
 			</Row>
-			<div className='flex flex-col items-end py-4 bg-white'>
+			<div className='flex justify-end gap-4 py-4 bg-white'>
 				<Button
 					color='danger'
 					variant='outlined'
@@ -107,6 +127,18 @@ const TransactionDetails = () => {
 				>
 					CERRAR
 				</Button>
+
+				{isTransferInProgress ? (
+					<Button
+						type='primary'
+						className='w-[90%] max-w-[200px]'
+						style={{ fontWeight: 600 }}
+						htmlType='button'
+						onClick={handleEdit}
+					>
+						EDITAR
+					</Button>
+				) : null}
 			</div>
 		</div>
 	);

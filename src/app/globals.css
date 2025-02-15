@@ -66,3 +66,7 @@ body {
 .ant-drawer-close:hover {
 	background-color: #E53535 !important;
 }
+
+.custom-disabled-select .ant-select-disabled .ant-select-selector {
+	color: #000000E0 !important;
+}
