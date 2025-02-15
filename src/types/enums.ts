@@ -14,7 +14,7 @@ export enum ModalContent {
 export enum DrawerContent {
 	quotes = 'quotes',
 	billings = 'billings',
-	enterBySupplier = 'enterBySupplier',
+	enterByProduction = 'enterByProduction',
 	transfer = 'transfer',
 	enter = 'enter',
 	exit = 'exit',

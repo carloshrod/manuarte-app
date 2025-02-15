@@ -121,7 +121,7 @@ const TransactionsForm = () => {
 		string,
 		{ fn: (values: SubmitTransactionDto) => void; label: string }
 	> = {
-		[DrawerContent.enterBySupplier]: {
+		[DrawerContent.enterByProduction]: {
 			fn: async (values: SubmitTransactionDto) =>
 				await submitTransaction(
 					{
@@ -182,44 +182,13 @@ const TransactionsForm = () => {
 			className='h-full flex flex-col justify-between'
 		>
 			<Row gutter={16} className='items-center'>
-				{content === DrawerContent.enterBySupplier ? (
-					<Col span={24}>
-						<div className='flex justify-between gap-4 pb-6'>
-							<Form.Item
-								name='supplierId'
-								label='Proveedor'
-								rules={[
-									{
-										required: true,
-										message: 'El proveedor es requerido'
-									}
-								]}
-								className='flex-1'
-							>
-								<Select
-									placeholder='Seleccionar proveedor...'
-									options={[
-										{
-											value: '5feee178-3140-44d7-80ce-67db48fd8789',
-											label: 'Manuarte'
-										},
-										{
-											value: 'bfda9954-7bff-4359-a235-dfce36bfed8c',
-											label: 'Otros'
-										}
-									]}
-								/>
-							</Form.Item>
-							<HiChevronDoubleRight
-								size={24}
-								style={{ margin: '32px auto 0 auto' }}
-							/>
-							<div className='flex flex-col flex-1 gap-2'>
-								<span>Destino</span>
-								<span className='h-[32px] px-3 py-1 bg-[#e5e5e5] rounded-md'>
-									Fabrica Cascajal
-								</span>
-							</div>
+				{content === DrawerContent.enterByProduction ? (
+					<Col span={12}>
+						<div className='flex flex-col flex-1 gap-2 pb-6'>
+							<span>Destino</span>
+							<span className='h-[32px] px-3 py-1 bg-[#e5e5e5] rounded-md'>
+								Fabrica Cascajal
+							</span>
 						</div>
 					</Col>
 				) : null}
@@ -362,7 +331,7 @@ const TransactionsForm = () => {
 								label='Descripción'
 								rules={[
 									{
-										required: true,
+										required: content !== DrawerContent.enterByProduction,
 										message: 'La descripción es requerida'
 									}
 								]}
@@ -377,7 +346,7 @@ const TransactionsForm = () => {
 					) : null}
 
 					<Col span={24}>
-						{content === DrawerContent.enterBySupplier ||
+						{content === DrawerContent.enterByProduction ||
 						fromId ||
 						selectedTransfer?.id ||
 						dataToEdit ? (

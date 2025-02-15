@@ -18,9 +18,9 @@ const TransactionsPage = async () => {
 				</h2>
 				<div className='flex gap-4'>
 					<OpenDrawerButton
-						title='Ingreso por Proveedor'
-						drawerContent={DrawerContent.enterBySupplier}
-						buttonLabel='Proveedor'
+						title='Ingreso por Producción'
+						drawerContent={DrawerContent.enterByProduction}
+						buttonLabel='Producción'
 						prependIcon={false}
 						appendIcon={<FaTruckLoading size={18} />}
 					/>

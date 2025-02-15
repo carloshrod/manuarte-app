@@ -54,7 +54,7 @@ const TransactionsProductFormList = ({
 	}, [fromId, toId]);
 
 	const shopSlug =
-		content === DrawerContent.enterBySupplier
+		content === DrawerContent.enterByProduction
 			? 'fabrica-cascajal'
 			: fromShopSlug;
 
@@ -176,7 +176,8 @@ const TransactionsProductFormList = ({
 															{
 																validator: (_, value) => {
 																	if (
-																		content !== DrawerContent.enterBySupplier &&
+																		content !==
+																			DrawerContent.enterByProduction &&
 																		content !== DrawerContent.enter &&
 																		isQuantity &&
 																		value &&

@@ -31,21 +31,6 @@ const TransactionDetails = () => {
 		fetchItems();
 	}, [dataToEdit?.id]);
 
-	const suppliers = [
-		{
-			id: '5feee178-3140-44d7-80ce-67db48fd8789',
-			name: 'Manuarte'
-		},
-		{
-			id: 'bfda9954-7bff-4359-a235-dfce36bfed8c',
-			name: 'Otros'
-		}
-	];
-
-	const supplierName = suppliers.find(
-		supl => supl.id === dataToEdit?.supplierId
-	)?.name;
-
 	const isTransferInProgress =
 		dataToEdit?.type === TransactionType.TRANSFER &&
 		dataToEdit?.state === 'PROGRESS';
@@ -65,9 +50,9 @@ const TransactionDetails = () => {
 			<Row gutter={32} className='items-center'>
 				<Col span={12}>
 					<div className='flex flex-col flex-1 gap-2 mb-4'>
-						<span>{dataToEdit?.supplierId ? 'Proveedor' : 'Origen'}</span>
+						<span>Origen</span>
 						<span className='px-3 py-1 bg-[#e5e5e5] rounded-md'>
-							{dataToEdit?.supplierId ? supplierName : dataToEdit?.fromName}
+							{dataToEdit?.fromName ?? 'NA'}
 						</span>
 					</div>
 				</Col>
