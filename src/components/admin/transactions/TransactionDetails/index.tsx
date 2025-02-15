@@ -7,6 +7,7 @@ import { transactionServices } from '@/services/transactionServices';
 import { closeDrawer, openDrawer } from '@/reducers/ui/uiSlice';
 import { STATES_MAP, TYPES_MAP } from '@/utils/mappings';
 import { DrawerContent, TransactionType } from '@/types/enums';
+import { useSession } from 'next-auth/react';
 
 const TransactionDetails = () => {
 	const {
@@ -14,6 +15,8 @@ const TransactionDetails = () => {
 	} = useSelector((state: RootState) => state.ui);
 	const [items, setItems] = useState<TransactionItem[]>([]);
 	const dispatch = useDispatch();
+	const { data: session } = useSession();
+	const isAdmin = session?.user?.roleName === 'admin';
 
 	const stockId =
 		dataToEdit?.type === TransactionType.ENTER
@@ -113,7 +116,7 @@ const TransactionDetails = () => {
 					CERRAR
 				</Button>
 
-				{isTransferInProgress ? (
+				{isTransferInProgress && isAdmin ? (
 					<Button
 						type='primary'
 						className='w-[90%] max-w-[200px]'

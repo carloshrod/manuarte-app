@@ -18,7 +18,7 @@ const QuotesPage = async (props: QuotesPageProps) => {
 	} = props;
 	const shopName = shopSlug.toUpperCase().replace('-', ' ');
 	const session = await auth();
-	const isAdmin = !session?.user?.shop;
+	const isAdmin = session?.user?.roleName === 'admin';
 
 	return (
 		<section className='flex flex-col gap-6'>

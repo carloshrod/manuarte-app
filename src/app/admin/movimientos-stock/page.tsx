@@ -4,11 +4,14 @@ import OpenDrawerButton from '@/components/admin/common/ui/OpenDrawerButton';
 import TransactionsTable from '@/components/admin/transactions/TransactionsTable';
 import { DrawerContent } from '@/types/enums';
 import { shopServices } from '@/services/shopServices';
+import { auth } from '@/auth';
 
 export const dynamic = 'force-dynamic';
 
 const TransactionsPage = async () => {
 	const shopsData = await shopServices.getAll();
+	const session = await auth();
+	const isAdmin = session?.user?.roleName === 'admin';
 
 	return (
 		<section className='flex flex-col gap-6'>
@@ -17,20 +20,24 @@ const TransactionsPage = async () => {
 					Movimientos de Stock:
 				</h2>
 				<div className='flex gap-4'>
-					<OpenDrawerButton
-						title='Ingreso por Producción'
-						drawerContent={DrawerContent.enterByProduction}
-						buttonLabel='Producción'
-						prependIcon={false}
-						appendIcon={<FaTruckLoading size={18} />}
-					/>
-					<OpenDrawerButton
-						title='Transferencia'
-						drawerContent={DrawerContent.transfer}
-						buttonLabel='Transferencia'
-						prependIcon={false}
-						appendIcon={<BiTransfer size={18} />}
-					/>
+					{isAdmin ? (
+						<>
+							<OpenDrawerButton
+								title='Ingreso por Producción'
+								drawerContent={DrawerContent.enterByProduction}
+								buttonLabel='Producción'
+								prependIcon={false}
+								appendIcon={<FaTruckLoading size={18} />}
+							/>
+							<OpenDrawerButton
+								title='Transferencia'
+								drawerContent={DrawerContent.transfer}
+								buttonLabel='Transferencia'
+								prependIcon={false}
+								appendIcon={<BiTransfer size={18} />}
+							/>
+						</>
+					) : null}
 					<OpenDrawerButton
 						title='Ingreso'
 						drawerContent={DrawerContent.enter}
