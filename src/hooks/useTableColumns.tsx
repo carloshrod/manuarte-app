@@ -103,6 +103,14 @@ const useTableColumns = () => {
 			width: 200
 		},
 		{
+			title: 'GRUPO',
+			dataIndex: 'groupName',
+			key: 'groupName',
+			...getColumnSearchProps('groupName'),
+			render: (value: string) => value ?? '--',
+			width: 150
+		},
+		{
 			title: 'FECHA DE CREACIÓN',
 			dataIndex: 'createdDate',
 			key: 'createdDate',
