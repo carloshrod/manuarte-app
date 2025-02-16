@@ -25,7 +25,7 @@ const DashboardPage = async () => {
 	return (
 		<section className='flex flex-col gap-4'>
 			<h2 className='text-2xl font-semibold px-4'>Dashboard</h2>
-			<div className='flex flex-wrap text-center'>
+			<div className='flex flex-wrap justify-center text-center'>
 				<StatsWidgets counts={stats?.counts} />
 				<div className='p-4 w-full flex max-lg:flex-wrap gap-8'>
 					<MonthlySalesChart data={stats?.sales} country='col' />
@@ -33,7 +33,9 @@ const DashboardPage = async () => {
 				</div>
 				<div className='p-4 w-full flex flex-col gap-8'>
 					<div className='p-4 w-full min-h-[380px] shadow-[6px_6px_24px_rgba(0,0,0,0.25)] ps-6 py-6 rounded-lg'>
-						<h4 className='text-xl font-bold'>Productos Top Ventas</h4>
+						<h4 className='text-xl font-bold'>
+							Top Ventas - Grupos de Categorías de Productos
+						</h4>
 						<Tabs defaultActiveKey='2' items={items} />
 					</div>
 				</div>

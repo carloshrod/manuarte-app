@@ -21,14 +21,6 @@ interface TopSalesChartProps {
 }
 
 const TopSalesCharts = ({ data }: TopSalesChartProps) => {
-	const formatCurrency = (value: number, currency: string) => {
-		const formatter = new Intl.NumberFormat('es-CO', {
-			style: 'currency',
-			currency
-		});
-		return formatter.format(value);
-	};
-
 	return (
 		<div className='flex max-lg:flex-wrap gap-8 p-8'>
 			{data?.topCOP?.length > 0 || data?.topUSD?.length > 0 ? (
@@ -43,18 +35,16 @@ const TopSalesCharts = ({ data }: TopSalesChartProps) => {
 							<>
 								<FlagCol />
 								<PieChart width={400} height={250}>
-									<Tooltip
-										formatter={(value: number) => formatCurrency(value, 'COP')}
-									/>
+									<Tooltip formatter={(value: number) => `${value} unds`} />
 									<Pie
 										data={data.topCOP}
-										dataKey='totalSales'
-										nameKey='name'
+										dataKey='totalQuantity'
+										nameKey='productCategoryGroupName'
 										cx='50%'
 										cy='50%'
 										innerRadius={10}
 										fill='#0e7490'
-										label={entry => formatCurrency(entry.totalSales, 'COP')}
+										label={entry => `${entry.productCategoryGroupName}`}
 									/>
 								</PieChart>
 							</>
@@ -71,18 +61,16 @@ const TopSalesCharts = ({ data }: TopSalesChartProps) => {
 							<>
 								<FlagEcu />
 								<PieChart width={400} height={250}>
-									<Tooltip
-										formatter={(value: number) => formatCurrency(value, 'USD')}
-									/>
+									<Tooltip formatter={(value: number) => `${value} unds`} />
 									<Pie
 										data={data.topUSD}
-										dataKey='totalSales'
-										nameKey='name'
+										dataKey='totalQuantity'
+										nameKey='productCategoryGroupName'
 										cx='50%'
 										cy='50%'
 										innerRadius={10}
 										fill='#eab308'
-										label={entry => formatCurrency(entry.totalSales, 'USD')}
+										label={entry => `${entry.productCategoryGroupName}`}
 									/>
 								</PieChart>
 							</>
