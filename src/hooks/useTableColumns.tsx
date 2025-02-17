@@ -622,7 +622,7 @@ const useTableColumns = () => {
 			render: (_, record: Transaction) => (
 				<TransactionActions record={record} />
 			),
-			width: 80,
+			width: 100,
 			align: 'center'
 		}
 	];
