@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { formatToTitleCase } from '@/utils/formats';
 import { transactionServices } from '@/services/transactionServices';
 import moment from 'moment';
+import { useSession } from 'next-auth/react';
 
 const TransactionsForm = () => {
 	const {
@@ -27,6 +28,19 @@ const TransactionsForm = () => {
 	const [selectedTransfer, setSelectedTransfer] = useState<Transaction | null>(
 		null
 	);
+	const { data: session } = useSession();
+	const isAdmin = session?.user?.roleName === 'admin';
+
+	const fetchTransfers = async (toId: string) => {
+		try {
+			const data = await transactionServices.getAll(toId);
+			if (data) {
+				setTransfers(data);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
 	useEffect(() => {
 		if (shops?.length > 0 && content === DrawerContent.transfer) {
@@ -52,14 +66,33 @@ const TransactionsForm = () => {
 				})
 			});
 		}
+
+		if (content === DrawerContent.enter && !isAdmin) {
+			const defaultToId = shops.find(
+				shp => shp?.slug === session?.user?.shop
+			)?.stockId;
+			form.setFieldsValue({
+				toId: defaultToId
+			});
+
+			if (defaultToId) {
+				fetchTransfers(defaultToId);
+			}
+		}
+
+		if (content === DrawerContent.exit && !isAdmin) {
+			const defaultFromId = shops.find(
+				shp => shp?.slug === session?.user?.shop
+			)?.stockId;
+			form.setFieldsValue({
+				fromId: defaultFromId
+			});
+		}
 	}, []);
 
 	const handleStockToChange = async (toId: string) => {
 		if (content === DrawerContent.enter && toId) {
-			const data = toId && (await transactionServices.getAll(toId));
-			if (data) {
-				setTransfers(data);
-			}
+			fetchTransfers(toId);
 
 			setSelectedTransfer(null);
 			form.setFieldsValue({ transferId: undefined });
@@ -254,11 +287,13 @@ const TransactionsForm = () => {
 										message: 'El destino es requerido'
 									}
 								]}
+								className='custom-disabled-select'
 							>
 								<Select
 									placeholder='Seleccionar destino...'
 									options={stockOptions}
 									onChange={value => handleStockToChange(value)}
+									disabled={!isAdmin}
 								/>
 							</Form.Item>
 						</Col>
@@ -313,11 +348,12 @@ const TransactionsForm = () => {
 									message: 'El stock es requerido'
 								}
 							]}
-							className='flex-1'
+							className='flex-1 custom-disabled-select'
 						>
 							<Select
 								placeholder='Seleccionar stock...'
 								options={stockOptions}
+								disabled={!isAdmin}
 							/>
 						</Form.Item>
 					</Col>
