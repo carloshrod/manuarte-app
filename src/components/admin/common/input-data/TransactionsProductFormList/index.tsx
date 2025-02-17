@@ -15,6 +15,7 @@ import { StoreValue } from 'antd/es/form/interface';
 import { DrawerContent } from '@/types/enums';
 import { useSelector } from 'react-redux';
 import { useWatch } from 'antd/es/form/Form';
+import { useSession } from 'next-auth/react';
 
 interface TransactionsProductFormListProps {
 	form: FormInstance;
@@ -46,6 +47,8 @@ const TransactionsProductFormList = ({
 	const toId = useWatch('toId', form);
 	const fromId = useWatch('fromId', form);
 	const isEnter = content === DrawerContent.enter;
+	const { data: session } = useSession();
+	const isAdmin = session?.user?.roleName === 'admin';
 
 	useEffect(() => {
 		if (!dataToEdit) {
@@ -54,7 +57,7 @@ const TransactionsProductFormList = ({
 	}, [fromId, toId]);
 
 	const shopSlug =
-		content === DrawerContent.enterByProduction
+		content === DrawerContent.enterByProduction && isAdmin
 			? 'fabrica-cascajal'
 			: fromShopSlug;
 

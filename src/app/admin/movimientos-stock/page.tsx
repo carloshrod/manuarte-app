@@ -16,6 +16,10 @@ const TransactionsPage = async () => {
 	const shopName =
 		session?.user?.shop && session?.user?.shop.toUpperCase().replace('-', ' ');
 
+	const hasTransactionProduction = session?.user?.extraPermissions?.includes(
+		'transaction-production'
+	);
+
 	return (
 		<section className='flex flex-col gap-6'>
 			<div className='flex flex-wrap gap-4 justify-between items-center'>
@@ -30,23 +34,23 @@ const TransactionsPage = async () => {
 					) : null}
 				</div>
 				<div className='flex gap-4'>
+					{isAdmin || hasTransactionProduction ? (
+						<OpenDrawerButton
+							title='Ingreso por Producción'
+							drawerContent={DrawerContent.enterByProduction}
+							buttonLabel='Producción'
+							prependIcon={false}
+							appendIcon={<FaTruckLoading size={18} />}
+						/>
+					) : null}
 					{isAdmin ? (
-						<>
-							<OpenDrawerButton
-								title='Ingreso por Producción'
-								drawerContent={DrawerContent.enterByProduction}
-								buttonLabel='Producción'
-								prependIcon={false}
-								appendIcon={<FaTruckLoading size={18} />}
-							/>
-							<OpenDrawerButton
-								title='Transferencia'
-								drawerContent={DrawerContent.transfer}
-								buttonLabel='Transferencia'
-								prependIcon={false}
-								appendIcon={<BiTransfer size={18} />}
-							/>
-						</>
+						<OpenDrawerButton
+							title='Transferencia'
+							drawerContent={DrawerContent.transfer}
+							buttonLabel='Transferencia'
+							prependIcon={false}
+							appendIcon={<BiTransfer size={18} />}
+						/>
 					) : null}
 					<OpenDrawerButton
 						title='Ingreso'

@@ -37,7 +37,8 @@ export const PERMISSION_MAP: Record<string, string> = {
 	'customer-read': 'Ver clientes',
 	'customer-create': 'Crear clientes',
 	'customer-update': 'Editar clientes',
-	'customer-delete': 'Eliminar clientes'
+	'customer-delete': 'Eliminar clientes',
+	'transaction-production': 'Hacer ingresos por producción'
 };
 
 export const STATES_MAP: Record<string, string> = {

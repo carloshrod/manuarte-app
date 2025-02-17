@@ -30,6 +30,8 @@ const TransactionsForm = () => {
 	);
 	const { data: session } = useSession();
 	const isAdmin = session?.user?.roleName === 'admin';
+	const shopName =
+		session?.user?.shop && session?.user?.shop.toUpperCase().replace('-', ' ');
 
 	const fetchTransfers = async (toId: string) => {
 		try {
@@ -43,6 +45,17 @@ const TransactionsForm = () => {
 	};
 
 	useEffect(() => {
+		if (
+			shops?.length > 0 &&
+			content === DrawerContent.enterByProduction &&
+			!isAdmin
+		) {
+			console.log('enterByProduction');
+			form.setFieldsValue({
+				fromId: shops?.find(shop => shop.slug === session?.user?.shop)?.stockId
+			});
+		}
+
 		if (shops?.length > 0 && content === DrawerContent.transfer) {
 			form.setFieldsValue({
 				fromId: shops?.find(shop => shop.mainStock)?.stockId
@@ -220,7 +233,9 @@ const TransactionsForm = () => {
 						<div className='flex flex-col flex-1 gap-2 pb-6'>
 							<span>Destino</span>
 							<span className='h-[32px] px-3 py-1 bg-[#e5e5e5] rounded-md'>
-								Fabrica Cascajal
+								{isAdmin
+									? 'Fabrica Cascajal'
+									: shopName && formatToTitleCase(shopName)}
 							</span>
 						</div>
 					</Col>
@@ -390,7 +405,7 @@ const TransactionsForm = () => {
 								form={form}
 								itemsError={itemsError}
 								setItemsError={setItemsError}
-								fromShopSlug={fromShopSlug}
+								fromShopSlug={isAdmin ? fromShopSlug : session?.user?.shop}
 							/>
 						) : null}
 					</Col>
