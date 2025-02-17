@@ -5,6 +5,7 @@ import TransactionsTable from '@/components/admin/transactions/TransactionsTable
 import { DrawerContent } from '@/types/enums';
 import { shopServices } from '@/services/shopServices';
 import { auth } from '@/auth';
+import { MdOutlineWarehouse } from 'react-icons/md';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,13 +13,22 @@ const TransactionsPage = async () => {
 	const shopsData = await shopServices.getAll();
 	const session = await auth();
 	const isAdmin = session?.user?.roleName === 'admin';
+	const shopName =
+		session?.user?.shop && session?.user?.shop.toUpperCase().replace('-', ' ');
 
 	return (
 		<section className='flex flex-col gap-6'>
 			<div className='flex flex-wrap gap-4 justify-between items-center'>
-				<h2 className='min-[478px]:text-lg min-[796px]:text-2xl font-semibold ps-4'>
-					Movimientos de Stock:
-				</h2>
+				<div className='flex flex-wrap items-center'>
+					<h2 className='min-[478px]:text-lg min-[796px]:text-2xl font-semibold ps-4'>
+						Movimientos de Stock:
+					</h2>
+					{shopName ? (
+						<span className='flex gap-1 items-center ps-4 max-[555px]:mt-2 min-[478px]:text-lg min-[796px]:text-2xl font-semibold'>
+							<MdOutlineWarehouse /> {shopName}
+						</span>
+					) : null}
+				</div>
 				<div className='flex gap-4'>
 					{isAdmin ? (
 						<>
