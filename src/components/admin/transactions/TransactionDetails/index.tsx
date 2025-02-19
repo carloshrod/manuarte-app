@@ -67,14 +67,16 @@ const TransactionDetails = () => {
 						</span>
 					</div>
 				</Col>
-				<Col span={24}>
-					<div className='flex flex-col flex-1 gap-2 mb-4'>
-						<span>Descripción</span>
-						<span className='px-3 py-2 bg-[#e5e5e5] rounded-md'>
-							{dataToEdit?.description}
-						</span>
-					</div>
-				</Col>
+				{dataToEdit?.description ? (
+					<Col span={24}>
+						<div className='flex flex-col flex-1 gap-2 mb-4'>
+							<span>Descripción</span>
+							<span className='px-3 py-2 bg-[#e5e5e5] rounded-md'>
+								{dataToEdit?.description}
+							</span>
+						</div>
+					</Col>
+				) : null}
 				<Col span={8}>
 					<div className='flex flex-col flex-1 gap-2 mb-4'>
 						<span>Tipo</span>
@@ -102,7 +104,7 @@ const TransactionDetails = () => {
 					</div>
 				</Col>
 				<Divider orientation='left'>Productos</Divider>
-				<TransactionsItemList items={items} type={dataToEdit?.type} />
+				<TransactionsItemList items={items} />
 			</Row>
 			<div className='flex justify-end gap-4 py-4 bg-white'>
 				<Button
@@ -118,7 +120,8 @@ const TransactionDetails = () => {
 
 				{isTransferInProgress && isAdmin ? (
 					<Button
-						type='primary'
+						color='primary'
+						variant='outlined'
 						className='w-[90%] max-w-[200px]'
 						style={{ fontWeight: 600 }}
 						htmlType='button'
