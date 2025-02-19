@@ -211,8 +211,9 @@ interface SubmitBillingDto extends SubmitCustomerDto {
 interface StockItem {
 	id: string;
 	productName: string;
-	productVariantName: string;
+	vId: string;
 	productVariantId: string;
+	productVariantName: string;
 	currency: string;
 	price: number;
 	quantity: number;

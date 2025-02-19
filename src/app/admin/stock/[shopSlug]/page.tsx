@@ -1,10 +1,11 @@
+import { GiCardboardBox } from 'react-icons/gi';
+import { MdOutlineWarehouse } from 'react-icons/md';
 import { auth } from '@/auth';
 import AddButton from '@/components/admin/common/ui/AddButton';
 import GoBack from '@/components/admin/common/ui/GoBack';
+import GenerateReportButton from '@/components/admin/stock/GenerateReportButton';
 import StockItemsTable from '@/components/admin/stock/StockItemsTable';
 import { ModalContent } from '@/types/enums';
-import { GiCardboardBox } from 'react-icons/gi';
-import { MdOutlineWarehouse } from 'react-icons/md';
 
 interface StockItemsPageProps {
 	params: {
@@ -32,12 +33,15 @@ const StockItemsPage = async (props: StockItemsPageProps) => {
 						<MdOutlineWarehouse /> {shopName}
 					</span>
 				</div>
-				<AddButton
-					title='Agregar Stock de Producto'
-					modalContent={ModalContent.stockItems}
-					buttonLabel='Stock'
-					appendIcon={<GiCardboardBox size={18} />}
-				/>
+				<div className='flex gap-2'>
+					<GenerateReportButton shopSlug={shopSlug}/>
+					<AddButton
+						title='Agregar Stock de Producto'
+						modalContent={ModalContent.stockItems}
+						buttonLabel='Stock'
+						appendIcon={<GiCardboardBox size={18} />}
+					/>
+				</div>
 			</div>
 			<StockItemsTable shopSlug={shopSlug} />
 		</section>
