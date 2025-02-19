@@ -58,12 +58,7 @@ const BillingPDF = ({ billing, pdfRef }: { billing: Billing; pdfRef: any }) => {
 		<div ref={pdfRef} className='flex flex-col gap-8 p-10'>
 			<div className='flex items-center justify-between px-8'>
 				<figure>
-					<img
-						src={'/logo-manuarte.png'}
-						width={150}
-						height={150}
-						alt='Logo Manuarte'
-					/>
+					<img src={'/logo-manuarte.png'} width={150} alt='Logo Manuarte' />
 					<figcaption>
 						<a
 							href='https://www.manuartestore.com'
@@ -74,7 +69,9 @@ const BillingPDF = ({ billing, pdfRef }: { billing: Billing; pdfRef: any }) => {
 						</a>
 					</figcaption>
 				</figure>
-				<h2 className='text-2xl font-bold text-blue-400'>EASY SOAP</h2>
+				<figure>
+					<img src={'/logo-easy-soap.jpg'} width={250} alt='Logo Manuarte' />
+				</figure>
 			</div>
 
 			<h1 className='text-3xl font-semibold'>

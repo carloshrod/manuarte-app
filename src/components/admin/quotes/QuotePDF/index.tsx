@@ -61,7 +61,9 @@ const QuotePDF = ({ quote, pdfRef }: { quote: Quote; pdfRef: any }) => {
 						</a>
 					</figcaption>
 				</figure>
-				<h2 className='text-2xl font-bold text-blue-400'>EASY SOAP</h2>
+				<figure>
+					<img src={'/logo-easy-soap.jpg'} width={250} alt='Logo Manuarte' />
+				</figure>
 			</div>
 
 			<h1 className='text-3xl font-semibold'>
