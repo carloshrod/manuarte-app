@@ -168,15 +168,21 @@ const TransactionsForm = () => {
 		{ fn: (values: SubmitTransactionDto) => void; label: string }
 	> = {
 		[DrawerContent.enterByProduction]: {
-			fn: async (values: SubmitTransactionDto) =>
+			fn: async (values: SubmitTransactionDto) => {
+				const toId =
+					shops?.find(shop => {
+						return isAdmin ? shop.mainStock : shop.slug === session?.user?.shop;
+					})?.stockId || '';
+
 				await submitTransaction(
 					{
 						...values,
-						toId: shops?.find(shop => shop.mainStock)?.stockId as string,
+						toId,
 						type: TransactionType.ENTER
 					},
 					shops
-				),
+				);
+			},
 			label: 'INGRESAR'
 		},
 		[DrawerContent.transfer]: {
