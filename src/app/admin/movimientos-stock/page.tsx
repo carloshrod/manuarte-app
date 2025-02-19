@@ -36,9 +36,9 @@ const TransactionsPage = async () => {
 				<div className='flex gap-4'>
 					{isAdmin || hasTransactionProduction ? (
 						<OpenDrawerButton
-							title='Ingreso por Producción'
+							title={`Ingreso por ${isAdmin ? 'Producción' : "Proveedor"}`}
 							drawerContent={DrawerContent.enterByProduction}
-							buttonLabel='Producción'
+							buttonLabel={isAdmin ? 'Producción' : "Proveedor"}
 							prependIcon={false}
 							appendIcon={<FaTruckLoading size={18} />}
 						/>
