@@ -6,9 +6,14 @@ const LoginPage = async () => {
 		<main className='min-h-screen flex flex-col items-center justify-center p-6'>
 			<div className='grow grid md:grid-cols-2 items-center gap-4 max-md:gap-8 max-w-6xl max-md:max-w-lg w-full'>
 				<div>
-					<h1 className='mb-6 text-[#1677FF] text-5xl text-center font-extrabold'>
-						MANUARTE
-					</h1>
+					<Image
+						src='/logo-manuarte.png'
+						className='w-full h-[150px] object-contain mb-6'
+						alt='login-image'
+						width={466}
+						height={230}
+						priority
+					/>
 					<LoginForm />
 				</div>
 				<div className='relative hidden md:block md:h-full lg:p-12 p-8'>

@@ -13,6 +13,7 @@ import CustomModal from '@/components/admin/common/layout/Modal';
 import CustomDrawer from '@/components/admin/common/layout/Drawer';
 import store from '@/reducers/store';
 import { formatToTitleCase } from '@/utils/formats';
+import Image from 'next/image';
 
 const { Header, Sider, Content } = Layout;
 
@@ -48,7 +49,18 @@ const AdminLayout = ({
 					}}
 				>
 					<h1 className='text-center p-4 text-2xl text-white font-bold'>
-						{collapsed ? 'M' : 'MANUARTE'}
+						{collapsed ? (
+							'M'
+						) : (
+							<Image
+								src='/logo-manuarte.png'
+								className='w-[150px] object-contain mb-6'
+								alt='login-image'
+								width={466}
+								height={230}
+								priority
+							/>
+						)}
 					</h1>
 					<SidebarMenu session={session} />
 				</Sider>
