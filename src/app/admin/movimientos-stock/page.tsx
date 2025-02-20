@@ -16,8 +16,8 @@ const TransactionsPage = async () => {
 	const shopName =
 		session?.user?.shop && session?.user?.shop.toUpperCase().replace('-', ' ');
 
-	const hasTransactionProduction = session?.user?.extraPermissions?.includes(
-		'transaction-production'
+	const hasTransactionSupplier = session?.user?.extraPermissions?.includes(
+		'transaction-supplier'
 	);
 
 	return (
@@ -34,7 +34,7 @@ const TransactionsPage = async () => {
 					) : null}
 				</div>
 				<div className='flex gap-4'>
-					{isAdmin || hasTransactionProduction ? (
+					{isAdmin || hasTransactionSupplier ? (
 						<OpenDrawerButton
 							title={`Ingreso por ${isAdmin ? 'Producción' : "Proveedor"}`}
 							drawerContent={DrawerContent.enterByProduction}
