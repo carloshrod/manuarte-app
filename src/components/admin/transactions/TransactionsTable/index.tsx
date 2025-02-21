@@ -9,8 +9,8 @@ import { setShops } from '@/reducers/shops/shopSlice';
 
 const TransactionsTable = ({ shopsData }: { shopsData: Shop[] }) => {
 	const { transactionsColumns } = useTableColumns();
-	const [isLoading, setIsLoading] = useState(true);
 	const { transactions } = useSelector((state: RootState) => state.transaction);
+	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();
 
 	const fetchTransactions = async () => {

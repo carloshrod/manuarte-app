@@ -8,9 +8,9 @@ import { quoteServices } from '@/services/quoteServices';
 
 const QuotesTable = ({ shopSlug }: { shopSlug: string }) => {
 	const { quoteColumns } = useTableColumns();
-	const dispatch = useDispatch();
 	const { quotes } = useSelector((state: RootState) => state.quote);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
+	const dispatch = useDispatch();
 
 	const fetchQuotes = async () => {
 		setIsLoading(true);
@@ -24,7 +24,7 @@ const QuotesTable = ({ shopSlug }: { shopSlug: string }) => {
 		fetchQuotes();
 		setTimeout(() => {
 			setIsLoading(false);
-		}, 300);
+		}, 500);
 	}, []);
 
 	return (

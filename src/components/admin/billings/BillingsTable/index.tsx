@@ -8,8 +8,8 @@ import { setBillings } from '@/reducers/billings/billingSlice';
 
 const BillingsTable = ({ shopSlug }: { shopSlug: string }) => {
 	const { billingColumns } = useTableColumns();
-	const [isLoading, setIsLoading] = useState(false);
 	const { billings } = useSelector((state: RootState) => state.billing);
+	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();
 
 	const fetchBillings = async () => {
@@ -24,7 +24,7 @@ const BillingsTable = ({ shopSlug }: { shopSlug: string }) => {
 		fetchBillings();
 		setTimeout(() => {
 			setIsLoading(false);
-		}, 300);
+		}, 500);
 	}, []);
 
 	return (

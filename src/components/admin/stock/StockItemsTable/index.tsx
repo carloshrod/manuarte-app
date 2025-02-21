@@ -10,7 +10,7 @@ const StockItemsTable = ({ shopSlug }: { shopSlug: string }) => {
 	const { stockItemsColumns } = useTableColumns();
 	const dispatch = useDispatch();
 	const { stockItems } = useSelector((state: RootState) => state.stock);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const fetchStockItems = async () => {
 		setIsLoading(true);
@@ -24,7 +24,7 @@ const StockItemsTable = ({ shopSlug }: { shopSlug: string }) => {
 		fetchStockItems();
 		setTimeout(() => {
 			setIsLoading(false);
-		}, 300);
+		}, 500);
 	}, []);
 
 	return (

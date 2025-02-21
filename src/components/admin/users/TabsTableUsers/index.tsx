@@ -17,15 +17,17 @@ type TabsTableUsersProps = {
 
 const TabsTableUsers = ({ staffData, customersData }: TabsTableUsersProps) => {
 	const [isStaff, setIsStaff] = useState(true);
-	const [isLoading, setIsLoading] = useState(true);
 	const { staffColumns, customerColumns } = useTableColumns();
 	const { staff, customers } = useSelector((state: RootState) => state.user);
+	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		dispatch(getStaff(staffData));
 		dispatch(getCustomers(customersData));
-		setIsLoading(false);
+		setTimeout(() => {
+			setIsLoading(false);
+		}, 300);
 	}, []);
 
 	const onChange = (key: string) => {
@@ -39,7 +41,7 @@ const TabsTableUsers = ({ staffData, customersData }: TabsTableUsersProps) => {
 			children: (
 				<CustomTable
 					columns={staffColumns}
-					dataSource={staff}
+					dataSource={isLoading ? [] : staff}
 					isLoading={isLoading}
 				/>
 			)
@@ -50,7 +52,7 @@ const TabsTableUsers = ({ staffData, customersData }: TabsTableUsersProps) => {
 			children: (
 				<CustomTable
 					columns={customerColumns}
-					dataSource={customers}
+					dataSource={isLoading ? [] : customers}
 					isLoading={isLoading}
 				/>
 			)

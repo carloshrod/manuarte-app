@@ -22,18 +22,20 @@ const TabsTableProducts = ({
 	productCategoriesData
 }: TabsTableProductsProps) => {
 	const [isProducts, setIsProducts] = useState(true);
-	const [isLoading, setIsLoading] = useState(true);
 	const { productColumns, productCategoryColumns } = useTableColumns();
-	const dispatch = useDispatch();
 	const { productVariants } = useSelector((state: RootState) => state.product);
 	const { productCategories } = useSelector(
 		(state: RootState) => state.productCategory
 	);
+	const [isLoading, setIsLoading] = useState(true);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		dispatch(getProductVariants(productVariantsData));
 		dispatch(getProductCategories(productCategoriesData));
-		setIsLoading(false);
+		setTimeout(() => {
+			setIsLoading(false);
+		}, 300);
 	}, []);
 
 	const onChange = (key: string) => {
@@ -47,7 +49,7 @@ const TabsTableProducts = ({
 			children: (
 				<CustomTable
 					columns={productColumns}
-					dataSource={productVariants}
+					dataSource={isLoading ? [] : productVariants}
 					isLoading={isLoading}
 				/>
 			)
@@ -58,7 +60,7 @@ const TabsTableProducts = ({
 			children: (
 				<CustomTable
 					columns={productCategoryColumns}
-					dataSource={productCategories}
+					dataSource={isLoading ? [] : productCategories}
 					isLoading={isLoading}
 				/>
 			)
