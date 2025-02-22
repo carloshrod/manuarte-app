@@ -8,6 +8,7 @@ import CalculationInputs from '../../common/input-data/CalculationInputs';
 import { useEffect } from 'react';
 import { updateCalculations } from '../../utils';
 import { useParams } from 'next/navigation';
+import { customerSchema, validateForm } from '@/utils/validators';
 
 const BillingForm = () => {
 	const { form, isLoading, itemsError, setItemsError, submitCreateBilling } =
@@ -47,6 +48,11 @@ const BillingForm = () => {
 	}, [existingCustomer]);
 
 	const onSubmit = async (values: SubmitBillingDto) => {
+		const isValid = !noCustomer
+			? await validateForm(values, customerSchema, form)
+			: true;
+		if (!isValid) return;
+
 		const { subtotal, ...restValues } = values;
 
 		await submitCreateBilling({

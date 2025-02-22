@@ -209,6 +209,7 @@ const useTableColumns = () => {
 			dataIndex: 'email',
 			key: 'email',
 			...getColumnSearchProps('email'),
+			render: value => value ?? '--',
 			width: 140
 		},
 		{
@@ -224,7 +225,7 @@ const useTableColumns = () => {
 			key: 'city',
 			...getColumnSearchProps('city'),
 			width: 100,
-			render: value => <p>{value ?? '--'}</p>
+			render: value => value ?? '--'
 		},
 		{
 			title: 'ACCIONES',

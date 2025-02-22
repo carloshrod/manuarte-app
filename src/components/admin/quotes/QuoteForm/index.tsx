@@ -8,6 +8,7 @@ import DrawerFormFooter from '../../common/input-data/DrawerFormFooter';
 import CalculationInputs from '../../common/input-data/CalculationInputs';
 import useForm from '@/hooks/useForm';
 import { QuoteStatus } from '@/types/enums';
+import { customerSchema, validateForm } from '@/utils/validators';
 
 const QuoteForm = () => {
 	const {
@@ -68,6 +69,11 @@ const QuoteForm = () => {
 	};
 
 	const onSubmit = async (values: SubmitQuoteDto) => {
+		const isValid = !noCustomer
+			? await validateForm(values, customerSchema, form)
+			: true;
+		if (!isValid) return;
+
 		const { subtotal, total, ...restValues } = values;
 		if (!dataToEdit) {
 			await submitCreateQuote({

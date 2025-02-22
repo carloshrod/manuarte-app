@@ -6,6 +6,7 @@ import useForm from '@/hooks/useForm';
 import { userServices } from '@/services/userServices';
 import { shopServices } from '@/services/shopServices';
 import { formatToTitleCase } from '@/utils/formats';
+import { staffSchema, validateForm } from '@/utils/validators';
 
 const StaffForm = () => {
 	const { form, isLoading, submitRegisterStaff, submitUpdateStaff } = useForm();
@@ -49,9 +50,13 @@ const StaffForm = () => {
 	}, [dataToEdit, staffRoles]);
 
 	const onSubmit = async (values: SubmitStaffDto) => {
+		const isValid = await validateForm(values, staffSchema, form);
+		if (!isValid) return;
+
 		if ('confirmPassword' in values) {
 			delete values.confirmPassword;
 		}
+
 		if (!dataToEdit) {
 			await submitRegisterStaff(values);
 		} else {
@@ -197,7 +202,7 @@ const StaffForm = () => {
 				</div>
 			) : null}
 			{!dataToEdit || editPassword ? (
-				<div className='flex justify-between'>
+				<div className='flex justify-between gap-4'>
 					<Form.Item
 						name='password'
 						label='Contraseña'
@@ -208,6 +213,7 @@ const StaffForm = () => {
 							}
 						]}
 						hasFeedback
+						style={{ width: '50%' }}
 					>
 						<Input.Password
 							type='password'
@@ -219,6 +225,7 @@ const StaffForm = () => {
 						label='Confirmar contraseña'
 						dependencies={['password']}
 						hasFeedback
+						style={{ width: '50%' }}
 						rules={[
 							{
 								required: !dataToEdit || editPassword,

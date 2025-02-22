@@ -3,6 +3,7 @@ import { Form, Input } from 'antd';
 import { useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
+import { customerSchema, validateForm } from '@/utils/validators';
 
 const CustomersForm = () => {
 	const { form, isLoading, submitRegisterCustomer, submitUpdateCustomer } =
@@ -18,6 +19,9 @@ const CustomersForm = () => {
 	}, []);
 
 	const onSubmit = async (values: SubmitCustomerDto) => {
+		const isValid = await validateForm(values, customerSchema, form);
+		if (!isValid) return;
+
 		if (!dataToEdit) {
 			await submitRegisterCustomer(values);
 		} else {
@@ -58,16 +62,7 @@ const CustomersForm = () => {
 			>
 				<Input placeholder='Ingresa el número de documento' />
 			</Form.Item>
-			<Form.Item
-				name='email'
-				label='Email'
-				rules={[
-					{
-						required: true,
-						message: 'El email es requerido'
-					}
-				]}
-			>
+			<Form.Item name='email' label='Email'>
 				<Input placeholder='Ingresa el email del cliente' />
 			</Form.Item>
 			<Form.Item
