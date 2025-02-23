@@ -161,8 +161,8 @@ export const BILLING_STATUS_OPTIONS = [
 
 export const COL_PAYMENT_METHOD_OPTIONS = [
 	{ value: 'CASH', label: 'Efectivo' },
-	{ value: 'BANK_TRANSFER_RT', label: 'Transferencia RT' },
-	{ value: 'BANK_TRANSFER_RBT', label: 'Transferencia Robert' },
+	{ value: 'BANK_TRANSFER_RT', label: 'Transferencia RI' },
+	{ value: 'BANK_TRANSFER_RBT', label: 'Transferencia RO' },
 	{ value: 'NEQUI', label: 'Nequi' },
 	{ value: 'BOLD', label: 'Bold' },
 	{ value: 'EFECTY', label: 'Efecty' },
@@ -172,8 +172,8 @@ export const COL_PAYMENT_METHOD_OPTIONS = [
 
 export const ECU_PAYMENT_METHOD_OPTIONS = [
 	{ value: 'CASH', label: 'Efectivo' },
-	{ value: 'BANK_TRANSFER_RT', label: 'Transferencia RT' },
-	{ value: 'BANK_TRANSFER_RBT', label: 'Transferencia Robert' },
+	{ value: 'BANK_TRANSFER_RT', label: 'Transferencia RI' },
+	{ value: 'BANK_TRANSFER_RBT', label: 'Transferencia RO' },
 	{ value: 'PAYPHONE', label: 'PayPhone' },
 	{ value: 'BANK_DEPOSIT', label: 'Depósito' },
 	{ value: 'OTHER', label: 'Otro' }
