@@ -386,7 +386,7 @@ const useTableColumns = () => {
 			width: 260
 		},
 		{
-			title: 'FECHA DE ACTUALIZACIÓN',
+			title: 'FECHA',
 			dataIndex: 'updatedDate',
 			key: 'updatedDate',
 			sorter: (a: Billing, b: Billing) =>
