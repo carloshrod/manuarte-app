@@ -51,11 +51,13 @@ const PDFContainer = ({
 							<QuotePDF
 								quote={{ ...(data as Quote), currency }}
 								pdfRef={contentRef}
+								shopSlug={shopSlug}
 							/>
 						) : (
 							<BillingPDF
 								billing={{ ...(data as Billing), currency }}
 								pdfRef={contentRef}
+								shopSlug={shopSlug}
 							/>
 						)}
 					</div>

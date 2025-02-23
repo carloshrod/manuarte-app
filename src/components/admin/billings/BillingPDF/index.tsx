@@ -8,7 +8,15 @@ import { PAYMENT_METHOD_MAP } from '@/utils/mappings';
 import { formatToTitleCase } from '@/utils/formats';
 import { BillingStatus } from '@/types/enums';
 
-const BillingPDF = ({ billing, pdfRef }: { billing: Billing; pdfRef: any }) => {
+const BillingPDF = ({
+	billing,
+	pdfRef,
+	shopSlug
+}: {
+	billing: Billing;
+	pdfRef: any;
+	shopSlug: string;
+}) => {
 	const billingInfo: DescriptionsProps['items'] = [
 		{
 			key: '1',
@@ -36,6 +44,12 @@ const BillingPDF = ({ billing, pdfRef }: { billing: Billing; pdfRef: any }) => {
 		},
 		{
 			key: '5',
+			label: 'Ciudad:',
+			children: formatToTitleCase(billing?.city) ?? '--',
+			span: 3
+		},
+		{
+			key: '6',
 			label: 'Fecha:',
 			children:
 				moment(billing?.updatedDate).startOf('day').format('YYYY/MM/DD') ??
@@ -43,7 +57,7 @@ const BillingPDF = ({ billing, pdfRef }: { billing: Billing; pdfRef: any }) => {
 			span: 3
 		},
 		{
-			key: '5',
+			key: '7',
 			label: 'Método de Pago:',
 			children: billing?.paymentMethod?.includes('TRANSFER')
 				? 'Transferencia'
@@ -53,6 +67,7 @@ const BillingPDF = ({ billing, pdfRef }: { billing: Billing; pdfRef: any }) => {
 	];
 
 	const isCanceled = billing?.status === BillingStatus.CANCELED;
+	const city = shopSlug?.split('-')[1];
 
 	return (
 		<div ref={pdfRef} className='flex flex-col gap-8 p-10'>
@@ -100,7 +115,11 @@ const BillingPDF = ({ billing, pdfRef }: { billing: Billing; pdfRef: any }) => {
 			<Divider />
 
 			{/* Terms */}
-			{billing?.currency === 'COP' ? <TermsCol /> : <TermsEcu />}
+			{billing?.currency === 'COP' ? (
+				<TermsCol city={city === 'cascajal' ? 'barranquilla' : city} />
+			) : (
+				<TermsEcu />
+			)}
 		</div>
 	);
 };

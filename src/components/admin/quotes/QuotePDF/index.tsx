@@ -6,7 +6,15 @@ import TermsCol from '../../Terms/TermsCol';
 import TermsEcu from '../../Terms/TermsEcu';
 import { formatToTitleCase } from '@/utils/formats';
 
-const QuotePDF = ({ quote, pdfRef }: { quote: Quote; pdfRef: any }) => {
+const QuotePDF = ({
+	quote,
+	pdfRef,
+	shopSlug
+}: {
+	quote: Quote;
+	pdfRef: any;
+	shopSlug: string;
+}) => {
 	const quoteInfo: DescriptionsProps['items'] = [
 		{
 			key: '1',
@@ -34,12 +42,20 @@ const QuotePDF = ({ quote, pdfRef }: { quote: Quote; pdfRef: any }) => {
 		},
 		{
 			key: '5',
+			label: 'Ciudad:',
+			children: formatToTitleCase(quote?.city) ?? '--',
+			span: 3
+		},
+		{
+			key: '6',
 			label: 'Fecha:',
 			children:
 				moment(quote?.updatedDate).startOf('day').format('YYYY/MM/DD') ?? '--',
 			span: 3
 		}
 	];
+
+	const city = shopSlug?.split('-')[1];
 
 	return (
 		<div ref={pdfRef} className='flex flex-col gap-8 p-10'>
@@ -87,7 +103,11 @@ const QuotePDF = ({ quote, pdfRef }: { quote: Quote; pdfRef: any }) => {
 			<Divider />
 
 			{/* Terms */}
-			{quote?.currency === 'COP' ? <TermsCol /> : <TermsEcu />}
+			{quote?.currency === 'COP' ? (
+				<TermsCol city={city === 'cascajal' ? 'barranquilla' : city} />
+			) : (
+				<TermsEcu />
+			)}
 		</div>
 	);
 };

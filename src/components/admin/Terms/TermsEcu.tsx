@@ -82,7 +82,7 @@ const TermsEcu = () => {
 			</div>
 			<div className='my-12 text-center text-blue-500'>
 				<p>Ulloa N26 – 130 y Vicente Aguirre, Quito – Ecuador</p>
-				<p>Teléfono: 099 8916972 | E-mail: ventasecuador@manuartestore.com</p>
+				<p>Teléfono: 099 8916972 | E-mail: adminecuador@manuartestore.com</p>
 				<a
 					href='https://www.manuartestore.com'
 					target='_blank'

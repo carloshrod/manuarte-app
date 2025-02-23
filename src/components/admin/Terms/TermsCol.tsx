@@ -1,4 +1,24 @@
-const TermsCol = () => {
+import { formatToTitleCase } from '@/utils/formats';
+
+const TermsCol = ({ city }: { city: string }) => {
+	const BRANCHES: Record<
+		string,
+		{ address: string; phoneNumber: string; email: string }
+	> = {
+		barranquilla: {
+			address: 'Calle 44 # 72 - 63, Local 106',
+			phoneNumber: '322 887 3928',
+			email: 'ventascolombia@manuartestore.com'
+		},
+		cartagena: {
+			address: 'Calle 30 (Av. Consulado) # 62 - 23',
+			phoneNumber: '312 388 3602',
+			email: 'info@manuartestore.com'
+		}
+	};
+
+	const branch = BRANCHES[city] ?? BRANCHES?.barranquilla;
+
 	return (
 		<div className='flex flex-col gap-3 leading-6'>
 			<p className='text-center text-[20px] font-bold'>
@@ -100,12 +120,14 @@ const TermsCol = () => {
 					www.manuartestore.com
 				</p>
 				<p className='font-bold'>
-					Manuarte Colombia S.A.S. - Sede Barranquilla
+					Manuarte Colombia S.A.S. - Sede {formatToTitleCase(city)}
 				</p>
 			</div>
 			<div className='my-12 text-center text-blue-500'>
-				<p>Cra. 44 # 57 - 25, Barrio Boston - Barranquilla</p>
-				<p>Tel: 312 388 3602 | E-mail: ventascolombia@manuartestore.com</p>
+				<p>{branch?.address}</p>
+				<p>
+					Tel: {branch?.phoneNumber} | E-mail: {branch?.email}
+				</p>
 				<p>
 					<span>Facebook: Manuarte Colombia</span>
 				</p>
