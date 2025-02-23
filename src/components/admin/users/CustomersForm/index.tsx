@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import { customerSchema, validateForm } from '@/utils/validators';
+import { z } from 'zod';
 
 const CustomersForm = () => {
 	const { form, isLoading, submitRegisterCustomer, submitUpdateCustomer } =
@@ -63,7 +64,21 @@ const CustomersForm = () => {
 				<Input placeholder='Ingresa el número de documento' />
 			</Form.Item>
 			<Form.Item name='email' label='Email'>
-				<Input placeholder='Ingresa el email del cliente' />
+				<Input
+					placeholder='Ingresa el email del cliente'
+					onChange={e => {
+						const value = e.target.value;
+						const isValid = z
+							.string()
+							.email()
+							.or(z.literal(''))
+							.safeParse(value).success;
+
+						if (isValid) {
+							form.setFields([{ name: ['email'], errors: [] }]);
+						}
+					}}
+				/>
 			</Form.Item>
 			<Form.Item
 				name='phoneNumber'

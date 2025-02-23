@@ -1,8 +1,11 @@
 import { FormInstance } from 'antd';
 import { z, ZodSchema } from 'zod';
 
-export const staffSchema = z.object({
+const baseUserSchema = z.object({
 	dni: z.string().regex(/^\d+$/, 'El documento debe contener solo números'),
+	phoneNumber: z
+		.string()
+		.regex(/^\d+$/, 'El # de teléfono debe contener solo números'),
 	email: z.string().email('Email inválido'),
 	password: z
 		.string()
@@ -16,11 +19,22 @@ export const staffSchema = z.object({
 		)
 });
 
+export const createStaffSchema = z.object({
+	dni: baseUserSchema.shape.dni,
+	email: baseUserSchema.shape.email,
+	password: baseUserSchema.shape.password
+});
+
+export const editStaffSchema = z.object({
+	dni: baseUserSchema.shape.dni,
+	email: baseUserSchema.shape.email,
+	password: baseUserSchema.shape.password.optional()
+});
+
 export const customerSchema = z.object({
-	dni: z.string().regex(/^\d+$/, 'El documento debe contener solo números'),
-	phoneNumber: z
-		.string()
-		.regex(/^\d+$/, 'El # de teléfono debe contener solo números')
+	dni: baseUserSchema.shape.dni,
+	phoneNumber: baseUserSchema.shape.phoneNumber,
+	email: baseUserSchema.shape.email.optional().or(z.literal(''))
 });
 
 export const validateForm = async (

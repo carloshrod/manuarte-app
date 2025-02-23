@@ -209,7 +209,7 @@ const useTableColumns = () => {
 			dataIndex: 'email',
 			key: 'email',
 			...getColumnSearchProps('email'),
-			render: value => value ?? '--',
+			render: value => value || '--',
 			width: 140
 		},
 		{

@@ -6,7 +6,11 @@ import useForm from '@/hooks/useForm';
 import { userServices } from '@/services/userServices';
 import { shopServices } from '@/services/shopServices';
 import { formatToTitleCase } from '@/utils/formats';
-import { staffSchema, validateForm } from '@/utils/validators';
+import {
+	createStaffSchema,
+	editStaffSchema,
+	validateForm
+} from '@/utils/validators';
 
 const StaffForm = () => {
 	const { form, isLoading, submitRegisterStaff, submitUpdateStaff } = useForm();
@@ -50,7 +54,9 @@ const StaffForm = () => {
 	}, [dataToEdit, staffRoles]);
 
 	const onSubmit = async (values: SubmitStaffDto) => {
-		const isValid = await validateForm(values, staffSchema, form);
+		const isValid = !dataToEdit
+			? await validateForm(values, createStaffSchema, form)
+			: await validateForm(values, editStaffSchema, form);
 		if (!isValid) return;
 
 		if ('confirmPassword' in values) {
