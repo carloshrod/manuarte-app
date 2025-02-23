@@ -309,6 +309,7 @@ const useForm = () => {
 	) => {
 		if (values?.items?.length < 1) {
 			setItemsError(true);
+			return;
 		}
 
 		await handleSubmit({
@@ -350,6 +351,7 @@ const useForm = () => {
 	) => {
 		if (values?.items?.length < 1) {
 			setItemsError(true);
+			return;
 		}
 
 		await handleSubmit({
