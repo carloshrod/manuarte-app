@@ -50,7 +50,6 @@ const TransactionsForm = () => {
 			content === DrawerContent.enterByProduction &&
 			!isAdmin
 		) {
-			console.log('enterByProduction');
 			form.setFieldsValue({
 				fromId: shops?.find(shop => shop.slug === session?.user?.shop)?.stockId
 			});

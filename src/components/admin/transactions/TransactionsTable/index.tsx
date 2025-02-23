@@ -7,14 +7,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setTransactions } from '@/reducers/transactions/transactionSlice';
 import { setShops } from '@/reducers/shops/shopSlice';
 
-const TransactionsTable = ({ shopsData }: { shopsData: Shop[] }) => {
+const TransactionsTable = ({
+	shopsData,
+	shop
+}: {
+	shopsData: Shop[];
+	shop: string;
+}) => {
 	const { transactionsColumns } = useTableColumns();
 	const { transactions } = useSelector((state: RootState) => state.transaction);
 	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();
 
 	const fetchTransactions = async () => {
-		const data = await transactionServices.getAll();
+		let data;
+		if (shop) {
+			const stockId = shopsData?.find(sh => sh?.slug === shop)?.stockId;
+			data = await transactionServices.getAll(undefined, stockId);
+		} else {
+			data = await transactionServices.getAll();
+		}
 		dispatch(setTransactions(data));
 	};
 

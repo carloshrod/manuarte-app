@@ -2,10 +2,10 @@ import { ENV } from '@/config/env';
 import { axiosPrivate } from './axios';
 
 export const transactionServices = {
-	getAll: async (toId?: string) => {
+	getAll: async (toId?: string, stockId?: string) => {
 		try {
 			const res = await axiosPrivate.get(ENV.API.TRANSACTIONS, {
-				params: { toId }
+				params: { toId, stockId }
 			});
 
 			return res.data;

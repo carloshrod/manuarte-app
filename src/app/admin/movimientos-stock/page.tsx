@@ -36,9 +36,9 @@ const TransactionsPage = async () => {
 				<div className='flex gap-4'>
 					{isAdmin || hasTransactionSupplier ? (
 						<OpenDrawerButton
-							title={`Ingreso por ${isAdmin ? 'Producción' : "Proveedor"}`}
+							title={`Ingreso por ${isAdmin ? 'Producción' : 'Proveedor'}`}
 							drawerContent={DrawerContent.enterByProduction}
-							buttonLabel={isAdmin ? 'Producción' : "Proveedor"}
+							buttonLabel={isAdmin ? 'Producción' : 'Proveedor'}
 							prependIcon={false}
 							appendIcon={<FaTruckLoading size={18} />}
 						/>
@@ -68,7 +68,10 @@ const TransactionsPage = async () => {
 					/>
 				</div>
 			</div>
-			<TransactionsTable shopsData={shopsData} />
+			<TransactionsTable
+				shopsData={shopsData}
+				shop={session?.user?.shop as string}
+			/>
 		</section>
 	);
 };
