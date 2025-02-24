@@ -3,7 +3,7 @@ import { MdOutlineWarehouse } from 'react-icons/md';
 import { auth } from '@/auth';
 import AddButton from '@/components/admin/common/ui/AddButton';
 import GoBack from '@/components/admin/common/ui/GoBack';
-import GenerateReportButton from '@/components/admin/stock/GenerateReportButton';
+import GenerateStockReportButton from '@/components/admin/stock/GenerateStockReportButton';
 import StockItemsTable from '@/components/admin/stock/StockItemsTable';
 import { ModalContent } from '@/types/enums';
 
@@ -34,7 +34,7 @@ const StockItemsPage = async (props: StockItemsPageProps) => {
 					</span>
 				</div>
 				<div className='flex gap-2'>
-					<GenerateReportButton shopSlug={shopSlug}/>
+					<GenerateStockReportButton shopSlug={shopSlug} />
 					<AddButton
 						title='Agregar Stock de Producto'
 						modalContent={ModalContent.stockItems}

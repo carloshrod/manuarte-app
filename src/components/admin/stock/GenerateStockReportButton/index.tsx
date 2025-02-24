@@ -4,7 +4,7 @@ import { IoMdAdd } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 import { downloadExcel, generateStockData } from '@/utils/documents';
 
-const GenerateReportButton = ({ shopSlug }: { shopSlug: string }) => {
+const GenerateStockReportButton = ({ shopSlug }: { shopSlug: string }) => {
 	const { stockItems } = useSelector((state: RootState) => state.stock);
 
 	const handleDownloadExcel = async () => {
@@ -33,4 +33,4 @@ const GenerateReportButton = ({ shopSlug }: { shopSlug: string }) => {
 	);
 };
 
-export default GenerateReportButton;
+export default GenerateStockReportButton;
