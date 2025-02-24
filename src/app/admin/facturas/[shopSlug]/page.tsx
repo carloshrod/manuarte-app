@@ -5,6 +5,7 @@ import BillingsTable from '@/components/admin/billings/BillingsTable';
 import GoBack from '@/components/admin/common/ui/GoBack';
 import OpenDrawerButton from '@/components/admin/common/ui/OpenDrawerButton';
 import { DrawerContent } from '@/types/enums';
+import GenerateBillingReportButton from '@/components/admin/billings/GenerateBillingReportButton';
 
 interface QuotesPageProps {
 	params: {
@@ -32,12 +33,15 @@ const BillingsPage = async (props: QuotesPageProps) => {
 						<IoStorefrontOutline /> {shopName}
 					</span>
 				</div>
-				<OpenDrawerButton
-					title='Crear Factura'
-					drawerContent={DrawerContent.billings}
-					buttonLabel='Factura'
-					appendIcon={<PiInvoice size={18} />}
-				/>
+				<div className='flex gap-2'>
+					<GenerateBillingReportButton shopSlug={shopSlug} />
+					<OpenDrawerButton
+						title='Crear Factura'
+						drawerContent={DrawerContent.billings}
+						buttonLabel='Factura'
+						appendIcon={<PiInvoice size={18} />}
+					/>
+				</div>
 			</div>
 			<BillingsTable shopSlug={shopSlug} />
 		</section>

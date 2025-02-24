@@ -194,6 +194,7 @@ interface BillingItem extends QuoteItem {}
 interface Billing extends Omit<Quote, 'status'> {
 	status: BillingStatus;
 	paymentMethod: PaymentMethod;
+	total: number;
 }
 
 interface SubmitBillingDto extends SubmitCustomerDto {
@@ -313,6 +314,7 @@ interface RootState {
 	};
 	billing: {
 		billings: Billing[];
+		filteredBillings: Billing[];
 	};
 	stock: {
 		stockItems: StockItem[];

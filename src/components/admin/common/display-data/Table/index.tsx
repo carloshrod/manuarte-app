@@ -1,4 +1,5 @@
-import { Empty, Table, TableColumnsType } from 'antd';
+import { Empty, Table, TableColumnsType, TablePaginationConfig } from 'antd';
+import { FilterValue } from 'antd/es/table/interface';
 import { useMediaQuery } from 'react-responsive';
 
 interface CustomTableProps {
@@ -6,13 +7,18 @@ interface CustomTableProps {
 	dataSource: DataTable[];
 	isLoading?: boolean;
 	scrollMinus?: number;
+	filterData?: (
+		_pagination: TablePaginationConfig,
+		filters: Record<string, FilterValue | null>
+	) => void;
 }
 
 const CustomTable = ({
 	columns,
 	dataSource,
 	isLoading = false,
-	scrollMinus = 380
+	scrollMinus = 380,
+	filterData = () => null
 }: CustomTableProps) => {
 	const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
@@ -49,8 +55,11 @@ const CustomTable = ({
 								height: 'calc(100vh - 380px)'
 							}}
 						/>
-					) : null
+					) : null,
+					filterConfirm: 'Filtrar',
+					filterReset: 'Limpiar'
 				}}
+				onChange={filterData}
 			/>
 		</div>
 	);

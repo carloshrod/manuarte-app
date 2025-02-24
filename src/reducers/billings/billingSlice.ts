@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-	billings: [] as Billing[]
+	billings: [] as Billing[],
+	filteredBillings: [] as Billing[]
 };
 
 const billingSlice = createSlice({
@@ -10,6 +11,10 @@ const billingSlice = createSlice({
 	reducers: {
 		setBillings: (state, action) => {
 			state.billings = action.payload;
+		},
+
+		setFilteredBillings: (state, action) => {
+			state.filteredBillings = action.payload;
 		},
 
 		addBilling: (state, action) => {
@@ -44,6 +49,7 @@ export const {
 	addBilling,
 	updateBilling,
 	cancelBilling,
-	removeBilling
+	removeBilling,
+	setFilteredBillings
 } = billingSlice.actions;
 export default billingSlice.reducer;

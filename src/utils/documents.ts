@@ -1,15 +1,25 @@
 import ExcelJS from 'exceljs';
 import moment from 'moment';
+import { PAYMENT_METHOD_MAP } from './mappings';
+import { formatToTitleCase } from './formats';
 
-export interface ExcelData {
+export interface ExcelStockData {
 	'#': number;
 	Nombre: string;
 	Cantidad: number;
 }
 
+export interface ExcelBillingData {
+	'#': number;
+	Número: string;
+	Cliente: string;
+	'Medio de Pago': string;
+	Total: number;
+}
+
 export const generateStockData = (stockItems: StockItem[]) => {
 	try {
-		let poExcelData: ExcelData[] = [];
+		let poExcelData: ExcelStockData[] = [];
 		if (stockItems?.length > 0) {
 			poExcelData = stockItems?.map((item, i) => {
 				return {
@@ -27,8 +37,34 @@ export const generateStockData = (stockItems: StockItem[]) => {
 	}
 };
 
-export const downloadExcel = async (data: ExcelData[], prefix: string) => {
+export const generateBillingsData = (billings: Billing[]) => {
 	try {
+		let poExcelData: ExcelBillingData[] = [];
+		if (billings?.length > 0) {
+			poExcelData = billings?.map((item, i) => {
+				return {
+					'#': i + 1,
+					Número: item.serialNumber,
+					Cliente: formatToTitleCase(item.customerName) ?? 'Consumidor Final',
+					'Medio de Pago': PAYMENT_METHOD_MAP[item.paymentMethod],
+					Total: item.total
+				};
+			});
+		}
+
+		return poExcelData;
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+export const downloadExcel = async (
+	data: ExcelStockData[] | ExcelBillingData[],
+	prefix: string
+) => {
+	try {
+		const isBilling = prefix.includes('ventas');
+
 		if (data?.length > 0) {
 			const workbook = new ExcelJS.Workbook();
 			const worksheet = workbook.addWorksheet('Hoja 1');
@@ -57,9 +93,12 @@ export const downloadExcel = async (data: ExcelData[], prefix: string) => {
 
 			const link = document.createElement('a');
 			link.href = URL.createObjectURL(blob);
-			link.download = `${prefix}-${moment(new Date()).format(
-				'YYYYMMDDHHmmss'
-			)}.xlsx`;
+
+			const fileName = isBilling
+				? prefix
+				: `${prefix}-${moment(new Date()).format('YYYYMMDDHHmmss')}`;
+
+			link.download = `${fileName}.xlsx`;
 			link.click();
 		}
 	} catch (error) {

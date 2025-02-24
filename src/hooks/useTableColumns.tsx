@@ -23,7 +23,7 @@ import StockItemActions from '@/components/admin/stock/StockItemActions';
 import TransactionActions from '@/components/admin/transactions/TransactionAction';
 
 const useTableColumns = () => {
-	const { getColumnSearchProps } = useTable();
+	const { getColumnSearchProps, getColumnDateFilterProps } = useTable();
 	const pathname = usePathname();
 	const params = useParams();
 
@@ -114,9 +114,6 @@ const useTableColumns = () => {
 			title: 'FECHA DE CREACIÓN',
 			dataIndex: 'createdDate',
 			key: 'createdDate',
-			sorter: (a: ProductCategory, b: ProductCategory) =>
-				moment(a?.createdDate).valueOf() - moment(b?.createdDate).valueOf(),
-			sortDirections: ['descend', 'ascend'],
 			render: (value: string) => (
 				<span>
 					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
@@ -287,9 +284,7 @@ const useTableColumns = () => {
 			title: 'FECHA',
 			dataIndex: 'updatedDate',
 			key: 'updatedDate',
-			sorter: (a: Quote, b: Quote) =>
-				moment(a?.updatedDate).valueOf() - moment(b?.updatedDate).valueOf(),
-			sortDirections: ['descend', 'ascend'],
+			...getColumnDateFilterProps('updatedDate'),
 			render: (value: string) => (
 				<span>
 					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
@@ -389,15 +384,13 @@ const useTableColumns = () => {
 			title: 'FECHA',
 			dataIndex: 'updatedDate',
 			key: 'updatedDate',
-			sorter: (a: Billing, b: Billing) =>
-				moment(a?.updatedDate).valueOf() - moment(b?.updatedDate).valueOf(),
-			sortDirections: ['descend', 'ascend'],
+			...getColumnDateFilterProps('updatedDate'),
 			render: (value: string) => (
 				<span>
 					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
 				</span>
 			),
-			width: 230
+			width: 140
 		},
 		{
 			title: 'PDF',
@@ -600,21 +593,19 @@ const useTableColumns = () => {
 			key: 'description',
 			render: (value: string) =>
 				value ? `${value.charAt(0).toUpperCase()}${value.slice(1)}` : '--',
-			width: 250
+			width: 300
 		},
 		{
-			title: 'FECHA DE CREACIÓN',
+			title: 'FECHA',
 			dataIndex: 'createdDate',
 			key: 'createdDate',
-			sorter: (a: Transaction, b: Transaction) =>
-				moment(a?.createdDate).valueOf() - moment(b?.createdDate).valueOf(),
-			sortDirections: ['descend', 'ascend'],
+			...getColumnDateFilterProps('createdDate'),
 			render: (value: string) => (
 				<span>
 					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
 				</span>
 			),
-			width: 150
+			width: 140
 		},
 		{
 			title: 'ACCIONES',

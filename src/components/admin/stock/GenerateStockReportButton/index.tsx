@@ -1,6 +1,6 @@
 'use client';
 import { Button } from 'antd';
-import { IoMdAdd } from 'react-icons/io';
+import { IoMdDownload } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 import { downloadExcel, generateStockData } from '@/utils/documents';
 
@@ -24,7 +24,10 @@ const GenerateStockReportButton = ({ shopSlug }: { shopSlug: string }) => {
 			variant='solid'
 			color='primary'
 			icon={
-				<IoMdAdd size={18} style={{ display: 'flex', alignItems: 'center' }} />
+				<IoMdDownload
+					size={18}
+					style={{ display: 'flex', alignItems: 'center' }}
+				/>
 			}
 			onClick={handleDownloadExcel}
 		>
