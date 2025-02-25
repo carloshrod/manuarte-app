@@ -24,7 +24,7 @@ const GenerateBillingReportButton = ({ shopSlug }: { shopSlug: string }) => {
 		}
 	};
 
-	return filteredBillings?.length > 0 ? (
+	return (
 		<Button
 			variant='solid'
 			color='primary'
@@ -35,10 +35,11 @@ const GenerateBillingReportButton = ({ shopSlug }: { shopSlug: string }) => {
 				/>
 			}
 			onClick={handleDownloadExcel}
+			disabled={filteredBillings?.length === 0}
 		>
 			Generar Reporte
 		</Button>
-	) : null;
+	);
 };
 
 export default GenerateBillingReportButton;
