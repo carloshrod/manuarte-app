@@ -268,7 +268,7 @@ interface TransactionItem {
 	productVariantName: string;
 	productName: string;
 	quantity: string;
-	totalQuantity: string;
+	stockItemQuantity: string;
 }
 
 type DataTable =

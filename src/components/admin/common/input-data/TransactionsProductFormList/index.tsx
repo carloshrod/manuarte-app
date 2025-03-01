@@ -152,10 +152,14 @@ const TransactionsProductFormList = ({
 
 						<div className='overflow-x-auto custom-scrollbar'>
 							{fields.reverse().map(({ key, name, ...restField }) => {
-								const item = form.getFieldValue('items')[name];
+								const item = dataToEdit
+									? dataToEdit?.items[name]
+									: form.getFieldValue('items')[name];
+
 								const maxQuantity = !dataToEdit
 									? addedProducts[item?.productVariantId]
-									: item?.totalQuantity || 1;
+									: Number(item?.quantity) + Number(item?.stockItemQuantity) ||
+										1;
 
 								return (
 									<div key={key} className='flex items-center gap-2'>

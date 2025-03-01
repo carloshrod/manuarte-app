@@ -70,9 +70,9 @@ const TransactionsForm = () => {
 					return {
 						id: item?.id,
 						quantity: item?.quantity,
-						totalQuantity: item?.totalQuantity,
 						productVariantId: item?.productVariantId,
 						stockItemId: item?.stockItemId,
+						stockItemQuantity: item?.stockItemQuantity,
 						name: `${item?.productName} ${item?.productVariantName}`
 					};
 				})
