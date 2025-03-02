@@ -13,18 +13,19 @@ const QuotesTable = ({ shopSlug }: { shopSlug: string }) => {
 	const dispatch = useDispatch();
 
 	const fetchQuotes = async () => {
-		setIsLoading(true);
 		if (shopSlug) {
 			const data = await quoteServices.getAll(shopSlug);
 			dispatch(getQuotes(data));
 		}
+		setIsLoading(false);
 	};
 
 	useEffect(() => {
 		fetchQuotes();
-		setTimeout(() => {
-			setIsLoading(false);
-		}, 500);
+
+		return () => {
+			dispatch(getQuotes([]));
+		};
 	}, []);
 
 	return (

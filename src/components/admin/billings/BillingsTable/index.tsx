@@ -12,7 +12,6 @@ import { TablePaginationConfig } from 'antd';
 import { FilterValue } from 'antd/es/table/interface';
 import moment from 'moment';
 import { BillingStatus } from '@/types/enums';
-import { usePathname } from 'next/navigation';
 
 interface DataType {
 	updatedDate?: string;
@@ -25,26 +24,23 @@ const BillingsTable = ({ shopSlug }: { shopSlug: string }) => {
 	const { billings } = useSelector((state: RootState) => state.billing);
 	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();
-	const pathname = usePathname();
 
 	const fetchBillings = async () => {
-		setIsLoading(true);
 		if (shopSlug) {
 			const data = await billingServices.getAll(shopSlug);
 			dispatch(setBillings(data));
 		}
+		setIsLoading(false);
 	};
 
 	useEffect(() => {
 		fetchBillings();
-		setTimeout(() => {
-			setIsLoading(false);
-		}, 500);
-	}, []);
 
-	useEffect(() => {
-		dispatch(setFilteredBillings([]));
-	}, [pathname]);
+		return () => {
+			dispatch(setBillings([]));
+			dispatch(setFilteredBillings([]));
+		};
+	}, []);
 
 	const filterBillings = (
 		_pagination: TablePaginationConfig,
