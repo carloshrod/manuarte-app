@@ -21,8 +21,11 @@ const StockItemsTable = ({ shopSlug }: { shopSlug: string }) => {
 	};
 
 	useEffect(() => {
-		dispatch(setStockItems([]));
 		fetchStockItems();
+
+		return () => {
+			dispatch(setStockItems([]));
+		};
 	}, []);
 
 	return (

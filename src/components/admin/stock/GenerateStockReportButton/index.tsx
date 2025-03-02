@@ -30,6 +30,7 @@ const GenerateStockReportButton = ({ shopSlug }: { shopSlug: string }) => {
 				/>
 			}
 			onClick={handleDownloadExcel}
+			disabled={stockItems?.length === 0}
 		>
 			Generar Reporte
 		</Button>
