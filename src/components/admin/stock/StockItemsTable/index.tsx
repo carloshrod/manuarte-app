@@ -13,18 +13,16 @@ const StockItemsTable = ({ shopSlug }: { shopSlug: string }) => {
 	const [isLoading, setIsLoading] = useState(true);
 
 	const fetchStockItems = async () => {
-		setIsLoading(true);
 		if (shopSlug) {
 			const data = await stockItemServices.getAll(shopSlug);
 			dispatch(setStockItems(data));
 		}
+		setIsLoading(false);
 	};
 
 	useEffect(() => {
+		dispatch(setStockItems([]));
 		fetchStockItems();
-		setTimeout(() => {
-			setIsLoading(false);
-		}, 500);
 	}, []);
 
 	return (
