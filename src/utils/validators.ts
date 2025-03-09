@@ -34,7 +34,7 @@ export const editStaffSchema = z.object({
 export const customerSchema = z.object({
 	dni: baseUserSchema.shape.dni,
 	phoneNumber: baseUserSchema.shape.phoneNumber,
-	email: baseUserSchema.shape.email.optional().or(z.literal(''))
+	email: baseUserSchema.shape.email.optional().or(z.literal('')).or(z.null())
 });
 
 export const validateForm = async (
@@ -43,6 +43,7 @@ export const validateForm = async (
 	form: FormInstance
 ) => {
 	try {
+		console.log(values);
 		await schema.parseAsync(values);
 		return true;
 	} catch (err) {
