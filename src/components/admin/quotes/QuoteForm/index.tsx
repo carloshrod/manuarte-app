@@ -79,6 +79,7 @@ const QuoteForm = () => {
 			await submitCreateQuote({
 				...restValues,
 				shopSlug: params?.shopSlug as string,
+				personId: existingCustomer?.personId,
 				customerId: (existingCustomer as ExistingCustomer)?.customerId
 			});
 		} else {
