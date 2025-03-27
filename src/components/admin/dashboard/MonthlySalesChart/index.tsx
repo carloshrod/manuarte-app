@@ -1,4 +1,5 @@
 'use client';
+import { useEffect, useState } from 'react';
 import {
 	Bar,
 	BarChart,
@@ -8,7 +9,7 @@ import {
 	XAxis,
 	YAxis
 } from 'recharts';
-import { Empty } from 'antd';
+import { Empty, Skeleton } from 'antd';
 import FlagCol from '../Flags/FlagCol';
 import FlagEcu from '../Flags/FlagEcu';
 
@@ -24,10 +25,15 @@ interface MonthlySalesChartProps {
 }
 
 const MonthlySalesChart = ({ data = [], country }: MonthlySalesChartProps) => {
+	const [isLoading, setIsLoading] = useState(true);
 	const isCol = country === 'col';
 	const dataKey = isCol ? 'COP' : 'USD';
 	const fill = isCol ? '#059669' : '#22c55e';
 	const flag = isCol ? <FlagCol /> : <FlagEcu />;
+
+	useEffect(() => {
+		setIsLoading(false);
+	}, []);
 
 	const formatCurrency = (value: number) => {
 		const formatter = new Intl.NumberFormat('es-CO', {
@@ -53,22 +59,36 @@ const MonthlySalesChart = ({ data = [], country }: MonthlySalesChartProps) => {
 				<h4 className='text-xl font-bold'>Ventas Mensuales</h4>
 				{flag}
 			</div>
-			{data?.length > 0 ? (
-				<ResponsiveContainer width='100%' height={320} className='p-4'>
-					<BarChart width={730} height={250} data={data}>
-						<XAxis dataKey='month' />
-						<YAxis tickFormatter={formatYAxisValue} />
-						<Tooltip formatter={(value: number) => formatCurrency(value)} />
-						<Legend />
-						<Bar dataKey={dataKey} fill={fill} />
-					</BarChart>
-				</ResponsiveContainer>
+			{!isLoading ? (
+				data?.length > 0 ? (
+					<ResponsiveContainer width='100%' height={320} className='p-4'>
+						<BarChart width={730} height={250} data={data}>
+							<XAxis dataKey='month' />
+							<YAxis tickFormatter={formatYAxisValue} />
+							<Tooltip formatter={(value: number) => formatCurrency(value)} />
+							<Legend />
+							<Bar dataKey={dataKey} fill={fill} />
+						</BarChart>
+					</ResponsiveContainer>
+				) : (
+					<Empty
+						image={Empty.PRESENTED_IMAGE_DEFAULT}
+						description={<p>{`No hay datos para mostrar`}</p>}
+						className='mt-6'
+					/>
+				)
 			) : (
-				<Empty
-					image={Empty.PRESENTED_IMAGE_DEFAULT}
-					description={<p>{`No hay datos para mostrar`}</p>}
-					className='mt-6'
-				/>
+				<div className='w-full h-[320px] flex items-center px-12'>
+					<div className='w-full flex flex-col px-8'>
+						<Skeleton.Node active style={{ width: '100%', height: 260 }} />
+					</div>
+					<div className='w-full flex flex-col px-8'>
+						<Skeleton.Node active style={{ width: '100%', height: 260 }} />
+					</div>
+					<div className='w-full flex flex-col px-8'>
+						<Skeleton.Node active style={{ width: '100%', height: 260 }} />
+					</div>
+				</div>
 			)}
 		</div>
 	);
