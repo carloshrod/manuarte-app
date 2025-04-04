@@ -282,9 +282,9 @@ const useTableColumns = () => {
 		},
 		{
 			title: 'FECHA',
-			dataIndex: 'updatedDate',
-			key: 'updatedDate',
-			...getColumnDateFilterProps('updatedDate'),
+			dataIndex: 'createdDate',
+			key: 'createdDate',
+			...getColumnDateFilterProps('createdDate'),
 			render: (value: string) => (
 				<span>
 					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
@@ -382,9 +382,9 @@ const useTableColumns = () => {
 		},
 		{
 			title: 'FECHA',
-			dataIndex: 'updatedDate',
-			key: 'updatedDate',
-			...getColumnDateFilterProps('updatedDate'),
+			dataIndex: 'createdDate',
+			key: 'createdDate',
+			...getColumnDateFilterProps('createdDate'),
 			render: (value: string) => (
 				<span>
 					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
