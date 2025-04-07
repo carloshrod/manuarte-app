@@ -169,16 +169,6 @@ const StaffForm = () => {
 				<Select
 					placeholder='Selecciona una tienda'
 					allowClear
-					filterOption={(input, option) => {
-						try {
-							const label = (option?.label as string)?.toLowerCase();
-
-							return label?.includes(input.toLowerCase());
-						} catch (error) {
-							console.error(error);
-							return false;
-						}
-					}}
 					options={shopOptions}
 					disabled={isShopDisabled}
 				/>

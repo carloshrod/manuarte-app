@@ -8,6 +8,7 @@ import { productServices } from '@/services/productServices';
 import { PRODUCT_VARIANT_PROPS } from '../../consts';
 import { formatInputCurrency } from '@/utils/formats';
 import SelectStocks from '../SelectStocks';
+import { selectFilterOption } from '../../utils';
 
 const ProductVariantForm = () => {
 	const { form, isLoading, submitAddProductVariant } = useForm();
@@ -41,6 +42,13 @@ const ProductVariantForm = () => {
 		submitAddProductVariant({ ...cleanedValues, stocks }, productId);
 	};
 
+	const productOptions = products?.map(p => {
+		return {
+			value: p.id,
+			label: p.name
+		};
+	});
+
 	return (
 		<Form
 			layout='vertical'
@@ -64,27 +72,9 @@ const ProductVariantForm = () => {
 					placeholder='Selecciona un producto'
 					allowClear
 					showSearch
-					filterOption={(input, option) => {
-						try {
-							const children = (
-								option?.children as unknown as string
-							)?.toLowerCase();
-
-							return children?.includes(input.toLowerCase());
-						} catch (error) {
-							console.error(error);
-							return false;
-						}
-					}}
-				>
-					{products?.length > 0
-						? products.map(product => (
-								<Select.Option key={product.id} value={product.id}>
-									{product.name}
-								</Select.Option>
-							))
-						: null}
-				</Select>
+					filterOption={selectFilterOption}
+					options={productOptions}
+				/>
 			</Form.Item>
 
 			<SelectStocks form={form} setIsQuitoSelected={setIsQuitoSelected} />

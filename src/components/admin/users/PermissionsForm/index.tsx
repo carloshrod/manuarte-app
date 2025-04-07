@@ -7,6 +7,7 @@ import useForm from '@/hooks/useForm';
 import { userServices } from '@/services/userServices';
 import { generatePermissionOptions } from '@/utils/auth';
 import { formatToTitleCase, formatUserExtraPermissions } from '@/utils/formats';
+import { selectFilterOption } from '../../utils';
 
 const PermissionsForm = () => {
 	const { form, isLoading, submitEditPermissions } = useForm();
@@ -79,16 +80,7 @@ const PermissionsForm = () => {
 						mode='multiple'
 						placeholder='Selecciona los permisos'
 						allowClear
-						filterOption={(input, option) => {
-							try {
-								const label = (option?.label as string)?.toLowerCase();
-
-								return label?.includes(input.toLowerCase());
-							} catch (error) {
-								console.error(error);
-								return false;
-							}
-						}}
+						filterOption={selectFilterOption}
 						options={
 							assignablePermissions.length > 0
 								? generatePermissionOptions(assignablePermissions)
