@@ -12,6 +12,11 @@ const CustomModal = () => {
 
 	const modalContent = MODAL_CONTENT[content as ModalContent] ?? null;
 
+	const WIDTH: Record<string, number> = {
+		products: 600,
+		stockItems: 600
+	};
+
 	return (
 		<Modal
 			open={isOpen}
@@ -19,7 +24,7 @@ const CustomModal = () => {
 			onCancel={() => dispatch(closeModal())}
 			destroyOnClose
 			centered
-			width={500}
+			width={content ? WIDTH[content] : 500}
 			footer={null}
 		>
 			{modalContent}

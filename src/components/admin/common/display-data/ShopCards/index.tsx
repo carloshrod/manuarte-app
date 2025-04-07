@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { shopServices } from '@/services/shopServices';
 import { IoStorefrontOutline } from 'react-icons/io5';
 import { MdOutlineWarehouse } from 'react-icons/md';
-import { ROUTES } from '@/utils/routes';
 
 const ShopCards = async ({
 	route,
@@ -34,15 +33,7 @@ const ShopCards = async ({
 				{shops?.length > 0 &&
 					shops?.map(shop => (
 						<div key={shop.id} className='p-6 text-center sm:w-1/2 w-full'>
-							<Link
-								href={{
-									pathname: `${route}/${shop.slug}`,
-									query:
-										route === ROUTES.STOCKS
-											? { main: shop?.mainStock?.toString() }
-											: undefined
-								}}
-							>
+							<Link href={{ pathname: `${route}/${shop.slug}` }}>
 								<div className='max-h-[200px] shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-12 rounded-lg transform transition duration-300 hover:scale-105'>
 									{cardIcon}
 									<h4 className='title-font font-medium text-lg lg:text-xl text-gray-900'>

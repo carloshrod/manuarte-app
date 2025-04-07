@@ -76,3 +76,17 @@ export const getCustomersData = async ({
 		console.error(error);
 	}
 };
+
+export const selectFilterOption = (
+	input: string,
+	option: { value: string; label: string | null } | undefined
+) => {
+	try {
+		const label = (option?.label as string)?.toLowerCase();
+
+		return label?.includes(input.toLowerCase());
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+};

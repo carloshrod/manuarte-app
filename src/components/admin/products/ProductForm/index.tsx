@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 import ProductVariantFormList from '../ProductVariantFormList';
 import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
+import SelectStocks from '../SelectStocks';
+import { selectFilterOption } from '../../utils';
 
 const ProductForm = () => {
 	const {
@@ -19,8 +21,10 @@ const ProductForm = () => {
 	const {
 		modal: { dataToEdit }
 	} = useSelector((state: RootState) => state.ui);
+	const { shops } = useSelector((state: RootState) => state.shop);
 	const isUpdating = Boolean(dataToEdit);
 	const [editGeneralProduct, setEditGeneralProduct] = useState(false);
+	const [isQuitoSelected, setIsQuitoSelected] = useState(true);
 
 	useEffect(() => {
 		if (dataToEdit) {
@@ -37,7 +41,26 @@ const ProductForm = () => {
 
 	const onSubmit = (values: SubmitProductDto) => {
 		if (!isUpdating) {
-			submitCreateProduct(values);
+			const { stockIds, ...restValues } = values;
+
+			const cleanedValues = isQuitoSelected
+				? restValues
+				: {
+						...restValues,
+						productVariants:
+							restValues?.productVariants &&
+							restValues?.productVariants.map(
+								({ priceUsd, costUsd, ...rest }) => rest
+							)
+					};
+
+			const stocks = shops
+				.filter(shop => stockIds?.includes(shop.stockId))
+				.map(filtShop => {
+					return { id: filtShop.stockId, currency: filtShop.currency };
+				});
+
+			submitCreateProduct({ ...cleanedValues, stocks });
 		} else {
 			const { productVariantName, productCategoryId, ...rest } = values ?? {};
 			const valuesToUpdate = {
@@ -55,11 +78,14 @@ const ProductForm = () => {
 		}
 	};
 
-	const onChangeSwitch = (checked: boolean) => {
-		setEditGeneralProduct(checked);
-	};
-
 	const inputDisabled = isUpdating && !editGeneralProduct;
+
+	const pCategoryOptions = productCategories?.map(pCat => {
+		return {
+			value: pCat.id,
+			label: pCat.name
+		};
+	});
 
 	return (
 		<Form
@@ -74,7 +100,7 @@ const ProductForm = () => {
 				<div className='flex gap-2 my-6 px-2 text-gray-500'>
 					<Switch
 						defaultChecked={false}
-						onChange={onChangeSwitch}
+						onChange={checked => setEditGeneralProduct(checked)}
 						id='switch'
 					/>
 					<label htmlFor='switch'>
@@ -127,29 +153,15 @@ const ProductForm = () => {
 					placeholder='Selecciona una categoría'
 					allowClear
 					showSearch
-					filterOption={(input, option) => {
-						try {
-							const children = (
-								option?.children as unknown as string
-							)?.toLowerCase();
-
-							return children?.includes(input.toLowerCase());
-						} catch (error) {
-							console.error(error);
-							return false;
-						}
-					}}
+					filterOption={selectFilterOption}
+					options={pCategoryOptions}
 					disabled={isUpdating}
-				>
-					{productCategories?.length > 0
-						? productCategories.map(cat => (
-								<Select.Option key={cat.id} value={cat.id}>
-									{cat.name}
-								</Select.Option>
-							))
-						: null}
-				</Select>
+				/>
 			</Form.Item>
+
+			{isUpdating ? null : (
+				<SelectStocks form={form} setIsQuitoSelected={setIsQuitoSelected} />
+			)}
 
 			{isUpdating ? (
 				<Form.Item
@@ -162,7 +174,25 @@ const ProductForm = () => {
 					<Input placeholder='Ingresa el nombre del producto' />
 				</Form.Item>
 			) : (
-				<ProductVariantFormList isUpdating={isUpdating} />
+				<Form.Item
+					name='productVariants'
+					rules={[
+						{
+							validator: async (_, value) => {
+								if (!value || value.length === 0) {
+									return Promise.reject(
+										new Error('Debe haber al menos 1 presentación')
+									);
+								}
+							}
+						}
+					]}
+				>
+					<ProductVariantFormList
+						isUpdating={isUpdating}
+						isQuitoSelected={isQuitoSelected}
+					/>
+				</Form.Item>
 			)}
 
 			<FormButtons

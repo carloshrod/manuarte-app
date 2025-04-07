@@ -43,7 +43,7 @@ export const formatCurrency = (amount: number | string) => {
 };
 
 export const formatInputCurrency = (value: number | undefined) => {
-	if (!value) return '$ 0';
+	if (!value) return '';
 
 	const numericValue = parseFloat(value.toString());
 

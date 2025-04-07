@@ -1,49 +1,76 @@
-import { Button, Form, Input } from 'antd';
+import { Button, Divider, Form, Input, InputNumber } from 'antd';
 import { IoAdd, IoRemoveCircleOutline } from 'react-icons/io5';
 import { AiOutlineAppstore } from 'react-icons/ai';
+import { formatInputCurrency } from '@/utils/formats';
+import { PRODUCT_VARIANT_PROPS } from '../../consts';
 
-const ProductVariantFormList = ({ isUpdating }: { isUpdating: boolean }) => {
-	const label = isUpdating ? 'Presentación' : 'Presentaciones';
-	const validateMsg = isUpdating
-		? 'La presentación del producto es requerida'
-		: 'Por favor, agregue una presentación o elimine este campo';
-
+const ProductVariantFormList = ({
+	isUpdating,
+	isQuitoSelected
+}: {
+	isUpdating: boolean;
+	isQuitoSelected: boolean;
+}) => {
 	return (
 		<Form.List name='productVariants'>
 			{(fields, { add, remove }, { errors }) => (
 				<>
 					{fields.map((field, index) => (
-						<Form.Item
-							label={index === 0 ? label : ''}
-							required={isUpdating}
-							key={field.key}
-						>
-							<div className='flex items-center gap-2'>
-								<Form.Item
-									{...field}
-									key={field.key}
-									validateTrigger={['onChange', 'onBlur']}
-									rules={[
-										{
-											required: true,
-											whitespace: true,
-											message: validateMsg
-										}
-									]}
-									noStyle
-								>
-									<Input placeholder='Nombre de la presentación' />
-								</Form.Item>
+						<div key={field.key}>
+							<Divider orientation='left' style={{ borderColor: '#00000032' }}>
+								Presentacion {index + 1}
+							</Divider>
+							<div className='flex gap-2 items-center'>
+								<div className='flex flex-wrap items-center gap-x-2 w-[95%]'>
+									{PRODUCT_VARIANT_PROPS.map((input, i) => {
+										return input.name.toLowerCase().includes('usd') &&
+											!isQuitoSelected ? null : (
+											<Form.Item
+												{...field}
+												key={`${input.name}-${index}`}
+												name={[field.name, input.name]}
+												label={input.label}
+												validateTrigger={['onChange', 'onBlur']}
+												rules={[
+													{
+														required: true,
+														message: 'Requerido'
+													}
+												]}
+												style={{
+													width: input.width
+												}}
+											>
+												{input.type === 'text' ? (
+													<Input placeholder={input.placeholder} />
+												) : (
+													<InputNumber
+														min={0}
+														controls={false}
+														placeholder={input.placeholder}
+														formatter={
+															i > 2
+																? value => formatInputCurrency(value)
+																: undefined
+														}
+														className='textRight'
+														style={{ width: '100%' }}
+													/>
+												)}
+											</Form.Item>
+										);
+									})}
+								</div>
 								{fields.length > 0 && !isUpdating ? (
 									<IoRemoveCircleOutline
-										className='dynamic-delete-button cursor-pointer'
-										size={20}
+										className={`dynamic-delete-button cursor-pointer`}
+										size={24}
 										color='#FF4D4f'
 										onClick={() => remove(field.name)}
 									/>
 								) : null}
 							</div>
-						</Form.Item>
+						</div>
 					))}
 					{!isUpdating ? (
 						<Form.Item>

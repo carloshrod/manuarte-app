@@ -484,6 +484,20 @@ const useTableColumns = () => {
 			align: 'center'
 		},
 		{
+			title: 'MIN',
+			dataIndex: 'minQty',
+			key: 'minQty',
+			width: 70,
+			align: 'center'
+		},
+		{
+			title: 'MAX',
+			dataIndex: 'maxQty',
+			key: 'maxQty',
+			width: 70,
+			align: 'center'
+		},
+		{
 			title: 'ACCIONES',
 			key: 'actions',
 			className: 'actions',

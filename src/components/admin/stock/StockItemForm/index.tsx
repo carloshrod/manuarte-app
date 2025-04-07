@@ -14,6 +14,7 @@ const StockItemForm = () => {
 	const {
 		modal: { dataToEdit }
 	} = useSelector((state: RootState) => state.ui);
+	const { shops } = useSelector((state: RootState) => state.shop);
 	const [productsOptions, setProductsOptions] = useState<
 		SelectProps['options']
 	>([]);
@@ -22,33 +23,35 @@ const StockItemForm = () => {
 	const [hasSearched, setHasSearched] = useState(false);
 	useState<ProductVariantWithStock | null>(null);
 	const params = useParams() ?? {};
-	const searchParams = useSearchParams();
-	const isMainStock = searchParams.get('main') === 'true';
+	const isUsd = params?.shopSlug.includes('quito');
 
 	useEffect(() => {
 		if (dataToEdit) {
 			form.setFieldsValue({
 				product: `${dataToEdit?.productName} ${dataToEdit?.productVariantName}`,
-				quantity: dataToEdit?.quantity,
 				price: dataToEdit?.price,
-				cost: dataToEdit?.cost
+				cost: dataToEdit?.cost,
+				minQty: dataToEdit?.minQty,
+				maxQty: dataToEdit?.maxQty
 			});
 		}
 	}, []);
+
+	const shopInfo = shops?.find(sh => sh.slug === params?.shopSlug);
 
 	const onSubmit = async (values: SubmitStockItemDto) => {
 		if (!dataToEdit) {
 			await submitCreateStockItem({
 				...values,
-				shopSlug: params?.shopSlug as string
+				stockId: shopInfo?.stockId as string,
+				currency: shopInfo?.currency as string
 			});
 		} else {
 			if ('product' in values) delete values.product;
 			await submitUpdateStockItem(
 				{
 					...values,
-					productVariantId: dataToEdit.productVariantId,
-					shopSlug: params?.shopSlug as string
+					productVariantId: dataToEdit.productVariantId
 				},
 				dataToEdit.id
 			);
@@ -110,16 +113,7 @@ const StockItemForm = () => {
 	);
 
 	return (
-		<Form
-			layout='vertical'
-			form={form}
-			initialValues={{
-				quantity: 0,
-				price: 0,
-				cost: 0
-			}}
-			onFinish={values => onSubmit(values)}
-		>
+		<Form layout='vertical' form={form} onFinish={values => onSubmit(values)}>
 			{!dataToEdit ? (
 				<Form.Item
 					name='productVariantId'
@@ -160,28 +154,12 @@ const StockItemForm = () => {
 			)}
 			<div className='flex gap-4 justify-between'>
 				<Form.Item
-					name='quantity'
-					label='Cantidad'
-					rules={[
-						{
-							required: true,
-							message: 'La cantidad es requerida'
-						}
-					]}
-				>
-					<InputNumber
-						min={0}
-						className={`textRight ${isMainStock ? 'extraPadding' : ''}`}
-						disabled={!isMainStock}
-					/>
-				</Form.Item>
-				<Form.Item
 					name='price'
-					label='Precio'
+					label={`Precio ${isUsd ? 'USD' : 'COP'}`}
 					rules={[
 						{
 							required: true,
-							message: 'El precio es requerido'
+							message: 'Campo requerido'
 						}
 					]}
 				>
@@ -189,17 +167,17 @@ const StockItemForm = () => {
 						min={0}
 						controls={false}
 						className='textRight'
-						style={{ width: 150 }}
+						style={{ width: '100%' }}
 						formatter={value => formatInputCurrency(value)}
 					/>
 				</Form.Item>
 				<Form.Item
 					name='cost'
-					label='Costo'
+					label={`Costo ${isUsd ? 'USD' : 'COP'}`}
 					rules={[
 						{
 							required: true,
-							message: 'El costo es requerido'
+							message: 'Campo requerido'
 						}
 					]}
 				>
@@ -207,8 +185,42 @@ const StockItemForm = () => {
 						min={0}
 						controls={false}
 						className='textRight'
-						style={{ width: 150 }}
+						style={{ width: '100%' }}
 						formatter={value => formatInputCurrency(value)}
+					/>
+				</Form.Item>
+				<Form.Item
+					name='minQty'
+					label='Cantidad Mín.'
+					rules={[
+						{
+							required: true,
+							message: 'Campo requerido'
+						}
+					]}
+				>
+					<InputNumber
+						min={0}
+						controls={false}
+						className='textRight'
+						style={{ width: '100%' }}
+					/>
+				</Form.Item>
+				<Form.Item
+					name='maxQty'
+					label='Cantidad Máx.'
+					rules={[
+						{
+							required: true,
+							message: 'Campo requerido'
+						}
+					]}
+				>
+					<InputNumber
+						min={0}
+						controls={false}
+						className='textRight'
+						style={{ width: '100%' }}
 					/>
 				</Form.Item>
 			</div>

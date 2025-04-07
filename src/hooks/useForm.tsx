@@ -127,7 +127,7 @@ const useForm = () => {
 	};
 
 	const submitAddProductVariant = async (
-		values: { name: string },
+		values: Omit<SubmitProductVariantDto, 'productId'>,
 		productId: string
 	) => {
 		await handleSubmit({

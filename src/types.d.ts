@@ -37,17 +37,35 @@ interface Product {
 	productVariants: ProductVariant[];
 }
 
+interface ProductVariantStockItem {
+	name: string;
+	costCop?: number;
+	costUsd?: number;
+	priceCop?: number;
+	priceUsd?: number;
+	maxQty: number;
+	minQty: number;
+}
+
 interface SubmitProductDto {
 	type?: 'create' | 'update' | 'updateVariant';
 	name: string;
 	description: string;
 	productCategoryId?: string;
-	productVariants?: string[];
+	productVariants?: ProductVariantStockItem[];
 	productVariantName?: string;
 	productVariant?: {
 		id: string;
 		name?: string;
 	};
+	stockIds?: string[];
+	stocks?: { id: string; currency: string }[];
+}
+
+interface SubmitProductVariantDto extends ProductVariantStockItem {
+	productId: string;
+	stockIds?: string[];
+	stocks?: { id: string; currency: string }[];
 }
 
 interface ProductCategory {
@@ -117,6 +135,7 @@ interface Shop {
 	id: string;
 	name: string;
 	slug: string;
+	currency: string;
 	stockId: string;
 	stockName: string;
 	mainStock?: boolean;
@@ -219,15 +238,20 @@ interface StockItem {
 	price: number;
 	quantity: number;
 	cost: number;
+	maxQty: number;
+	minQty: number;
 	updatedDate: string;
 }
 
 interface SubmitStockItemDto {
+	stockId: string;
 	productVariantId: string;
+	currency: string;
 	price: number;
 	quantity: number;
 	cost: number;
-	shopSlug: string;
+	minQty: number;
+	maxQty: number;
 }
 
 interface Transaction {

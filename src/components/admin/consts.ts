@@ -148,6 +148,58 @@ export const QUOTE_CALCULATIONS_INPUTS_PROPS = [
 	}
 ];
 
+export const PRODUCT_VARIANT_PROPS = [
+	{
+		name: 'name',
+		label: 'Nombre',
+		placeholder: 'Unidad',
+		type: 'text',
+		width: '50%'
+	},
+	{
+		name: 'minQty',
+		label: 'Cant. Min.',
+		placeholder: '9',
+		type: 'number',
+		width: '23%'
+	},
+	{
+		name: 'maxQty',
+		label: 'Cant. Max.',
+		placeholder: '9',
+		type: 'number',
+		width: '23%'
+	},
+	{
+		name: 'priceCop',
+		label: 'Precio COP',
+		placeholder: '$10.000',
+		type: 'number',
+		width: '23.5%'
+	},
+	{
+		name: 'costCop',
+		label: 'Costo COP',
+		placeholder: '$5.000',
+		type: 'number',
+		width: '23.5%'
+	},
+	{
+		name: 'priceUsd',
+		label: 'Precio USD',
+		placeholder: '$4',
+		type: 'number',
+		width: '23.5%'
+	},
+	{
+		name: 'costUsd',
+		label: 'Costo USD',
+		placeholder: '$2',
+		type: 'number',
+		width: '23.5%'
+	}
+];
+
 export const QUOTE_STATUS_OPTIONS = [
 	{ value: 'PENDING', label: 'Por pagar' },
 	{ value: 'ACCEPTED', label: 'Aceptada' },
