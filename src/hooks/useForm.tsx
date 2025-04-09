@@ -37,6 +37,7 @@ import {
 	updateTransaction,
 	updateTransactionState
 } from '@/reducers/transactions/transactionSlice';
+import { validateUniqueProductVariantsName } from './utils';
 
 notification.config({
 	placement: 'topRight',
@@ -87,6 +88,17 @@ const useForm = () => {
 	};
 
 	const submitCreateProduct = async (values: SubmitProductDto) => {
+		const pVariantsAreUnique =
+			values.productVariants &&
+			validateUniqueProductVariantsName(values.productVariants);
+
+		if (!pVariantsAreUnique) {
+			return notification.error({
+				message:
+					'Estás intentando crear más de una presentación con el mismo nombre'
+			});
+		}
+
 		await handleSubmit({
 			serviceFn: productServices.createProduct,
 			values,

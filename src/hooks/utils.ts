@@ -19,3 +19,18 @@ export const ECU_PAYMENT_METHOD_FILTER = [
 	{ text: 'DEPÓSITO', value: 'BANK_DEPOSIT' },
 	{ text: 'OTRO', value: 'OTHER' }
 ];
+
+export const validateUniqueProductVariantsName = (
+	array: ProductVariantStockItem[]
+): boolean => {
+	const seen = new Set<unknown>();
+
+	for (const item of array) {
+		if (seen.has(item.name)) {
+			return false;
+		}
+		seen.add(item.name);
+	}
+
+	return true;
+};
