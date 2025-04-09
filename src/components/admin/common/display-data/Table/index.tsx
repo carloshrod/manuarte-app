@@ -36,7 +36,9 @@ const CustomTable = ({
 				}}
 				pagination={{
 					locale: { items_per_page: '/ página' },
-					size: isMobile ? 'small' : 'default'
+					size: isMobile ? 'small' : 'default',
+					defaultPageSize: 30,
+					pageSizeOptions: ['30', '50', '100']
 				}}
 				style={{ minHeight: isLoading ? 'calc(100vh - 300px)' : undefined }}
 				loading={{
