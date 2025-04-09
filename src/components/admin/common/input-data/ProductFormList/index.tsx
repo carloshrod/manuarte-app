@@ -165,8 +165,8 @@ const ProductFormList = ({
 												>
 													{input.type === 'number' ? (
 														<InputNumber
-															min={1}
-															controls={!currencyField}
+															min={currencyField ? 0.1 : 1}
+															controls={false}
 															formatter={
 																currencyField
 																	? value => formatInputCurrency(value)
@@ -175,7 +175,7 @@ const ProductFormList = ({
 															variant={
 																!editableField ? 'borderless' : undefined
 															}
-															className={`textRight ${currencyField ? '' : 'extraPadding'}`}
+															className='textRight'
 															style={{
 																width: '100%',
 																backgroundColor: !editableField

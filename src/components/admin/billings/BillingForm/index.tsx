@@ -72,7 +72,6 @@ const BillingForm = () => {
 				items: [],
 				status: 'PAID',
 				subtotal: 0,
-				shipping: 0,
 				total: 0
 			}}
 			style={{ padding: '0 16px' }}

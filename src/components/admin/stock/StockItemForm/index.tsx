@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { Form, Input, InputNumber, Select, SelectProps, Spin } from 'antd';
 import { MehOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
