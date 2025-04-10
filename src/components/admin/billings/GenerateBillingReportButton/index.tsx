@@ -11,7 +11,7 @@ const GenerateBillingReportButton = ({ shopSlug }: { shopSlug: string }) => {
 	const handleDownloadExcel = async () => {
 		try {
 			const excelData = generateBillingsData(filteredBillings);
-			const date = filteredBillings[0].updatedDate;
+			const date = filteredBillings[0].createdDate;
 
 			if (excelData) {
 				downloadExcel(

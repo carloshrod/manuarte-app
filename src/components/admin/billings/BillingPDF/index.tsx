@@ -52,7 +52,7 @@ const BillingPDF = ({
 			key: '6',
 			label: 'Fecha:',
 			children:
-				moment(billing?.updatedDate).startOf('day').format('YYYY/MM/DD') ??
+				moment(billing?.createdDate).startOf('day').format('YYYY/MM/DD') ??
 				'--',
 			span: 3
 		},

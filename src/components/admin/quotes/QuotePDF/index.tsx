@@ -50,7 +50,7 @@ const QuotePDF = ({
 			key: '6',
 			label: 'Fecha:',
 			children:
-				moment(quote?.updatedDate).startOf('day').format('YYYY/MM/DD') ?? '--',
+				moment(quote?.createdDate).startOf('day').format('YYYY/MM/DD') ?? '--',
 			span: 3
 		}
 	];

@@ -121,7 +121,7 @@ const useTable = () => {
 	});
 
 	const getColumnDateFilterProps = (
-		dateField: 'createdDate' | 'updatedDate'
+		dateField: 'createdDate'
 	): TableColumnType<any> => ({
 		filterDropdown: ({
 			setSelectedKeys,

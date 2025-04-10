@@ -14,7 +14,7 @@ import moment from 'moment';
 import { BillingStatus } from '@/types/enums';
 
 interface DataType {
-	updatedDate?: string;
+	createdDate?: string;
 	status?: string;
 	[key: string]: any;
 }
@@ -46,9 +46,9 @@ const BillingsTable = ({ shopSlug }: { shopSlug: string }) => {
 		_pagination: TablePaginationConfig,
 		filters: Record<string, FilterValue | null>
 	) => {
-		const updatedDateFilter = filters?.updatedDate;
+		const createdDateFilter = filters?.createdDate;
 
-		if (!updatedDateFilter || updatedDateFilter.length === 0) {
+		if (!createdDateFilter || createdDateFilter.length === 0) {
 			dispatch(setFilteredBillings([]));
 			return;
 		}
@@ -57,7 +57,7 @@ const BillingsTable = ({ shopSlug }: { shopSlug: string }) => {
 
 		filtered = filtered?.filter(
 			item =>
-				moment(item?.updatedDate).format('YYYY-MM-DD') === updatedDateFilter[0]
+				moment(item?.createdDate).format('YYYY-MM-DD') === createdDateFilter[0]
 		);
 
 		filtered = filtered.filter(item => item.status === BillingStatus.PAID);

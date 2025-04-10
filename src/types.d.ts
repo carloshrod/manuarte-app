@@ -171,6 +171,7 @@ interface Quote {
 	phoneNumber: string;
 	location: string;
 	city: string;
+	createdDate: string;
 	updatedDate: string;
 	items: QuoteItem[];
 	shipping: number;
