@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Form, Input, InputNumber, Select, SelectProps, Spin } from 'antd';
 import { MehOutlined } from '@ant-design/icons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import { getProductsData } from '../../utils';
 import { formatInputCurrency } from '@/utils/formats';
+import { setShops } from '@/reducers/shops/shopSlice';
+import { shopServices } from '@/services/shopServices';
 
 const StockItemForm = () => {
 	const { form, isLoading, submitCreateStockItem, submitUpdateStockItem } =
@@ -24,6 +26,14 @@ const StockItemForm = () => {
 	useState<ProductVariantWithStock | null>(null);
 	const params = useParams() ?? {};
 	const isUsd = params?.shopSlug.includes('quito');
+	const dispatch = useDispatch();
+
+	const fetchShops = async () => {
+		const data = await shopServices.getAll(false);
+		if (data) {
+			dispatch(setShops(data));
+		}
+	};
 
 	useEffect(() => {
 		if (dataToEdit) {
@@ -34,6 +44,10 @@ const StockItemForm = () => {
 				minQty: dataToEdit?.minQty,
 				maxQty: dataToEdit?.maxQty
 			});
+		}
+
+		if (shops?.length === 0) {
+			fetchShops();
 		}
 	}, []);
 
