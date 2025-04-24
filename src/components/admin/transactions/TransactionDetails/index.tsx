@@ -48,6 +48,10 @@ const TransactionDetails = () => {
 		);
 	};
 
+	const itemsCount = items?.reduce((acc, item) => {
+		return acc + Number(item.quantity);
+	}, 0);
+
 	return (
 		<div className='h-full flex flex-col justify-between'>
 			<Row gutter={32} className='items-center'>
@@ -103,7 +107,11 @@ const TransactionDetails = () => {
 						</span>
 					</div>
 				</Col>
+
 				<Divider orientation='left'>Productos</Divider>
+				<Col>
+					<p className='pb-6'># Total de Items: {itemsCount}</p>
+				</Col>
 				<TransactionsItemList items={items} />
 			</Row>
 			<div className='flex justify-end gap-4 py-4 bg-white'>
