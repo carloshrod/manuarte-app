@@ -21,11 +21,14 @@ import BillingsActions from '@/components/admin/billings/BillingsActions';
 import { COL_PAYMENT_METHOD_FILTER, ECU_PAYMENT_METHOD_FILTER } from './utils';
 import StockItemActions from '@/components/admin/stock/StockItemActions';
 import TransactionActions from '@/components/admin/transactions/TransactionAction';
+import { useSession } from 'next-auth/react';
 
 const useTableColumns = () => {
 	const { getColumnSearchProps, getColumnDateFilterProps } = useTable();
 	const pathname = usePathname();
 	const params = useParams();
+	const { data: session } = useSession();
+	const isAdmin = session?.user?.roleName === 'admin';
 
 	const productColumns: TableColumnsType<ProductVariant> = [
 		{
@@ -497,13 +500,19 @@ const useTableColumns = () => {
 			width: 70,
 			align: 'center'
 		},
-		{
-			title: 'ACCIONES',
-			key: 'actions',
-			className: 'actions',
-			render: (_, record: StockItem) => <StockItemActions record={record} />,
-			width: 100
-		}
+		...(isAdmin
+			? [
+					{
+						title: 'ACCIONES',
+						key: 'actions',
+						className: 'actions',
+						render: (_: any, record: StockItem) => (
+							<StockItemActions record={record} />
+						),
+						width: 100
+					}
+				]
+			: [])
 	];
 
 	const transactionsColumns: TableColumnsType<Transaction> = [

@@ -35,12 +35,14 @@ const StockItemsPage = async (props: StockItemsPageProps) => {
 				</div>
 				<div className='flex gap-2'>
 					<GenerateStockReportButton shopSlug={shopSlug} />
-					<AddButton
-						title='Agregar Stock de Producto'
-						modalContent={ModalContent.stockItems}
-						buttonLabel='Stock'
-						appendIcon={<GiCardboardBox size={18} />}
-					/>
+					{isAdmin ? (
+						<AddButton
+							title='Agregar Stock de Producto'
+							modalContent={ModalContent.stockItems}
+							buttonLabel='Stock'
+							appendIcon={<GiCardboardBox size={18} />}
+						/>
+					) : null}
 				</div>
 			</div>
 			<StockItemsTable shopSlug={shopSlug} />
