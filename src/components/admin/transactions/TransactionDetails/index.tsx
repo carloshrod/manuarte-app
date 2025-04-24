@@ -109,9 +109,11 @@ const TransactionDetails = () => {
 				</Col>
 
 				<Divider orientation='left'>Productos</Divider>
-				<Col>
-					<p className='pb-6'># Total de Items: {itemsCount}</p>
-				</Col>
+				{items?.length > 0 ? (
+					<Col>
+						<p className='pb-6'># Total de Items: {itemsCount}</p>
+					</Col>
+				) : null}
 				<TransactionsItemList items={items} />
 			</Row>
 			<div className='flex justify-end gap-4 py-4 bg-white'>

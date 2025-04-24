@@ -43,7 +43,6 @@ export const validateForm = async (
 	form: FormInstance
 ) => {
 	try {
-		console.log(values);
 		await schema.parseAsync(values);
 		return true;
 	} catch (err) {
