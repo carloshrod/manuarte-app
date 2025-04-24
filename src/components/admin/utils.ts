@@ -38,11 +38,11 @@ export const getProductsData = async ({
 		let formattedData;
 		if (currentValue === newValue) {
 			formattedData = data.map((item: any) => {
-				const quantity = 'quantity' in item ? `- (${item?.quantity} unds)` : '';
+				const quantity = 'quantity' in item ? `(${item?.quantity} unds)` : '';
 
 				return {
 					value: item.id,
-					label: `${item.productName} ${item.name} ${quantity}`
+					label: `${item.productName} - ${item.name} ${quantity}`
 				};
 			});
 		}

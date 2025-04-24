@@ -119,8 +119,8 @@ const TransactionsProductFormList = ({
 				add({
 					productVariantId: selectedProduct.id,
 					stockItemId: selectedProduct.stockItemId,
-					name: `${selectedProduct.productName} ${selectedProduct.name}`,
-					quantity: 1
+					name: `${selectedProduct.productName} - ${selectedProduct.name}`,
+					quantity: ""
 				});
 			}
 		} catch (error) {
@@ -128,7 +128,7 @@ const TransactionsProductFormList = ({
 		}
 	};
 
-	const productsCount = itemsList?.reduce((acc, item) => {
+	const itemsCount = itemsList?.reduce((acc, item) => {
 		return acc + Number(item.quantity);
 	}, 0);
 
@@ -147,7 +147,7 @@ const TransactionsProductFormList = ({
 						) : null}
 
 						{itemsList?.length > 0 ? (
-							<p className='pb-6'># Total de Items: {productsCount}</p>
+							<p className='pb-6'># Total de Items: {itemsCount}</p>
 						) : null}
 
 						<div className='overflow-x-auto custom-scrollbar'>
@@ -205,8 +205,9 @@ const TransactionsProductFormList = ({
 														{input.type === 'number' ? (
 															<InputNumber
 																min={1}
+																controls={false}
 																variant={isEnter ? 'borderless' : undefined}
-																className={`textRight ${isEnter ? '' : 'extraPadding'}`}
+																className="textRight"
 																style={{
 																	width: '100%',
 																	backgroundColor: isEnter
