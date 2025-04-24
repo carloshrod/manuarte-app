@@ -7,6 +7,7 @@ import PopConfirm from '../PopConfirm';
 import { ImEye } from 'react-icons/im';
 
 interface TableActionsProps {
+	record?: Record<string, any>;
 	onEdit?: () => void;
 	onShowDetails?: () => void;
 	onEditPermissions?: () => void;
@@ -19,6 +20,7 @@ interface TableActionsProps {
 }
 
 const TableActions = ({
+	record,
 	onEdit,
 	onShowDetails,
 	onEditPermissions,
@@ -53,9 +55,7 @@ const TableActions = ({
 				<Tooltip title='Mostrar detalles'>
 					<Button
 						type='text'
-						icon={
-							<ImEye size={20} color='#0D6EFD' />
-						}
+						icon={<ImEye size={20} color='#0D6EFD' />}
 						onClick={onShowDetails}
 					/>
 				</Tooltip>
@@ -83,15 +83,27 @@ const TableActions = ({
 					description={popDescription}
 					onConfirm={onDelete}
 				>
-					<Tooltip title={isDeletable || !isCancel ? 'Eliminar' : ''}>
+					<Tooltip
+						title={
+							(isDeletable || !isCancel) && (!record || record?.quantity === 0)
+								? 'Eliminar'
+								: 'No puedes eliminar un item con cantidad en stock'
+						}
+					>
 						<Button
 							type='text'
 							icon={
 								<AiOutlineDelete
 									size={20}
-									color={isDeletable || !isCancel ? '#E53535' : '#FCBABA'}
+									color={
+										(isDeletable || !isCancel) &&
+										(!record || record?.quantity === 0)
+											? '#E53535'
+											: '#FCBABA'
+									}
 								/>
 							}
+							disabled={record && record?.quantity > 0}
 						/>
 					</Tooltip>
 				</PopConfirm>

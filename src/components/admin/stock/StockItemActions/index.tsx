@@ -41,6 +41,7 @@ const StockItemActions = ({ record }: { record: StockItem }) => {
 
 	return (
 		<TableActions
+			record={record}
 			onEdit={handleEdit}
 			onDelete={handleDelete}
 			popTitle={`${record.productName} - ${record.productVariantName}`}
