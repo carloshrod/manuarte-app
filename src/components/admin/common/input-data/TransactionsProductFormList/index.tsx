@@ -120,7 +120,7 @@ const TransactionsProductFormList = ({
 					productVariantId: selectedProduct.id,
 					stockItemId: selectedProduct.stockItemId,
 					name: `${selectedProduct.productName} - ${selectedProduct.name}`,
-					quantity: ""
+					quantity: ''
 				});
 			}
 		} catch (error) {
@@ -207,7 +207,7 @@ const TransactionsProductFormList = ({
 																min={1}
 																controls={false}
 																variant={isEnter ? 'borderless' : undefined}
-																className="textRight"
+																className='textRight'
 																style={{
 																	width: '100%',
 																	backgroundColor: isEnter

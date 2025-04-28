@@ -1,20 +1,33 @@
 import { useDispatch } from 'react-redux';
 import TableActions from '../../common/ui/TableActions';
-import { openModal } from '@/reducers/ui/uiSlice';
-import { ModalContent } from '@/types/enums';
+import { openDrawer, openModal } from '@/reducers/ui/uiSlice';
+import { DrawerContent, ModalContent } from '@/types/enums';
 import { AxiosError } from 'axios';
 import { notification } from 'antd';
 import { stockItemServices } from '@/services/stockItemServices';
 import { removeStockItem } from '@/reducers/stockItems/stockItemSlice';
+import { useParams } from 'next/navigation';
 
 const StockItemActions = ({ record }: { record: StockItem }) => {
 	const dispatch = useDispatch();
+	const { shopSlug } = useParams();
+	const shopName = (shopSlug as string).toUpperCase().replace('-', ' ');
 
 	const handleEdit = () => {
 		dispatch(
 			openModal({
 				title: 'Editar Stock de Producto',
 				content: ModalContent.stockItems,
+				dataToEdit: record
+			})
+		);
+	};
+
+	const handleTracking = () => {
+		dispatch(
+			openDrawer({
+				title: `Trazabilidad - ${shopName}`,
+				content: DrawerContent.stockItemHistory,
 				dataToEdit: record
 			})
 		);
@@ -43,6 +56,7 @@ const StockItemActions = ({ record }: { record: StockItem }) => {
 		<TableActions
 			record={record}
 			onEdit={handleEdit}
+			onTracking={handleTracking}
 			onDelete={handleDelete}
 			popTitle={`${record.productName} - ${record.productVariantName}`}
 		/>

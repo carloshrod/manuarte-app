@@ -2,17 +2,38 @@
 import { Button } from 'antd';
 import { IoMdDownload } from 'react-icons/io';
 import { useSelector } from 'react-redux';
-import { downloadExcel, generateStockData } from '@/utils/documents';
+import {
+	downloadExcel,
+	generateStockData,
+	generateStockHistoryData
+} from '@/utils/documents';
 
-const GenerateStockReportButton = ({ shopSlug }: { shopSlug: string }) => {
+const GenerateStockReportButton = ({
+	shopSlug,
+	history,
+	product
+}: {
+	shopSlug: string;
+	history?: StockItemHistory[];
+	product?: { productName: string; productVariantName: string };
+}) => {
 	const { stockItems } = useSelector((state: RootState) => state.stock);
+	const data = history ?? stockItems;
 
 	const handleDownloadExcel = async () => {
 		try {
-			const excelData = generateStockData(stockItems);
+			const excelData = history
+				? generateStockHistoryData(history)
+				: generateStockData(stockItems);
+
+			const sufix = history ? 'reporte-stock-history' : 'reporte-stock';
+			const shopName = shopSlug.toUpperCase().replace('-', ' ');
 
 			if (excelData) {
-				downloadExcel(excelData, `${shopSlug}-reporte-stock`);
+				const title = product
+					? `${product?.productName} - ${product?.productVariantName}`
+					: `Reporte Stock - ${shopName}`;
+				downloadExcel(excelData, `${shopSlug}-${sufix}`, title);
 			}
 		} catch (error) {
 			console.error(error);
@@ -30,7 +51,7 @@ const GenerateStockReportButton = ({ shopSlug }: { shopSlug: string }) => {
 				/>
 			}
 			onClick={handleDownloadExcel}
-			disabled={stockItems?.length === 0}
+			disabled={data?.length === 0}
 		>
 			Generar Reporte
 		</Button>

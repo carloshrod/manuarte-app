@@ -5,10 +5,11 @@ import {
 	Input,
 	InputRef,
 	Space,
-	TableColumnType
+	TableColumnType,
+	Tooltip
 } from 'antd';
 import { FilterDropdownProps } from 'antd/es/table/interface';
-import { SearchOutlined } from '@ant-design/icons';
+import { FilterFilled, SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import moment, { Moment } from 'moment';
 
@@ -121,7 +122,8 @@ const useTable = () => {
 	});
 
 	const getColumnDateFilterProps = (
-		dateField: 'createdDate'
+		dateField: 'createdDate',
+		earlierThan?: boolean
 	): TableColumnType<any> => ({
 		filterDropdown: ({
 			setSelectedKeys,
@@ -170,9 +172,18 @@ const useTable = () => {
 				</Space>
 			</div>
 		),
+		filterIcon: filtered => (
+			<Tooltip title={earlierThan ? 'Filtrar anteriores a fecha' : ''}>
+				<FilterFilled style={{ color: filtered ? '#1890ff' : undefined }} />
+			</Tooltip>
+		),
+
 		onFilter: (value, record) => {
 			const recordDate = record[dateField];
-			return moment(recordDate).format('YYYY-MM-DD') === value;
+
+			return earlierThan
+				? moment(recordDate).format('YYYY-MM-DD') < value
+				: moment(recordDate).format('YYYY-MM-DD') === value;
 		}
 	});
 

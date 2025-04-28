@@ -1,12 +1,21 @@
 import ExcelJS from 'exceljs';
 import moment from 'moment';
-import { PAYMENT_METHOD_MAP } from './mappings';
+import { PAYMENT_METHOD_MAP, TYPES_MAP } from './mappings';
 import { formatToTitleCase } from './formats';
 
 export interface ExcelStockData {
 	'#': number;
 	Nombre: string;
 	Cantidad: number;
+}
+
+export interface ExcelStockHistoryData {
+	'#': number;
+	Fecha: string;
+	Transacción: string;
+	'Stock Antes': number;
+	Cantidad: number;
+	'Stock Después': number;
 }
 
 export interface ExcelBillingData {
@@ -27,6 +36,34 @@ export const generateStockData = (stockItems: StockItem[]) => {
 					Código: item.vId,
 					Nombre: `${item.productName} ${item.productVariantName}`,
 					Cantidad: item.quantity
+				};
+			});
+		}
+
+		return poExcelData;
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+export const generateStockHistoryData = (history: StockItemHistory[]) => {
+	try {
+		let poExcelData: ExcelStockHistoryData[] = [];
+		if (history?.length > 0) {
+			poExcelData = history?.map((item, i) => {
+				const stockAfter =
+					item.type === 'ENTER'
+						? Number(item.stockBefore) + Number(item.quantity)
+						: Number(item.stockBefore) - Number(item.quantity);
+
+				return {
+					'#': i + 1,
+					Fecha: moment(item.createdDate).format('YYYY/MM/DD'),
+					Transacción:
+						item.type === 'BILLING' ? 'Factura' : TYPES_MAP[item.type],
+					'Stock Antes': item.stockBefore,
+					Cantidad: item.quantity,
+					'Stock Después': stockAfter
 				};
 			});
 		}
@@ -59,8 +96,9 @@ export const generateBillingsData = (billings: Billing[]) => {
 };
 
 export const downloadExcel = async (
-	data: ExcelStockData[] | ExcelBillingData[],
-	prefix: string
+	data: ExcelStockData[] | ExcelStockHistoryData[] | ExcelBillingData[],
+	prefix: string,
+	title: string = ''
 ) => {
 	try {
 		const isBilling = prefix.includes('ventas');
@@ -69,10 +107,18 @@ export const downloadExcel = async (
 			const workbook = new ExcelJS.Workbook();
 			const worksheet = workbook.addWorksheet('Hoja 1');
 
+			worksheet.mergeCells(
+				'A1:' + String.fromCharCode(64 + Object.keys(data[0]).length) + '1'
+			);
+			const titleCell = worksheet.getCell('A1');
+			titleCell.value = title;
+			titleCell.font = { bold: true, size: 14 };
+			titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
 			const headers = Object.keys(data[0]);
 			worksheet.addRow(headers);
 			headers.forEach((_header, index) => {
-				const cell = worksheet.getCell(1, index + 1);
+				const cell = worksheet.getCell(2, index + 1);
 				cell.font = { bold: true };
 				cell.alignment = { vertical: 'middle', horizontal: 'center' };
 			});

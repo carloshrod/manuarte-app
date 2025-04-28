@@ -5,12 +5,14 @@ import { IoKeyOutline } from 'react-icons/io5';
 import { TbCancel } from 'react-icons/tb';
 import PopConfirm from '../PopConfirm';
 import { ImEye } from 'react-icons/im';
+import { MdTimeline } from 'react-icons/md';
 
 interface TableActionsProps {
 	record?: Record<string, any>;
 	onEdit?: () => void;
 	onShowDetails?: () => void;
 	onEditPermissions?: () => void;
+	onTracking?: () => void;
 	onDelete?: () => void;
 	onCancel?: () => void;
 	popTitle?: string;
@@ -24,6 +26,7 @@ const TableActions = ({
 	onEdit,
 	onShowDetails,
 	onEditPermissions,
+	onTracking,
 	onDelete,
 	onCancel,
 	popTitle,
@@ -73,6 +76,16 @@ const TableActions = ({
 						}
 						onClick={onEditPermissions}
 						disabled={!isEditable}
+					/>
+				</Tooltip>
+			) : null}
+
+			{onTracking ? (
+				<Tooltip title='Trazabilidad'>
+					<Button
+						type='text'
+						icon={<MdTimeline size={20} color='#eab308' />}
+						onClick={onTracking}
 					/>
 				</Tooltip>
 			) : null}

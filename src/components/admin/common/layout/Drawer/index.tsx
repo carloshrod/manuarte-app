@@ -37,6 +37,8 @@ const CustomDrawer = () => {
 	}, [noCustomer]);
 
 	const isTransactions = pathname === ROUTES.TRANSACTIONS;
+	const showExtra =
+		content === DrawerContent.quotes || content === DrawerContent.billings;
 
 	return (
 		<Drawer
@@ -54,7 +56,7 @@ const CustomDrawer = () => {
 			height='100%'
 			placement={isTransactions ? 'right' : 'top'}
 			extra={
-				isTransactions ? null : (
+				!showExtra ? null : (
 					<div className='flex gap-2 items-center'>
 						{!noCustomer ? <SearchCustomer /> : null}
 						{!dataToEdit || noCustomer ? (

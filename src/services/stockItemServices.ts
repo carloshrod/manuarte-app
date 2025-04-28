@@ -14,6 +14,20 @@ export const stockItemServices = {
 		}
 	},
 
+	getHistory: async (productVariantId: string, stockId: string) => {
+		try {
+			const res = await axiosPrivate.get(
+				`${ENV.API.STOCK_ITEMS}/${productVariantId}/${stockId}`
+			);
+
+			if (res.status === 200) {
+				return res.data;
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	},
+
 	create: async (body: SubmitStockItemDto) => {
 		return await axiosPrivate.post(ENV.API.STOCK_ITEMS, body);
 	},

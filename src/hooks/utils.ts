@@ -34,3 +34,25 @@ export const validateUniqueProductVariantsName = (
 
 	return true;
 };
+
+export const getStockStatusColor = ({
+	quantity,
+	maxQty,
+	minQty
+}: {
+	quantity: number;
+	maxQty: number;
+	minQty: number;
+}) => {
+	let stockStatusColor = 'text-emerald-500';
+
+	const stockPercentage = (quantity / maxQty) * 100;
+
+	if (quantity <= minQty) {
+		stockStatusColor = 'text-red-500';
+	} else if (stockPercentage <= 75) {
+		stockStatusColor = 'text-yellow-500';
+	}
+
+	return stockStatusColor;
+};

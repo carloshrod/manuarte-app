@@ -7,6 +7,7 @@ interface CustomTableProps {
 	dataSource: DataTable[];
 	isLoading?: boolean;
 	scrollMinus?: number;
+	shadow?: boolean;
 	filterData?: (
 		_pagination: TablePaginationConfig,
 		filters: Record<string, FilterValue | null>
@@ -18,12 +19,15 @@ const CustomTable = ({
 	dataSource,
 	isLoading = false,
 	scrollMinus = 380,
+	shadow = true,
 	filterData = () => null
 }: CustomTableProps) => {
 	const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
 	return (
-		<div className='shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-2 px-4 rounded-lg'>
+		<div
+			className={`py-2 px-4 ${shadow ? 'shadow-[6px_6px_24px_rgba(0,0,0,0.25)] rounded-lg' : ''}`}
+		>
 			<Table<DataTable>
 				rowKey='id'
 				columns={columns}

@@ -241,7 +241,17 @@ interface StockItem {
 	cost: number;
 	maxQty: number;
 	minQty: number;
+	createdDate: string;
 	updatedDate: string;
+}
+
+interface StockItemHistory extends StockItem {
+	type: string;
+	stockBefore: number;
+	stockFromId: string;
+	stockFromName: string;
+	stockToId: string;
+	stockToName: string;
 }
 
 interface SubmitStockItemDto {

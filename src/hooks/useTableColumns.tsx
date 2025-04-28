@@ -1,12 +1,19 @@
 import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
-import { Button, QRCode, Space, TableColumnsType } from 'antd';
+import { Button, QRCode, Space, TableColumnsType, Tag, Tooltip } from 'antd';
 import { BsFileEarmarkPdf } from 'react-icons/bs';
+import { TiArrowDown, TiArrowUp } from 'react-icons/ti';
+import { IoInformationCircleOutline } from 'react-icons/io5';
 import moment from 'moment';
+import { useSession } from 'next-auth/react';
 import ProductActions from '@/components/admin/products/ProductActions';
 import ProductCategoryActions from '@/components/admin/products/ProductCategoryActions';
 import StaffActions from '@/components/admin/users/StaffActions';
 import CustomersActions from '@/components/admin/users/CustomersActions';
+import QuotesActions from '@/components/admin/quotes/QuotesActions';
+import BillingsActions from '@/components/admin/billings/BillingsActions';
+import StockItemActions from '@/components/admin/stock/StockItemActions';
+import TransactionActions from '@/components/admin/transactions/TransactionAction';
 import useTable from './useTable';
 import { formatCurrency, formatToTitleCase } from '@/utils/formats';
 import {
@@ -16,12 +23,11 @@ import {
 	STATES_MAP,
 	TYPES_MAP
 } from '@/utils/mappings';
-import QuotesActions from '@/components/admin/quotes/QuotesActions';
-import BillingsActions from '@/components/admin/billings/BillingsActions';
-import { COL_PAYMENT_METHOD_FILTER, ECU_PAYMENT_METHOD_FILTER } from './utils';
-import StockItemActions from '@/components/admin/stock/StockItemActions';
-import TransactionActions from '@/components/admin/transactions/TransactionAction';
-import { useSession } from 'next-auth/react';
+import {
+	getStockStatusColor,
+	COL_PAYMENT_METHOD_FILTER,
+	ECU_PAYMENT_METHOD_FILTER
+} from './utils';
 
 const useTableColumns = () => {
 	const { getColumnSearchProps, getColumnDateFilterProps } = useTable();
@@ -461,6 +467,15 @@ const useTableColumns = () => {
 			title: 'CANTIDAD',
 			dataIndex: 'quantity',
 			key: 'quantity',
+			render: (value, record) => {
+				const statusColor = getStockStatusColor({
+					quantity: value,
+					maxQty: record.maxQty,
+					minQty: record.minQty
+				});
+
+				return <span className={`${statusColor} font-semibold`}>{value}</span>;
+			},
 			width: 110,
 			align: 'center'
 		},
@@ -487,14 +502,14 @@ const useTableColumns = () => {
 			align: 'center'
 		},
 		{
-			title: 'MIN',
+			title: 'CANT. MIN',
 			dataIndex: 'minQty',
 			key: 'minQty',
 			width: 70,
 			align: 'center'
 		},
 		{
-			title: 'MAX',
+			title: 'CANT. MAX',
 			dataIndex: 'maxQty',
 			key: 'maxQty',
 			width: 70,
@@ -513,6 +528,119 @@ const useTableColumns = () => {
 					}
 				]
 			: [])
+	];
+
+	const stockItemsHistoryColumns: TableColumnsType<StockItemHistory> = [
+		{
+			title: 'FECHA',
+			dataIndex: 'createdDate',
+			key: 'createdDate',
+			...getColumnDateFilterProps('createdDate', true),
+			render: (value: string) => (
+				<span>
+					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
+				</span>
+			),
+			width: 100
+		},
+		{
+			title: 'TIPO',
+			dataIndex: 'type',
+			key: 'type',
+			filters: [
+				{
+					text: 'Entrada',
+					value: 'ENTER'
+				},
+				{
+					text: 'Salida',
+					value: 'EXIT'
+				},
+				{
+					text: 'Transferencia',
+					value: 'TRANSFER'
+				},
+				{
+					text: 'Factura',
+					value: 'BILLING'
+				}
+			],
+			onFilter: (value, record) => record.type.indexOf(value as string) === 0,
+			render: (value, record) => {
+				const TAG_COLORS: Record<string, string> = {
+					ENTER: '#0D6EFD',
+					TRANSFER: '#eab308',
+					EXIT: '#E53535',
+					BILLING: '#10b981'
+				};
+				const toolTipTitle = `De ${record.stockFromName} a ${record.stockToName} `;
+
+				return (
+					<span className='flex items-center'>
+						<Tag color={TAG_COLORS[value]}>
+							{value === 'BILLING' ? 'Factura' : TYPES_MAP[value]}
+						</Tag>
+						{record?.stockFromName && record?.stockToName ? (
+							<Tooltip title={toolTipTitle}>
+								<IoInformationCircleOutline size={18} />
+							</Tooltip>
+						) : null}
+					</span>
+				);
+			},
+			width: 100
+		},
+		{
+			title: 'SERIAL O DESCRIPCIÓN',
+			dataIndex: 'description',
+			key: 'description',
+			...getColumnSearchProps('description'),
+			render: value => formatToTitleCase(value) ?? '--',
+			width: 140
+		},
+		{
+			title: 'STOCK ANTES',
+			dataIndex: 'stockBefore',
+			key: 'stockBefore',
+			render: (value: string) => value ?? '--',
+			width: 80,
+			align: 'center'
+		},
+		{
+			title: 'CANTIDAD',
+			dataIndex: 'quantity',
+			key: 'quantity',
+			render: (value: string) => value ?? '--',
+			width: 80,
+			align: 'center'
+		},
+		{
+			title: 'STOCK DESPUÉS',
+			dataIndex: 'stockAfter',
+			key: 'stockAfter',
+			render: (_, record) => {
+				const stockAfter =
+					record.type === 'ENTER'
+						? Number(record.stockBefore) + Number(record.quantity)
+						: Number(record.stockBefore) - Number(record.quantity);
+
+				const arrow =
+					record.type === 'ENTER' ? (
+						<TiArrowUp size={20} color='#10b981' />
+					) : (
+						<TiArrowDown size={20} color='#E53535' />
+					);
+
+				return (
+					<span className='flex justify-center items-center'>
+						{stockAfter ?? '--'}
+						{arrow}
+					</span>
+				);
+			},
+			width: 80,
+			align: 'center'
+		}
 	];
 
 	const transactionsColumns: TableColumnsType<Transaction> = [
@@ -650,6 +778,7 @@ const useTableColumns = () => {
 		quoteColumns,
 		billingColumns,
 		stockItemsColumns,
+		stockItemsHistoryColumns,
 		transactionsColumns
 	};
 };
