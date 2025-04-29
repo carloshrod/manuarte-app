@@ -123,10 +123,32 @@ export const downloadExcel = async (
 				cell.alignment = { vertical: 'middle', horizontal: 'center' };
 			});
 
+			const isStockHistory = (item: any): item is ExcelStockHistoryData =>
+				'Transacción' in item;
+			const transactionIndex = headers.findIndex(h => h === 'Transacción');
+
 			data.forEach(item => {
 				const row = worksheet.addRow(Object.values(item));
-				row.eachCell(cell => {
+
+				row.eachCell((cell, colNumber) => {
 					cell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+					if (isStockHistory(item) && colNumber - 1 === transactionIndex) {
+						const TYPE_COLORS: Record<string, string> = {
+							Entrada: '0D6EFD',
+							Transferencia: 'eab308',
+							Salida: 'E53535',
+							Factura: '10b981'
+						};
+
+						const fillColor = TYPE_COLORS[item['Transacción']] ?? 'FFFFFF';
+
+						cell.fill = {
+							type: 'pattern',
+							pattern: 'solid',
+							fgColor: { argb: fillColor }
+						};
+					}
 				});
 			});
 

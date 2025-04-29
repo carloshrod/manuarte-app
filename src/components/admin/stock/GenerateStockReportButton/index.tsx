@@ -26,12 +26,12 @@ const GenerateStockReportButton = ({
 				? generateStockHistoryData(history)
 				: generateStockData(stockItems);
 
-			const sufix = history ? 'reporte-stock-history' : 'reporte-stock';
+			const sufix = history ? 'reporte-stock-historial' : 'reporte-stock';
 			const shopName = shopSlug.toUpperCase().replace('-', ' ');
 
 			if (excelData) {
 				const title = product
-					? `${product?.productName} - ${product?.productVariantName}`
+					? `${shopName}: ${product?.productName} - ${product?.productVariantName}`
 					: `Reporte Stock - ${shopName}`;
 				downloadExcel(excelData, `${shopSlug}-${sufix}`, title);
 			}
