@@ -1,21 +1,19 @@
 import { useEffect } from 'react';
 import { Form, Input } from 'antd';
-import { useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import { customerSchema, validateForm } from '@/utils/validators';
 import { z } from 'zod';
+import { useModalStore } from '@/stores/modalStore';
 
 const CustomersForm = () => {
 	const { form, isLoading, submitRegisterCustomer, submitUpdateCustomer } =
 		useForm();
-	const {
-		modal: { dataToEdit }
-	} = useSelector((state: RootState) => state.ui);
+	const { dataToHandle } = useModalStore.getState();
 
 	useEffect(() => {
-		if (dataToEdit) {
-			form.setFieldsValue(dataToEdit);
+		if (dataToHandle) {
+			form.setFieldsValue(dataToHandle);
 		}
 	}, []);
 
@@ -23,10 +21,10 @@ const CustomersForm = () => {
 		const isValid = await validateForm(values, customerSchema, form);
 		if (!isValid) return;
 
-		if (!dataToEdit) {
+		if (!dataToHandle) {
 			await submitRegisterCustomer(values);
 		} else {
-			await submitUpdateCustomer(values, dataToEdit.personId);
+			await submitUpdateCustomer(values, dataToHandle.personId);
 		}
 	};
 
@@ -100,7 +98,7 @@ const CustomersForm = () => {
 			</Form.Item>
 
 			<FormButtons
-				label={dataToEdit ? 'Editar' : 'Registrar'}
+				label={dataToHandle ? 'Editar' : 'Registrar'}
 				isLoading={isLoading}
 			/>
 		</Form>

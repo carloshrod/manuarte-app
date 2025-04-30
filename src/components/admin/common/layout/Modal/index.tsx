@@ -1,13 +1,10 @@
 import { Modal } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useModalStore } from '@/stores/modalStore';
 import useModal from '@/hooks/useModal';
-import { closeModal } from '@/reducers/ui/uiSlice';
 import { ModalContent } from '@/types/enums';
 
 const CustomModal = () => {
-	const { modal } = useSelector((state: RootState) => state.ui);
-	const { isOpen, title, content } = modal;
-	const dispatch = useDispatch();
+	const { isOpen, title, content, closeModal } = useModalStore();
 	const { MODAL_CONTENT } = useModal();
 
 	const modalContent = MODAL_CONTENT[content as ModalContent] ?? null;
@@ -21,7 +18,7 @@ const CustomModal = () => {
 		<Modal
 			open={isOpen}
 			title={title}
-			onCancel={() => dispatch(closeModal())}
+			onCancel={closeModal}
 			destroyOnClose
 			centered
 			width={content ? WIDTH[content] : 500}

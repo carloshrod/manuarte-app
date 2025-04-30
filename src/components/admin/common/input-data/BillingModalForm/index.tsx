@@ -1,6 +1,6 @@
+import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Form, Select } from 'antd';
-import { useSelector } from 'react-redux';
 import FormButtons from '../../ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import {
@@ -11,55 +11,55 @@ import {
 import { formatToTitleCase } from '@/utils/formats';
 import { ROUTES } from '@/utils/routes';
 import { BillingStatus } from '@/types/enums';
-import { useEffect } from 'react';
 import { quoteServices } from '@/services/quoteServices';
+import { useModalStore } from '@/stores/modalStore';
 
 const BillingModalForm = () => {
 	const { form, isLoading, submitCreateBilling, submitUpdateBilling } =
 		useForm();
-	const {
-		modal: { dataToEdit }
-	} = useSelector((state: RootState) => state.ui);
+	const { dataToHandle } = useModalStore.getState();
 	const params = useParams();
 	const { push } = useRouter();
 
 	useEffect(() => {
-		if (dataToEdit?.isUpdating) {
+		if (dataToHandle?.isUpdating) {
 			form.setFieldsValue({
-				status: dataToEdit?.status,
-				paymentMethod: dataToEdit?.paymentMethod
+				status: dataToHandle?.status,
+				paymentMethod: dataToHandle?.paymentMethod
 			});
 		}
 	}, []);
 
-	const subtotal = dataToEdit?.items?.reduce((acc: number, item: QuoteItem) => {
-		return acc + Number(item.totalPrice);
-	}, 0);
+	const subtotal = dataToHandle?.items?.reduce(
+		(acc: number, item: QuoteItem) => {
+			return acc + Number(item.totalPrice);
+		},
+		0
+	);
 
-	const total = subtotal + dataToEdit?.shipping || 0;
+	const total = subtotal + dataToHandle?.shipping || 0;
 
-	const customerName = dataToEdit?.fullName
-		? `${formatToTitleCase(dataToEdit?.fullName)} - ${dataToEdit?.dni}`
+	const customerName = dataToHandle?.fullName
+		? `${formatToTitleCase(dataToHandle?.fullName)} - ${dataToHandle?.dni}`
 		: 'Consumidor Final';
 
 	const onSubmit = async (values: SubmitBillingDto) => {
-		if (!dataToEdit?.isUpdating) {
+		if (!dataToHandle?.isUpdating) {
 			const res = await submitCreateBilling({
 				values: {
-					...dataToEdit,
+					...dataToHandle,
 					...values,
 					total,
 					shopSlug: params?.shopSlug
-				},
-				modal: true
+				}
 			});
 			if (res?.status === 201) {
-				const quoteId = dataToEdit.id;
+				const quoteId = dataToHandle.id;
 				await quoteServices.delete(quoteId);
 				push(`${ROUTES.BILLING_SHOPS}/${params?.shopSlug}`);
 			}
 		} else {
-			submitUpdateBilling(values, dataToEdit.id);
+			submitUpdateBilling(values, dataToHandle.id);
 		}
 	};
 
@@ -74,11 +74,11 @@ const BillingModalForm = () => {
 			onFinish={values => onSubmit(values)}
 		>
 			<div className='flex flex-col gap-4 py-6'>
-				{dataToEdit?.isUpdating ? (
+				{dataToHandle?.isUpdating ? (
 					<div className='px-4'>
 						<span className='font-semibold me-2'>Serial:</span>{' '}
 						<span className='px-3 py-1 rounded bg-[#e5e5e5]'>
-							{dataToEdit?.serialNumber}
+							{dataToHandle?.serialNumber}
 						</span>
 					</div>
 				) : null}
@@ -120,7 +120,7 @@ const BillingModalForm = () => {
 			</Form.Item>
 
 			<FormButtons
-				label={dataToEdit?.isUpdating ? 'Editar' : 'Generar'}
+				label={dataToHandle?.isUpdating ? 'Editar' : 'Generar'}
 				isLoading={isLoading}
 			/>
 		</Form>

@@ -1,10 +1,9 @@
 'use client';
-import { openModal } from '@/reducers/ui/uiSlice';
+import { useModalStore } from '@/stores/modalStore';
 import { ModalContent } from '@/types/enums';
 import { Button } from 'antd';
 import React, { ReactNode } from 'react';
 import { IoMdAdd } from 'react-icons/io';
-import { useDispatch } from 'react-redux';
 
 interface AddButtonProps {
 	title: string;
@@ -19,7 +18,7 @@ const AddButton = ({
 	buttonLabel,
 	appendIcon
 }: AddButtonProps) => {
-	const dispatch = useDispatch();
+	const { openModal } = useModalStore.getState();
 
 	return (
 		<Button
@@ -28,14 +27,7 @@ const AddButton = ({
 			icon={
 				<IoMdAdd size={18} style={{ display: 'flex', alignItems: 'center' }} />
 			}
-			onClick={() =>
-				dispatch(
-					openModal({
-						title,
-						content: modalContent
-					})
-				)
-			}
+			onClick={() => openModal({ title, content: modalContent })}
 		>
 			<p className='max-sm:hidden'>{buttonLabel}</p> {appendIcon}
 		</Button>

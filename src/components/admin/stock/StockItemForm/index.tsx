@@ -9,13 +9,12 @@ import { getProductsData } from '../../utils';
 import { formatInputCurrency } from '@/utils/formats';
 import { setShops } from '@/reducers/shops/shopSlice';
 import { shopServices } from '@/services/shopServices';
+import { useModalStore } from '@/stores/modalStore';
 
 const StockItemForm = () => {
 	const { form, isLoading, submitCreateStockItem, submitUpdateStockItem } =
 		useForm();
-	const {
-		modal: { dataToEdit }
-	} = useSelector((state: RootState) => state.ui);
+	const { dataToHandle } = useModalStore.getState();
 	const { shops } = useSelector((state: RootState) => state.shop);
 	const [productsOptions, setProductsOptions] = useState<
 		SelectProps['options']
@@ -36,13 +35,13 @@ const StockItemForm = () => {
 	};
 
 	useEffect(() => {
-		if (dataToEdit) {
+		if (dataToHandle) {
 			form.setFieldsValue({
-				product: `${dataToEdit?.productName} ${dataToEdit?.productVariantName}`,
-				price: dataToEdit?.price,
-				cost: dataToEdit?.cost,
-				minQty: dataToEdit?.minQty,
-				maxQty: dataToEdit?.maxQty
+				product: `${dataToHandle?.productName} ${dataToHandle?.productVariantName}`,
+				price: dataToHandle?.price,
+				cost: dataToHandle?.cost,
+				minQty: dataToHandle?.minQty,
+				maxQty: dataToHandle?.maxQty
 			});
 		}
 
@@ -54,7 +53,7 @@ const StockItemForm = () => {
 	const shopInfo = shops?.find(sh => sh.slug === params?.shopSlug);
 
 	const onSubmit = async (values: SubmitStockItemDto) => {
-		if (!dataToEdit) {
+		if (!dataToHandle) {
 			await submitCreateStockItem({
 				...values,
 				stockId: shopInfo?.stockId as string,
@@ -65,9 +64,9 @@ const StockItemForm = () => {
 			await submitUpdateStockItem(
 				{
 					...values,
-					productVariantId: dataToEdit.productVariantId
+					productVariantId: dataToHandle.productVariantId
 				},
-				dataToEdit.id
+				dataToHandle.id
 			);
 		}
 	};
@@ -128,7 +127,7 @@ const StockItemForm = () => {
 
 	return (
 		<Form layout='vertical' form={form} onFinish={values => onSubmit(values)}>
-			{!dataToEdit ? (
+			{!dataToHandle ? (
 				<Form.Item
 					name='productVariantId'
 					label='Buscar producto'
@@ -239,7 +238,7 @@ const StockItemForm = () => {
 				</Form.Item>
 			</div>
 			<FormButtons
-				label={dataToEdit ? 'Editar' : undefined}
+				label={dataToHandle ? 'Editar' : undefined}
 				isLoading={isLoading}
 			/>
 		</Form>

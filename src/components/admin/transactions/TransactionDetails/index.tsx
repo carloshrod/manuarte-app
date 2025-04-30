@@ -1,30 +1,26 @@
 import { useEffect, useState } from 'react';
 import { Button, Col, Divider, Row } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import TransactionsItemList from '../TransactionItemsList';
 import { transactionServices } from '@/services/transactionServices';
-import { closeDrawer, openDrawer } from '@/reducers/ui/uiSlice';
 import { STATES_MAP, TYPES_MAP } from '@/utils/mappings';
 import { DrawerContent, TransactionType } from '@/types/enums';
 import { useSession } from 'next-auth/react';
+import { useDrawerStore } from '@/stores/drawerStore';
 
 const TransactionDetails = () => {
-	const {
-		drawer: { dataToEdit }
-	} = useSelector((state: RootState) => state.ui);
+	const { dataToHandle, openDrawer, closeDrawer } = useDrawerStore.getState();
 	const [items, setItems] = useState<TransactionItem[]>([]);
-	const dispatch = useDispatch();
 	const { data: session } = useSession();
 	const isAdmin = session?.user?.roleName === 'admin';
 
 	const stockId =
-		dataToEdit?.type === TransactionType.ENTER
-			? dataToEdit?.toId
-			: dataToEdit?.fromId;
+		dataToHandle?.type === TransactionType.ENTER
+			? dataToHandle?.toId
+			: dataToHandle?.fromId;
 
 	const fetchItems = async () => {
-		const data = await transactionServices.getItems(dataToEdit?.id, stockId);
+		const data = await transactionServices.getItems(dataToHandle?.id, stockId);
 		if (data) {
 			setItems(data);
 		}
@@ -32,20 +28,18 @@ const TransactionDetails = () => {
 
 	useEffect(() => {
 		fetchItems();
-	}, [dataToEdit?.id]);
+	}, [dataToHandle?.id]);
 
 	const isTransferInProgress =
-		dataToEdit?.type === TransactionType.TRANSFER &&
-		dataToEdit?.state === 'PROGRESS';
+		dataToHandle?.type === TransactionType.TRANSFER &&
+		dataToHandle?.state === 'PROGRESS';
 
 	const handleEdit = () => {
-		dispatch(
-			openDrawer({
-				title: 'Transacción',
-				content: DrawerContent.transfer,
-				dataToEdit: { ...dataToEdit, items }
-			})
-		);
+		openDrawer({
+			title: 'Transacción',
+			content: DrawerContent.transfer,
+			dataToHandle: { ...dataToHandle, items }
+		});
 	};
 
 	const itemsCount = items?.reduce((acc, item) => {
@@ -59,7 +53,7 @@ const TransactionDetails = () => {
 					<div className='flex flex-col flex-1 gap-2 mb-4'>
 						<span>Origen</span>
 						<span className='px-3 py-1 bg-[#e5e5e5] rounded-md'>
-							{dataToEdit?.fromName ?? 'NA'}
+							{dataToHandle?.fromName ?? 'NA'}
 						</span>
 					</div>
 				</Col>
@@ -67,16 +61,16 @@ const TransactionDetails = () => {
 					<div className='flex flex-col flex-1 gap-2 mb-4'>
 						<span>Destino</span>
 						<span className='px-3 py-1 bg-[#e5e5e5] rounded-md'>
-							{dataToEdit?.toName ?? 'NA'}
+							{dataToHandle?.toName ?? 'NA'}
 						</span>
 					</div>
 				</Col>
-				{dataToEdit?.description ? (
+				{dataToHandle?.description ? (
 					<Col span={24}>
 						<div className='flex flex-col flex-1 gap-2 mb-4'>
 							<span>Descripción</span>
 							<span className='px-3 py-2 bg-[#e5e5e5] rounded-md'>
-								{dataToEdit?.description}
+								{dataToHandle?.description}
 							</span>
 						</div>
 					</Col>
@@ -85,7 +79,7 @@ const TransactionDetails = () => {
 					<div className='flex flex-col flex-1 gap-2 mb-4'>
 						<span>Tipo</span>
 						<span className='px-3 py-1 bg-[#e5e5e5] rounded-md'>
-							{TYPES_MAP[dataToEdit?.type]}
+							{TYPES_MAP[dataToHandle?.type]}
 						</span>
 					</div>
 				</Col>
@@ -93,7 +87,7 @@ const TransactionDetails = () => {
 					<div className='flex flex-col flex-1 gap-2 mb-4'>
 						<span>Estado</span>
 						<span className='px-3 py-1 bg-[#e5e5e5] rounded-md'>
-							{STATES_MAP[dataToEdit?.state]}
+							{STATES_MAP[dataToHandle?.state]}
 						</span>
 					</div>
 				</Col>
@@ -101,7 +95,7 @@ const TransactionDetails = () => {
 					<div className='flex flex-col flex-1 gap-2 mb-4'>
 						<span>Fecha de Transacción</span>
 						<span className='px-3 py-1 bg-[#e5e5e5] rounded-md'>
-							{moment(dataToEdit?.createdDate)
+							{moment(dataToHandle?.createdDate)
 								.startOf('day')
 								.format('YYYY/MM/DD')}
 						</span>
@@ -123,7 +117,7 @@ const TransactionDetails = () => {
 					className='w-[90%] max-w-[200px]'
 					style={{ fontWeight: 600 }}
 					htmlType='button'
-					onClick={() => dispatch(closeDrawer())}
+					onClick={closeDrawer}
 				>
 					CERRAR
 				</Button>

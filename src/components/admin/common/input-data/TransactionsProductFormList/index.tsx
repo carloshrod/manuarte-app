@@ -13,9 +13,9 @@ import { TRANSACTIONS_PRODUCTS_LIST_INPUTS_PROPS } from '@/components/admin/cons
 import { AiOutlineDelete } from 'react-icons/ai';
 import { StoreValue } from 'antd/es/form/interface';
 import { DrawerContent } from '@/types/enums';
-import { useSelector } from 'react-redux';
 import { useWatch } from 'antd/es/form/Form';
 import { useSession } from 'next-auth/react';
+import { useDrawerStore } from '@/stores/drawerStore';
 
 interface TransactionsProductFormListProps {
 	form: FormInstance;
@@ -40,9 +40,7 @@ const TransactionsProductFormList = ({
 	const [addedProducts, setAddedProducts] = useState<Record<string, number>>(
 		{}
 	);
-	const {
-		drawer: { content, dataToEdit }
-	} = useSelector((state: RootState) => state.ui);
+	const { content, dataToHandle } = useDrawerStore.getState();
 	const itemsList: ProductVariantWithStock[] = Form.useWatch('items', form);
 	const toId = useWatch('toId', form);
 	const fromId = useWatch('fromId', form);
@@ -51,7 +49,7 @@ const TransactionsProductFormList = ({
 	const isAdmin = session?.user?.roleName === 'admin';
 
 	useEffect(() => {
-		if (!dataToEdit) {
+		if (!dataToHandle) {
 			form.setFieldsValue({ items: [] });
 		}
 	}, [fromId, toId]);
@@ -137,7 +135,7 @@ const TransactionsProductFormList = ({
 			{(fields, { add, remove }) => {
 				return (
 					<>
-						{!isEnter && !dataToEdit ? (
+						{!isEnter && !dataToHandle ? (
 							<SearchAndAddProducts
 								onAdd={() => handleAddProduct(add)}
 								selectedProduct={selectedProduct}
@@ -152,11 +150,11 @@ const TransactionsProductFormList = ({
 
 						<div className='overflow-x-auto custom-scrollbar'>
 							{fields.reverse().map(({ key, name, ...restField }) => {
-								const item = dataToEdit
-									? dataToEdit?.items[name]
+								const item = dataToHandle
+									? dataToHandle?.items[name]
 									: form.getFieldValue('items')[name];
 
-								const maxQuantity = !dataToEdit
+								const maxQuantity = !dataToHandle
 									? addedProducts[item?.productVariantId]
 									: Number(item?.quantity) + Number(item?.stockItemQuantity) ||
 										1;
@@ -234,7 +232,7 @@ const TransactionsProductFormList = ({
 												);
 											}
 										)}
-										{!isEnter && !dataToEdit ? (
+										{!isEnter && !dataToHandle ? (
 											<Tooltip title='Eliminar producto'>
 												<Button
 													style={{

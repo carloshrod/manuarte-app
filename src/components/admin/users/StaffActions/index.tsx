@@ -1,33 +1,30 @@
 import { useDispatch } from 'react-redux';
 import { notification } from 'antd';
 import TableActions from '../../common/ui/TableActions';
-import { openModal } from '@/reducers/ui/uiSlice';
 import { removeStaff } from '@/reducers/users/userSlice';
 import { userServices } from '@/services/userServices';
 import { AxiosError } from 'axios';
 import { ModalContent } from '@/types/enums';
+import { useModalStore } from '@/stores/modalStore';
 
 const StaffActions = ({ record }: { record: Staff }) => {
+	const { openModal } = useModalStore.getState();
 	const dispatch = useDispatch();
 
 	const handleEdit = () => {
-		dispatch(
-			openModal({
-				title: 'Editar Staff',
-				content: ModalContent.staff,
-				dataToEdit: record
-			})
-		);
+		openModal({
+			title: 'Editar Staff',
+			content: ModalContent.staff,
+			dataToHandle: record
+		});
 	};
 
 	const handleEditPermissions = () => {
-		dispatch(
-			openModal({
-				title: 'Editar Permisos',
-				content: ModalContent.permissions,
-				dataToEdit: record
-			})
-		);
+		openModal({
+			title: 'Editar Permisos',
+			content: ModalContent.permissions,
+			dataToHandle: record
+		});
 	};
 
 	const handleDelete = async () => {

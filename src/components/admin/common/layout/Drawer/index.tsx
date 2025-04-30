@@ -1,39 +1,43 @@
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Checkbox, CheckboxProps, Drawer } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
 import SearchCustomer from '@/components/admin/common/input-data/SearchCustomer';
 import useDrawer from '@/hooks/useDrawer';
-import { closeDrawer, updateDrawer } from '@/reducers/ui/uiSlice';
 import { DrawerContent } from '@/types/enums';
 import { ROUTES } from '@/utils/routes';
 import { useMediaQuery } from 'react-responsive';
+import { useDrawerStore } from '@/stores/drawerStore';
 
 const CustomDrawer = () => {
 	const {
-		drawer: { isOpen, title, content, dataToEdit, noCustomer }
-	} = useSelector((state: RootState) => state.ui);
-	const dispatch = useDispatch();
+		isOpen,
+		title,
+		content,
+		dataToHandle,
+		noCustomer,
+		updateDrawer,
+		closeDrawer
+	} = useDrawerStore();
 	const { DRAWER_CONTENT } = useDrawer();
 	const pathname = usePathname();
 	const [checked, setChecked] = useState(false);
 	const isMedium = useMediaQuery({ query: '(max-width: 1024px)' });
 
 	useEffect(() => {
-		dispatch(closeDrawer());
+		closeDrawer();
 	}, [pathname]);
 
 	const drawerContent = DRAWER_CONTENT[content as DrawerContent] ?? null;
 
 	const onChange: CheckboxProps['onChange'] = e => {
-		if (!dataToEdit) {
+		if (!dataToHandle) {
 			setChecked(e.target.checked);
-			dispatch(updateDrawer({ noCustomer: e.target.checked }));
+			updateDrawer({ noCustomer: e.target.checked });
 		}
 	};
 
 	useEffect(() => {
-		setChecked(noCustomer);
+		setChecked(noCustomer as boolean);
 	}, [noCustomer]);
 
 	const isTransactions = pathname === ROUTES.TRANSACTIONS;
@@ -43,7 +47,7 @@ const CustomDrawer = () => {
 	return (
 		<Drawer
 			title={title}
-			onClose={() => dispatch(closeDrawer())}
+			onClose={closeDrawer}
 			keyboard={false}
 			maskClosable={false}
 			open={isOpen}
@@ -59,7 +63,7 @@ const CustomDrawer = () => {
 				!showExtra ? null : (
 					<div className='flex gap-2 items-center'>
 						{!noCustomer ? <SearchCustomer /> : null}
-						{!dataToEdit || noCustomer ? (
+						{!dataToHandle || noCustomer ? (
 							<Checkbox checked={checked} onChange={onChange}>
 								Consumidor final
 							</Checkbox>

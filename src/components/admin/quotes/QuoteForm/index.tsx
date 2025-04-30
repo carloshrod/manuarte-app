@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { Button, Divider, Form } from 'antd';
-import { useSelector } from 'react-redux';
 import CustomerInfoInputs from '../../common/input-data/CustomerInfoInputs';
 import ProductFormList from '../../common/input-data/ProductFormList';
 import DrawerFormFooter from '../../common/input-data/DrawerFormFooter';
@@ -9,6 +8,7 @@ import CalculationInputs from '../../common/input-data/CalculationInputs';
 import useForm from '@/hooks/useForm';
 import { QuoteStatus } from '@/types/enums';
 import { customerSchema, validateForm } from '@/utils/validators';
+import { useDrawerStore } from '@/stores/drawerStore';
 
 const QuoteForm = () => {
 	const {
@@ -20,16 +20,18 @@ const QuoteForm = () => {
 		submitUpdateQuote
 	} = useForm();
 	const {
-		drawer: { dataToEdit, customerInfo: existingCustomer, noCustomer }
-	} = useSelector((state: RootState) => state.ui);
+		dataToHandle,
+		customerInfo: existingCustomer,
+		noCustomer
+	} = useDrawerStore.getState();
 	const params = useParams() ?? {};
 
 	useEffect(() => {
-		if (dataToEdit) {
-			let fieldsData = dataToEdit;
+		if (dataToHandle) {
+			let fieldsData = dataToHandle;
 
 			if (existingCustomer?.personId) {
-				fieldsData = { ...dataToEdit, ...existingCustomer };
+				fieldsData = { ...dataToHandle, ...existingCustomer };
 			}
 
 			const preparedFields = {
@@ -75,22 +77,22 @@ const QuoteForm = () => {
 		if (!isValid) return;
 
 		const { subtotal, total, ...restValues } = values;
-		if (!dataToEdit) {
+		if (!dataToHandle) {
 			await submitCreateQuote({
 				...restValues,
 				shopSlug: params?.shopSlug as string,
-				personId: existingCustomer?.personId,
-				customerId: (existingCustomer as ExistingCustomer)?.customerId
+				personId: (existingCustomer as ExistingCustomer)?.personId,
+				customerId: existingCustomer?.customerId as string
 			});
 		} else {
 			submitUpdateQuote(
 				{
 					...restValues,
 					shopSlug: params?.shopSlug as string,
-					personId: existingCustomer?.personId || dataToEdit?.personId,
-					customerId: existingCustomer?.customerId || dataToEdit?.customerId
+					personId: existingCustomer?.personId || dataToHandle?.personId,
+					customerId: existingCustomer?.customerId || dataToHandle?.customerId
 				},
-				dataToEdit.id
+				dataToHandle.id
 			);
 		}
 	};
@@ -137,7 +139,7 @@ const QuoteForm = () => {
 					htmlType='submit'
 					loading={isLoading}
 				>
-					{!dataToEdit ? 'CREAR' : 'EDITAR'}
+					{!dataToHandle ? 'CREAR' : 'EDITAR'}
 				</Button>
 			</div>
 		</Form>

@@ -1,23 +1,22 @@
 import { notification } from 'antd';
 import { useDispatch } from 'react-redux';
 import { productServices } from '@/services/productServices';
-import { openModal } from '@/reducers/ui/uiSlice';
 import { removeProduct } from '@/reducers/products/productSlice';
 import TableActions from '../../common/ui/TableActions';
 import { AxiosError } from 'axios';
 import { ModalContent } from '@/types/enums';
+import { useModalStore } from '@/stores/modalStore';
 
 const ProductActions = ({ record }: { record: ProductVariant }) => {
+	const { openModal } = useModalStore.getState();
 	const dispatch = useDispatch();
 
 	const handleEdit = () => {
-		dispatch(
-			openModal({
-				title: 'Editar Producto',
-				content: ModalContent.products,
-				dataToEdit: record
-			})
-		);
+		openModal({
+			title: 'Editar Producto',
+			content: ModalContent.products,
+			dataToHandle: record
+		});
 	};
 
 	const handleDelete = async () => {

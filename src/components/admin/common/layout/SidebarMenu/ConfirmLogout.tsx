@@ -1,20 +1,19 @@
 import { Button } from 'antd';
 import { BsFillQuestionCircleFill } from 'react-icons/bs';
-import { closeModal } from '@/reducers/ui/uiSlice';
-import { useDispatch } from 'react-redux';
 import { authServices } from '@/services/authServices';
 import { doLogout } from '@/app/actions';
 import { getSession } from 'next-auth/react';
+import { useModalStore } from '@/stores/modalStore';
 
 const ConfirmLogout = () => {
-	const dispatch = useDispatch();
+	const { closeModal } = useModalStore.getState();
 
 	const handleLogout = async () => {
 		try {
 			const session = await getSession();
 			const res = await authServices.logout(session?.refreshToken as string);
 			if (res.status === 204) {
-				dispatch(closeModal());
+				closeModal();
 				await doLogout();
 			}
 		} catch (error) {
@@ -35,7 +34,7 @@ const ConfirmLogout = () => {
 					color='danger'
 					variant='outlined'
 					ghost
-					onClick={() => dispatch(closeModal())}
+					onClick={closeModal}
 					className='w-[130px]'
 				>
 					Cancelar

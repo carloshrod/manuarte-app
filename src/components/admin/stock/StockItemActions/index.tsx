@@ -1,36 +1,35 @@
+import { useParams } from 'next/navigation';
 import { useDispatch } from 'react-redux';
-import TableActions from '../../common/ui/TableActions';
-import { openDrawer, openModal } from '@/reducers/ui/uiSlice';
-import { DrawerContent, ModalContent } from '@/types/enums';
 import { AxiosError } from 'axios';
 import { notification } from 'antd';
-import { stockItemServices } from '@/services/stockItemServices';
+import TableActions from '../../common/ui/TableActions';
+import { useModalStore } from '@/stores/modalStore';
 import { removeStockItem } from '@/reducers/stockItems/stockItemSlice';
-import { useParams } from 'next/navigation';
+import { stockItemServices } from '@/services/stockItemServices';
+import { DrawerContent, ModalContent } from '@/types/enums';
+import { useDrawerStore } from '@/stores/drawerStore';
 
 const StockItemActions = ({ record }: { record: StockItem }) => {
+	const { openModal } = useModalStore.getState();
+	const { openDrawer } = useDrawerStore.getState();
 	const dispatch = useDispatch();
 	const { shopSlug } = useParams();
 	const shopName = (shopSlug as string).toUpperCase().replace('-', ' ');
 
 	const handleEdit = () => {
-		dispatch(
-			openModal({
-				title: 'Editar Stock de Producto',
-				content: ModalContent.stockItems,
-				dataToEdit: record
-			})
-		);
+		openModal({
+			title: 'Editar Stock de Producto',
+			content: ModalContent.stockItems,
+			dataToHandle: record
+		});
 	};
 
 	const handleTracking = () => {
-		dispatch(
-			openDrawer({
-				title: `Trazabilidad - ${shopName}`,
-				content: DrawerContent.stockItemHistory,
-				dataToEdit: record
-			})
-		);
+		openDrawer({
+			title: `Trazabilidad - ${shopName}`,
+			content: DrawerContent.stockItemHistory,
+			dataToHandle: record
+		});
 	};
 
 	const handleDelete = async () => {

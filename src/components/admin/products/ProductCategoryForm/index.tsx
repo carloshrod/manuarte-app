@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { Form, Input } from 'antd';
-import { useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
+import { useModalStore } from '@/stores/modalStore';
 
 const ProductCategoryForm = () => {
 	const {
@@ -11,21 +11,19 @@ const ProductCategoryForm = () => {
 		submitCreateProductCategory,
 		submitUpdateProductCategory
 	} = useForm();
-	const {
-		modal: { dataToEdit }
-	} = useSelector((state: RootState) => state.ui);
+	const { dataToHandle } = useModalStore.getState();
 
 	useEffect(() => {
-		if (dataToEdit) {
-			form.setFieldsValue({ name: dataToEdit.name });
+		if (dataToHandle) {
+			form.setFieldsValue({ name: dataToHandle.name });
 		}
 	}, []);
 
 	const handleSubmit = async (values: { name: string }) => {
-		if (!dataToEdit) {
+		if (!dataToHandle) {
 			submitCreateProductCategory(values);
 		} else {
-			submitUpdateProductCategory(values, dataToEdit.id);
+			submitUpdateProductCategory(values, dataToHandle.id);
 		}
 	};
 
@@ -52,7 +50,7 @@ const ProductCategoryForm = () => {
 			</Form.Item>
 
 			<FormButtons
-				label={dataToEdit ? 'Editar' : undefined}
+				label={dataToHandle ? 'Editar' : undefined}
 				isLoading={isLoading}
 			/>
 		</Form>

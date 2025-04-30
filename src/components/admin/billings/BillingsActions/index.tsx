@@ -5,23 +5,22 @@ import TableActions from '../../common/ui/TableActions';
 import { billingServices } from '@/services/billingServices';
 import { BillingStatus, ModalContent } from '@/types/enums';
 import { cancelBilling, removeBilling } from '@/reducers/billings/billingSlice';
-import { openModal } from '@/reducers/ui/uiSlice';
+import { useModalStore } from '@/stores/modalStore';
 
 const BillingsActions = ({ record }: { record: Billing }) => {
+	const { openModal } = useModalStore.getState();
 	const dispatch = useDispatch();
 
 	const handleEdit = () => {
-		dispatch(
-			openModal({
-				title: 'Editar Factura',
-				content: ModalContent.billings,
-				dataToEdit: {
-					...record,
-					fullName: record?.customerName,
-					isUpdating: true
-				}
-			})
-		);
+		openModal({
+			title: 'Editar Factura',
+			content: ModalContent.billings,
+			dataToHandle: {
+				...record,
+				fullName: record?.customerName,
+				isUpdating: true
+			}
+		});
 	};
 
 	const handleCancel = async () => {

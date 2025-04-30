@@ -2,11 +2,10 @@ import { Button, notification } from 'antd';
 import { IoDownloadOutline } from 'react-icons/io5';
 import { BsSendArrowDown } from 'react-icons/bs';
 import { PiInvoice } from 'react-icons/pi';
-import { useDispatch } from 'react-redux';
 import { RefObject } from 'react';
 import { useReactToPrint } from 'react-to-print';
-import { openModal } from '@/reducers/ui/uiSlice';
 import { BillingStatus, ModalContent } from '@/types/enums';
+import { useModalStore } from '@/stores/modalStore';
 
 const PDFActions = ({
 	isQuote,
@@ -19,7 +18,7 @@ const PDFActions = ({
 	shopSlug: string;
 	contentRef: RefObject<HTMLDivElement>;
 }) => {
-	const dispatch = useDispatch();
+	const { openModal } = useModalStore.getState();
 
 	const city = data?.city?.toUpperCase() ?? 'NA';
 	const customerName = data?.fullName?.toUpperCase() ?? 'CONSUMIDOR FINAL';
@@ -90,13 +89,11 @@ const PDFActions = ({
 						/>
 					}
 					onClick={() =>
-						dispatch(
-							openModal({
-								title: 'Generar Factura',
-								content: ModalContent.billings,
-								dataToEdit: data
-							})
-						)
+						openModal({
+							title: 'Generar Factura',
+							content: ModalContent.billings,
+							dataToHandle: data
+						})
 					}
 				>
 					Generar Factura

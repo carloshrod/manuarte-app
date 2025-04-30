@@ -6,6 +6,7 @@ import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import SelectStocks from '../SelectStocks';
 import { selectFilterOption } from '../../utils';
+import { useModalStore } from '@/stores/modalStore';
 
 const ProductForm = () => {
 	const {
@@ -18,22 +19,20 @@ const ProductForm = () => {
 	const { productCategories } = useSelector(
 		(state: RootState) => state.productCategory
 	);
-	const {
-		modal: { dataToEdit }
-	} = useSelector((state: RootState) => state.ui);
 	const { shops } = useSelector((state: RootState) => state.shop);
-	const isUpdating = Boolean(dataToEdit);
+	const { dataToHandle } = useModalStore.getState();
+	const isUpdating = Boolean(dataToHandle);
 	const [editGeneralProduct, setEditGeneralProduct] = useState(false);
 	const [isQuitoSelected, setIsQuitoSelected] = useState(true);
 
 	useEffect(() => {
-		if (dataToEdit) {
+		if (dataToHandle) {
 			const preparedFields = {
-				name: dataToEdit.productName,
-				description: dataToEdit.productDescription,
-				productCategoryId: dataToEdit.productCategoryId,
-				productVariants: [dataToEdit.name],
-				productVariantName: dataToEdit.name
+				name: dataToHandle.productName,
+				description: dataToHandle.productDescription,
+				productCategoryId: dataToHandle.productCategoryId,
+				productVariants: [dataToHandle.name],
+				productVariantName: dataToHandle.name
 			};
 			form.setFieldsValue(preparedFields);
 		}
@@ -66,14 +65,14 @@ const ProductForm = () => {
 			const valuesToUpdate = {
 				...rest,
 				productVariant: {
-					id: dataToEdit.id,
+					id: dataToHandle.id,
 					name: productVariantName
 				}
 			};
 			if (editGeneralProduct) {
-				submitUpdateProduct(valuesToUpdate, dataToEdit.productId);
+				submitUpdateProduct(valuesToUpdate, dataToHandle.productId);
 			} else {
-				submitUpdateProductVariant(valuesToUpdate, dataToEdit.id);
+				submitUpdateProductVariant(valuesToUpdate, dataToHandle.id);
 			}
 		}
 	};

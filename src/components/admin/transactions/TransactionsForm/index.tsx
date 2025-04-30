@@ -10,6 +10,7 @@ import { formatToTitleCase } from '@/utils/formats';
 import { transactionServices } from '@/services/transactionServices';
 import moment from 'moment';
 import { useSession } from 'next-auth/react';
+import { useDrawerStore } from '@/stores/drawerStore';
 
 const TransactionsForm = () => {
 	const {
@@ -20,9 +21,7 @@ const TransactionsForm = () => {
 		submitTransaction,
 		submitUpdateTransaction
 	} = useForm();
-	const {
-		drawer: { content, dataToEdit }
-	} = useSelector((state: RootState) => state.ui);
+	const { content, dataToHandle } = useDrawerStore.getState();
 	const { shops } = useSelector((state: RootState) => state.shop);
 	const [transfers, setTransfers] = useState<Transaction[]>([]);
 	const [selectedTransfer, setSelectedTransfer] = useState<Transaction | null>(
@@ -61,12 +60,12 @@ const TransactionsForm = () => {
 			});
 		}
 
-		if (dataToEdit) {
+		if (dataToHandle) {
 			form.setFieldsValue({
-				fromId: dataToEdit?.fromId,
-				toId: dataToEdit?.toId,
-				description: dataToEdit?.description,
-				items: dataToEdit?.items?.map((item: TransactionItem) => {
+				fromId: dataToHandle?.fromId,
+				toId: dataToHandle?.toId,
+				description: dataToHandle?.description,
+				items: dataToHandle?.items?.map((item: TransactionItem) => {
 					return {
 						id: item?.id,
 						quantity: item?.quantity,
@@ -186,16 +185,16 @@ const TransactionsForm = () => {
 		},
 		[DrawerContent.transfer]: {
 			fn: async (values: SubmitTransactionDto) => {
-				if (!dataToEdit) {
+				if (!dataToHandle) {
 					await submitTransaction(
 						{ ...values, type: TransactionType.TRANSFER },
 						shops
 					);
 				} else {
-					await submitUpdateTransaction({ ...values }, dataToEdit?.id, shops);
+					await submitUpdateTransaction({ ...values }, dataToHandle?.id, shops);
 				}
 			},
-			label: dataToEdit ? 'EDITAR' : 'TRANSFERIR'
+			label: dataToHandle ? 'EDITAR' : 'TRANSFERIR'
 		},
 		[DrawerContent.enter]: {
 			fn: async (values: SubmitTransactionDto) =>
@@ -267,7 +266,7 @@ const TransactionsForm = () => {
 											form.setFieldsValue({ toId: undefined });
 										}
 									}}
-									disabled={dataToEdit}
+									disabled={dataToHandle}
 								/>
 							</Form.Item>
 							<HiChevronDoubleRight
@@ -288,7 +287,7 @@ const TransactionsForm = () => {
 								<Select
 									placeholder='Seleccionar destino...'
 									options={filteredStockOptions}
-									disabled={dataToEdit}
+									disabled={dataToHandle}
 								/>
 							</Form.Item>
 						</div>
@@ -405,7 +404,7 @@ const TransactionsForm = () => {
 						{content === DrawerContent.enterByProduction ||
 						fromId ||
 						selectedTransfer?.id ||
-						dataToEdit ? (
+						dataToHandle ? (
 							<TransactionsProductFormList
 								form={form}
 								itemsError={itemsError}

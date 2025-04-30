@@ -1,30 +1,28 @@
 import { useEffect, useState } from 'react';
 import { Form, Select, Tag } from 'antd';
 import { BiUserCircle } from 'react-icons/bi';
-import { useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import { userServices } from '@/services/userServices';
 import { generatePermissionOptions } from '@/utils/auth';
 import { formatToTitleCase, formatUserExtraPermissions } from '@/utils/formats';
 import { selectFilterOption } from '../../utils';
+import { useModalStore } from '@/stores/modalStore';
 
 const PermissionsForm = () => {
 	const { form, isLoading, submitEditPermissions } = useForm();
-	const {
-		modal: { dataToEdit }
-	} = useSelector((state: RootState) => state.ui);
+	const { dataToHandle } = useModalStore.getState();
 	const [assignablePermissions, setAssignablePermissions] = useState([]);
 	const [cleanPermissions, setCleanPermissions] = useState(false);
 	const hasAssignablePermissions = assignablePermissions?.length > 0;
 
 	const fetchAssignablePermissions = async () => {
-		if (dataToEdit) {
-			const data = await userServices.getAssignablePermissions(dataToEdit.id);
+		if (dataToHandle) {
+			const data = await userServices.getAssignablePermissions(dataToHandle.id);
 			setAssignablePermissions(data);
 
 			const formattedExtraPermissions = formatUserExtraPermissions(
-				dataToEdit?.extraPermissions
+				dataToHandle?.extraPermissions
 			);
 
 			form.setFieldsValue({
@@ -41,12 +39,12 @@ const PermissionsForm = () => {
 	}, []);
 
 	const onSubmit = (values: { extraPermissions: string[] }) => {
-		if (dataToEdit) {
-			submitEditPermissions(values, dataToEdit.id);
+		if (dataToHandle) {
+			submitEditPermissions(values, dataToHandle.id);
 		}
 	};
 
-	return dataToEdit ? (
+	return dataToHandle ? (
 		<Form
 			layout='vertical'
 			form={form}
@@ -56,13 +54,13 @@ const PermissionsForm = () => {
 			onFinish={values => onSubmit(values)}
 		>
 			<div className='flex gap-2 ps-1 my-4'>
-				<h4 className='font-medium'>{dataToEdit?.fullName}</h4>
+				<h4 className='font-medium'>{dataToHandle?.fullName}</h4>
 				<Tag
 					icon={<BiUserCircle />}
 					color='#10b981'
 					style={{ display: 'flex', gap: 4, alignItems: 'center' }}
 				>
-					{formatToTitleCase(dataToEdit?.roleName)}
+					{formatToTitleCase(dataToHandle?.roleName)}
 				</Tag>
 			</div>
 

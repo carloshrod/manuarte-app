@@ -117,7 +117,7 @@ interface Customer {
 }
 
 interface ExistingCustomer extends Customer {
-	customerId: string;
+	customerId?: string;
 }
 
 interface SubmitCustomerDto {
@@ -316,23 +316,7 @@ type DataTable =
 	| StockItem
 	| Transaction;
 
-interface UIModalState {
-	isOpen: boolean;
-	title: string | null;
-	content: string | null;
-	dataToEdit?: any;
-}
-
-interface UIDrawerState extends UIModalState {
-	customerInfo: ExistingCustomer;
-	noCustomer: boolean;
-}
-
 interface RootState {
-	ui: {
-		modal: UIModalState;
-		drawer: UIDrawerState;
-	};
 	product: {
 		products: Product[];
 		productVariants: ProductVariant[];

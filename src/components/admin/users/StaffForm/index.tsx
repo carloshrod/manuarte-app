@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Form, Input, Select, Switch } from 'antd';
-import { useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import { userServices } from '@/services/userServices';
@@ -11,6 +10,7 @@ import {
 	editStaffSchema,
 	validateForm
 } from '@/utils/validators';
+import { useModalStore } from '@/stores/modalStore';
 
 const StaffForm = () => {
 	const { form, isLoading, submitRegisterStaff, submitUpdateStaff } = useForm();
@@ -18,9 +18,7 @@ const StaffForm = () => {
 	const [shops, setShops] = useState<Shop[]>([]);
 	const [editPassword, setEditPassword] = useState(false);
 	const [selectedRole, setSelectedRole] = useState('');
-	const {
-		modal: { dataToEdit }
-	} = useSelector((state: RootState) => state.ui);
+	const { dataToHandle } = useModalStore.getState();
 
 	const fetchRoles = async () => {
 		const data = await userServices.getStaffRoles();
@@ -37,24 +35,24 @@ const StaffForm = () => {
 	};
 
 	useEffect(() => {
-		if (dataToEdit) {
-			form.setFieldsValue(dataToEdit);
+		if (dataToHandle) {
+			form.setFieldsValue(dataToHandle);
 		}
 		fetchRoles();
 		fetchShops();
 	}, []);
 
 	useEffect(() => {
-		if (dataToEdit && staffRoles.length > 0) {
-			const roleName = getRoleSelectedName(dataToEdit?.roleId);
+		if (dataToHandle && staffRoles.length > 0) {
+			const roleName = getRoleSelectedName(dataToHandle?.roleId);
 			if (roleName) {
 				setSelectedRole(roleName);
 			}
 		}
-	}, [dataToEdit, staffRoles]);
+	}, [dataToHandle, staffRoles]);
 
 	const onSubmit = async (values: SubmitStaffDto) => {
-		const isValid = !dataToEdit
+		const isValid = !dataToHandle
 			? await validateForm(values, createStaffSchema, form)
 			: await validateForm(values, editStaffSchema, form);
 		if (!isValid) return;
@@ -63,10 +61,10 @@ const StaffForm = () => {
 			delete values.confirmPassword;
 		}
 
-		if (!dataToEdit) {
+		if (!dataToHandle) {
 			await submitRegisterStaff(values);
 		} else {
-			await submitUpdateStaff(values, dataToEdit.personId);
+			await submitUpdateStaff(values, dataToHandle.personId);
 		}
 	};
 
@@ -187,7 +185,7 @@ const StaffForm = () => {
 				<Input placeholder='Ingresa el email del usuario' />
 			</Form.Item>
 
-			{dataToEdit ? (
+			{dataToHandle ? (
 				<div className='flex gap-2 my-6 px-2 text-gray-500'>
 					<Switch
 						defaultChecked={false}
@@ -197,14 +195,14 @@ const StaffForm = () => {
 					<label htmlFor='switch'>Cambiar contraseña</label>
 				</div>
 			) : null}
-			{!dataToEdit || editPassword ? (
+			{!dataToHandle || editPassword ? (
 				<div className='flex justify-between gap-4'>
 					<Form.Item
 						name='password'
 						label='Contraseña'
 						rules={[
 							{
-								required: !dataToEdit || editPassword,
+								required: !dataToHandle || editPassword,
 								message: 'La contraseña es requerida'
 							}
 						]}
@@ -224,7 +222,7 @@ const StaffForm = () => {
 						style={{ width: '50%' }}
 						rules={[
 							{
-								required: !dataToEdit || editPassword,
+								required: !dataToHandle || editPassword,
 								message: 'Por favor, confirma la contraseña'
 							},
 							({ getFieldValue }) => ({
@@ -245,7 +243,7 @@ const StaffForm = () => {
 			) : null}
 
 			<FormButtons
-				label={dataToEdit ? 'Editar' : undefined}
+				label={dataToHandle ? 'Editar' : undefined}
 				isLoading={isLoading}
 			/>
 		</Form>

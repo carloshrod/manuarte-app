@@ -1,10 +1,9 @@
 'use client';
 import { Button } from 'antd';
 import { IoMdAdd } from 'react-icons/io';
-import { useDispatch } from 'react-redux';
-import { openDrawer } from '@/reducers/ui/uiSlice';
 import { DrawerContent } from '@/types/enums';
 import { ReactNode } from 'react';
+import { useDrawerStore } from '@/stores/drawerStore';
 
 interface OpenDrawerButtonProps {
 	title: string;
@@ -21,7 +20,7 @@ const OpenDrawerButton = ({
 	prependIcon = true,
 	appendIcon
 }: OpenDrawerButtonProps) => {
-	const dispatch = useDispatch();
+	const { openDrawer } = useDrawerStore.getState();
 
 	return (
 		<Button
@@ -36,12 +35,10 @@ const OpenDrawerButton = ({
 				) : null
 			}
 			onClick={() =>
-				dispatch(
-					openDrawer({
-						title,
-						content: drawerContent
-					})
-				)
+				openDrawer({
+					title,
+					content: drawerContent
+				})
 			}
 		>
 			<p className='max-sm:hidden'>{buttonLabel}</p>

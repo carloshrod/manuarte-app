@@ -1,18 +1,16 @@
 import useTableColumns from '@/hooks/useTableColumns';
 import CustomTable from '../../common/display-data/Table';
-import { useSelector } from 'react-redux';
 import { stockItemServices } from '@/services/stockItemServices';
 import { useEffect, useState } from 'react';
 import { GiCardboardBox } from 'react-icons/gi';
 import { getStockStatusColor } from '@/hooks/utils';
 import GenerateStockReportButton from '../GenerateStockReportButton';
 import { useParams } from 'next/navigation';
+import { useDrawerStore } from '@/stores/drawerStore';
 
 const StockItemHistory = () => {
 	const { stockItemsHistoryColumns } = useTableColumns();
-	const {
-		drawer: { dataToEdit }
-	} = useSelector((state: RootState) => state.ui);
+	const { dataToHandle } = useDrawerStore.getState();
 	const [history, setHistory] = useState<StockItemHistory[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const {
@@ -23,7 +21,7 @@ const StockItemHistory = () => {
 		quantity,
 		maxQty,
 		minQty
-	} = dataToEdit ?? {};
+	} = dataToHandle ?? {};
 	const { shopSlug } = useParams();
 
 	const fetchHistory = async () => {

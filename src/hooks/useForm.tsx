@@ -10,7 +10,6 @@ import {
 	addProductVariant,
 	getProductVariants
 } from '@/reducers/products/productSlice';
-import { closeDrawer, closeModal } from '@/reducers/ui/uiSlice';
 import {
 	addProductCategory,
 	updateProductCategory
@@ -38,6 +37,8 @@ import {
 	updateTransactionState
 } from '@/reducers/transactions/transactionSlice';
 import { validateUniqueProductVariantsName } from './utils';
+import { useModalStore } from '@/stores/modalStore';
+import { useDrawerStore } from '@/stores/drawerStore';
 
 notification.config({
 	placement: 'topRight',
@@ -56,12 +57,13 @@ const useForm = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [itemsError, setItemsError] = useState(false);
 	const dispatch = useDispatch();
+	const { closeModal } = useModalStore.getState();
+	const { closeDrawer } = useDrawerStore.getState();
 
 	const handleSubmit = async ({
 		serviceFn,
 		values,
-		onSuccess,
-		modal = true
+		onSuccess
 	}: handleSubmitProps) => {
 		try {
 			setIsLoading(true);
@@ -72,7 +74,8 @@ const useForm = () => {
 					message: res.data.message ?? 'Operación realizada con éxito'
 				});
 				onSuccess(res);
-				dispatch(modal ? closeModal() : closeDrawer());
+				closeModal();
+				closeDrawer();
 			}
 			return res;
 		} catch (error) {
@@ -242,8 +245,7 @@ const useForm = () => {
 		await handleSubmit({
 			serviceFn: quoteServices.create,
 			values,
-			onSuccess: res => dispatch(addQuote(res.data.newQuote)),
-			modal: false
+			onSuccess: res => dispatch(addQuote(res.data.newQuote))
 		});
 	};
 
@@ -257,28 +259,19 @@ const useForm = () => {
 			serviceFn: valuesToUpdate =>
 				quoteServices.update(valuesToUpdate, quoteId),
 			values,
-			onSuccess: res => dispatch(updateQuote(res.data.updatedQuote)),
-			modal: false
+			onSuccess: res => dispatch(updateQuote(res.data.updatedQuote))
 		});
 	};
 
 	const submitCreateBilling = async ({
-		values,
-		modal = false
+		values
 	}: {
 		values: SubmitBillingDto;
-		modal?: boolean;
 	}) => {
-		if (values?.items?.length < 1) {
-			setItemsError(true);
-			return;
-		}
-
 		return await handleSubmit({
 			serviceFn: billingServices.create,
 			values,
-			onSuccess: res => dispatch(addBilling(res.data.newBilling)),
-			modal
+			onSuccess: res => dispatch(addBilling(res.data.newBilling))
 		});
 	};
 
@@ -290,8 +283,7 @@ const useForm = () => {
 			serviceFn: valuesToUpdate =>
 				billingServices.update(valuesToUpdate, billingId),
 			values,
-			onSuccess: _res => dispatch(updateBilling({ id: billingId, ...values })),
-			modal: true
+			onSuccess: _res => dispatch(updateBilling({ id: billingId, ...values }))
 		});
 	};
 
@@ -351,8 +343,7 @@ const useForm = () => {
 						})
 					);
 				}
-			},
-			modal: false
+			}
 		});
 	};
 
@@ -385,8 +376,7 @@ const useForm = () => {
 				};
 
 				dispatch(updateTransaction(updatedTransaction));
-			},
-			modal: false
+			}
 		});
 	};
 

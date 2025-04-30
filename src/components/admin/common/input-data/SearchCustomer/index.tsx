@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Select, SelectProps, Spin } from 'antd';
 import { MehOutlined } from '@ant-design/icons';
-import { useDispatch } from 'react-redux';
-import { updateDrawer } from '@/reducers/ui/uiSlice';
 import { getCustomersData } from '@/components/admin/utils';
+import { useDrawerStore } from '@/stores/drawerStore';
 
 const SearchCustomer = () => {
 	const [customersOptions, setCustomersOptions] = useState<
@@ -12,7 +11,7 @@ const SearchCustomer = () => {
 	const [isSearching, setIsSearching] = useState(false);
 	const [hasSearched, setHasSearched] = useState(false);
 	const [customersData, setCustomersData] = useState<Customer[]>([]);
-	const dispatch = useDispatch();
+	const { updateDrawer } = useDrawerStore.getState();
 
 	let timeout: ReturnType<typeof setTimeout> | null;
 
@@ -52,11 +51,9 @@ const SearchCustomer = () => {
 
 	const handleChange = (newValue: string) => {
 		const customer = customersData?.find(c => c.personId === newValue);
-		dispatch(
-			updateDrawer({
-				customerInfo: customer
-			})
-		);
+		if (customer) {
+			updateDrawer({ customerInfo: customer });
+		}
 		setCustomersOptions([]);
 	};
 

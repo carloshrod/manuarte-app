@@ -582,7 +582,9 @@ const useTableColumns = () => {
 						</Tag>
 						{record?.stockFromName && record?.stockToName ? (
 							<Tooltip title={toolTipTitle}>
-								<IoInformationCircleOutline size={18} />
+								<span>
+									<IoInformationCircleOutline size={18} />
+								</span>
 							</Tooltip>
 						) : null}
 					</span>

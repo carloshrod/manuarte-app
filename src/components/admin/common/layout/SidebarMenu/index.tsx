@@ -1,16 +1,15 @@
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Menu, Skeleton } from 'antd';
 import { Session } from 'next-auth';
-import { useEffect, useState } from 'react';
 import getMenuItems, { allMenuItems } from './getMenuItems';
-import { useDispatch } from 'react-redux';
-import { openModal } from '@/reducers/ui/uiSlice';
-import { usePathname } from 'next/navigation';
 import { ModalContent } from '@/types/enums';
+import { useModalStore } from '@/stores/modalStore';
 
 const SidebarMenu = ({ session }: { session: Session | null }) => {
 	const menuItems = getMenuItems(session as Session);
 	const [selectedItems, setSelectedItems] = useState<string[]>([]);
-	const dispatch = useDispatch();
+	const { openModal } = useModalStore.getState();
 	const pathname = usePathname();
 
 	useEffect(() => {
@@ -27,12 +26,7 @@ const SidebarMenu = ({ session }: { session: Session | null }) => {
 
 	const handleConfirmLogout = ({ key }: { key: string }) => {
 		if (key === 'logout') {
-			dispatch(
-				openModal({
-					title: '',
-					content: ModalContent.logout
-				})
-			);
+			openModal({ content: ModalContent.logout });
 		}
 	};
 

@@ -1,19 +1,16 @@
-import { useDispatch } from 'react-redux';
 import TableActions from '../../common/ui/TableActions';
-import { openDrawer } from '@/reducers/ui/uiSlice';
+import { useDrawerStore } from '@/stores/drawerStore';
 import { DrawerContent } from '@/types/enums';
 
 const TransactionActions = ({ record }: { record: Transaction }) => {
-	const dispatch = useDispatch();
+	const { openDrawer } = useDrawerStore.getState();
 
 	const handleShowDetails = () => {
-		dispatch(
-			openDrawer({
-				title: 'Transacción',
-				content: DrawerContent.transactionDetails,
-				dataToEdit: record
-			})
-		);
+		openDrawer({
+			title: 'Transacción',
+			content: DrawerContent.transactionDetails,
+			dataToHandle: record
+		});
 	};
 
 	return <TableActions onShowDetails={handleShowDetails} />;

@@ -1,6 +1,5 @@
 import { Button, Form } from 'antd';
-import { useDispatch } from 'react-redux';
-import { closeModal } from '@/reducers/ui/uiSlice';
+import { useModalStore } from '@/stores/modalStore';
 
 interface FormButtonsProps {
 	label?: string;
@@ -13,7 +12,7 @@ const FormButtons = ({
 	isLoading,
 	disabled = false
 }: FormButtonsProps) => {
-	const dispatch = useDispatch();
+	const { closeModal } = useModalStore.getState();
 
 	return (
 		<Form.Item style={{ marginBottom: 4 }} className='flex justify-end'>
@@ -21,7 +20,7 @@ const FormButtons = ({
 				color='danger'
 				variant='outlined'
 				ghost
-				onClick={() => dispatch(closeModal())}
+				onClick={closeModal}
 				className='w-[130px] mr-6'
 				style={{ fontWeight: 600 }}
 			>
