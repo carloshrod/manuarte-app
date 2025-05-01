@@ -5,11 +5,14 @@ import { Session } from 'next-auth';
 import getMenuItems, { allMenuItems } from './getMenuItems';
 import { ModalContent } from '@/types/enums';
 import { useModalStore } from '@/stores/modalStore';
+import { getSession } from 'next-auth/react';
+import { authServices } from '@/services/authServices';
+import { doLogout } from '@/app/actions';
 
 const SidebarMenu = ({ session }: { session: Session | null }) => {
 	const menuItems = getMenuItems(session as Session);
 	const [selectedItems, setSelectedItems] = useState<string[]>([]);
-	const { openModal } = useModalStore.getState();
+	const { openModal, closeModal } = useModalStore.getState();
 	const pathname = usePathname();
 
 	useEffect(() => {
@@ -24,9 +27,28 @@ const SidebarMenu = ({ session }: { session: Session | null }) => {
 		if (key !== 'logout') setSelectedItems([key]);
 	};
 
+	const handleLogout = async () => {
+		try {
+			const session = await getSession();
+			const res = await authServices.logout(session?.refreshToken as string);
+			if (res.status === 204) {
+				closeModal();
+				await doLogout();
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	const handleConfirmLogout = ({ key }: { key: string }) => {
 		if (key === 'logout') {
-			openModal({ content: ModalContent.logout });
+			openModal({
+				content: ModalContent.confirm,
+				componentProps: {
+					confirmTitle: '¿Estás seguro de que quieres cerrar sesión?',
+					onConfirm: async () => await handleLogout()
+				}
+			});
 		}
 	};
 

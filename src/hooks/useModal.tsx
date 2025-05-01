@@ -2,15 +2,18 @@ import ProductForm from '@/components/admin/products/ProductForm';
 import ProductVariantForm from '@/components/admin/products/ProductVariantForm';
 import ProductCategoryForm from '@/components/admin/products/ProductCategoryForm';
 import StaffForm from '@/components/admin/users/StaffForm';
-import { ReactNode } from 'react';
-import { ModalContent } from '@/types/enums';
 import PermissionsForm from '@/components/admin/users/PermissionsForm';
 import CustomersForm from '@/components/admin/users/CustomersForm';
-import ConfirmLogout from '@/components/admin/common/layout/SidebarMenu/ConfirmLogout';
 import BillingModalForm from '@/components/admin/common/input-data/BillingModalForm';
 import StockItemForm from '@/components/admin/stock/StockItemForm';
+import ConfirmOperation from '@/components/admin/common/ui/ConfirmTransaction';
+import { useModalStore } from '@/stores/modalStore';
+import { ReactNode } from 'react';
+import { ModalContent } from '@/types/enums';
 
 const useModal = () => {
+	const { componentProps } = useModalStore();
+
 	const MODAL_CONTENT: Record<ModalContent, ReactNode> = {
 		[ModalContent.products]: <ProductForm />,
 		[ModalContent.productVariants]: <ProductVariantForm />,
@@ -20,7 +23,9 @@ const useModal = () => {
 		[ModalContent.customers]: <CustomersForm />,
 		[ModalContent.billings]: <BillingModalForm />,
 		[ModalContent.stockItems]: <StockItemForm />,
-		[ModalContent.logout]: <ConfirmLogout />
+		[ModalContent.confirm]: componentProps ? (
+			<ConfirmOperation {...componentProps} />
+		) : null
 	};
 
 	return { MODAL_CONTENT };

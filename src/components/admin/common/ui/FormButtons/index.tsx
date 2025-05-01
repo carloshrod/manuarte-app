@@ -5,12 +5,14 @@ interface FormButtonsProps {
 	label?: string;
 	isLoading: boolean;
 	disabled?: boolean;
+	onSubmit?: () => void;
 }
 
 const FormButtons = ({
 	label = 'Agregar',
 	isLoading,
-	disabled = false
+	disabled = false,
+	onSubmit
 }: FormButtonsProps) => {
 	const { closeModal } = useModalStore.getState();
 
@@ -30,9 +32,10 @@ const FormButtons = ({
 				type='primary'
 				className='w-[130px]'
 				style={{ fontWeight: 600 }}
-				htmlType='submit'
+				htmlType={onSubmit ? 'button' : 'submit'}
 				loading={isLoading}
 				disabled={disabled}
+				onClick={onSubmit || undefined}
 			>
 				{label.toUpperCase()}
 			</Button>

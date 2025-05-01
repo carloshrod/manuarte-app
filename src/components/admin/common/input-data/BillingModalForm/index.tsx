@@ -10,14 +10,14 @@ import {
 } from '@/components/admin/consts';
 import { formatToTitleCase } from '@/utils/formats';
 import { ROUTES } from '@/utils/routes';
-import { BillingStatus } from '@/types/enums';
+import { BillingStatus, ModalContent } from '@/types/enums';
 import { quoteServices } from '@/services/quoteServices';
 import { useModalStore } from '@/stores/modalStore';
 
 const BillingModalForm = () => {
 	const { form, isLoading, submitCreateBilling, submitUpdateBilling } =
 		useForm();
-	const { dataToHandle } = useModalStore.getState();
+	const { dataToHandle, openModal, closeModal } = useModalStore.getState();
 	const params = useParams();
 	const { push } = useRouter();
 
@@ -43,21 +43,35 @@ const BillingModalForm = () => {
 		? `${formatToTitleCase(dataToHandle?.fullName)} - ${dataToHandle?.dni}`
 		: 'Consumidor Final';
 
-	const onSubmit = async (values: SubmitBillingDto) => {
+	const onFinish = async (values: SubmitBillingDto) => {
 		if (!dataToHandle?.isUpdating) {
-			const res = await submitCreateBilling({
-				values: {
-					...dataToHandle,
-					...values,
-					total,
-					shopSlug: params?.shopSlug
+			openModal({
+				title: '',
+				content: ModalContent.confirm,
+				componentProps: {
+					confirmTitle: '¿Estás seguro de que quieres generar esta factura?',
+					confirmText:
+						'Se descontarán del stock las cantidades para los items agregados',
+					onConfirm: async () => {
+						const res = await submitCreateBilling({
+							values: {
+								...dataToHandle,
+								...values,
+								total,
+								shopSlug: params?.shopSlug
+							}
+						});
+
+						if (res?.status === 201) {
+							const quoteId = dataToHandle.id;
+							await quoteServices.delete(quoteId);
+							push(`${ROUTES.BILLING_SHOPS}/${params?.shopSlug}`);
+						} else {
+							closeModal();
+						}
+					}
 				}
 			});
-			if (res?.status === 201) {
-				const quoteId = dataToHandle.id;
-				await quoteServices.delete(quoteId);
-				push(`${ROUTES.BILLING_SHOPS}/${params?.shopSlug}`);
-			}
 		} else {
 			submitUpdateBilling(values, dataToHandle.id);
 		}
@@ -71,7 +85,7 @@ const BillingModalForm = () => {
 			initialValues={{
 				status: BillingStatus.PAID
 			}}
-			onFinish={values => onSubmit(values)}
+			onFinish={onFinish}
 		>
 			<div className='flex flex-col gap-4 py-6'>
 				{dataToHandle?.isUpdating ? (
@@ -122,6 +136,7 @@ const BillingModalForm = () => {
 			<FormButtons
 				label={dataToHandle?.isUpdating ? 'Editar' : 'Generar'}
 				isLoading={isLoading}
+				onSubmit={() => form.submit()}
 			/>
 		</Form>
 	);

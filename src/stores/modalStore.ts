@@ -7,8 +7,6 @@ interface ModalParams {
 	content: ModalContent | null;
 	componentProps?: ConfirmTransactionProps | null;
 	dataToHandle?: any;
-	confirmTitle?: string | null;
-	confirmText?: string | null;
 }
 
 interface ModalState extends ModalParams {
@@ -22,9 +20,7 @@ const initialState: Omit<ModalState, 'openModal' | 'closeModal'> = {
 	title: null,
 	content: null,
 	componentProps: null,
-	dataToHandle: null,
-	confirmTitle: null,
-	confirmText: null
+	dataToHandle: null
 };
 
 export const useModalStore = create<ModalState>(set => ({
@@ -33,18 +29,14 @@ export const useModalStore = create<ModalState>(set => ({
 		title = null,
 		content,
 		componentProps = null,
-		dataToHandle = null,
-		confirmTitle = null,
-		confirmText = null
+		dataToHandle = null
 	}) =>
 		set({
 			isOpen: true,
 			title,
 			content,
 			componentProps,
-			dataToHandle,
-			confirmTitle,
-			confirmText
+			dataToHandle
 		}),
 	closeModal: () => set({ ...initialState })
 }));

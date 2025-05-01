@@ -1,6 +1,5 @@
 import useForm from '@/hooks/useForm';
 import { Button, Divider, Form } from 'antd';
-import { useSelector } from 'react-redux';
 import CustomerInfoInputs from '../../common/input-data/CustomerInfoInputs';
 import ProductFormList from '../../common/input-data/ProductFormList';
 import DrawerFormFooter from '../../common/input-data/DrawerFormFooter';
@@ -9,21 +8,26 @@ import { useEffect } from 'react';
 import { updateCalculations } from '../../utils';
 import { useParams } from 'next/navigation';
 import { customerSchema, validateForm } from '@/utils/validators';
+import { useModalStore } from '@/stores/modalStore';
+import { ModalContent } from '@/types/enums';
+import { useDrawerStore } from '@/stores/drawerStore';
 
 const BillingForm = () => {
-	const { form, isLoading, itemsError, setItemsError, submitCreateBilling } =
-		useForm();
+	const { form, itemsError, setItemsError, submitCreateBilling } = useForm();
 	const {
-		drawer: { dataToEdit, customerInfo: existingCustomer, noCustomer }
-	} = useSelector((state: RootState) => state.ui);
+		dataToHandle,
+		customerInfo: existingCustomer,
+		noCustomer
+	} = useDrawerStore.getState();
 	const params = useParams() ?? {};
+	const { openModal } = useModalStore.getState();
 
 	useEffect(() => {
-		if (dataToEdit) {
-			let fieldsData = dataToEdit;
+		if (dataToHandle) {
+			let fieldsData = dataToHandle;
 
 			if (existingCustomer?.personId) {
-				fieldsData = { ...dataToEdit, ...existingCustomer };
+				fieldsData = { ...dataToHandle, ...existingCustomer };
 			}
 
 			const preparedFields = {
@@ -47,7 +51,12 @@ const BillingForm = () => {
 		}
 	}, [existingCustomer]);
 
-	const onSubmit = async (values: SubmitBillingDto) => {
+	const onFinish = async (values: SubmitBillingDto) => {
+		if (values?.items?.length < 1) {
+			setItemsError(true);
+			return;
+		}
+
 		const isValid = !noCustomer
 			? await validateForm(values, customerSchema, form)
 			: true;
@@ -55,11 +64,22 @@ const BillingForm = () => {
 
 		const { subtotal, ...restValues } = values;
 
-		await submitCreateBilling({
-			values: {
-				...restValues,
-				shopSlug: params?.shopSlug as string,
-				customerId: (existingCustomer as ExistingCustomer)?.customerId
+		openModal({
+			title: '',
+			content: ModalContent.confirm,
+			componentProps: {
+				confirmTitle: '¿Estás seguro de que quieres generar esta factura?',
+				confirmText:
+					'Se descontarán del stock las cantidades para los items agregados',
+				onConfirm: async () => {
+					await submitCreateBilling({
+						values: {
+							...restValues,
+							shopSlug: params?.shopSlug as string,
+							customerId: existingCustomer?.customerId as string
+						}
+					});
+				}
 			}
 		});
 	};
@@ -75,7 +95,7 @@ const BillingForm = () => {
 				total: 0
 			}}
 			style={{ padding: '0 16px' }}
-			onFinish={values => onSubmit(values)}
+			onFinish={onFinish}
 		>
 			{!noCustomer ? <CustomerInfoInputs /> : null}
 
@@ -96,10 +116,9 @@ const BillingForm = () => {
 					type='primary'
 					className='w-[90%] max-w-[250px]'
 					style={{ fontWeight: 600 }}
-					htmlType='submit'
-					loading={isLoading}
+					onClick={() => form.submit()}
 				>
-					{!dataToEdit ? 'CREAR' : 'EDITAR'}
+					GENERAR
 				</Button>
 			</div>
 		</Form>

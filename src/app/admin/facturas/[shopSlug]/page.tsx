@@ -36,7 +36,7 @@ const BillingsPage = async (props: QuotesPageProps) => {
 				<div className='flex gap-2'>
 					<GenerateBillingReportButton shopSlug={shopSlug} />
 					<OpenDrawerButton
-						title='Crear Factura'
+						title='Generar Factura'
 						drawerContent={DrawerContent.billings}
 						buttonLabel='Factura'
 						appendIcon={<PiInvoice size={18} />}

@@ -311,11 +311,6 @@ const useForm = () => {
 		values: SubmitTransactionDto,
 		shops: Shop[]
 	) => {
-		if (values?.items?.length < 1) {
-			setItemsError(true);
-			return;
-		}
-
 		await handleSubmit({
 			serviceFn: transactionServices.create,
 			values,
@@ -352,11 +347,6 @@ const useForm = () => {
 		transactionId: string,
 		shops: Shop[]
 	) => {
-		if (values?.items?.length < 1) {
-			setItemsError(true);
-			return;
-		}
-
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
 				transactionServices.update(valuesToUpdate, transactionId),

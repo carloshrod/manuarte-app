@@ -3,25 +3,21 @@ import { Button, Col, Divider, Form, Input, Row, Select } from 'antd';
 import { HiChevronDoubleRight } from 'react-icons/hi';
 import TransactionsProductFormList from '../../common/input-data/TransactionsProductFormList';
 import { useSelector } from 'react-redux';
-import { DrawerContent, TransactionType } from '@/types/enums';
+import { DrawerContent, ModalContent } from '@/types/enums';
 import { useWatch } from 'antd/es/form/Form';
 import { useEffect, useState } from 'react';
 import { formatToTitleCase } from '@/utils/formats';
 import { transactionServices } from '@/services/transactionServices';
 import moment from 'moment';
 import { useSession } from 'next-auth/react';
+import useTransactionSubmits from '@/hooks/useTransactionSubmits';
 import { useDrawerStore } from '@/stores/drawerStore';
+import { useModalStore } from '@/stores/modalStore';
 
 const TransactionsForm = () => {
-	const {
-		form,
-		isLoading,
-		itemsError,
-		setItemsError,
-		submitTransaction,
-		submitUpdateTransaction
-	} = useForm();
+	const { form, itemsError, setItemsError } = useForm();
 	const { content, dataToHandle } = useDrawerStore.getState();
+	const { openModal } = useModalStore.getState();
 	const { shops } = useSelector((state: RootState) => state.shop);
 	const [transfers, setTransfers] = useState<Transaction[]>([]);
 	const [selectedTransfer, setSelectedTransfer] = useState<Transaction | null>(
@@ -31,6 +27,10 @@ const TransactionsForm = () => {
 	const isAdmin = session?.user?.roleName === 'admin';
 	const shopName =
 		session?.user?.shop && session?.user?.shop.toUpperCase().replace('-', ' ');
+	const { TRANSACTION_SUBMITS } = useTransactionSubmits({
+		shops,
+		selectedTransfer
+	});
 
 	const fetchTransfers = async (toId: string) => {
 		try {
@@ -161,65 +161,26 @@ const TransactionsForm = () => {
 		? shops?.find(shop => shop.stockId === fromId)?.slug
 		: undefined;
 
-	const SUBMITS: Record<
-		string,
-		{ fn: (values: SubmitTransactionDto) => void; label: string }
-	> = {
-		[DrawerContent.enterByProduction]: {
-			fn: async (values: SubmitTransactionDto) => {
-				const toId =
-					shops?.find(shop => {
-						return isAdmin ? shop.mainStock : shop.slug === session?.user?.shop;
-					})?.stockId || '';
+	const transactionSubmit = TRANSACTION_SUBMITS[content as string];
 
-				await submitTransaction(
-					{
-						...values,
-						toId,
-						type: TransactionType.ENTER
-					},
-					shops
-				);
-			},
-			label: 'INGRESAR'
-		},
-		[DrawerContent.transfer]: {
-			fn: async (values: SubmitTransactionDto) => {
-				if (!dataToHandle) {
-					await submitTransaction(
-						{ ...values, type: TransactionType.TRANSFER },
-						shops
-					);
-				} else {
-					await submitUpdateTransaction({ ...values }, dataToHandle?.id, shops);
+	const onFinish = async (values: SubmitTransactionDto) => {
+		if (values?.items?.length < 1) {
+			setItemsError(true);
+			return;
+		}
+
+		if (transactionSubmit?.fn) {
+			openModal({
+				title: '',
+				content: ModalContent.confirm,
+				componentProps: {
+					confirmTitle: transactionSubmit?.confirmTitle,
+					confirmText: transactionSubmit?.confirmText,
+					onConfirm: async () => await transactionSubmit?.fn(values)
 				}
-			},
-			label: dataToHandle ? 'EDITAR' : 'TRANSFERIR'
-		},
-		[DrawerContent.enter]: {
-			fn: async (values: SubmitTransactionDto) =>
-				await submitTransaction(
-					{
-						...values,
-						fromId: selectedTransfer?.fromId as string,
-						type: TransactionType.ENTER,
-						description: `Ingreso: ${selectedTransfer?.description}`
-					},
-					shops
-				),
-			label: 'INGRESAR'
-		},
-		[DrawerContent.exit]: {
-			fn: async (values: SubmitTransactionDto) =>
-				await submitTransaction(
-					{ ...values, type: TransactionType.EXIT },
-					shops
-				),
-			label: 'EGRESAR'
+			});
 		}
 	};
-
-	const submit = SUBMITS[content as string];
 
 	return (
 		<Form
@@ -228,7 +189,7 @@ const TransactionsForm = () => {
 			initialValues={{
 				items: []
 			}}
-			onFinish={values => submit?.fn(values) ?? null}
+			onFinish={onFinish}
 			className='h-full flex flex-col justify-between'
 		>
 			<Row gutter={16} className='items-center'>
@@ -421,10 +382,9 @@ const TransactionsForm = () => {
 					type='primary'
 					className='w-[90%] max-w-[200px]'
 					style={{ fontWeight: 600 }}
-					htmlType='submit'
-					loading={isLoading}
+					onClick={() => form.submit()}
 				>
-					{submit?.label ?? 'ENVIAR'}
+					{transactionSubmit?.label ?? 'ENVIAR'}
 				</Button>
 			</div>
 		</Form>

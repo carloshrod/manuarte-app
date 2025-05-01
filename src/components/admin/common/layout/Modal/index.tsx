@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import { useModalStore } from '@/stores/modalStore';
 import useModal from '@/hooks/useModal';
@@ -6,13 +7,20 @@ import { ModalContent } from '@/types/enums';
 const CustomModal = () => {
 	const { isOpen, title, content, closeModal } = useModalStore();
 	const { MODAL_CONTENT } = useModal();
-
-	const modalContent = MODAL_CONTENT[content as ModalContent] ?? null;
+	const [width, setWidth] = useState(500);
 
 	const WIDTH: Record<string, number> = {
 		products: 600,
 		stockItems: 600
 	};
+
+	useEffect(() => {
+		if (content) {
+			setWidth(WIDTH[content]);
+		}
+	}, [content]);
+
+	const modalContent = MODAL_CONTENT[content as ModalContent] ?? null;
 
 	return (
 		<Modal
@@ -21,7 +29,7 @@ const CustomModal = () => {
 			onCancel={closeModal}
 			destroyOnClose
 			centered
-			width={content ? WIDTH[content] : 500}
+			width={width}
 			footer={null}
 		>
 			{modalContent}
