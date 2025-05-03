@@ -1,5 +1,5 @@
 'use client';
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 import { IoMdDownload } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 import {
@@ -41,20 +41,28 @@ const GenerateStockReportButton = ({
 	};
 
 	return (
-		<Button
-			variant='solid'
-			color='primary'
-			icon={
-				<IoMdDownload
-					size={18}
-					style={{ display: 'flex', alignItems: 'center' }}
-				/>
+		<Tooltip
+			title={
+				history
+					? 'Descargar historial de stock'
+					: 'Descargar reporte de stock para pedidos de producción'
 			}
-			onClick={handleDownloadExcel}
-			disabled={data?.length === 0}
 		>
-			Generar Reporte
-		</Button>
+			<Button
+				variant='solid'
+				color='primary'
+				icon={
+					<IoMdDownload
+						size={18}
+						style={{ display: 'flex', alignItems: 'center' }}
+					/>
+				}
+				onClick={handleDownloadExcel}
+				disabled={data?.length === 0}
+			>
+				Generar Reporte
+			</Button>
+		</Tooltip>
 	);
 };
 

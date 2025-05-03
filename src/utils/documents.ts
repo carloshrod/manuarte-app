@@ -5,8 +5,12 @@ import { formatToTitleCase } from './formats';
 
 export interface ExcelStockData {
 	'#': number;
-	Nombre: string;
-	Cantidad: number;
+	Código: string;
+	Producto: string;
+	'Cantidad mínima': number;
+	'Cantidad máxima': number;
+	'Cantidad actual': number;
+	'Cantidad requerida': number;
 }
 
 export interface ExcelStockHistoryData {
@@ -20,7 +24,7 @@ export interface ExcelStockHistoryData {
 
 export interface ExcelBillingData {
 	'#': number;
-	Número: string;
+	'Número de Serial': string;
 	Cliente: string;
 	'Medio de Pago': string;
 	Total: number;
@@ -29,13 +33,17 @@ export interface ExcelBillingData {
 export const generateStockData = (stockItems: StockItem[]) => {
 	try {
 		let poExcelData: ExcelStockData[] = [];
+
 		if (stockItems?.length > 0) {
 			poExcelData = stockItems?.map((item, i) => {
 				return {
 					'#': i + 1,
 					Código: item.vId,
-					Nombre: `${item.productName} ${item.productVariantName}`,
-					Cantidad: item.quantity
+					Producto: `${item.productName} - ${item.productVariantName}`,
+					'Cantidad mínima': item.minQty,
+					'Cantidad máxima': item.maxQty,
+					'Cantidad actual': item.quantity,
+					'Cantidad requerida': Number(item.maxQty) - Number(item.quantity)
 				};
 			});
 		}
@@ -81,7 +89,7 @@ export const generateBillingsData = (billings: Billing[]) => {
 			poExcelData = billings?.map((item, i) => {
 				return {
 					'#': i + 1,
-					Número: item.serialNumber,
+					'Número de Serial': item.serialNumber,
 					Cliente: formatToTitleCase(item.customerName) ?? 'Consumidor Final',
 					'Medio de Pago': PAYMENT_METHOD_MAP[item.paymentMethod],
 					Total: item.total
@@ -123,6 +131,12 @@ export const downloadExcel = async (
 				cell.alignment = { vertical: 'middle', horizontal: 'center' };
 			});
 
+			const isStock = (item: any): item is ExcelStockData =>
+				'Cantidad requerida' in item;
+			const currentQuantityIndex = headers.findIndex(
+				h => h === 'Cantidad actual'
+			);
+
 			const isStockHistory = (item: any): item is ExcelStockHistoryData =>
 				'Transacción' in item;
 			const transactionIndex = headers.findIndex(h => h === 'Transacción');
@@ -133,10 +147,29 @@ export const downloadExcel = async (
 				row.eachCell((cell, colNumber) => {
 					cell.alignment = { vertical: 'middle', horizontal: 'center' };
 
+					if (isStock(item) && colNumber - 1 === currentQuantityIndex) {
+						let fillColor = '10B981';
+
+						const stockPercentage =
+							(item['Cantidad actual'] / item['Cantidad máxima']) * 100;
+
+						if (item['Cantidad actual'] <= item['Cantidad mínima']) {
+							fillColor = 'E53535';
+						} else if (stockPercentage <= 75) {
+							fillColor = 'EAB308';
+						}
+
+						cell.fill = {
+							type: 'pattern',
+							pattern: 'solid',
+							fgColor: { argb: fillColor }
+						};
+					}
+
 					if (isStockHistory(item) && colNumber - 1 === transactionIndex) {
 						const TYPE_COLORS: Record<string, string> = {
 							Entrada: '0D6EFD',
-							Transferencia: 'eab308',
+							Transferencia: 'EAB308',
 							Salida: 'E53535',
 							Factura: '10b981'
 						};
@@ -152,7 +185,9 @@ export const downloadExcel = async (
 				});
 			});
 
-			worksheet.columns = headers.map(() => ({ width: 20 }));
+			worksheet.columns = headers.map((header, index) => ({
+				width: index === 0 ? 5 : header === 'Producto' ? 70 : 20
+			}));
 
 			const buffer = await workbook.xlsx.writeBuffer();
 			const blob = new Blob([buffer], {

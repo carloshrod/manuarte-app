@@ -1,6 +1,6 @@
 'use client';
 import { downloadExcel, generateBillingsData } from '@/utils/documents';
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 import moment from 'moment';
 import { IoMdDownload } from 'react-icons/io';
 import { useSelector } from 'react-redux';
@@ -15,7 +15,7 @@ const GenerateBillingReportButton = ({ shopSlug }: { shopSlug: string }) => {
 
 			if (excelData) {
 				const shopName = shopSlug.toUpperCase().replace('-', ' ');
-				const title = `Reporte Ventas - ${shopName}: ${moment(date).format('YYYY/MM/DD')}`;
+				const title = `Reporte de Ventas - ${shopName}: ${moment(date).format('YYYY/MM/DD')}`;
 
 				downloadExcel(
 					excelData,
@@ -29,20 +29,22 @@ const GenerateBillingReportButton = ({ shopSlug }: { shopSlug: string }) => {
 	};
 
 	return (
-		<Button
-			variant='solid'
-			color='primary'
-			icon={
-				<IoMdDownload
-					size={18}
-					style={{ display: 'flex', alignItems: 'center' }}
-				/>
-			}
-			onClick={handleDownloadExcel}
-			disabled={filteredBillings?.length === 0}
-		>
-			Generar Reporte
-		</Button>
+		<Tooltip title='Descargar reporte de ventas'>
+			<Button
+				variant='solid'
+				color='primary'
+				icon={
+					<IoMdDownload
+						size={18}
+						style={{ display: 'flex', alignItems: 'center' }}
+					/>
+				}
+				onClick={handleDownloadExcel}
+				disabled={filteredBillings?.length === 0}
+			>
+				Generar Reporte
+			</Button>
+		</Tooltip>
 	);
 };
 
