@@ -56,3 +56,10 @@ export const getStockStatusColor = ({
 
 	return stockStatusColor;
 };
+
+export const TAG_COLORS: Record<string, string> = {
+	ENTER: '#0D6EFD',
+	TRANSFER: '#eab308',
+	EXIT: '#E53535',
+	BILLING: '#10b981'
+};

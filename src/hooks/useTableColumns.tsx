@@ -1,6 +1,15 @@
 import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
-import { Button, QRCode, Space, TableColumnsType, Tag, Tooltip } from 'antd';
+import {
+	Badge,
+	Button,
+	QRCode,
+	Space,
+	TableColumnsType,
+	Tag,
+	Tooltip
+} from 'antd';
+import { CheckCircleOutlined } from '@ant-design/icons';
 import { BsFileEarmarkPdf } from 'react-icons/bs';
 import { TiArrowDown, TiArrowUp } from 'react-icons/ti';
 import { IoInformationCircleOutline } from 'react-icons/io5';
@@ -26,7 +35,8 @@ import {
 import {
 	getStockStatusColor,
 	COL_PAYMENT_METHOD_FILTER,
-	ECU_PAYMENT_METHOD_FILTER
+	ECU_PAYMENT_METHOD_FILTER,
+	TAG_COLORS
 } from './utils';
 
 const useTableColumns = () => {
@@ -567,12 +577,6 @@ const useTableColumns = () => {
 			],
 			onFilter: (value, record) => record.type.indexOf(value as string) === 0,
 			render: (value, record) => {
-				const TAG_COLORS: Record<string, string> = {
-					ENTER: '#0D6EFD',
-					TRANSFER: '#eab308',
-					EXIT: '#E53535',
-					BILLING: '#10b981'
-				};
 				const toolTipTitle = `De ${record.stockFromName} a ${record.stockToName} `;
 
 				return (
@@ -661,7 +665,20 @@ const useTableColumns = () => {
 				}
 			],
 			onFilter: (value, record) => record.state.indexOf(value as string) === 0,
-			render: value => STATES_MAP[value],
+			render: value => {
+				return (
+					<span className='flex items-center gap-1'>
+						{STATES_MAP[value]}
+						<Badge
+							count={
+								<CheckCircleOutlined
+									style={{ color: value === 'SUCCESS' ? '#10b981' : '#808080' }}
+								/>
+							}
+						/>
+					</span>
+				);
+			},
 			width: 120
 		},
 		{
@@ -683,7 +700,13 @@ const useTableColumns = () => {
 				}
 			],
 			onFilter: (value, record) => record.type.indexOf(value as string) === 0,
-			render: value => TYPES_MAP[value],
+			render: value => {
+				return (
+					<span className='flex items-center'>
+						<Tag color={TAG_COLORS[value]}>{TYPES_MAP[value]}</Tag>
+					</span>
+				);
+			},
 			width: 120
 		},
 		{
