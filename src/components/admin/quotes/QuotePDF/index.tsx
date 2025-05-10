@@ -1,10 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 import { Descriptions, DescriptionsProps, Divider } from 'antd';
-import moment from 'moment';
 import PDFTable from '../../common/display-data/PDFTable';
 import TermsCol from '../../Terms/TermsCol';
 import TermsEcu from '../../Terms/TermsEcu';
-import { formatToTitleCase } from '@/utils/formats';
+import { formatDate, formatToTitleCase } from '@/utils/formats';
 
 const QuotePDF = ({
 	quote,
@@ -49,8 +48,7 @@ const QuotePDF = ({
 		{
 			key: '6',
 			label: 'Fecha:',
-			children:
-				moment(quote?.createdDate).startOf('day').format('YYYY/MM/DD') ?? '--',
+			children: formatDate(quote?.createdDate) ?? '--',
 			span: 3
 		}
 	];

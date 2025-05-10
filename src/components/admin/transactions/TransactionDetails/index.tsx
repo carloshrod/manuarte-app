@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Button, Col, Divider, Row } from 'antd';
-import moment from 'moment';
 import TransactionsItemList from '../TransactionItemsList';
 import { transactionServices } from '@/services/transactionServices';
 import { STATES_MAP, TYPES_MAP } from '@/utils/mappings';
 import { DrawerContent, TransactionType } from '@/types/enums';
 import { useSession } from 'next-auth/react';
 import { useDrawerStore } from '@/stores/drawerStore';
+import { formatDate } from '@/utils/formats';
 
 const TransactionDetails = () => {
 	const { dataToHandle, openDrawer, closeDrawer } = useDrawerStore.getState();
@@ -95,9 +95,7 @@ const TransactionDetails = () => {
 					<div className='flex flex-col flex-1 gap-2 mb-4'>
 						<span>Fecha de Transacción</span>
 						<span className='px-3 py-1 bg-[#e5e5e5] rounded-md'>
-							{moment(dataToHandle?.createdDate)
-								.startOf('day')
-								.format('YYYY/MM/DD')}
+							{formatDate(dataToHandle?.createdDate) ?? '--'}
 						</span>
 					</div>
 				</Col>

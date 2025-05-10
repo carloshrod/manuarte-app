@@ -1,11 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import { Descriptions, DescriptionsProps, Divider } from 'antd';
-import moment from 'moment';
 import PDFTable from '../../common/display-data/PDFTable';
 import TermsCol from '../../Terms/TermsCol';
 import TermsEcu from '../../Terms/TermsEcu';
 import { PAYMENT_METHOD_MAP } from '@/utils/mappings';
-import { formatToTitleCase } from '@/utils/formats';
+import { formatDate, formatToTitleCase } from '@/utils/formats';
 import { BillingStatus } from '@/types/enums';
 
 const BillingPDF = ({
@@ -51,9 +50,7 @@ const BillingPDF = ({
 		{
 			key: '6',
 			label: 'Fecha:',
-			children:
-				moment(billing?.createdDate).startOf('day').format('YYYY/MM/DD') ??
-				'--',
+			children: formatDate(billing?.createdDate) ?? '--',
 			span: 3
 		},
 		{

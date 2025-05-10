@@ -1,4 +1,7 @@
+import moment from 'moment';
 import { PERMISSION_MAP } from './mappings';
+import 'moment/locale/es';
+moment.locale('es');
 
 const units = ['cc', 'kg', 'mm', 'cm', 'm', 'l', 'ml'];
 
@@ -64,6 +67,16 @@ export const formatUserExtraPermissions = (
 			...permission,
 			name: PERMISSION_MAP[permission.name] || permission.name
 		}));
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+export const formatDate = (date: Date | string) => {
+	try {
+		if (!date) return '--';
+
+		return moment(date).startOf('day').format('DD-MMM-YYYY').toUpperCase();
 	} catch (error) {
 		console.error(error);
 	}

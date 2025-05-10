@@ -6,9 +6,8 @@ import { useSelector } from 'react-redux';
 import { DrawerContent, ModalContent } from '@/types/enums';
 import { useWatch } from 'antd/es/form/Form';
 import { useEffect, useState } from 'react';
-import { formatToTitleCase } from '@/utils/formats';
+import { formatDate, formatToTitleCase } from '@/utils/formats';
 import { transactionServices } from '@/services/transactionServices';
-import moment from 'moment';
 import { useSession } from 'next-auth/react';
 import useTransactionSubmits from '@/hooks/useTransactionSubmits';
 import { useDrawerStore } from '@/stores/drawerStore';
@@ -306,9 +305,7 @@ const TransactionsForm = () => {
 									<div className='flex flex-col flex-1 gap-2'>
 										<span>Fecha</span>
 										<span className='px-3 py-1 bg-[#e5e5e5] rounded-md'>
-											{moment(selectedTransfer?.createdDate)
-												.startOf('day')
-												.format('YYYY/MM/DD')}
+											{formatDate(selectedTransfer?.createdDate) ?? '--'}
 										</span>
 									</div>
 								</div>

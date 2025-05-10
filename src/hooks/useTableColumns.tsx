@@ -13,7 +13,6 @@ import { CheckCircleOutlined } from '@ant-design/icons';
 import { BsFileEarmarkPdf } from 'react-icons/bs';
 import { TiArrowDown, TiArrowUp } from 'react-icons/ti';
 import { IoInformationCircleOutline } from 'react-icons/io5';
-import moment from 'moment';
 import { useSession } from 'next-auth/react';
 import ProductActions from '@/components/admin/products/ProductActions';
 import ProductCategoryActions from '@/components/admin/products/ProductCategoryActions';
@@ -24,7 +23,7 @@ import BillingsActions from '@/components/admin/billings/BillingsActions';
 import StockItemActions from '@/components/admin/stock/StockItemActions';
 import TransactionActions from '@/components/admin/transactions/TransactionAction';
 import useTable from './useTable';
-import { formatCurrency, formatToTitleCase } from '@/utils/formats';
+import { formatCurrency, formatDate, formatToTitleCase } from '@/utils/formats';
 import {
 	BILLING_STATUS_MAP,
 	PAYMENT_METHOD_MAP,
@@ -134,9 +133,7 @@ const useTableColumns = () => {
 			dataIndex: 'createdDate',
 			key: 'createdDate',
 			render: (value: string) => (
-				<span>
-					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
-				</span>
+				<span>{value ? formatDate(value) : '--'}</span>
 			),
 			width: 150
 		},
@@ -305,9 +302,7 @@ const useTableColumns = () => {
 			key: 'createdDate',
 			...getColumnDateFilterProps('createdDate'),
 			render: (value: string) => (
-				<span>
-					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
-				</span>
+				<span>{value ? formatDate(value) : '--'}</span>
 			),
 			width: 140
 		},
@@ -405,9 +400,7 @@ const useTableColumns = () => {
 			key: 'createdDate',
 			...getColumnDateFilterProps('createdDate'),
 			render: (value: string) => (
-				<span>
-					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
-				</span>
+				<span>{value ? formatDate(value) : '--'}</span>
 			),
 			width: 140
 		},
@@ -547,9 +540,7 @@ const useTableColumns = () => {
 			key: 'createdDate',
 			...getColumnDateFilterProps('createdDate', true),
 			render: (value: string) => (
-				<span>
-					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
-				</span>
+				<span>{value ? formatDate(value) : '--'}</span>
 			),
 			width: 100
 		},
@@ -777,9 +768,7 @@ const useTableColumns = () => {
 			key: 'createdDate',
 			...getColumnDateFilterProps('createdDate'),
 			render: (value: string) => (
-				<span>
-					{value ? moment(value).startOf('day').format('YYYY/MM/DD') : '--'}
-				</span>
+				<span>{value ? formatDate(value) : '--'}</span>
 			),
 			width: 140
 		},
