@@ -33,6 +33,7 @@ const GenerateStockReportButton = ({
 				const title = product
 					? `${shopName}: ${product?.productName} - ${product?.productVariantName}`
 					: `Reporte Stock - ${shopName}`;
+
 				downloadExcel(excelData, `${shopSlug}-${sufix}`, title);
 			}
 		} catch (error) {
