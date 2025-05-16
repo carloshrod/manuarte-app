@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { Form, Input, InputNumber, Select, SelectProps, Spin } from 'antd';
 import { MehOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,6 +10,8 @@ import { formatInputCurrency } from '@/utils/formats';
 import { setShops } from '@/reducers/shops/shopSlice';
 import { shopServices } from '@/services/shopServices';
 import { useModalStore } from '@/stores/modalStore';
+import SelectStocks from '../../products/SelectStocks';
+import { stockItemServices } from '@/services/stockItemServices';
 
 const StockItemForm = () => {
 	const { form, isLoading, submitCreateStockItem, submitUpdateStockItem } =
@@ -22,9 +24,12 @@ const StockItemForm = () => {
 	const [search, setSearch] = useState<string>('');
 	const [isSearching, setIsSearching] = useState(false);
 	const [hasSearched, setHasSearched] = useState(false);
-	useState<ProductVariantWithStock | null>(null);
+	const [isQuitoSelected, setIsQuitoSelected] = useState(false);
+	const [isUsdSet, setIsUsdSet] = useState(false);
 	const params = useParams() ?? {};
+	const searchParams = useSearchParams();
 	const isUsd = params?.shopSlug.includes('quito');
+	const isMainStock = searchParams.get('main') === 'true';
 	const dispatch = useDispatch();
 
 	const fetchShops = async () => {
@@ -34,10 +39,29 @@ const StockItemForm = () => {
 		}
 	};
 
+	const getStockItemInfo = async () => {
+		const { productVariantId } = dataToHandle ?? {};
+		const stockId = shops.find(sh => sh.currency === 'USD')?.stockId;
+		if (!productVariantId || !stockId) return;
+
+		const data = await stockItemServices.getOneByStock(
+			productVariantId,
+			stockId
+		);
+		if (data) {
+			form.setFieldsValue({
+				priceUsd: data?.price,
+				costUsd: data?.cost
+			});
+
+			setIsUsdSet(true);
+		}
+	};
+
 	useEffect(() => {
 		if (dataToHandle) {
 			form.setFieldsValue({
-				product: `${dataToHandle?.productName} ${dataToHandle?.productVariantName}`,
+				product: `${dataToHandle?.productName} - ${dataToHandle?.productVariantName}`,
 				price: dataToHandle?.price,
 				cost: dataToHandle?.cost,
 				minQty: dataToHandle?.minQty,
@@ -49,6 +73,12 @@ const StockItemForm = () => {
 			fetchShops();
 		}
 	}, []);
+
+	useEffect(() => {
+		if (isQuitoSelected && !isUsdSet) {
+			getStockItemInfo();
+		}
+	}, [isQuitoSelected]);
 
 	const shopInfo = shops?.find(sh => sh.slug === params?.shopSlug);
 
@@ -237,6 +267,63 @@ const StockItemForm = () => {
 					/>
 				</Form.Item>
 			</div>
+
+			{dataToHandle && isMainStock ? (
+				<>
+					{isQuitoSelected ? (
+						<div className='flex gap-4 justify-start'>
+							<Form.Item
+								name='priceUsd'
+								label='Precio USD'
+								rules={[
+									{
+										required: true,
+										message: 'Campo requerido'
+									}
+								]}
+								style={{ width: '23%' }}
+							>
+								<InputNumber
+									min={0}
+									controls={false}
+									className='textRight'
+									style={{ width: '100%' }}
+									formatter={value => formatInputCurrency(value)}
+								/>
+							</Form.Item>
+							<Form.Item
+								name='costUsd'
+								label='Costo USD'
+								rules={[
+									{
+										required: true,
+										message: 'Campo requerido'
+									}
+								]}
+								style={{ width: '23%' }}
+							>
+								<InputNumber
+									min={0}
+									controls={false}
+									className='textRight'
+									style={{ width: '100%' }}
+									formatter={value => formatInputCurrency(value)}
+								/>
+							</Form.Item>
+						</div>
+					) : null}
+
+					<Form.Item>
+						<SelectStocks
+							form={form}
+							setIsQuitoSelected={setIsQuitoSelected}
+							label='Editar también en:'
+							emptyValues={true}
+						/>
+					</Form.Item>
+				</>
+			) : null}
+
 			<FormButtons
 				label={dataToHandle ? 'Editar' : undefined}
 				isLoading={isLoading}

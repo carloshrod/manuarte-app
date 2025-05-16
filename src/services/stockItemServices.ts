@@ -2,7 +2,7 @@ import { ENV } from '@/config/env';
 import { axiosPrivate } from './axios';
 
 export const stockItemServices = {
-	getAll: async (shopSlug: string) => {
+	getAllByStock: async (shopSlug: string) => {
 		try {
 			const res = await axiosPrivate.get(ENV.API.STOCK_ITEMS, {
 				params: { shopSlug }
@@ -14,10 +14,22 @@ export const stockItemServices = {
 		}
 	},
 
-	getHistory: async (productVariantId: string, stockId: string) => {
+	getOneByStock: async (productVariantId: string, stockId: string) => {
 		try {
 			const res = await axiosPrivate.get(
 				`${ENV.API.STOCK_ITEMS}/${productVariantId}/${stockId}`
+			);
+
+			return res.data;
+		} catch (error) {
+			console.error(error);
+		}
+	},
+
+	getHistory: async (productVariantId: string, stockId: string) => {
+		try {
+			const res = await axiosPrivate.get(
+				`${ENV.API.STOCK_ITEMS}/history/${productVariantId}/${stockId}`
 			);
 
 			if (res.status === 200) {

@@ -33,7 +33,12 @@ const ShopCards = async ({
 				{shops?.length > 0 &&
 					shops?.map(shop => (
 						<div key={shop.id} className='p-6 text-center sm:w-1/2 w-full'>
-							<Link href={{ pathname: `${route}/${shop.slug}` }}>
+							<Link
+								href={{
+									pathname: `${route}/${shop.slug}`,
+									query: isShop ? undefined : { main: shop.mainStock }
+								}}
+							>
 								<div className='max-h-[200px] shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-12 rounded-lg transform transition duration-300 hover:scale-105'>
 									{cardIcon}
 									<h4 className='title-font font-medium text-lg lg:text-xl text-gray-900'>
