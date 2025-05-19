@@ -8,7 +8,7 @@ const quoteSlice = createSlice({
 	name: 'quote',
 	initialState,
 	reducers: {
-		getQuotes: (state, action) => {
+		setQuotes: (state, action) => {
 			state.quotes = action.payload;
 		},
 
@@ -30,6 +30,6 @@ const quoteSlice = createSlice({
 	}
 });
 
-export const { getQuotes, addQuote, updateQuote, removeQuote } =
+export const { setQuotes, addQuote, updateQuote, removeQuote } =
 	quoteSlice.actions;
 export default quoteSlice.reducer;

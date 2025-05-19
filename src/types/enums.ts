@@ -18,8 +18,7 @@ export enum DrawerContent {
 	transfer = 'transfer',
 	enter = 'enter',
 	exit = 'exit',
-	transactionDetails = 'transactionDetails',
-	stockItemHistory = 'stockItemHistory'
+	transactionDetails = 'transactionDetails'
 }
 
 export enum QuoteStatus {

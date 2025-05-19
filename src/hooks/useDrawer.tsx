@@ -1,6 +1,5 @@
 import BillingForm from '@/components/admin/billings/BillingForm';
 import QuoteForm from '@/components/admin/quotes/QuoteForm';
-import StockItemHistory from '@/components/admin/stock/StockItemHistory';
 import TransactionDetails from '@/components/admin/transactions/TransactionDetails';
 import TransactionsForm from '@/components/admin/transactions/TransactionsForm';
 import { DrawerContent } from '@/types/enums';
@@ -14,8 +13,7 @@ const useDrawer = () => {
 		[DrawerContent.transfer]: <TransactionsForm />,
 		[DrawerContent.enter]: <TransactionsForm />,
 		[DrawerContent.exit]: <TransactionsForm />,
-		[DrawerContent.transactionDetails]: <TransactionDetails />,
-		[DrawerContent.stockItemHistory]: <StockItemHistory />
+		[DrawerContent.transactionDetails]: <TransactionDetails />
 	};
 
 	return { DRAWER_CONTENT };

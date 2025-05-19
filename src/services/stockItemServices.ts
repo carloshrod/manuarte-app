@@ -26,10 +26,10 @@ export const stockItemServices = {
 		}
 	},
 
-	getHistory: async (productVariantId: string, stockId: string) => {
+	getHistory: async (stockItemId: string) => {
 		try {
 			const res = await axiosPrivate.get(
-				`${ENV.API.STOCK_ITEMS}/history/${productVariantId}/${stockId}`
+				`${ENV.API.STOCK_ITEMS}/history/${stockItemId}`
 			);
 
 			if (res.status === 200) {

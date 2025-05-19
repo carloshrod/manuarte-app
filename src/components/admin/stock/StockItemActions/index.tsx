@@ -1,4 +1,4 @@
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { AxiosError } from 'axios';
 import { notification } from 'antd';
@@ -6,28 +6,18 @@ import TableActions from '../../common/ui/TableActions';
 import { useModalStore } from '@/stores/modalStore';
 import { removeStockItem } from '@/reducers/stockItems/stockItemSlice';
 import { stockItemServices } from '@/services/stockItemServices';
-import { DrawerContent, ModalContent } from '@/types/enums';
-import { useDrawerStore } from '@/stores/drawerStore';
+import { ModalContent } from '@/types/enums';
 
 const StockItemActions = ({ record }: { record: StockItem }) => {
 	const { openModal } = useModalStore.getState();
-	const { openDrawer } = useDrawerStore.getState();
 	const dispatch = useDispatch();
 	const { shopSlug } = useParams();
-	const shopName = (shopSlug as string).toUpperCase().replace('-', ' ');
+	const route = useRouter();
 
 	const handleEdit = () => {
 		openModal({
 			title: 'Editar Stock de Producto',
 			content: ModalContent.stockItems,
-			dataToHandle: record
-		});
-	};
-
-	const handleTracking = () => {
-		openDrawer({
-			title: `Trazabilidad - ${shopName}`,
-			content: DrawerContent.stockItemHistory,
 			dataToHandle: record
 		});
 	};
@@ -55,7 +45,11 @@ const StockItemActions = ({ record }: { record: StockItem }) => {
 		<TableActions
 			record={record}
 			onEdit={handleEdit}
-			onTracking={handleTracking}
+			onTracking={() =>
+				route.push(
+					`/admin/stock/${shopSlug}/historial?stockItemId=${record.id}`
+				)
+			}
 			onDelete={handleDelete}
 			popTitle={`${record.productName} - ${record.productVariantName}`}
 		/>

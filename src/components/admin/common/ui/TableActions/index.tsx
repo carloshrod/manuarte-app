@@ -81,7 +81,7 @@ const TableActions = ({
 			) : null}
 
 			{onTracking ? (
-				<Tooltip title='Trazabilidad'>
+				<Tooltip title='Historial'>
 					<Button
 						type='text'
 						icon={<MdTimeline size={20} color='#eab308' />}
