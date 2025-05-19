@@ -26,7 +26,7 @@ const BillingsTable = ({ shopSlug }: { shopSlug: string }) => {
 	const dispatch = useDispatch();
 
 	const fetchBillings = async () => {
-		if (shopSlug) {
+		if (shopSlug && billings.length === 0) {
 			const data = await billingServices.getAll(shopSlug);
 			dispatch(setBillings(data));
 		}
@@ -35,11 +35,6 @@ const BillingsTable = ({ shopSlug }: { shopSlug: string }) => {
 
 	useEffect(() => {
 		fetchBillings();
-
-		return () => {
-			dispatch(setBillings([]));
-			dispatch(setFilteredBillings([]));
-		};
 	}, []);
 
 	const filterBillings = (

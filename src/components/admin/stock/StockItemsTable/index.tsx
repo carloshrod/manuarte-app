@@ -13,7 +13,7 @@ const StockItemsTable = ({ shopSlug }: { shopSlug: string }) => {
 	const [isLoading, setIsLoading] = useState(true);
 
 	const fetchStockItems = async () => {
-		if (shopSlug) {
+		if (shopSlug && stockItems?.length === 0) {
 			const data = await stockItemServices.getAllByStock(shopSlug);
 			dispatch(setStockItems(data));
 		}
@@ -22,10 +22,6 @@ const StockItemsTable = ({ shopSlug }: { shopSlug: string }) => {
 
 	useEffect(() => {
 		fetchStockItems();
-
-		return () => {
-			dispatch(setStockItems([]));
-		};
 	}, []);
 
 	return (

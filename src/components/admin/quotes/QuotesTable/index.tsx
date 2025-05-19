@@ -3,7 +3,7 @@ import useTableColumns from '@/hooks/useTableColumns';
 import CustomTable from '../../common/display-data/Table';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getQuotes } from '@/reducers/quotes/quoteSlice';
+import { setQuotes } from '@/reducers/quotes/quoteSlice';
 import { quoteServices } from '@/services/quoteServices';
 
 const QuotesTable = ({ shopSlug }: { shopSlug: string }) => {
@@ -13,19 +13,15 @@ const QuotesTable = ({ shopSlug }: { shopSlug: string }) => {
 	const dispatch = useDispatch();
 
 	const fetchQuotes = async () => {
-		if (shopSlug) {
+		if (shopSlug && quotes.length === 0) {
 			const data = await quoteServices.getAll(shopSlug);
-			dispatch(getQuotes(data));
+			dispatch(setQuotes(data));
 		}
 		setIsLoading(false);
 	};
 
 	useEffect(() => {
 		fetchQuotes();
-
-		return () => {
-			dispatch(getQuotes([]));
-		};
 	}, []);
 
 	return (
