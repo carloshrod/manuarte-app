@@ -21,6 +21,7 @@ import CustomersActions from '@/components/admin/users/CustomersActions';
 import QuotesActions from '@/components/admin/quotes/QuotesActions';
 import BillingsActions from '@/components/admin/billings/BillingsActions';
 import StockItemActions from '@/components/admin/stock/StockItemActions';
+import StockItemsHistoryActions from '@/components/admin/stock/StockItemHistoryActions';
 import TransactionActions from '@/components/admin/transactions/TransactionAction';
 import useTable from './useTable';
 import { formatCurrency, formatDate, formatToTitleCase } from '@/utils/formats';
@@ -28,8 +29,8 @@ import {
 	BILLING_STATUS_MAP,
 	PAYMENT_METHOD_MAP,
 	QUOTE_STATUS_MAP,
-	STATES_MAP,
-	TYPES_MAP
+	TRANSACTION_STATES_MAP,
+	TRANSACTION_TYPES_MAP
 } from '@/utils/mappings';
 import {
 	getStockStatusColor,
@@ -568,14 +569,14 @@ const useTableColumns = () => {
 			],
 			onFilter: (value, record) => record.type.indexOf(value as string) === 0,
 			render: (value, record) => {
-				const toolTipTitle = `De ${record.stockFromName} a ${record.stockToName} `;
+				const toolTipTitle = `De ${record.fromName} a ${record.toName} `;
 
 				return (
 					<span className='flex items-center'>
 						<Tag color={TAG_COLORS[value]}>
-							{value === 'BILLING' ? 'Factura' : TYPES_MAP[value]}
+							{value === 'BILLING' ? 'Factura' : TRANSACTION_TYPES_MAP[value]}
 						</Tag>
-						{record?.stockFromName && record?.stockToName ? (
+						{record?.fromName && record?.toName ? (
 							<Tooltip title={toolTipTitle}>
 								<span>
 									<IoInformationCircleOutline size={18} />
@@ -588,10 +589,10 @@ const useTableColumns = () => {
 			width: 100
 		},
 		{
-			title: 'SERIAL O DESCRIPCIÓN',
-			dataIndex: 'description',
-			key: 'description',
-			...getColumnSearchProps('description'),
+			title: 'IDENTIFICADOR',
+			dataIndex: 'identifier',
+			key: 'identifier',
+			...getColumnSearchProps('identifier'),
 			render: value => formatToTitleCase(value) ?? '--',
 			width: 140
 		},
@@ -637,6 +638,16 @@ const useTableColumns = () => {
 			},
 			width: 80,
 			align: 'center'
+		},
+		{
+			title: 'ACCIONES',
+			key: 'actions',
+			className: 'actions',
+			render: (_: any, record: StockItemHistory) => (
+				<StockItemsHistoryActions record={record} />
+			),
+			width: 60,
+			align: 'center'
 		}
 	];
 
@@ -659,7 +670,7 @@ const useTableColumns = () => {
 			render: value => {
 				return (
 					<span className='flex items-center gap-1'>
-						{STATES_MAP[value]}
+						{TRANSACTION_STATES_MAP[value]}
 						<Badge
 							count={
 								<CheckCircleOutlined
@@ -694,7 +705,7 @@ const useTableColumns = () => {
 			render: value => {
 				return (
 					<span className='flex items-center'>
-						<Tag color={TAG_COLORS[value]}>{TYPES_MAP[value]}</Tag>
+						<Tag color={TAG_COLORS[value]}>{TRANSACTION_TYPES_MAP[value]}</Tag>
 					</span>
 				);
 			},

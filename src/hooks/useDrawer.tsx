@@ -13,7 +13,8 @@ const useDrawer = () => {
 		[DrawerContent.transfer]: <TransactionsForm />,
 		[DrawerContent.enter]: <TransactionsForm />,
 		[DrawerContent.exit]: <TransactionsForm />,
-		[DrawerContent.transactionDetails]: <TransactionDetails />
+		[DrawerContent.transactionDetails]: <TransactionDetails />,
+		[DrawerContent.transactionHistoryDetails]: <TransactionDetails />
 	};
 
 	return { DRAWER_CONTENT };

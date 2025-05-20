@@ -41,12 +41,12 @@ export const PERMISSION_MAP: Record<string, string> = {
 	'transaction-supplier': 'Hacer ingresos por proveedor'
 };
 
-export const STATES_MAP: Record<string, string> = {
+export const TRANSACTION_STATES_MAP: Record<string, string> = {
 	SUCCESS: 'Realizado',
 	PROGRESS: 'En Progreso'
 };
 
-export const TYPES_MAP: Record<string, string> = {
+export const TRANSACTION_TYPES_MAP: Record<string, string> = {
 	ENTER: 'Entrada',
 	EXIT: 'Salida',
 	TRANSFER: 'Transferencia'

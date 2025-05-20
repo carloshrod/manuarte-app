@@ -248,10 +248,10 @@ interface StockItem {
 interface StockItemHistory extends StockItem {
 	type: string;
 	stockBefore: number;
-	stockFromId: string;
-	stockFromName: string;
-	stockToId: string;
-	stockToName: string;
+	fromId: string;
+	fromName: string;
+	toId: string;
+	toName: string;
 }
 
 interface SubmitStockItemDto {

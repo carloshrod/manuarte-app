@@ -95,7 +95,7 @@ const StockItemHistory = ({ shopName, stockItemId }: StockItemHistoryProps) => {
 				columns={stockItemsHistoryColumns}
 				dataSource={isLoading ? [] : history}
 				isLoading={isLoading}
-				scrollMinus={380}
+				scrollMinus={395}
 			/>
 		</section>
 	);

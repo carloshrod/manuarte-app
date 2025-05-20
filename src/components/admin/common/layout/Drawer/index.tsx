@@ -40,7 +40,9 @@ const CustomDrawer = () => {
 		setChecked(noCustomer as boolean);
 	}, [noCustomer]);
 
-	const isTransactions = pathname === ROUTES.TRANSACTIONS;
+	const isTransactions =
+		pathname === ROUTES.TRANSACTIONS || pathname.includes('historial');
+
 	const showExtra =
 		content === DrawerContent.quotes || content === DrawerContent.billings;
 

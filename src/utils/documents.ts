@@ -1,5 +1,5 @@
 import ExcelJS, { Fill } from 'exceljs';
-import { PAYMENT_METHOD_MAP, TYPES_MAP } from './mappings';
+import { PAYMENT_METHOD_MAP, TRANSACTION_TYPES_MAP } from './mappings';
 import { formatDate, formatToTitleCase } from './formats';
 
 export interface ExcelStockData {
@@ -67,7 +67,9 @@ export const generateStockHistoryData = (history: StockItemHistory[]) => {
 					'#': i + 1,
 					Fecha: formatDate(item.createdDate) ?? '--',
 					Transacción:
-						item.type === 'BILLING' ? 'Factura' : TYPES_MAP[item.type],
+						item.type === 'BILLING'
+							? 'Factura'
+							: TRANSACTION_TYPES_MAP[item.type],
 					'Stock Antes': item.stockBefore,
 					Cantidad: item.quantity,
 					'Stock Después': stockAfter
