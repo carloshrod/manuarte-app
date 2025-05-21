@@ -4,13 +4,14 @@ import CustomerInfoInputs from '../../common/input-data/CustomerInfoInputs';
 import ProductFormList from '../../common/input-data/ProductFormList';
 import DrawerFormFooter from '../../common/input-data/DrawerFormFooter';
 import CalculationInputs from '../../common/input-data/CalculationInputs';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { updateCalculations } from '../../utils';
 import { useParams } from 'next/navigation';
 import { customerSchema, validateForm } from '@/utils/validators';
 import { useModalStore } from '@/stores/modalStore';
 import { ModalContent } from '@/types/enums';
 import { useDrawerStore } from '@/stores/drawerStore';
+import { v4 as uuidv4 } from 'uuid';
 
 const BillingForm = () => {
 	const { form, itemsError, setItemsError, submitCreateBilling } = useForm();
@@ -21,6 +22,7 @@ const BillingForm = () => {
 	} = useDrawerStore.getState();
 	const params = useParams() ?? {};
 	const { openModal } = useModalStore.getState();
+	const [clientRequestId, setClientRequestId] = useState<string>('');
 
 	useEffect(() => {
 		if (dataToHandle) {
@@ -64,6 +66,12 @@ const BillingForm = () => {
 
 		const { subtotal, ...restValues } = values;
 
+		let uniqueId: string = clientRequestId;
+		if (!clientRequestId) {
+			uniqueId = uuidv4();
+			setClientRequestId(uniqueId);
+		}
+
 		openModal({
 			title: '',
 			content: ModalContent.confirm,
@@ -76,7 +84,8 @@ const BillingForm = () => {
 						values: {
 							...restValues,
 							shopSlug: params?.shopSlug as string,
-							customerId: existingCustomer?.customerId as string
+							customerId: existingCustomer?.customerId as string,
+							clientRequestId: uniqueId
 						}
 					});
 				}

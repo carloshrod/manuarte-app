@@ -1,11 +1,11 @@
-import { ConfirmTransactionProps } from '@/components/admin/common/ui/ConfirmTransaction';
+import { ConfirmOperationProps } from '@/components/admin/common/ui/ConfirmOperation';
 import { ModalContent } from '@/types/enums';
 import { create } from 'zustand';
 
 interface ModalParams {
 	title?: string | null;
 	content: ModalContent | null;
-	componentProps?: ConfirmTransactionProps | null;
+	componentProps?: ConfirmOperationProps | null;
 	dataToHandle?: any;
 }
 

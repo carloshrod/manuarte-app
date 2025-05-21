@@ -12,6 +12,7 @@ import { useSession } from 'next-auth/react';
 import useTransactionSubmits from '@/hooks/useTransactionSubmits';
 import { useDrawerStore } from '@/stores/drawerStore';
 import { useModalStore } from '@/stores/modalStore';
+import { v4 as uuidv4 } from 'uuid';
 
 const TransactionsForm = () => {
 	const { form, itemsError, setItemsError } = useForm();
@@ -22,6 +23,7 @@ const TransactionsForm = () => {
 	const [selectedTransfer, setSelectedTransfer] = useState<Transaction | null>(
 		null
 	);
+	const [clientRequestId, setClientRequestId] = useState<string>('');
 	const { data: session } = useSession();
 	const isAdmin = session?.user?.roleName === 'admin';
 	const shopName =
@@ -168,6 +170,12 @@ const TransactionsForm = () => {
 			return;
 		}
 
+		let uniqueId: string = clientRequestId;
+		if (!clientRequestId) {
+			uniqueId = uuidv4();
+			setClientRequestId(uniqueId);
+		}
+
 		if (transactionSubmit?.fn) {
 			openModal({
 				title: '',
@@ -175,7 +183,11 @@ const TransactionsForm = () => {
 				componentProps: {
 					confirmTitle: transactionSubmit?.confirmTitle,
 					confirmText: transactionSubmit?.confirmText,
-					onConfirm: async () => await transactionSubmit?.fn(values)
+					onConfirm: async () =>
+						await transactionSubmit?.fn({
+							...values,
+							clientRequestId: uniqueId
+						})
 				}
 			});
 		}

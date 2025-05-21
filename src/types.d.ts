@@ -227,6 +227,7 @@ interface SubmitBillingDto extends SubmitCustomerDto {
 	subtotal?: string;
 	total: string;
 	currency: string;
+	clientRequestId: string;
 }
 
 interface StockItem {
@@ -294,6 +295,7 @@ interface SubmitTransactionDto {
 	type: TransactionType;
 	items: ProductVariantWithStock[];
 	transferId?: string;
+	clientRequestId: string;
 }
 
 interface TransactionItem {

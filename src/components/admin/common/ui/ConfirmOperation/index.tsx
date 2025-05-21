@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import { useState } from 'react';
 import { BsFillQuestionCircleFill } from 'react-icons/bs';
 
-export type ConfirmTransactionProps = {
+export type ConfirmOperationProps = {
 	confirmTitle: string;
 	confirmText?: string;
 	onConfirm: () => Promise<void>;
@@ -13,7 +13,7 @@ const ConfirmOperation = ({
 	confirmTitle,
 	confirmText = undefined,
 	onConfirm
-}: ConfirmTransactionProps) => {
+}: ConfirmOperationProps) => {
 	const { closeModal } = useModalStore.getState();
 	const [loading, setLoading] = useState(false);
 

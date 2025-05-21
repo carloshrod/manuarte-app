@@ -6,7 +6,7 @@ import PermissionsForm from '@/components/admin/users/PermissionsForm';
 import CustomersForm from '@/components/admin/users/CustomersForm';
 import BillingModalForm from '@/components/admin/common/input-data/BillingModalForm';
 import StockItemForm from '@/components/admin/stock/StockItemForm';
-import ConfirmOperation from '@/components/admin/common/ui/ConfirmTransaction';
+import ConfirmOperation from '@/components/admin/common/ui/ConfirmOperation';
 import { useModalStore } from '@/stores/modalStore';
 import { ReactNode } from 'react';
 import { ModalContent } from '@/types/enums';

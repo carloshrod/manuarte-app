@@ -53,7 +53,8 @@ export const mapBillingBody = (body: SubmitBillingDto) => {
 		email,
 		phoneNumber,
 		location,
-		city
+		city,
+		clientRequestId
 	} = body;
 
 	return {
@@ -65,7 +66,8 @@ export const mapBillingBody = (body: SubmitBillingDto) => {
 			paymentMethod,
 			shipping,
 			total,
-			currency
+			currency,
+			clientRequestId
 		},
 		customerData: {
 			personId,
