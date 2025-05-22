@@ -335,7 +335,7 @@ const StockItemForm = () => {
 							form={form}
 							setIsQuitoSelected={setIsQuitoSelected}
 							label='Editar también en:'
-							emptyValues={true}
+							updatingStockItem={true}
 						/>
 					</Form.Item>
 				</>

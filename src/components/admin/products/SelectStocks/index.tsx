@@ -11,12 +11,12 @@ const SelectStocks = ({
 	form,
 	setIsQuitoSelected,
 	label = 'Crear stock en:',
-	emptyValues
+	updatingStockItem
 }: {
 	form: FormInstance;
 	setIsQuitoSelected: Dispatch<SetStateAction<boolean>>;
 	label?: string;
-	emptyValues?: boolean;
+	updatingStockItem?: boolean;
 }) => {
 	const { shops } = useSelector((state: RootState) => state.shop);
 	const [stockOptions, setStockOptions] = useState<
@@ -33,7 +33,7 @@ const SelectStocks = ({
 	};
 
 	const setDefaultStocks = (data: Shop[]) => {
-		const filteredData = emptyValues
+		const filteredData = updatingStockItem
 			? data.filter(item => !item.mainStock)
 			: data;
 
@@ -46,7 +46,7 @@ const SelectStocks = ({
 		setStockOptions(options);
 
 		form.setFieldsValue({
-			stockIds: emptyValues ? [] : options.map(opt => opt.value)
+			stockIds: options.map(opt => opt.value)
 		});
 	};
 
@@ -56,6 +56,7 @@ const SelectStocks = ({
 		}
 
 		setDefaultStocks(shops);
+		setIsQuitoSelected(true);
 	}, []);
 
 	const mainStockId = shops.find(sh => sh.mainStock)?.stockId;
@@ -67,7 +68,7 @@ const SelectStocks = ({
 			label={label}
 			rules={[
 				{
-					required: !emptyValues,
+					required: !updatingStockItem,
 					message: 'Debe seleccionar al menos 1 bodega (Fabrica Cascajal)'
 				}
 			]}
@@ -88,7 +89,7 @@ const SelectStocks = ({
 				options={stockOptions}
 				onChange={values => {
 					const newValues =
-						values.includes(mainStockId) || emptyValues
+						values.includes(mainStockId) || updatingStockItem
 							? values
 							: [mainStockId, ...values];
 
