@@ -483,28 +483,32 @@ const useTableColumns = () => {
 			width: 110,
 			align: 'center'
 		},
-		{
-			title: 'COSTO',
-			dataIndex: 'cost',
-			key: 'cost',
-			render: (value: string) => formatCurrency(value) ?? '--',
-			width: 100,
-			align: 'center'
-		},
-		{
-			title: 'COSTO TOTAL',
-			dataIndex: 'cost',
-			key: 'cost',
-			render: (value, record) => {
-				if (!value || !record.quantity) return '$0';
+		...(isAdmin
+			? [
+					{
+						title: 'COSTO',
+						dataIndex: 'cost',
+						key: 'cost',
+						render: (value: string) => formatCurrency(value) ?? '--',
+						width: 100,
+						align: 'center' as const
+					},
+					{
+						title: 'COSTO TOTAL',
+						dataIndex: 'totalCost',
+						key: 'totalCost',
+						render: (value: string, record: StockItem) => {
+							if (!value || !record.quantity) return '$0';
 
-				const totalCost = Number(value) * Number(record.quantity);
+							const totalCost = Number(value) * Number(record.quantity);
 
-				return formatCurrency(totalCost);
-			},
-			width: 100,
-			align: 'center'
-		},
+							return formatCurrency(totalCost);
+						},
+						width: 100,
+						align: 'center' as const
+					}
+				]
+			: []),
 		{
 			title: 'CANT. MIN',
 			dataIndex: 'minQty',
