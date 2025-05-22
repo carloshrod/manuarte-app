@@ -23,18 +23,34 @@ export const productServices = {
 	},
 
 	searchProductVariants: async ({
-		shopSlug,
+		stockId,
 		search,
 		missingProducts = false
 	}: {
-		shopSlug: string;
+		stockId: string;
 		search: string;
 		missingProducts?: boolean;
 	}) => {
 		try {
-			const res = await axiosPrivate.get(`${ENV.API.PRODUCT_VARIANTS}/search`, {
-				params: { shopSlug, search, missingProducts }
-			});
+			const res = await axiosPrivate.get(
+				`${ENV.API.PRODUCT_VARIANTS}/search/${stockId}`,
+				{
+					params: { search, missingProducts }
+				}
+			);
+
+			return res.data;
+		} catch (error) {
+			console.error(error);
+		}
+	},
+
+	bulkSearchProductVariants: async (body: string[], stockId: string) => {
+		try {
+			const res = await axiosPrivate.post(
+				`${ENV.API.PRODUCT_VARIANTS}/bulkSearch/${stockId}`,
+				body
+			);
 
 			return res.data;
 		} catch (error) {

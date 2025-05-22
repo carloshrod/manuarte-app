@@ -28,14 +28,12 @@ const TransactionsTable = ({
 			data = await transactionServices.getAll();
 		}
 		dispatch(setTransactions(data));
+		setIsLoading(false);
 	};
 
 	useEffect(() => {
 		fetchTransactions();
 		dispatch(setShops(shopsData));
-		setTimeout(() => {
-			setIsLoading(false);
-		}, 500);
 	}, []);
 
 	return (

@@ -15,6 +15,7 @@ import { updateCalculations } from '@/components/admin/utils';
 import { PRODUCTS_LIST_INPUTS_PROPS } from '@/components/admin/consts';
 import { StoreValue } from 'antd/es/form/interface';
 import { useParams } from 'next/navigation';
+import { useSelector } from 'react-redux';
 
 interface ProductFormListProps {
 	form: FormInstance;
@@ -41,6 +42,8 @@ const ProductFormList = ({
 	);
 	const params = useParams();
 	const itemsList = Form.useWatch('items', form);
+	const { shops } = useSelector((state: RootState) => state.shop);
+	const stockId = shops.find(sh => sh.slug === params?.shopSlug)?.stockId;
 
 	const updateTotalPrice = (name: number) => {
 		const items: ProductVariantWithStock[] = form.getFieldValue('items');
@@ -111,12 +114,14 @@ const ProductFormList = ({
 			{(fields, { add, remove }) => {
 				return (
 					<>
-						<SearchAndAddProducts
-							onAdd={() => handleAddProduct(add)}
-							selectedProduct={selectedProduct}
-							setSelectedProduct={setSelectedProduct}
-							shopSlug={params?.shopSlug as string}
-						/>
+						{stockId ? (
+							<SearchAndAddProducts
+								onAdd={() => handleAddProduct(add)}
+								selectedProduct={selectedProduct}
+								setSelectedProduct={setSelectedProduct}
+								stockId={stockId}
+							/>
+						) : null}
 
 						<div className='overflow-x-auto custom-scrollbar'>
 							{fields.map(({ key, name, ...restField }) => {

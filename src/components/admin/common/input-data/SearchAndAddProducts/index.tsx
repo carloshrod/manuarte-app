@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Form, Select, SelectProps, Spin } from 'antd';
+import { Form, notification, Select, SelectProps, Spin } from 'antd';
 import { MehOutlined } from '@ant-design/icons';
 import { getProductsData } from '@/components/admin/utils';
 
@@ -7,14 +7,14 @@ interface SearchAndAddProductsProps {
 	onAdd: () => void;
 	selectedProduct: ProductVariantWithStock | null;
 	setSelectedProduct: Dispatch<SetStateAction<ProductVariantWithStock | null>>;
-	shopSlug?: string;
+	stockId: string;
 }
 
 const SearchAndAddProducts = ({
 	onAdd,
 	selectedProduct,
 	setSelectedProduct,
-	shopSlug
+	stockId
 }: SearchAndAddProductsProps) => {
 	const [productsOptions, setProductsOptions] = useState<
 		SelectProps['options']
@@ -42,16 +42,26 @@ const SearchAndAddProducts = ({
 			setHasSearched(true);
 
 			timeout = setTimeout(async () => {
+				if (!stockId) {
+					notification.error({
+						message: 'No se cargó correctamente el ID del stock',
+						key: 'stock_id_error'
+					});
+					setIsSearching(false);
+					return;
+				}
+
 				const res = await getProductsData({
 					currentValue,
 					newValue,
-					shopSlug
+					stockId
 				});
 
-				if (res) {
+				if (res?.formattedData && res.data) {
 					setProductsOptions(res.formattedData);
 					setProductsData(res.data);
 				}
+
 				setIsSearching(false);
 			}, 500);
 		} else {

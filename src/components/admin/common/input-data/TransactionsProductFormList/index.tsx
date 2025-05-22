@@ -5,6 +5,7 @@ import {
 	Input,
 	InputNumber,
 	notification,
+	Switch,
 	Tooltip
 } from 'antd';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
@@ -16,12 +17,13 @@ import { DrawerContent } from '@/types/enums';
 import { useWatch } from 'antd/es/form/Form';
 import { useSession } from 'next-auth/react';
 import { useDrawerStore } from '@/stores/drawerStore';
+import ProductsExcelUploader from '../ProductsExcelUploader';
 
 interface TransactionsProductFormListProps {
 	form: FormInstance;
 	itemsError: boolean;
 	setItemsError: Dispatch<SetStateAction<boolean>>;
-	fromShopSlug?: string;
+	shops: Shop[];
 }
 
 type AddItemFormListFn = (
@@ -33,7 +35,7 @@ const TransactionsProductFormList = ({
 	form,
 	itemsError,
 	setItemsError,
-	fromShopSlug
+	shops
 }: TransactionsProductFormListProps) => {
 	const [selectedProduct, setSelectedProduct] =
 		useState<ProductVariantWithStock | null>(null);
@@ -47,6 +49,7 @@ const TransactionsProductFormList = ({
 	const isEnter = content === DrawerContent.enter;
 	const { data: session } = useSession();
 	const isAdmin = session?.user?.roleName === 'admin';
+	const [showExcelUploader, setShowExcelUploader] = useState(false);
 
 	useEffect(() => {
 		if (!dataToHandle) {
@@ -54,10 +57,12 @@ const TransactionsProductFormList = ({
 		}
 	}, [fromId, toId]);
 
-	const shopSlug =
-		content === DrawerContent.enterByProduction && isAdmin
-			? 'fabrica-cascajal'
-			: fromShopSlug;
+	const shopSlug = isAdmin ? 'fabrica-cascajal' : session?.user?.shop;
+
+	const stockId =
+		content === DrawerContent.enterByProduction
+			? shops?.find(shop => shop.slug === shopSlug)?.stockId
+			: fromId;
 
 	const handleAddProduct = (add: AddItemFormListFn) => {
 		try {
@@ -94,12 +99,6 @@ const TransactionsProductFormList = ({
 						});
 					}
 
-					if (selectedProduct.quantity === 0) {
-						return notification.error({
-							message: 'Producto sin stock en origen!'
-						});
-					}
-
 					if (!selectedProduct?.stocks?.includes(toId)) {
 						return notification.error({
 							message: 'El item no existe en el stock de destino!'
@@ -126,6 +125,85 @@ const TransactionsProductFormList = ({
 		}
 	};
 
+	const handleAddBulkProduct = (add: AddItemFormListFn, productList: any[]) => {
+		try {
+			if (productList.length === 0) {
+				return notification.error({
+					message: 'No se encontraron productos en el archivo!'
+				});
+			}
+
+			if (content === DrawerContent.transfer && !toId) {
+				return notification.error({
+					message: 'Selecciona el stock de destino!'
+				});
+			}
+
+			const originOutOfStock: string[] = [];
+			const destinationNotExist: string[] = [];
+
+			productList.forEach(product => {
+				if (product) {
+					const inList = itemsList.some(
+						(product: ProductVariantWithStock) =>
+							product.productVariantId === product.id
+					);
+
+					if (inList) {
+						return notification.error({
+							message: 'El producto ya se encuentra en la lista!'
+						});
+					}
+
+					if (content === DrawerContent.transfer) {
+						if (product.quantity === 0) {
+							originOutOfStock.push(product.name);
+							return;
+						}
+
+						if (!product?.stocks?.includes(toId)) {
+							destinationNotExist.push(product.name);
+							return;
+						}
+					}
+
+					setAddedProducts(prev => ({
+						...prev,
+						[product.id]: product.quantity
+					}));
+
+					setItemsError(false);
+
+					add({
+						productVariantId: product?.id,
+						stockItemId: product?.stockItemId,
+						name: product.name,
+						quantity: product.requiredQty
+					});
+				}
+			});
+
+			if (originOutOfStock?.length > 0) {
+				return notification.info({
+					message: `Los siguientes items no tienen stock en origen: ◾ ${originOutOfStock.join(' ◾ ')}`,
+					duration: null
+				});
+			}
+
+			if (destinationNotExist?.length > 0) {
+				return notification.info({
+					message: `Los siguientes items no existen en destino: ◾${destinationNotExist.join(' - ')}`
+				});
+			}
+
+			notification.success({
+				message: 'Archivo procesado exitosamente'
+			});
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	const itemsCount = itemsList?.reduce((acc, item) => {
 		return acc + Number(item.quantity);
 	}, 0);
@@ -136,12 +214,30 @@ const TransactionsProductFormList = ({
 				return (
 					<>
 						{!isEnter && !dataToHandle ? (
-							<SearchAndAddProducts
-								onAdd={() => handleAddProduct(add)}
-								selectedProduct={selectedProduct}
-								setSelectedProduct={setSelectedProduct}
-								shopSlug={shopSlug}
-							/>
+							<>
+								<SearchAndAddProducts
+									onAdd={() => handleAddProduct(add)}
+									selectedProduct={selectedProduct}
+									setSelectedProduct={setSelectedProduct}
+									stockId={stockId as string}
+								/>
+								<div className='flex gap-2 my-6 px-2 text-gray-500'>
+									<Switch
+										defaultChecked={false}
+										onChange={checked => setShowExcelUploader(checked)}
+										id='switch'
+									/>
+									<label htmlFor='switch'>Cargar productos masivamente</label>
+								</div>
+								{showExcelUploader && stockId ? (
+									<ProductsExcelUploader
+										onAddBulkProduct={(productList: any[]) =>
+											handleAddBulkProduct(add, productList)
+										}
+										fromStockId={stockId}
+									/>
+								) : null}
+							</>
 						) : null}
 
 						{itemsList?.length > 0 ? (

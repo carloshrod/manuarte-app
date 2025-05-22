@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
-import { Form, Input, InputNumber, Select, SelectProps, Spin } from 'antd';
+import {
+	Form,
+	Input,
+	InputNumber,
+	notification,
+	Select,
+	SelectProps,
+	Spin
+} from 'antd';
 import { MehOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
@@ -120,14 +128,23 @@ const StockItemForm = () => {
 			setHasSearched(true);
 
 			timeout = setTimeout(async () => {
+				if (!shopInfo?.stockId) {
+					notification.error({
+						message: 'No se cargó correctamente el ID del stock',
+						key: 'stock_id_error'
+					});
+					setIsSearching(false);
+					return;
+				}
+
 				const res = await getProductsData({
 					currentValue,
 					newValue,
-					shopSlug: params?.shopSlug as string,
+					stockId: shopInfo?.stockId,
 					missingProducts: true
 				});
 
-				if (res) {
+				if (res?.formattedData) {
 					setProductsOptions(res.formattedData);
 				}
 				setIsSearching(false);

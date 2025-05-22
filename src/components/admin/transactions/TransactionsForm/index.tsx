@@ -158,10 +158,6 @@ const TransactionsForm = () => {
 		};
 	});
 
-	const fromShopSlug = fromId
-		? shops?.find(shop => shop.stockId === fromId)?.slug
-		: undefined;
-
 	const transactionSubmit = TRANSACTION_SUBMITS[content as string];
 
 	const onFinish = async (values: SubmitTransactionDto) => {
@@ -379,7 +375,7 @@ const TransactionsForm = () => {
 								form={form}
 								itemsError={itemsError}
 								setItemsError={setItemsError}
-								fromShopSlug={isAdmin ? fromShopSlug : session?.user?.shop}
+								shops={shops}
 							/>
 						) : null}
 					</Col>

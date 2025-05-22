@@ -20,17 +20,17 @@ export const updateCalculations = (form: FormInstance) => {
 export const getProductsData = async ({
 	currentValue,
 	newValue,
-	shopSlug,
+	stockId,
 	missingProducts
 }: {
 	currentValue: string;
 	newValue: string;
-	shopSlug?: string;
+	stockId: string;
 	missingProducts?: boolean;
 }) => {
 	try {
 		const data = await productServices.searchProductVariants({
-			shopSlug: shopSlug as string,
+			stockId,
 			search: newValue,
 			missingProducts
 		});
