@@ -2,6 +2,7 @@ import { notification, Upload, UploadProps } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import { productServices } from '@/services/productServices';
+import { AxiosError } from 'axios';
 
 const { Dragger } = Upload;
 
@@ -17,6 +18,24 @@ const ProductsExcelUploader = ({
 		multiple: false,
 		accept: '.xlsx,.xls',
 		showUploadList: false,
+		beforeUpload(file) {
+			const isExcel =
+				file.type ===
+					'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+				file.type === 'application/vnd.ms-excel' ||
+				file.name.endsWith('.xlsx') ||
+				file.name.endsWith('.xls');
+
+			if (!isExcel) {
+				notification.error({
+					message: '¡Formato no válido!',
+					description: 'Solo se permiten archivos .xlsx o .xls'
+				});
+				return Upload.LIST_IGNORE;
+			}
+
+			return true;
+		},
 		customRequest({ file, onSuccess }) {
 			const reader = new FileReader();
 
@@ -67,25 +86,36 @@ const ProductsExcelUploader = ({
 					}))
 					.filter(item => item.requiredQty > 0);
 
-				const resData = await productServices.bulkSearchProductVariants(
-					filteredData.map(item => item.productCode),
-					fromStockId
-				);
-
-				const processedData = resData.reverse().map((resItem: any) => {
-					const match = filteredData.find(
-						item => item.productCode === resItem.productCode
+				try {
+					const resData = await productServices.bulkSearchProductVariants(
+						filteredData.map(item => item.productCode),
+						fromStockId
 					);
 
-					return {
-						...resItem,
-						name: match?.name || '',
-						requiredQty: match?.requiredQty || 0
-					};
-				});
+					console.log({ resData });
 
-				onAddBulkProduct(processedData);
-				if (onSuccess) onSuccess('ok');
+					const processedData = resData.reverse().map((resItem: any) => {
+						const match = filteredData.find(
+							item => item.productCode === resItem.productCode
+						);
+
+						return {
+							...resItem,
+							name: match?.name || '',
+							requiredQty: match?.requiredQty || 0
+						};
+					});
+
+					onAddBulkProduct(processedData);
+					if (onSuccess) onSuccess('ok');
+				} catch (error) {
+					console.error(error);
+					const message =
+						error instanceof AxiosError
+							? error?.response?.data.message
+							: 'Ocurrió un error. Inténtalo más tarde';
+					notification.error({ message, duration: null });
+				}
 			};
 
 			reader.onerror = () => {

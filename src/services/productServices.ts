@@ -46,16 +46,12 @@ export const productServices = {
 	},
 
 	bulkSearchProductVariants: async (body: string[], stockId: string) => {
-		try {
-			const res = await axiosPrivate.post(
-				`${ENV.API.PRODUCT_VARIANTS}/bulkSearch/${stockId}`,
-				body
-			);
+		const res = await axiosPrivate.post(
+			`${ENV.API.PRODUCT_VARIANTS}/bulkSearch/${stockId}`,
+			body
+		);
 
-			return res.data;
-		} catch (error) {
-			console.error(error);
-		}
+		return res.data;
 	},
 
 	createProduct: async (body: SubmitProductDto) => {
