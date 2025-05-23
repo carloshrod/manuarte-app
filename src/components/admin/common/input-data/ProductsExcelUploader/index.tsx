@@ -92,8 +92,6 @@ const ProductsExcelUploader = ({
 						fromStockId
 					);
 
-					console.log({ resData });
-
 					const processedData = resData.reverse().map((resItem: any) => {
 						const match = filteredData.find(
 							item => item.productCode === resItem.productCode
