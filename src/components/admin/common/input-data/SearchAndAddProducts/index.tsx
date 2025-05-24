@@ -7,7 +7,7 @@ interface SearchAndAddProductsProps {
 	onAdd: () => void;
 	selectedProduct: ProductVariantWithStock | null;
 	setSelectedProduct: Dispatch<SetStateAction<ProductVariantWithStock | null>>;
-	stockId: string;
+	stockId: string | undefined;
 }
 
 const SearchAndAddProducts = ({

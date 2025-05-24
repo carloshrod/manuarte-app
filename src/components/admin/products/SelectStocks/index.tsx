@@ -25,10 +25,12 @@ const SelectStocks = ({
 	const dispatch = useDispatch();
 
 	const fetchShops = async () => {
-		const data = await shopServices.getAll(false);
-		if (data) {
-			dispatch(setShops(data));
-			setDefaultStocks(data);
+		if (shops?.length === 0) {
+			const data = await shopServices.getAll(false);
+			if (data) {
+				dispatch(setShops(data));
+				setDefaultStocks(data);
+			}
 		}
 	};
 
@@ -51,12 +53,8 @@ const SelectStocks = ({
 	};
 
 	useEffect(() => {
-		if (shops?.length === 0) {
-			fetchShops();
-		}
-
+		fetchShops();
 		setDefaultStocks(shops);
-		setIsQuitoSelected(true);
 	}, []);
 
 	const mainStockId = shops.find(sh => sh.mainStock)?.stockId;

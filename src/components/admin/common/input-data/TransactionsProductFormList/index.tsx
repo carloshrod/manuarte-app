@@ -219,7 +219,7 @@ const TransactionsProductFormList = ({
 									onAdd={() => handleAddProduct(add)}
 									selectedProduct={selectedProduct}
 									setSelectedProduct={setSelectedProduct}
-									stockId={stockId as string}
+									stockId={stockId}
 								/>
 								<div className='flex gap-2 my-6 px-2 text-gray-500'>
 									<Switch
@@ -229,7 +229,7 @@ const TransactionsProductFormList = ({
 									/>
 									<label htmlFor='switch'>Cargar productos masivamente</label>
 								</div>
-								{showExcelUploader && stockId ? (
+								{showExcelUploader ? (
 									<ProductsExcelUploader
 										onAddBulkProduct={(productList: any[]) =>
 											handleAddBulkProduct(add, productList)

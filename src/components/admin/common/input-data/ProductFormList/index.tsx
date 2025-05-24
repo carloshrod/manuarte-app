@@ -114,14 +114,12 @@ const ProductFormList = ({
 			{(fields, { add, remove }) => {
 				return (
 					<>
-						{stockId ? (
-							<SearchAndAddProducts
-								onAdd={() => handleAddProduct(add)}
-								selectedProduct={selectedProduct}
-								setSelectedProduct={setSelectedProduct}
-								stockId={stockId}
-							/>
-						) : null}
+						<SearchAndAddProducts
+							onAdd={() => handleAddProduct(add)}
+							selectedProduct={selectedProduct}
+							setSelectedProduct={setSelectedProduct}
+							stockId={stockId}
+						/>
 
 						<div className='overflow-x-auto custom-scrollbar'>
 							{fields.map(({ key, name, ...restField }) => {

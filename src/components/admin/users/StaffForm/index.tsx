@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Form, Input, Select, Switch } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import { userServices } from '@/services/userServices';
@@ -11,14 +12,16 @@ import {
 	validateForm
 } from '@/utils/validators';
 import { useModalStore } from '@/stores/modalStore';
+import { setShops } from '@/reducers/shops/shopSlice';
 
 const StaffForm = () => {
 	const { form, isLoading, submitRegisterStaff, submitUpdateStaff } = useForm();
 	const [staffRoles, setStaffRoles] = useState<Role[]>([]);
-	const [shops, setShops] = useState<Shop[]>([]);
+	const { shops } = useSelector((state: RootState) => state.shop);
 	const [editPassword, setEditPassword] = useState(false);
 	const [selectedRole, setSelectedRole] = useState('');
 	const { dataToHandle } = useModalStore.getState();
+	const dispatch = useDispatch();
 
 	const fetchRoles = async () => {
 		const data = await userServices.getStaffRoles();
@@ -28,9 +31,11 @@ const StaffForm = () => {
 	};
 
 	const fetchShops = async () => {
-		const data = await shopServices.getAll(false);
-		if (data.length > 0) {
-			setShops(data);
+		if (shops?.length === 0) {
+			const data = await shopServices.getAll(false);
+			if (data) {
+				dispatch(setShops(data));
+			}
 		}
 	};
 

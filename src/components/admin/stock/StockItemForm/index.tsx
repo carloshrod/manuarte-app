@@ -10,16 +10,14 @@ import {
 	Spin
 } from 'antd';
 import { MehOutlined } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
+import SelectStocks from '../../products/SelectStocks';
 import useForm from '@/hooks/useForm';
+import { stockItemServices } from '@/services/stockItemServices';
+import { useModalStore } from '@/stores/modalStore';
 import { getProductsData } from '../../utils';
 import { formatInputCurrency } from '@/utils/formats';
-import { setShops } from '@/reducers/shops/shopSlice';
-import { shopServices } from '@/services/shopServices';
-import { useModalStore } from '@/stores/modalStore';
-import SelectStocks from '../../products/SelectStocks';
-import { stockItemServices } from '@/services/stockItemServices';
 
 const StockItemForm = () => {
 	const { form, isLoading, submitCreateStockItem, submitUpdateStockItem } =
@@ -32,37 +30,32 @@ const StockItemForm = () => {
 	const [search, setSearch] = useState<string>('');
 	const [isSearching, setIsSearching] = useState(false);
 	const [hasSearched, setHasSearched] = useState(false);
-	const [isQuitoSelected, setIsQuitoSelected] = useState(false);
+	const [isQuitoSelected, setIsQuitoSelected] = useState(true);
 	const [isUsdSet, setIsUsdSet] = useState(false);
 	const params = useParams() ?? {};
 	const searchParams = useSearchParams();
 	const isUsd = params?.shopSlug.includes('quito');
 	const isMainStock = searchParams.get('main') === 'true';
-	const dispatch = useDispatch();
-
-	const fetchShops = async () => {
-		const data = await shopServices.getAll(false);
-		if (data) {
-			dispatch(setShops(data));
-		}
-	};
 
 	const getStockItemInfo = async () => {
-		const { productVariantId } = dataToHandle ?? {};
-		const stockId = shops.find(sh => sh.currency === 'USD')?.stockId;
-		if (!productVariantId || !stockId) return;
+		if (shops?.length > 0 && isMainStock && dataToHandle) {
+			const { productVariantId } = dataToHandle ?? {};
+			const stockId = shops.find(sh => sh.currency === 'USD')?.stockId;
+			if (!productVariantId || !stockId) return;
 
-		const data = await stockItemServices.getOneByStock(
-			productVariantId,
-			stockId
-		);
-		if (data) {
-			form.setFieldsValue({
-				priceUsd: data?.price,
-				costUsd: data?.cost
-			});
+			const data = await stockItemServices.getOneByStock(
+				productVariantId,
+				stockId
+			);
 
-			setIsUsdSet(true);
+			if (data) {
+				form.setFieldsValue({
+					priceUsd: data?.price,
+					costUsd: data?.cost
+				});
+
+				setIsUsdSet(true);
+			}
 		}
 	};
 
@@ -75,10 +68,6 @@ const StockItemForm = () => {
 				minQty: dataToHandle?.minQty,
 				maxQty: dataToHandle?.maxQty
 			});
-		}
-
-		if (shops?.length === 0) {
-			fetchShops();
 		}
 	}, []);
 

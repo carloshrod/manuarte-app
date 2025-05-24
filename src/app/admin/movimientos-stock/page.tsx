@@ -3,14 +3,12 @@ import { BiExport, BiImport, BiTransfer } from 'react-icons/bi';
 import OpenDrawerButton from '@/components/admin/common/ui/OpenDrawerButton';
 import TransactionsTable from '@/components/admin/transactions/TransactionsTable';
 import { DrawerContent } from '@/types/enums';
-import { shopServices } from '@/services/shopServices';
 import { auth } from '@/auth';
 import { MdOutlineWarehouse } from 'react-icons/md';
 
 export const dynamic = 'force-dynamic';
 
 const TransactionsPage = async () => {
-	const shopsData = await shopServices.getAll();
 	const session = await auth();
 	const isAdmin = session?.user?.roleName === 'admin';
 	const shopName =
@@ -68,10 +66,7 @@ const TransactionsPage = async () => {
 					/>
 				</div>
 			</div>
-			<TransactionsTable
-				shopsData={shopsData}
-				shop={session?.user?.shop as string}
-			/>
+			<TransactionsTable shop={session?.user?.shop as string} />
 		</section>
 	);
 };

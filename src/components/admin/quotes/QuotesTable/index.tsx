@@ -5,12 +5,24 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setQuotes } from '@/reducers/quotes/quoteSlice';
 import { quoteServices } from '@/services/quoteServices';
+import { shopServices } from '@/services/shopServices';
+import { setShops } from '@/reducers/shops/shopSlice';
 
 const QuotesTable = ({ shopSlug }: { shopSlug: string }) => {
 	const { quoteColumns } = useTableColumns();
+	const { shops } = useSelector((state: RootState) => state.shop);
 	const { quotes } = useSelector((state: RootState) => state.quote);
 	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();
+
+	const fetchShops = async () => {
+		if (shops?.length === 0) {
+			const data = await shopServices.getAll(false);
+			if (data) {
+				dispatch(setShops(data));
+			}
+		}
+	};
 
 	const fetchQuotes = async () => {
 		if (shopSlug && quotes.length === 0) {
@@ -21,6 +33,7 @@ const QuotesTable = ({ shopSlug }: { shopSlug: string }) => {
 	};
 
 	useEffect(() => {
+		fetchShops();
 		fetchQuotes();
 	}, []);
 

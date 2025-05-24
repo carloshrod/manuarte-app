@@ -12,6 +12,8 @@ import { TablePaginationConfig } from 'antd';
 import { FilterValue } from 'antd/es/table/interface';
 import moment from 'moment';
 import { BillingStatus } from '@/types/enums';
+import { shopServices } from '@/services/shopServices';
+import { setShops } from '@/reducers/shops/shopSlice';
 
 interface DataType {
 	createdDate?: string;
@@ -21,9 +23,19 @@ interface DataType {
 
 const BillingsTable = ({ shopSlug }: { shopSlug: string }) => {
 	const { billingColumns } = useTableColumns();
+	const { shops } = useSelector((state: RootState) => state.shop);
 	const { billings } = useSelector((state: RootState) => state.billing);
 	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();
+
+	const fetchShops = async () => {
+		if (shops?.length === 0) {
+			const data = await shopServices.getAll(false);
+			if (data) {
+				dispatch(setShops(data));
+			}
+		}
+	};
 
 	const fetchBillings = async () => {
 		if (shopSlug && billings.length === 0) {
@@ -34,6 +46,7 @@ const BillingsTable = ({ shopSlug }: { shopSlug: string }) => {
 	};
 
 	useEffect(() => {
+		fetchShops();
 		fetchBillings();
 	}, []);
 
