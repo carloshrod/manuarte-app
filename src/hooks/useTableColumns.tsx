@@ -506,23 +506,23 @@ const useTableColumns = () => {
 						},
 						width: 100,
 						align: 'center' as const
+					},
+					{
+						title: 'CANT. MIN',
+						dataIndex: 'minQty',
+						key: 'minQty',
+						width: 70,
+						align: 'center' as const
+					},
+					{
+						title: 'CANT. MAX',
+						dataIndex: 'maxQty',
+						key: 'maxQty',
+						width: 70,
+						align: 'center' as const
 					}
 				]
 			: []),
-		{
-			title: 'CANT. MIN',
-			dataIndex: 'minQty',
-			key: 'minQty',
-			width: 70,
-			align: 'center'
-		},
-		{
-			title: 'CANT. MAX',
-			dataIndex: 'maxQty',
-			key: 'maxQty',
-			width: 70,
-			align: 'center'
-		},
 		...(isAdmin
 			? [
 					{
