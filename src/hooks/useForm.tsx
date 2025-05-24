@@ -264,14 +264,21 @@ const useForm = () => {
 	};
 
 	const submitCreateBilling = async ({
-		values
+		values,
+		fetchBillings = undefined
 	}: {
 		values: SubmitBillingDto;
+		fetchBillings?: () => void;
 	}) => {
 		return await handleSubmit({
 			serviceFn: billingServices.create,
 			values,
-			onSuccess: res => dispatch(addBilling(res.data.newBilling))
+			onSuccess: res => {
+				if (fetchBillings) {
+					fetchBillings();
+				}
+				dispatch(addBilling(res.data.newBilling));
+			}
 		});
 	};
 

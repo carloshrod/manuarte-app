@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Form, Select } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 import FormButtons from '../../ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import {
@@ -8,18 +9,23 @@ import {
 	COL_PAYMENT_METHOD_OPTIONS,
 	ECU_PAYMENT_METHOD_OPTIONS
 } from '@/components/admin/consts';
+import { quoteServices } from '@/services/quoteServices';
+import { useModalStore } from '@/stores/modalStore';
+import { billingServices } from '@/services/billingServices';
+import { setBillings } from '@/reducers/billings/billingSlice';
 import { formatToTitleCase } from '@/utils/formats';
 import { ROUTES } from '@/utils/routes';
 import { BillingStatus, ModalContent } from '@/types/enums';
-import { quoteServices } from '@/services/quoteServices';
-import { useModalStore } from '@/stores/modalStore';
+import { v4 as uuidv4 } from 'uuid';
 
 const BillingModalForm = () => {
 	const { form, isLoading, submitCreateBilling, submitUpdateBilling } =
 		useForm();
+	const { billings } = useSelector((state: RootState) => state.billing);
 	const { dataToHandle, openModal, closeModal } = useModalStore.getState();
 	const params = useParams();
 	const { push } = useRouter();
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (dataToHandle?.isUpdating) {
@@ -58,8 +64,18 @@ const BillingModalForm = () => {
 								...dataToHandle,
 								...values,
 								total,
-								shopSlug: params?.shopSlug
-							}
+								shopSlug: params?.shopSlug,
+								clientRequestId: uuidv4()
+							},
+							fetchBillings:
+								billings?.length === 0
+									? async () => {
+											const data = await billingServices.getAll(
+												params?.shopSlug as string
+											);
+											dispatch(setBillings(data));
+										}
+									: undefined
 						});
 
 						if (res?.status === 201) {
