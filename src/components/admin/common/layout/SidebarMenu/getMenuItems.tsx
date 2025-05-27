@@ -4,7 +4,7 @@ import { BsBoxes } from 'react-icons/bs';
 import { PiUsersThree, PiInvoice } from 'react-icons/pi';
 import { TbFileDollar, TbLogout2 } from 'react-icons/tb';
 import { GiCardboardBox } from 'react-icons/gi';
-import { RiExchangeBoxLine } from 'react-icons/ri';
+import { RiExchangeBoxLine, RiUserSettingsLine } from 'react-icons/ri';
 import { Session } from 'next-auth';
 import { AUTH_RULES } from '@/utils/auth';
 import { ROUTES } from '@/utils/routes';
@@ -12,7 +12,8 @@ import { ROUTES } from '@/utils/routes';
 const {
 	DASHBOARD,
 	PRODUCTS,
-	USERS,
+	STAFF,
+	CUSTOMERS,
 	QUOTE_SHOPS,
 	BILLING_SHOPS,
 	STOCKS,
@@ -30,7 +31,7 @@ const getMenuItems = (session: Session) => {
 
 	const permissionToPathMap: Record<string, string> = {
 		'product-read': PRODUCTS,
-		'customer-read': USERS
+		'customer-read': CUSTOMERS
 	};
 
 	const filteredItems = allMenuItems(shop, mainStock).filter(item => {
@@ -77,24 +78,30 @@ export const allMenuItems = (shop?: string, mainStock?: boolean) => {
 		},
 		{
 			key: '3',
-			icon: <PiUsersThree style={{ fontSize: 20 }} />,
-			label: <Link href={USERS}>Usuarios</Link>,
-			path: USERS
+			icon: <RiUserSettingsLine style={{ fontSize: 20 }} />,
+			label: <Link href={STAFF}>Staff</Link>,
+			path: STAFF
 		},
 		{
 			key: '4',
+			icon: <PiUsersThree style={{ fontSize: 20 }} />,
+			label: <Link href={CUSTOMERS}>Clientes</Link>,
+			path: CUSTOMERS
+		},
+		{
+			key: '5',
 			icon: <TbFileDollar style={{ fontSize: 20 }} />,
 			label: <Link href={QUOTE_PATH}>Cotizaciones</Link>,
 			path: QUOTE_PATH
 		},
 		{
-			key: '5',
+			key: '6',
 			icon: <PiInvoice style={{ fontSize: 20 }} />,
 			label: <Link href={BILLING_PATH}>Facturas</Link>,
 			path: BILLING_PATH
 		},
 		{
-			key: '6',
+			key: '7',
 			icon: <GiCardboardBox style={{ fontSize: 20 }} />,
 			label: (
 				<Link
@@ -109,7 +116,7 @@ export const allMenuItems = (shop?: string, mainStock?: boolean) => {
 			path: STOCK_PATH
 		},
 		{
-			key: '7',
+			key: '8',
 			icon: <RiExchangeBoxLine style={{ fontSize: 20 }} />,
 			label: <Link href={TRANSACTIONS}>Movimientos Stock</Link>,
 			path: TRANSACTIONS

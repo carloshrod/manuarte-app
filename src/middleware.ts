@@ -3,7 +3,7 @@ import { auth } from './auth';
 import { AUTH_RULES } from './utils/auth';
 import { ROUTES } from './utils/routes';
 
-const { LOGIN, PRODUCTS, USERS } = ROUTES;
+const { LOGIN, PRODUCTS, CUSTOMERS } = ROUTES;
 
 export async function middleware(req: NextRequest) {
 	const session = await auth();
@@ -27,7 +27,7 @@ export async function middleware(req: NextRequest) {
 	const hasExtraPermissionAccess = extraPermissions.some(permission => {
 		const permissionToPathMap: Record<string, string> = {
 			'product-read': PRODUCTS,
-			'customer-read': USERS
+			'customer-read': CUSTOMERS
 		};
 		return permissionToPathMap[permission] === requestedPage;
 	});
