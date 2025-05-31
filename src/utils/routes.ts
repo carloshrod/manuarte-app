@@ -5,6 +5,7 @@ export const ROUTES = {
 	PRODUCTS: '/admin/productos',
 	STAFF: '/admin/staff',
 	CUSTOMERS: '/admin/clientes',
+	CUSTOMER_DETAILS: '/admin/clientes/[id]',
 	QUOTE_SHOPS: '/admin/cotizaciones',
 	QUOTES: '/admin/cotizaciones/[shopSlug]',
 	QUOTE_DETAIL: '/admin/cotizaciones/[shopSlug]/[serialNumber]',

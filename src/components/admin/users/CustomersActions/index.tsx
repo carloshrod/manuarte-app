@@ -6,10 +6,19 @@ import { removeCustomer } from '@/reducers/users/userSlice';
 import { userServices } from '@/services/userServices';
 import { ModalContent } from '@/types/enums';
 import { useModalStore } from '@/stores/modalStore';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/utils/routes';
 
-const CustomersActions = ({ record }: { record: Customer }) => {
+const CustomersActions = ({
+	record,
+	isTop = false
+}: {
+	record: Customer;
+	isTop?: boolean;
+}) => {
 	const { openModal } = useModalStore.getState();
 	const dispatch = useDispatch();
+	const router = useRouter();
 
 	const handleEdit = () => {
 		openModal({
@@ -40,8 +49,9 @@ const CustomersActions = ({ record }: { record: Customer }) => {
 
 	return (
 		<TableActions
-			onEdit={handleEdit}
-			onDelete={handleDelete}
+			onEdit={!isTop ? handleEdit : undefined}
+			onShowDetails={() => router.push(`${ROUTES.CUSTOMERS}/${record.id}`)}
+			onDelete={!isTop ? handleDelete : undefined}
 			popTitle={record.fullName}
 		/>
 	);

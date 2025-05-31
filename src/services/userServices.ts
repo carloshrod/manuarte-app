@@ -22,6 +22,33 @@ export const userServices = {
 		}
 	},
 
+	getCustomerStats: async (customerId: string) => {
+		try {
+			const res = await axiosPrivate.get(
+				`${ENV.API.CUSTOMERS}/stats/${customerId}`,
+				{
+					server: true
+				}
+			);
+
+			return res.data;
+		} catch (error) {
+			console.error(error);
+		}
+	},
+
+	getTopCustomers: async () => {
+		try {
+			const res = await axiosPrivate.get(`${ENV.API.CUSTOMERS}/top?limit=30`, {
+				server: true
+			});
+
+			return res.data;
+		} catch (error) {
+			console.error(error);
+		}
+	},
+
 	getStaffRoles: async () => {
 		try {
 			const res = await axiosPrivate.get(`${ENV.API.USERS}/roles`);

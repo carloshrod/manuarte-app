@@ -1,24 +1,19 @@
-import AddButton from '@/components/admin/common/ui/AddButton';
-import CustomersTable from '@/components/admin/users/CustomersTable';
+import TabsTableCustomers from '@/components/admin/users/TabsTableCustomers';
 import { userServices } from '@/services/userServices';
-import { ModalContent } from '@/types/enums';
-import { HiOutlineUser } from 'react-icons/hi';
+
+export const dynamic = 'force-dynamic';
 
 const CustomersPage = async () => {
 	const customersData = await userServices.getAllCustomers();
+	const topCustomersData = await userServices.getTopCustomers();
 
 	return (
 		<section className='flex flex-col gap-4'>
-			<div className='flex items-center justify-between'>
-				<h2 className='text-2xl font-semibold px-4'>Clientes</h2>
-				<AddButton
-					title='Registrar Cliente'
-					modalContent={ModalContent.customers}
-					buttonLabel='Cliente'
-					appendIcon={<HiOutlineUser size={18} />}
-				/>
-			</div>
-			<CustomersTable customersData={customersData} />
+			<h2 className='text-2xl font-semibold px-4'>Clientes</h2>
+			<TabsTableCustomers
+				customersData={customersData}
+				topCustomersData={topCustomersData}
+			/>
 		</section>
 	);
 };

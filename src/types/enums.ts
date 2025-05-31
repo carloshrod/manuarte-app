@@ -19,7 +19,8 @@ export enum DrawerContent {
 	enter = 'enter',
 	exit = 'exit',
 	transactionDetails = 'transactionDetails',
-	transactionHistoryDetails = 'transactionHistoryDetails'
+	transactionHistoryDetails = 'transactionHistoryDetails',
+	recentActivityDetails = 'recentActivityDetails'
 }
 
 export enum QuoteStatus {

@@ -114,10 +114,16 @@ interface Customer {
 	city: string;
 	fullName: string;
 	dni: string;
+	totalSpent: number;
 }
 
 interface ExistingCustomer extends Customer {
 	customerId?: string;
+}
+
+interface TopCustomer extends Customer {
+	billingCount: number;
+	totalSpent: number;
 }
 
 interface SubmitCustomerDto {
@@ -129,6 +135,12 @@ interface SubmitCustomerDto {
 	city: string;
 	personId: string?;
 	customerId: string?;
+}
+
+interface TopProductCustomer {
+	productVariantId: string;
+	name: string;
+	totalQty: number;
 }
 
 interface Shop {
@@ -329,6 +341,10 @@ interface RootState {
 	user: {
 		staff: Staff[];
 		customers: Customer[];
+		topCustomers: {
+			col: Customer[];
+			ecu: Customer[];
+		};
 	};
 	quote: {
 		quotes: Quote[];

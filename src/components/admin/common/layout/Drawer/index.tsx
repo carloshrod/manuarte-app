@@ -40,8 +40,10 @@ const CustomDrawer = () => {
 		setChecked(noCustomer as boolean);
 	}, [noCustomer]);
 
-	const isTransactions =
-		pathname === ROUTES.TRANSACTIONS || pathname.includes('historial');
+	const smallDrawer =
+		pathname === ROUTES.TRANSACTIONS ||
+		pathname.includes('historial') ||
+		pathname.includes('clientes');
 
 	const showExtra =
 		content === DrawerContent.quotes || content === DrawerContent.billings;
@@ -58,9 +60,9 @@ const CustomDrawer = () => {
 				position: 'absolute',
 				marginTop: 1
 			}}
-			width={isTransactions && !isMedium ? '50%' : '100%'}
+			width={smallDrawer && !isMedium ? '50%' : '100%'}
 			height='100%'
-			placement={isTransactions ? 'right' : 'top'}
+			placement={smallDrawer ? 'right' : 'top'}
 			extra={
 				!showExtra ? null : (
 					<div className='flex gap-2 items-center'>

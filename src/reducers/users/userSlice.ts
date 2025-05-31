@@ -2,7 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
 	staff: [] as Staff[],
-	customers: [] as Customer[]
+	customers: [] as Customer[],
+	topCustomers: {
+		col: [] as Customer[],
+		ecu: [] as Customer[]
+	}
 };
 
 export const userSlice = createSlice({
@@ -48,8 +52,12 @@ export const userSlice = createSlice({
 			);
 		},
 
-		getCustomers: (state, action) => {
+		setCustomers: (state, action) => {
 			state.customers = action.payload;
+		},
+
+		setTopCustomers: (state, action) => {
+			state.topCustomers = action.payload;
 		},
 
 		addCustomer: (state, action) => {
@@ -77,7 +85,8 @@ export const {
 	updateStaff,
 	removeStaff,
 	updateStaffPermissions,
-	getCustomers,
+	setCustomers,
+	setTopCustomers,
 	addCustomer,
 	updateCustomer,
 	removeCustomer
