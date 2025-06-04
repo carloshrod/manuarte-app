@@ -8,12 +8,14 @@ import { useModalStore } from '@/stores/modalStore';
 import { getSession } from 'next-auth/react';
 import { authServices } from '@/services/authServices';
 import { doLogout } from '@/app/actions';
+import { useDispatch } from 'react-redux';
 
 const SidebarMenu = ({ session }: { session: Session | null }) => {
 	const menuItems = getMenuItems(session as Session);
 	const [selectedItems, setSelectedItems] = useState<string[]>([]);
 	const { openModal, closeModal } = useModalStore.getState();
 	const pathname = usePathname();
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		const selectedItem =
@@ -34,6 +36,7 @@ const SidebarMenu = ({ session }: { session: Session | null }) => {
 			if (res.status === 204) {
 				closeModal();
 				await doLogout();
+				dispatch({ type: 'RESET_APP' });
 			}
 		} catch (error) {
 			console.error(error);
