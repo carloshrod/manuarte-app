@@ -9,13 +9,17 @@ import { useModalStore } from '@/stores/modalStore';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/utils/routes';
 
-const CustomersActions = ({
-	record,
-	isTop = false
-}: {
+interface CustomersActionsProps {
 	record: Customer;
 	isTop?: boolean;
-}) => {
+	isAdmin: boolean;
+}
+
+const CustomersActions = ({
+	record,
+	isTop = false,
+	isAdmin
+}: CustomersActionsProps) => {
 	const { openModal } = useModalStore.getState();
 	const dispatch = useDispatch();
 	const router = useRouter();
@@ -50,7 +54,11 @@ const CustomersActions = ({
 	return (
 		<TableActions
 			onEdit={!isTop ? handleEdit : undefined}
-			onShowDetails={() => router.push(`${ROUTES.CUSTOMERS}/${record.id}`)}
+			onShowDetails={
+				isAdmin
+					? () => router.push(`${ROUTES.CUSTOMERS}/${record.id}`)
+					: undefined
+			}
 			onDelete={!isTop ? handleDelete : undefined}
 			popTitle={record.fullName}
 		/>

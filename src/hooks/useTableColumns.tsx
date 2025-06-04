@@ -244,17 +244,19 @@ const useTableColumns = () => {
 		},
 		{
 			title: 'CIUDAD',
-			dataIndex: 'city',
-			key: 'city',
-			...getColumnSearchProps('city'),
-			width: 100,
-			render: value => value ?? '--'
+			dataIndex: 'cityName',
+			key: 'cityName',
+			...getColumnSearchProps('cityName'),
+			render: (value, record) => (value || record?.city) ?? '--',
+			width: 100
 		},
 		{
 			title: 'ACCIONES',
 			key: 'actions',
 			className: 'actions',
-			render: (_, record: Customer) => <CustomersActions record={record} />,
+			render: (_, record: Customer) => (
+				<CustomersActions record={record} isAdmin={isAdmin} />
+			),
 			width: 100,
 			align: 'center'
 		}
@@ -284,11 +286,11 @@ const useTableColumns = () => {
 		},
 		{
 			title: 'CIUDAD',
-			dataIndex: 'city',
-			key: 'city',
-			...getColumnSearchProps('city'),
-			width: 110,
-			render: value => value ?? '--'
+			dataIndex: 'cityName',
+			key: 'cityName',
+			...getColumnSearchProps('cityName'),
+			render: (value, record) => (value || record?.city) ?? '--',
+			width: 100
 		},
 		{
 			title: 'COMPRAS',
@@ -333,7 +335,7 @@ const useTableColumns = () => {
 			key: 'actions',
 			className: 'actions',
 			render: (_, record: Customer) => (
-				<CustomersActions record={record} isTop={true} />
+				<CustomersActions record={record} isTop={true} isAdmin={isAdmin} />
 			),
 			width: 80,
 			align: 'center'

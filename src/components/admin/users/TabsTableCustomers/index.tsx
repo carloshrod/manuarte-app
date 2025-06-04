@@ -9,16 +9,20 @@ import AddButton from '../../common/ui/AddButton';
 import { ModalContent } from '@/types/enums';
 import { HiOutlineUser } from 'react-icons/hi';
 
-const TabsTableCustomers = ({
-	customersData,
-	topCustomersData
-}: {
+interface TabsTableCustomersProps {
 	customersData: Customer[];
 	topCustomersData: {
 		col: Customer[];
 		ecu: Customer[];
 	};
-}) => {
+	isAdmin?: boolean;
+}
+
+const TabsTableCustomers = ({
+	customersData,
+	topCustomersData,
+	isAdmin
+}: TabsTableCustomersProps) => {
 	const { customerColumns, topCustomerColumns } = useTableColumns();
 	const { customers, topCustomers } = useSelector(
 		(state: RootState) => state.user
@@ -33,6 +37,16 @@ const TabsTableCustomers = ({
 			setIsLoading(false);
 		}, 300);
 	}, []);
+
+	if (!isAdmin) {
+		return (
+			<CustomTable
+				columns={customerColumns}
+				dataSource={isLoading ? [] : customers}
+				isLoading={isLoading}
+			/>
+		);
+	}
 
 	const items: TabsProps['items'] = [
 		{
