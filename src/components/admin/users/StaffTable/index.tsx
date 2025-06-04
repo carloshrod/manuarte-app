@@ -13,9 +13,7 @@ const StaffTable = ({ staffData }: { staffData: Staff[] }) => {
 
 	useEffect(() => {
 		dispatch(getStaff(staffData));
-		setTimeout(() => {
-			setIsLoading(false);
-		}, 300);
+		setIsLoading(false);
 	}, []);
 
 	return (

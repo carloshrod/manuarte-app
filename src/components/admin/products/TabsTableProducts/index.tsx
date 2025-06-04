@@ -33,9 +33,7 @@ const TabsTableProducts = ({
 	useEffect(() => {
 		dispatch(getProductVariants(productVariantsData));
 		dispatch(getProductCategories(productCategoriesData));
-		setTimeout(() => {
-			setIsLoading(false);
-		}, 300);
+		setIsLoading(false);
 	}, []);
 
 	const onChange = (key: string) => {
