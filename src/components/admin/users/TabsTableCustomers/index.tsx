@@ -8,6 +8,7 @@ import { Tabs, TabsProps } from 'antd';
 import AddButton from '../../common/ui/AddButton';
 import { ModalContent } from '@/types/enums';
 import { HiOutlineUser } from 'react-icons/hi';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface TabsTableCustomersProps {
 	customersData: Customer[];
@@ -29,13 +30,13 @@ const TabsTableCustomers = ({
 	);
 	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();
+	const router = useRouter();
+	const searchParams = useSearchParams();
 
 	useEffect(() => {
 		dispatch(setCustomers(customersData));
 		dispatch(setTopCustomers(topCustomersData));
-		setTimeout(() => {
-			setIsLoading(false);
-		}, 300);
+		setIsLoading(false);
 	}, []);
 
 	if (!isAdmin) {
@@ -47,6 +48,12 @@ const TabsTableCustomers = ({
 			/>
 		);
 	}
+
+	const activeKey = searchParams.get('tab') || '1';
+
+	const handleTabChange = (key: string) => {
+		router.push(`?tab=${key}`);
+	};
 
 	const items: TabsProps['items'] = [
 		{
@@ -86,7 +93,9 @@ const TabsTableCustomers = ({
 
 	return (
 		<Tabs
-			defaultActiveKey='1'
+			defaultActiveKey={activeKey}
+			activeKey={activeKey}
+			onChange={handleTabChange}
 			items={items}
 			tabBarExtraContent={
 				<AddButton
