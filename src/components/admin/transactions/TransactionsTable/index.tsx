@@ -25,14 +25,17 @@ const TransactionsTable = ({ shop }: { shop: string }) => {
 	};
 
 	const fetchTransactions = async () => {
-		let data;
-		if (shop) {
-			const stockId = shops?.find(sh => sh?.slug === shop)?.stockId;
-			data = await transactionServices.getAll(undefined, stockId);
-		} else {
-			data = await transactionServices.getAll();
+		if (transactions?.length === 0) {
+			let data;
+
+			if (shop) {
+				const stockId = shops?.find(sh => sh?.slug === shop)?.stockId;
+				data = await transactionServices.getAll(undefined, stockId);
+			} else {
+				data = await transactionServices.getAll();
+			}
+			dispatch(setTransactions(data));
 		}
-		dispatch(setTransactions(data));
 		setIsLoading(false);
 	};
 
