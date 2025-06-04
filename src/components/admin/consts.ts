@@ -29,7 +29,7 @@ export const CUSTOMER_INPUTS_PROPS = [
 		placeholder: 'Ingresa la dirección'
 	},
 	{
-		name: 'city',
+		name: 'cityId',
 		label: 'Ciudad',
 		ruleMsg: 'La ciudad es requerida',
 		placeholder: 'Ingresa la ciudad'

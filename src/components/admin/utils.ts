@@ -1,5 +1,6 @@
 import { productServices } from '@/services/productServices';
 import { userServices } from '@/services/userServices';
+import { cityServices } from '@/services/cityServices';
 import { FormInstance } from 'antd';
 
 export const updateCalculations = (form: FormInstance) => {
@@ -68,6 +69,30 @@ export const getCustomersData = async ({
 			formattedData = data.map((item: any) => ({
 				value: item.personId,
 				label: `${item.fullName} - ${item.dni}`
+			}));
+		}
+
+		return { formattedData, data };
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+export const getCitiesData = async ({
+	currentValue,
+	newValue
+}: {
+	currentValue: string;
+	newValue: string;
+}) => {
+	try {
+		const data = await cityServices.search(newValue);
+
+		let formattedData;
+		if (currentValue === newValue) {
+			formattedData = data.map((item: any) => ({
+				value: item.id,
+				label: `${item?.name}, ${item?.regionName}, ${item?.countryIsoCode}`
 			}));
 		}
 

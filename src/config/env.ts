@@ -12,6 +12,7 @@ export const ENV = {
 		QUOTES: '/quotes',
 		BILLINGS: '/billings',
 		STOCK_ITEMS: '/stock-items',
-		TRANSACTIONS: '/transactions'
+		TRANSACTIONS: '/transactions',
+		CITIES: '/cities'
 	}
 };

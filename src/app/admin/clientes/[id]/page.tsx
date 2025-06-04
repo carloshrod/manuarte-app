@@ -15,7 +15,20 @@ const CustomerDetailsPage = async ({
 }: CustomerDetailsPageProps) => {
 	const customer = await userServices.getCustomerStats(id);
 	const { info, billings, totalSpent, topProducts, quotes } = customer ?? {};
-	const { dni, phoneNumber, email, city, location } = info ?? {};
+	const {
+		dni,
+		phoneNumber,
+		email,
+		city,
+		location,
+		cityName,
+		regionName,
+		countryIsoCode
+	} = info ?? {};
+
+	const cityValue = cityName
+		? `${cityName}, ${regionName}, ${countryIsoCode}`
+		: city;
 
 	const items: DescriptionsProps['items'] = [
 		{
@@ -36,7 +49,7 @@ const CustomerDetailsPage = async ({
 		{
 			key: '4',
 			label: 'Ciudad',
-			children: city ?? '--'
+			children: cityValue ?? '--'
 		},
 		{
 			key: '5',

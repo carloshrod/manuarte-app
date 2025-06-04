@@ -50,7 +50,12 @@ const QuoteForm = () => {
 			updateCalculations();
 		} else {
 			if (existingCustomer?.personId) {
-				form.setFieldsValue(existingCustomer);
+				form.setFieldsValue({
+					...existingCustomer,
+					city: existingCustomer?.cityName
+						? `${existingCustomer?.cityName}, ${existingCustomer?.regionName}, ${existingCustomer?.countryIsoCode}`
+						: existingCustomer?.city
+				});
 			}
 		}
 	}, [existingCustomer]);

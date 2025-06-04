@@ -12,7 +12,7 @@ export const mapQuoteBody = (body: SubmitQuoteDto) => {
 		email,
 		phoneNumber,
 		location,
-		city
+		cityId
 	} = body;
 
 	return {
@@ -31,7 +31,7 @@ export const mapQuoteBody = (body: SubmitQuoteDto) => {
 			email,
 			phoneNumber,
 			location,
-			city
+			cityId
 		}
 	};
 };
@@ -53,7 +53,7 @@ export const mapBillingBody = (body: SubmitBillingDto) => {
 		email,
 		phoneNumber,
 		location,
-		city,
+		cityId,
 		clientRequestId
 	} = body;
 
@@ -77,7 +77,7 @@ export const mapBillingBody = (body: SubmitBillingDto) => {
 			email,
 			phoneNumber,
 			location,
-			city
+			cityId
 		}
 	};
 };

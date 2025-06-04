@@ -84,6 +84,7 @@ const BillingForm = () => {
 						values: {
 							...restValues,
 							shopSlug: params?.shopSlug as string,
+							personId: existingCustomer?.personId || dataToHandle?.personId,
 							customerId: existingCustomer?.customerId as string,
 							clientRequestId: uniqueId
 						}

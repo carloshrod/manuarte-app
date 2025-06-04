@@ -42,7 +42,7 @@ const QuotePDF = ({
 		{
 			key: '5',
 			label: 'Ciudad:',
-			children: formatToTitleCase(quote?.city) ?? '--',
+			children: formatToTitleCase(quote?.cityName || quote?.city) ?? '--',
 			span: 3
 		},
 		{

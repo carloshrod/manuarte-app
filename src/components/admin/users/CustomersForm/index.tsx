@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Form, Input } from 'antd';
+import SearchCity from '../../common/input-data/SearchCity';
 import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import { customerSchema, validateForm } from '@/utils/validators';
@@ -93,9 +94,31 @@ const CustomersForm = () => {
 			<Form.Item name='location' label='Dirección'>
 				<Input placeholder='Ingresa la dirección del cliente' />
 			</Form.Item>
-			<Form.Item name='city' label='Ciudad'>
-				<Input placeholder='Ingresa la ciudad' />
-			</Form.Item>
+
+			<div className='flex flex-col gap-1 mb-2'>
+				{dataToHandle && !dataToHandle?.cityId ? (
+					<>
+						<span className='text-blue-500'>
+							▫ Por favor, actualiza la ciudad
+						</span>
+						{dataToHandle?.city ? (
+							<span className='text-blue-500'>
+								▫ Valor actual: {dataToHandle?.city}
+							</span>
+						) : null}
+					</>
+				) : null}
+			</div>
+			<SearchCity
+				initialValue={
+					dataToHandle?.cityId && dataToHandle.cityName
+						? {
+								cityId: dataToHandle.cityId,
+								cityName: `${dataToHandle.cityName}, ${dataToHandle?.regionName}, ${dataToHandle?.countryIsoCode}`
+							}
+						: undefined
+				}
+			/>
 
 			<FormButtons
 				label={dataToHandle ? 'Editar' : 'Registrar'}

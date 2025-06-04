@@ -44,7 +44,7 @@ const BillingPDF = ({
 		{
 			key: '5',
 			label: 'Ciudad:',
-			children: formatToTitleCase(billing?.city) ?? '--',
+			children: formatToTitleCase(billing?.cityName || billing?.city) ?? '--',
 			span: 3
 		},
 		{

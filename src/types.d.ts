@@ -119,6 +119,10 @@ interface Customer {
 
 interface ExistingCustomer extends Customer {
 	customerId?: string;
+	cityId?: string;
+	cityName?: string;
+	regionName?: string;
+	countryIsoCode?: string;
 }
 
 interface TopCustomer extends Customer {
@@ -133,6 +137,8 @@ interface SubmitCustomerDto {
 	phoneNumber: string;
 	location: string;
 	city: string;
+	cityId: string;
+
 	personId: string?;
 	customerId: string?;
 }
@@ -183,6 +189,10 @@ interface Quote {
 	phoneNumber: string;
 	location: string;
 	city: string;
+	cityId: string;
+	cityName: string;
+	regionName: string;
+	countryIsoCode: string;
 	createdDate: string;
 	updatedDate: string;
 	items: QuoteItem[];
