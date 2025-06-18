@@ -7,18 +7,14 @@ import {
 	TRANSACTION_TYPES_MAP
 } from '@/utils/mappings';
 import { DrawerContent, TransactionType } from '@/types/enums';
-import { useSession } from 'next-auth/react';
 import { useDrawerStore } from '@/stores/drawerStore';
 import { formatDate } from '@/utils/formats';
 import { billingServices } from '@/services/billingServices';
 
 const TransactionDetails = () => {
-	const { dataToHandle, openDrawer, closeDrawer, content } =
-		useDrawerStore.getState();
+	const { dataToHandle, closeDrawer, content } = useDrawerStore.getState();
 	const [items, setItems] = useState<TransactionItem[]>([]);
 	const [customer, setCustomer] = useState(null);
-	const { data: session } = useSession();
-	const isAdmin = session?.user?.roleName === 'admin';
 	const isBilling = dataToHandle?.type === 'BILLING';
 
 	const stockId =
@@ -57,18 +53,6 @@ const TransactionDetails = () => {
 			fetchTransactionItems();
 		}
 	}, [dataToHandle?.id]);
-
-	const isTransferInProgress =
-		dataToHandle?.type === TransactionType.TRANSFER &&
-		dataToHandle?.state === 'PROGRESS';
-
-	const handleEdit = () => {
-		openDrawer({
-			title: 'Transacción',
-			content: DrawerContent.transfer,
-			dataToHandle: { ...dataToHandle, items }
-		});
-	};
 
 	const itemsCount = items?.reduce((acc, item) => {
 		return acc + Number(item.quantity);
@@ -150,6 +134,7 @@ const TransactionDetails = () => {
 				) : null}
 				<TransactionsItemList items={items} isBilling={isBilling} />
 			</Row>
+
 			<div className='flex justify-end gap-4 py-4 bg-white'>
 				<Button
 					color='danger'
@@ -161,19 +146,6 @@ const TransactionDetails = () => {
 				>
 					CERRAR
 				</Button>
-
-				{isTransferInProgress && isAdmin ? (
-					<Button
-						color='primary'
-						variant='outlined'
-						className='w-[90%] max-w-[200px]'
-						style={{ fontWeight: 600 }}
-						htmlType='button'
-						onClick={handleEdit}
-					>
-						EDITAR
-					</Button>
-				) : null}
 			</div>
 		</div>
 	);
