@@ -8,7 +8,13 @@ import { removeStockItem } from '@/reducers/stockItems/stockItemSlice';
 import { stockItemServices } from '@/services/stockItemServices';
 import { ModalContent } from '@/types/enums';
 
-const StockItemActions = ({ record }: { record: StockItem }) => {
+const StockItemActions = ({
+	record,
+	isAdmin
+}: {
+	record: StockItem;
+	isAdmin: boolean;
+}) => {
 	const { openModal } = useModalStore.getState();
 	const dispatch = useDispatch();
 	const { shopSlug } = useParams();
@@ -44,13 +50,13 @@ const StockItemActions = ({ record }: { record: StockItem }) => {
 	return (
 		<TableActions
 			record={record}
-			onEdit={handleEdit}
+			onEdit={isAdmin ? handleEdit : undefined}
 			onTracking={() =>
 				route.push(
 					`/admin/stock/${shopSlug}/historial?stockItemId=${record.id}`
 				)
 			}
-			onDelete={handleDelete}
+			onDelete={isAdmin ? handleDelete : undefined}
 			popTitle={`${record.productName} - ${record.productVariantName}`}
 		/>
 	);

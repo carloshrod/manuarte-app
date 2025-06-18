@@ -88,7 +88,7 @@ const TransactionDetails = () => {
 							<span>{isBilling ? 'Cliente' : 'Descripción'}</span>
 							<span className='px-3 py-2 bg-[#e5e5e5] rounded-md'>
 								{isBilling
-									? customer
+									? (customer ?? 'Consumidor Final')
 									: dataToHandle?.description || dataToHandle?.identifier}
 							</span>
 						</div>

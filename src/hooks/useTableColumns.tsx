@@ -635,19 +635,16 @@ const useTableColumns = () => {
 					}
 				]
 			: []),
-		...(isAdmin
-			? [
-					{
-						title: 'ACCIONES',
-						key: 'actions',
-						className: 'actions',
-						render: (_: any, record: StockItem) => (
-							<StockItemActions record={record} />
-						),
-						width: 100
-					}
-				]
-			: [])
+		{
+			title: 'ACCIONES',
+			key: 'actions',
+			className: 'actions',
+			render: (_: any, record: StockItem) => (
+				<StockItemActions record={record} isAdmin={isAdmin} />
+			),
+			width: 100,
+			align: 'center'
+		}
 	];
 
 	const stockItemsHistoryColumns: TableColumnsType<StockItemHistory> = [

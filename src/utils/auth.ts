@@ -49,6 +49,7 @@ export const AUTH_RULES = (
 				`${ROUTES.BILLING_SHOPS}/${shop}`,
 				ROUTES.BILLING_DETAIL,
 				`${ROUTES.STOCKS}/${shop}`,
+				`${ROUTES.STOCKS}/${shop}/historial`,
 				ROUTES.TRANSACTIONS
 			]
 		},
