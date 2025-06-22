@@ -46,7 +46,7 @@ const TransactionsProductFormList = ({
 	const itemsList: ProductVariantWithStock[] = Form.useWatch('items', form);
 	const toId = useWatch('toId', form);
 	const fromId = useWatch('fromId', form);
-	const isEnter = content === DrawerContent.enter;
+	const isEnter = content === DrawerContent.enterByTransfer;
 	const { data: session } = useSession();
 	const isAdmin = session?.user?.roleName === 'admin';
 	const [showExcelUploader, setShowExcelUploader] = useState(false);
@@ -60,7 +60,7 @@ const TransactionsProductFormList = ({
 	const shopSlug = isAdmin ? 'fabrica-cascajal' : session?.user?.shop;
 
 	const stockId =
-		content === DrawerContent.enterByProduction
+		content === DrawerContent.directEnter
 			? shops?.find(shop => shop.slug === shopSlug)?.stockId
 			: fromId;
 
@@ -283,9 +283,8 @@ const TransactionsProductFormList = ({
 															{
 																validator: (_, value) => {
 																	if (
-																		content !==
-																			DrawerContent.enterByProduction &&
-																		content !== DrawerContent.enter &&
+																		content !== DrawerContent.directEnter &&
+																		content !== DrawerContent.enterByTransfer &&
 																		isQuantity &&
 																		value &&
 																		value > maxQuantity

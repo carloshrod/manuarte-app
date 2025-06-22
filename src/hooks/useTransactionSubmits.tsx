@@ -23,7 +23,7 @@ const useTransactionSubmits = ({
 	const { dataToHandle } = useDrawerStore.getState();
 
 	const TRANSACTION_SUBMITS: Record<string, TransactionSubmitValueProps> = {
-		[DrawerContent.enterByProduction]: {
+		[DrawerContent.directEnter]: {
 			fn: async (values: SubmitTransactionDto) => {
 				const toId =
 					shops?.find(shop => {
@@ -62,7 +62,7 @@ const useTransactionSubmits = ({
 			confirmText:
 				'Se egresarán del stock de origen las cantidades para los items agregados'
 		},
-		[DrawerContent.enter]: {
+		[DrawerContent.enterByTransfer]: {
 			fn: async (values: SubmitTransactionDto) =>
 				await submitTransaction(
 					{

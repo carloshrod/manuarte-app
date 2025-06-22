@@ -38,7 +38,7 @@ export const PERMISSION_MAP: Record<string, string> = {
 	'customer-create': 'Crear clientes',
 	'customer-update': 'Editar clientes',
 	'customer-delete': 'Eliminar clientes',
-	'transaction-supplier': 'Hacer ingresos por proveedor'
+	'transaction-direct-enter': 'Hacer ingresos directos'
 };
 
 export const TRANSACTION_STATES_MAP: Record<string, string> = {

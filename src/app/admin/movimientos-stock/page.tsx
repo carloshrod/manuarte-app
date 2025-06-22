@@ -14,8 +14,8 @@ const TransactionsPage = async () => {
 	const shopName =
 		session?.user?.shop && session?.user?.shop.toUpperCase().replace('-', ' ');
 
-	const hasTransactionSupplier = session?.user?.extraPermissions?.includes(
-		'transaction-supplier'
+	const hasTransactionDirectEnter = session?.user?.extraPermissions?.includes(
+		'transaction-direct-enter'
 	);
 
 	return (
@@ -32,11 +32,11 @@ const TransactionsPage = async () => {
 					) : null}
 				</div>
 				<div className='flex gap-4'>
-					{isAdmin || hasTransactionSupplier ? (
+					{isAdmin || hasTransactionDirectEnter ? (
 						<OpenDrawerButton
-							title={`Ingreso por ${isAdmin ? 'Producción' : 'Proveedor'}`}
-							drawerContent={DrawerContent.enterByProduction}
-							buttonLabel={isAdmin ? 'Producción' : 'Proveedor'}
+							title='Ingreso Directo'
+							drawerContent={DrawerContent.directEnter}
+							buttonLabel='Ingreso Directo'
 							prependIcon={false}
 							appendIcon={<FaTruckLoading size={18} />}
 						/>
@@ -51,9 +51,9 @@ const TransactionsPage = async () => {
 						/>
 					) : null}
 					<OpenDrawerButton
-						title='Ingreso'
-						drawerContent={DrawerContent.enter}
-						buttonLabel='Ingreso'
+						title='Ingreso por Transferencia'
+						drawerContent={DrawerContent.enterByTransfer}
+						buttonLabel='Ingreso (Transfer)'
 						prependIcon={false}
 						appendIcon={<BiImport size={18} />}
 					/>
