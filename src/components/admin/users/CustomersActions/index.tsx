@@ -59,7 +59,7 @@ const CustomersActions = ({
 					? () => router.push(`${ROUTES.CUSTOMERS}/${record.id}`)
 					: undefined
 			}
-			onDelete={!isTop ? handleDelete : undefined}
+			onDelete={isAdmin && !isTop ? handleDelete : undefined}
 			popTitle={record.fullName}
 		/>
 	);

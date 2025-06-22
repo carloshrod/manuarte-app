@@ -47,7 +47,7 @@ const TransactionsForm = () => {
 	useEffect(() => {
 		if (
 			shops?.length > 0 &&
-			content === DrawerContent.enterByProduction &&
+			content === DrawerContent.directEnter &&
 			!isAdmin
 		) {
 			form.setFieldsValue({
@@ -79,7 +79,7 @@ const TransactionsForm = () => {
 			});
 		}
 
-		if (content === DrawerContent.enter && !isAdmin) {
+		if (content === DrawerContent.enterByTransfer && !isAdmin) {
 			const defaultToId = shops.find(
 				shp => shp?.slug === session?.user?.shop
 			)?.stockId;
@@ -103,7 +103,7 @@ const TransactionsForm = () => {
 	}, []);
 
 	const handleStockToChange = async (toId: string) => {
-		if (content === DrawerContent.enter && toId) {
+		if (content === DrawerContent.enterByTransfer && toId) {
 			fetchTransfers(toId);
 
 			setSelectedTransfer(null);
@@ -113,7 +113,7 @@ const TransactionsForm = () => {
 
 	const transferId = useWatch('transferId', form);
 	useEffect(() => {
-		if (content === DrawerContent.enter && transferId) {
+		if (content === DrawerContent.enterByTransfer && transferId) {
 			const toId = form.getFieldValue('toId');
 			const fetchItems = async () => {
 				const items: TransactionItem[] =
@@ -200,7 +200,7 @@ const TransactionsForm = () => {
 			className='h-full flex flex-col justify-between'
 		>
 			<Row gutter={16} className='items-center'>
-				{content === DrawerContent.enterByProduction ? (
+				{content === DrawerContent.directEnter ? (
 					<Col span={12}>
 						<div className='flex flex-col flex-1 gap-2 pb-6'>
 							<span>Destino</span>
@@ -262,7 +262,7 @@ const TransactionsForm = () => {
 					</Col>
 				) : null}
 
-				{content === DrawerContent.enter ? (
+				{content === DrawerContent.enterByTransfer ? (
 					<>
 						<Col span={12}>
 							<Form.Item
@@ -345,14 +345,14 @@ const TransactionsForm = () => {
 				) : null}
 
 				<>
-					{content !== DrawerContent.enter ? (
+					{content !== DrawerContent.enterByTransfer ? (
 						<Col span={24}>
 							<Form.Item
 								name='description'
 								label='Descripción'
 								rules={[
 									{
-										required: content !== DrawerContent.enterByProduction,
+										required: content !== DrawerContent.directEnter,
 										message: 'La descripción es requerida'
 									}
 								]}
@@ -367,7 +367,7 @@ const TransactionsForm = () => {
 					) : null}
 
 					<Col span={24}>
-						{content === DrawerContent.enterByProduction ||
+						{content === DrawerContent.directEnter ||
 						fromId ||
 						selectedTransfer?.id ||
 						dataToHandle ? (
