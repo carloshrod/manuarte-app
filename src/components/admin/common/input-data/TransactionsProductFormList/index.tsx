@@ -221,21 +221,27 @@ const TransactionsProductFormList = ({
 									setSelectedProduct={setSelectedProduct}
 									stockId={stockId}
 								/>
-								<div className='flex gap-2 my-6 px-2 text-gray-500'>
-									<Switch
-										defaultChecked={false}
-										onChange={checked => setShowExcelUploader(checked)}
-										id='switch'
-									/>
-									<label htmlFor='switch'>Cargar productos masivamente</label>
-								</div>
-								{showExcelUploader ? (
-									<ProductsExcelUploader
-										onAddBulkProduct={(productList: any[]) =>
-											handleAddBulkProduct(add, productList)
-										}
-										fromStockId={stockId}
-									/>
+								{isAdmin ? (
+									<>
+										<div className='flex gap-2 my-6 px-2 text-gray-500'>
+											<Switch
+												defaultChecked={false}
+												onChange={checked => setShowExcelUploader(checked)}
+												id='switch'
+											/>
+											<label htmlFor='switch'>
+												Cargar productos masivamente
+											</label>
+										</div>
+										{showExcelUploader ? (
+											<ProductsExcelUploader
+												onAddBulkProduct={(productList: any[]) =>
+													handleAddBulkProduct(add, productList)
+												}
+												fromStockId={stockId}
+											/>
+										) : null}
+									</>
 								) : null}
 							</>
 						) : null}
