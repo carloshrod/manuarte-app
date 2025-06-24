@@ -34,17 +34,22 @@ export const generateStockData = (stockItems: StockItem[]) => {
 		let poExcelData: ExcelStockData[] = [];
 
 		if (stockItems?.length > 0) {
-			poExcelData = stockItems?.map((item, i) => {
-				return {
-					'#': i + 1,
-					Código: item.vId,
-					Producto: `${item.productName} - ${item.productVariantName}`,
-					'Cantidad mínima': item.minQty,
-					'Cantidad máxima': item.maxQty,
-					'Cantidad actual': item.quantity,
-					'Cantidad requerida': Number(item.maxQty) - Number(item.quantity)
-				};
-			});
+			poExcelData = stockItems.reduce((acc, item) => {
+				const requiredQty = Number(item.maxQty) - Number(item.quantity);
+
+				if (item.maxQty > 0 && item.minQty > 0 && requiredQty > 0) {
+					acc.push({
+						'#': acc.length + 1,
+						Código: item.vId,
+						Producto: `${item.productName} - ${item.productVariantName}`,
+						'Cantidad mínima': item.minQty,
+						'Cantidad máxima': item.maxQty,
+						'Cantidad actual': item.quantity,
+						'Cantidad requerida': requiredQty
+					});
+				}
+				return acc;
+			}, [] as ExcelStockData[]);
 		}
 
 		return poExcelData;
@@ -190,10 +195,12 @@ export const downloadExcel = async (
 						right: { style: 'thin' }
 					};
 
-					const currentQuantityIndex = headers.findIndex(
-						h => h === 'Cantidad actual'
-					);
-					if (colNumber - 1 === currentQuantityIndex) {
+					if (headers[colNumber - 1] === 'Código') {
+						cell.numFmt = '@';
+						cell.value = String(cell.value);
+					}
+
+					if (headers[colNumber - 1] === 'Cantidad actual') {
 						formatRequiredQtyCol(item, cell);
 					}
 
@@ -216,6 +223,13 @@ export const downloadExcel = async (
 					}
 				});
 			});
+
+			const requiredQtyIndex = headers.findIndex(
+				h => h === 'Cantidad requerida'
+			);
+			if (requiredQtyIndex !== -1) {
+				countRequiredQty(requiredQtyIndex, worksheet, headers);
+			}
 
 			const totalIndex = headers.findIndex(h => h === 'Total');
 			if (totalIndex !== -1) {
@@ -327,6 +341,61 @@ const sumTotals = (
 		right: { style: 'thin' }
 	};
 	labelCell.fill = fillColor;
+};
+
+const countRequiredQty = (
+	requiredQtyIndex: number,
+	worksheet: ExcelJS.Worksheet,
+	headers: string[]
+) => {
+	const totalRow = worksheet.addRow(Array(headers.length).fill(''));
+	const totalRowNumber = totalRow.number;
+
+	const labelStartIndex = requiredQtyIndex - 2;
+	const labelEndIndex = requiredQtyIndex - 1;
+	const sumIndex = requiredQtyIndex;
+
+	const labelStartLetter = getColLetter(labelStartIndex);
+	const labelEndLetter = getColLetter(labelEndIndex);
+	const sumLetter = getColLetter(sumIndex);
+
+	worksheet.mergeCells(
+		`${labelStartLetter}${totalRowNumber}:${labelEndLetter}${totalRowNumber}`
+	);
+	const labelCell = worksheet.getCell(`${labelStartLetter}${totalRowNumber}`);
+	labelCell.value = 'Cantidad total requerida de items';
+	labelCell.font = { bold: true };
+	labelCell.alignment = { vertical: 'middle', horizontal: 'center' };
+	labelCell.border = {
+		top: { style: 'thin' },
+		left: { style: 'thin' },
+		bottom: { style: 'thin' },
+		right: { style: 'thin' }
+	};
+	labelCell.fill = {
+		type: 'pattern',
+		pattern: 'solid',
+		fgColor: { argb: 'C5D9F1' }
+	};
+
+	const sumCell = worksheet.getCell(`${sumLetter}${totalRowNumber}`);
+	sumCell.value = {
+		formula: `SUM(${sumLetter}4:${sumLetter}${totalRowNumber - 1})`
+	};
+	sumCell.numFmt = '#,##0';
+	sumCell.font = { bold: true };
+	sumCell.alignment = { vertical: 'middle', horizontal: 'center' };
+	sumCell.border = {
+		top: { style: 'thin' },
+		left: { style: 'thin' },
+		bottom: { style: 'thin' },
+		right: { style: 'thin' }
+	};
+	sumCell.fill = {
+		type: 'pattern',
+		pattern: 'solid',
+		fgColor: { argb: 'C5D9F1' }
+	};
 };
 
 const getColLetter = (index: number) => {
