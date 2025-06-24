@@ -50,11 +50,7 @@ const ProductsExcelUploader = ({
 				});
 
 				const headerRowIndex = allRows.findIndex(
-					row =>
-						Array.isArray(row) &&
-						row.includes('Código') &&
-						row.includes('Producto') &&
-						row.includes('Cantidad requerida')
+					row => row.includes('Código') && row.includes('Cantidad requerida')
 				);
 
 				if (headerRowIndex === -1) {
@@ -68,20 +64,12 @@ const ProductsExcelUploader = ({
 				const rows = allRows.slice(headerRowIndex + 1);
 
 				const productCodeIndex = headers.indexOf('Código');
-				const nameIndex = headers.indexOf('Producto');
 				const requiredQtyIndex = headers.indexOf('Cantidad requerida');
 
-				if (productCodeIndex === -1 || requiredQtyIndex === -1) {
-					notification.error({
-						message: 'No se encontraron las columnas requeridas'
-					});
-					return;
-				}
-
 				const filteredData = rows
+					.filter(row => row[productCodeIndex])
 					.map((row: any[]) => ({
 						productCode: row[productCodeIndex],
-						name: row[nameIndex],
 						requiredQty: Number(row[requiredQtyIndex])
 					}))
 					.filter(item => item.requiredQty > 0);
@@ -99,7 +87,6 @@ const ProductsExcelUploader = ({
 
 						return {
 							...resItem,
-							name: match?.name || '',
 							requiredQty: match?.requiredQty || 0
 						};
 					});
