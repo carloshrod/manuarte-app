@@ -9,6 +9,7 @@ export interface ExcelStockData {
 	'Cantidad mínima': number;
 	'Cantidad máxima': number;
 	'Cantidad actual': number;
+	'Cantidad en tránsito': number;
 	'Cantidad requerida': number;
 }
 
@@ -29,13 +30,36 @@ export interface ExcelBillingData {
 	Total: number;
 }
 
-export const generateStockData = (stockItems: StockItem[]) => {
+export const generateStockData = (
+	stockItems: StockItem[],
+	itemsInTransit: { productVariantId: string; qtyInTransit: string }[]
+) => {
 	try {
 		let poExcelData: ExcelStockData[] = [];
 
-		if (stockItems?.length > 0) {
-			poExcelData = stockItems.reduce((acc, item) => {
-				const requiredQty = Number(item.maxQty) - Number(item.quantity);
+		const itemsInTransitMap =
+			itemsInTransit?.length > 0 &&
+			new Map(
+				itemsInTransit.map(
+					(q: { productVariantId: string; qtyInTransit: string }) => [
+						q.productVariantId,
+						parseInt(q.qtyInTransit)
+					]
+				)
+			);
+
+		const updatedStockItems = itemsInTransitMap
+			? stockItems.map(product => ({
+					...product,
+					qtyInTransit: itemsInTransitMap.get(product.productVariantId) ?? 0
+				}))
+			: stockItems;
+
+		if (updatedStockItems?.length > 0) {
+			poExcelData = updatedStockItems.reduce((acc, item) => {
+				const qtyInTransit = Number(item.qtyInTransit) || 0;
+				const requiredQty =
+					Number(item.maxQty) - Number(item.quantity) - qtyInTransit;
 
 				if (item.maxQty > 0 && item.minQty > 0 && requiredQty > 0) {
 					acc.push({
@@ -45,6 +69,7 @@ export const generateStockData = (stockItems: StockItem[]) => {
 						'Cantidad mínima': item.minQty,
 						'Cantidad máxima': item.maxQty,
 						'Cantidad actual': item.quantity,
+						'Cantidad en tránsito': qtyInTransit,
 						'Cantidad requerida': requiredQty
 					});
 				}

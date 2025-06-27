@@ -266,6 +266,8 @@ interface StockItem {
 	minQty: number;
 	createdDate: string;
 	updatedDate: string;
+	stockId: string;
+	qtyInTransit: number;
 }
 
 interface StockItemHistory extends StockItem {

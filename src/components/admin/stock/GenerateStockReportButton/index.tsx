@@ -7,6 +7,7 @@ import {
 	generateStockData,
 	generateStockHistoryData
 } from '@/utils/documents';
+import { transactionServices } from '@/services/transactionServices';
 
 const GenerateStockReportButton = ({
 	shopSlug,
@@ -22,9 +23,16 @@ const GenerateStockReportButton = ({
 
 	const handleDownloadExcel = async () => {
 		try {
-			const excelData = history
-				? generateStockHistoryData(history)
-				: generateStockData(stockItems);
+			let excelData;
+
+			if (history) {
+				excelData = generateStockHistoryData(history);
+			} else {
+				const itemsInTransit = await transactionServices.getItemsInTransit(
+					stockItems[0].stockId
+				);
+				excelData = generateStockData(stockItems, itemsInTransit);
+			}
 
 			const sufix = history ? 'reporte-stock-historial' : 'reporte-stock';
 			const shopName = shopSlug.toUpperCase().replace('-', ' ');

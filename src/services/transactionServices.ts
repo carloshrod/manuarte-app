@@ -29,6 +29,18 @@ export const transactionServices = {
 		}
 	},
 
+	getItemsInTransit: async (stockId: string) => {
+		try {
+			const res = await axiosPrivate.get(
+				`${ENV.API.TRANSACTIONS}/items-in-transit/${stockId}`
+			);
+
+			return res.data;
+		} catch (error) {
+			console.error(error);
+		}
+	},
+
 	create: async (body: SubmitTransactionDto) => {
 		return await axiosPrivate.post(ENV.API.TRANSACTIONS, body);
 	},
