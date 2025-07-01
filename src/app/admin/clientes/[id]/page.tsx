@@ -1,5 +1,6 @@
 import GoBack from '@/components/admin/common/ui/GoBack';
 import CustomerStats from '@/components/admin/users/CustomerStats';
+import GenerateCustomerReportButton from '@/components/admin/users/GenerateCustomerReportButton';
 import RecentActivityItem from '@/components/admin/users/RecentActivityItem';
 import TopProductsTable from '@/components/admin/users/TopProductsTable';
 import { userServices } from '@/services/userServices';
@@ -67,14 +68,16 @@ const CustomerDetailsPage = async ({
 		<section className='h-full flex flex-col gap-6 px-4'>
 			<div className='flex pt-4'>
 				<GoBack />
-				<div className='flex flex-wrap items-center'>
-					<h2 className='min-[478px]:text-lg min-[796px]:text-2xl font-semibold ps-4'>
-						Historial:
-					</h2>
+				<div className='w-full flex flex-wrap items-center justify-between'>
 					<h2 className='min-[478px]:text-lg min-[796px]:text-2xl font-semibold ps-2 flex items-center'>
 						{customer?.info?.fullName}
 						<HiOutlineUser size={22} />
 					</h2>
+
+					<GenerateCustomerReportButton
+						info={{ ...info, billingsCount: billings?.count, totalSpent }}
+						recentActivity={recentActivity}
+					/>
 				</div>
 			</div>
 			<div className='flex flex-col gap-6 overflow-y-auto custom-scrollbar pb-4 ps-2'>

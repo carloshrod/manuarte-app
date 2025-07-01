@@ -17,12 +17,12 @@ const GenerateBillingReportButton = ({ shopSlug }: { shopSlug: string }) => {
 				const shopName = shopSlug.toUpperCase().replace('-', ' ');
 				const title = `Reporte de Ventas - ${shopName}`;
 
-				downloadExcel(
-					excelData,
-					`${shopSlug}-reporte-ventas-${moment(date).format('YYYYMMDD')}`,
+				downloadExcel({
+					data: excelData,
+					fileName: `${shopSlug}-reporte-ventas-${moment(date).format('YYYYMMDD')}`,
 					title,
 					date
-				);
+				});
 			}
 		} catch (error) {
 			console.error(error);
