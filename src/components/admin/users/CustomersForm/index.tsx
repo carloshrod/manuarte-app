@@ -91,7 +91,17 @@ const CustomersForm = () => {
 			>
 				<Input placeholder='Ingresa el número de teléfono del cliente' />
 			</Form.Item>
-			<Form.Item name='location' label='Dirección'>
+
+			<Form.Item
+				name='location'
+				label='Dirección'
+				rules={[
+					{
+						required: true,
+						message: 'La dirección es requerida'
+					}
+				]}
+			>
 				<Input placeholder='Ingresa la dirección del cliente' />
 			</Form.Item>
 
