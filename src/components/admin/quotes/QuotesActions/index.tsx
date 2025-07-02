@@ -7,9 +7,16 @@ import { quoteServices } from '@/services/quoteServices';
 import { removeQuote } from '@/reducers/quotes/quoteSlice';
 import { useDrawerStore } from '@/stores/drawerStore';
 
-const QuotesActions = ({ record }: { record: Quote }) => {
+const QuotesActions = ({
+	record,
+	shopSlug
+}: {
+	record: Quote;
+	shopSlug: string;
+}) => {
 	const { openDrawer } = useDrawerStore.getState();
 	const dispatch = useDispatch();
+	const shopName = shopSlug.toUpperCase().replace('-', ' ');
 
 	const handleEdit = async () => {
 		const dataToHandle = await quoteServices.getOne({
@@ -18,7 +25,7 @@ const QuotesActions = ({ record }: { record: Quote }) => {
 		});
 
 		openDrawer({
-			title: `Editar Cotización - ${record.serialNumber}`,
+			title: `Editar Cotización ${record.serialNumber} - ${shopName}`,
 			content: DrawerContent.quotes,
 			dataToHandle,
 			noCustomer: Boolean(!dataToHandle?.customerId)

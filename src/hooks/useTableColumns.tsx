@@ -451,7 +451,9 @@ const useTableColumns = () => {
 			title: 'ACCIONES',
 			key: 'actions',
 			className: 'actions',
-			render: (_, record: Quote) => <QuotesActions record={record} />,
+			render: (_, record: Quote) => (
+				<QuotesActions record={record} shopSlug={params?.shopSlug as string} />
+			),
 			width: 140
 		}
 	];

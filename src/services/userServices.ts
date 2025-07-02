@@ -12,9 +12,12 @@ export const userServices = {
 		}
 	},
 
-	getAllCustomers: async () => {
+	getAllCustomers: async (isoCode?: string) => {
 		try {
-			const res = await axiosPrivate.get(ENV.API.CUSTOMERS, { server: true });
+			const res = await axiosPrivate.get(ENV.API.CUSTOMERS, {
+				params: { isoCode },
+				server: true
+			});
 
 			return res.data;
 		} catch (error) {
@@ -105,9 +108,9 @@ export const userServices = {
 		return await axiosPrivate.delete(`${ENV.API.CUSTOMERS}/${personId}`);
 	},
 
-	searchCustomer: async (search: string) => {
+	searchCustomer: async (search: string, isoCode: string) => {
 		const res = await axiosPrivate.get(`${ENV.API.CUSTOMERS}/search`, {
-			params: { search }
+			params: { search, isoCode }
 		});
 
 		if (res.status === 200) {

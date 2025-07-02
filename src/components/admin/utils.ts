@@ -56,13 +56,15 @@ export const getProductsData = async ({
 
 export const getCustomersData = async ({
 	currentValue,
-	newValue
+	newValue,
+	isoCode
 }: {
 	currentValue: string;
 	newValue: string;
+	isoCode: string;
 }) => {
 	try {
-		const data = await userServices.searchCustomer(newValue);
+		const data = await userServices.searchCustomer(newValue, isoCode);
 
 		let formattedData;
 		if (currentValue === newValue) {

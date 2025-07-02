@@ -157,6 +157,7 @@ interface Shop {
 	stockId: string;
 	stockName: string;
 	mainStock?: boolean;
+	isoCode?: string;
 }
 
 enum QuoteStatus {

@@ -33,7 +33,7 @@ const QuotesPage = async (props: QuotesPageProps) => {
 					</span>
 				</div>
 				<OpenDrawerButton
-					title='Crear Cotización'
+					title={`Crear Cotización - ${shopName}`}
 					drawerContent={DrawerContent.quotes}
 					buttonLabel='Cotización'
 					appendIcon={<TbFileDollar size={18} />}

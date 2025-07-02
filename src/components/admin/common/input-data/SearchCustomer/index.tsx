@@ -3,6 +3,8 @@ import { Select, SelectProps, Spin } from 'antd';
 import { MehOutlined } from '@ant-design/icons';
 import { getCustomersData } from '@/components/admin/utils';
 import { useDrawerStore } from '@/stores/drawerStore';
+import { useSelector } from 'react-redux';
+import { useParams } from 'next/navigation';
 
 const SearchCustomer = () => {
 	const [customersOptions, setCustomersOptions] = useState<
@@ -12,6 +14,9 @@ const SearchCustomer = () => {
 	const [hasSearched, setHasSearched] = useState(false);
 	const [customersData, setCustomersData] = useState<Customer[]>([]);
 	const { updateDrawer } = useDrawerStore.getState();
+	const { shops } = useSelector((state: RootState) => state.shop);
+	const { shopSlug } = useParams();
+	const shop = shops.find(sh => sh.slug === shopSlug);
 
 	let timeout: ReturnType<typeof setTimeout> | null;
 
@@ -34,7 +39,8 @@ const SearchCustomer = () => {
 			timeout = setTimeout(async () => {
 				const res = await getCustomersData({
 					currentValue,
-					newValue
+					newValue,
+					isoCode: shop?.isoCode as string
 				});
 
 				if (res) {
