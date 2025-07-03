@@ -432,7 +432,10 @@ export const downloadExcel = async ({
 						formatTransactionCol(item, cell);
 					}
 
-					if (headers[colNumber - 1] === 'Total') {
+					if (
+						headers[colNumber - 1] === 'Total' ||
+						headers[colNumber - 1] === 'Flete'
+					) {
 						cell.numFmt =
 							isUsd || info?.countryIsoCode === 'EC'
 								? '"$" #,##0.00'
