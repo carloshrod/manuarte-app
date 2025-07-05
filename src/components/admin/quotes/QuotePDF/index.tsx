@@ -95,7 +95,12 @@ const QuotePDF = ({
 
 			{/* Table */}
 			{quote?.items?.length > 0 ? (
-				<PDFTable items={quote?.items} shipping={quote.shipping} />
+				<PDFTable
+					items={quote?.items}
+					discountType={quote?.discountType}
+					discount={quote?.discount}
+					shipping={quote?.shipping}
+				/>
 			) : null}
 
 			<Divider />

@@ -1,16 +1,34 @@
+import { DiscountType } from '@/types/enums';
 import { formatCurrency } from '@/utils/formats';
 
 interface PDFTableProps {
-	items: QuoteItem[];
+	items: QuoteItem[] | BillingItem[];
+	discountType?: string;
+	discount?: number;
 	shipping: number;
 }
 
-const PDFTable = ({ items, shipping = 0 }: PDFTableProps) => {
+const PDFTable = ({
+	items,
+	discountType,
+	discount,
+	shipping = 0
+}: PDFTableProps) => {
 	const subtotal = items.reduce((acc, item) => {
 		return acc + Number(item.totalPrice);
 	}, 0);
 
-	const total = subtotal + Number(shipping);
+	const isFixedDiscount = discountType === DiscountType.FIXED;
+
+	const discountLabel =
+		!discountType || isFixedDiscount ? 'DESCUENTO' : `DESCUENTO (${discount}%)`;
+
+	const discountValue =
+		(!discountType || isFixedDiscount
+			? Number(discount)
+			: subtotal * (Number(discount) / 100)) || 0;
+
+	const total = subtotal - discountValue + Number(shipping);
 
 	return (
 		<div className='mb-16'>
@@ -37,9 +55,15 @@ const PDFTable = ({ items, shipping = 0 }: PDFTableProps) => {
 				</tbody>
 				<tbody>
 					<tr>
-						<td rowSpan={3} colSpan={3}></td>
+						<td rowSpan={4} colSpan={3}></td>
 						<td className='px-4 py-2 font-bold border-b-2'>SUBTOTAL</td>
 						<td className='px-4 py-2 border-b-2'>{formatCurrency(subtotal)}</td>
+					</tr>
+					<tr>
+						<td className='px-4 py-2 font-bold border-b-2'>{discountLabel}</td>
+						<td className='px-4 py-2 border-b-2'>
+							{formatCurrency(discountValue) ?? 0}
+						</td>
 					</tr>
 					<tr>
 						<td className='px-4 py-2 font-bold border-b-2'>FLETE</td>

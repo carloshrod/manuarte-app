@@ -6,9 +6,10 @@ import ProductFormList from '../../common/input-data/ProductFormList';
 import DrawerFormFooter from '../../common/input-data/DrawerFormFooter';
 import CalculationInputs from '../../common/input-data/CalculationInputs';
 import useForm from '@/hooks/useForm';
-import { QuoteStatus } from '@/types/enums';
+import { DiscountType, QuoteStatus } from '@/types/enums';
 import { customerSchema, validateForm } from '@/utils/validators';
 import { useDrawerStore } from '@/stores/drawerStore';
+import { updateCalculations } from '../../utils';
 
 const QuoteForm = () => {
 	const {
@@ -44,10 +45,14 @@ const QuoteForm = () => {
 						totalPrice: Number(item.totalPrice)
 					};
 				}),
-				shipping: fieldsData.shipping ?? 0
+				shipping: fieldsData.shipping ?? 0,
+				discountType: fieldsData.discountType || DiscountType.FIXED
 			};
+
 			form.setFieldsValue(preparedFields);
-			updateCalculations();
+			const discountByPercent =
+				dataToHandle?.discountType === DiscountType.PERCENTAGE;
+			updateCalculations(form, discountByPercent);
 		} else {
 			if (existingCustomer?.personId) {
 				form.setFieldsValue({
@@ -60,21 +65,6 @@ const QuoteForm = () => {
 		}
 	}, [existingCustomer]);
 
-	const updateCalculations = () => {
-		const items: ProductVariantWithStock[] = form.getFieldValue('items') || [];
-		const shipping = parseFloat(form.getFieldValue('shipping')) || 0;
-
-		const subtotal = items.reduce((total, item) => {
-			const totalPrice = item?.totalPrice || 0;
-			return Number(total) + Number(totalPrice);
-		}, 0);
-
-		form.setFieldsValue({
-			subtotal,
-			total: subtotal + shipping
-		});
-	};
-
 	const onSubmit = async (values: SubmitQuoteDto) => {
 		const isValid = !noCustomer
 			? await validateForm(values, customerSchema, form)
@@ -82,6 +72,7 @@ const QuoteForm = () => {
 		if (!isValid) return;
 
 		const { subtotal, total, ...restValues } = values;
+
 		if (!dataToHandle) {
 			await submitCreateQuote({
 				...restValues,
@@ -110,10 +101,12 @@ const QuoteForm = () => {
 				items: [],
 				status: QuoteStatus.PENDING,
 				subtotal: 0,
-				total: 0
+				total: 0,
+				discountType: DiscountType.FIXED
 			}}
 			style={{ padding: '0 16px' }}
 			onFinish={values => onSubmit(values)}
+			scrollToFirstError={{ behavior: 'smooth', block: 'end', focus: true }}
 		>
 			{!noCustomer ? (
 				<>
@@ -133,7 +126,10 @@ const QuoteForm = () => {
 			/>
 
 			<DrawerFormFooter isQuote={true}>
-				<CalculationInputs form={form} />
+				<CalculationInputs
+					form={form}
+					discountType={dataToHandle?.discountType}
+				/>
 			</DrawerFormFooter>
 
 			<div className='flex justify-end mt-4'>

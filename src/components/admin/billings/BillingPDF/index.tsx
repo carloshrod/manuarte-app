@@ -106,7 +106,12 @@ const BillingPDF = ({
 
 			{/* Table */}
 			{billing?.items?.length > 0 ? (
-				<PDFTable items={billing?.items} shipping={billing.shipping} />
+				<PDFTable
+					items={billing?.items}
+					discountType={billing?.discountType}
+					discount={billing?.discount}
+					shipping={billing?.shipping}
+				/>
 			) : null}
 
 			<Divider />

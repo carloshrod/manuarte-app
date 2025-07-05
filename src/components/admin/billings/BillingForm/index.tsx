@@ -9,7 +9,7 @@ import { updateCalculations } from '../../utils';
 import { useParams } from 'next/navigation';
 import { customerSchema, validateForm } from '@/utils/validators';
 import { useModalStore } from '@/stores/modalStore';
-import { ModalContent } from '@/types/enums';
+import { DiscountType, ModalContent } from '@/types/enums';
 import { useDrawerStore } from '@/stores/drawerStore';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -64,7 +64,7 @@ const BillingForm = () => {
 			: true;
 		if (!isValid) return;
 
-		const { subtotal, ...restValues } = values;
+		const { total, ...restValues } = values;
 
 		let uniqueId: string = clientRequestId;
 		if (!clientRequestId) {
@@ -102,10 +102,12 @@ const BillingForm = () => {
 				items: [],
 				status: 'PAID',
 				subtotal: 0,
-				total: 0
+				total: 0,
+				discountType: DiscountType.FIXED
 			}}
 			style={{ padding: '0 16px' }}
 			onFinish={onFinish}
+			scrollToFirstError={{ behavior: 'smooth', block: 'end', focus: true }}
 		>
 			{!noCustomer ? <CustomerInfoInputs /> : null}
 

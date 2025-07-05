@@ -125,7 +125,7 @@ export const FOOTER_PRODUCTS_INPUTS_PROPS = [
 		name: 'totalPrice',
 		label: 'Precio Total',
 		type: 'number',
-		minWidth: 200,
+		minWidth: 250,
 		width: '20%'
 	}
 ];
@@ -135,6 +135,16 @@ export const QUOTE_CALCULATIONS_INPUTS_PROPS = [
 		name: 'subtotal',
 		label: 'Subtotal',
 		readOnly: true
+	},
+	{
+		name: 'discountType',
+		label: 'Calcular descuento por',
+		readOnly: false
+	},
+	{
+		name: 'discount',
+		label: 'Descuento',
+		readOnly: false
 	},
 	{
 		name: 'shipping',

@@ -3,18 +3,27 @@ import { userServices } from '@/services/userServices';
 import { cityServices } from '@/services/cityServices';
 import { FormInstance } from 'antd';
 
-export const updateCalculations = (form: FormInstance) => {
+export const updateCalculations = (
+	form: FormInstance,
+	discountByPercent: boolean = false
+) => {
 	const items: ProductVariantWithStock[] = form.getFieldValue('items') || [];
 	const shipping = parseFloat(form.getFieldValue('shipping')) || 0;
+	const discount = parseFloat(form.getFieldValue('discount')) || 0;
+	let totalDiscount = discount;
 
 	const subtotal = items.reduce((total, item) => {
 		const totalPrice = item?.totalPrice || 0;
 		return Number(total) + Number(totalPrice);
 	}, 0);
 
+	if (discountByPercent) {
+		totalDiscount = subtotal * (discount / 100);
+	}
+
 	form.setFieldsValue({
 		subtotal,
-		total: subtotal + shipping
+		total: subtotal - totalDiscount + shipping
 	});
 };
 

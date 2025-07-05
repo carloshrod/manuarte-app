@@ -198,6 +198,8 @@ interface Quote {
 	updatedDate: string;
 	items: QuoteItem[];
 	shipping: number;
+	discountType: string;
+	discount: number;
 }
 
 interface SubmitQuoteDto extends SubmitCustomerDto {
@@ -205,9 +207,11 @@ interface SubmitQuoteDto extends SubmitCustomerDto {
 	shopId?: string;
 	items: ProductVariantWithStock[];
 	status: QuoteStatus;
-	shipping: string;
-	subtotal?: string;
-	total?: string;
+	discountType: string;
+	discount: number;
+	shipping: number;
+	subtotal?: number;
+	total?: number;
 }
 
 enum BillingStatus {
@@ -246,9 +250,11 @@ interface SubmitBillingDto extends SubmitCustomerDto {
 	items: ProductVariantWithStock[];
 	status: BillingStatus;
 	paymentMethod: PaymentMethod;
-	shipping: string;
-	subtotal?: string;
-	total: string;
+	discountType: string;
+	discount: number;
+	shipping: number;
+	subtotal: number;
+	total?: number;
 	currency: string;
 	clientRequestId: string;
 }

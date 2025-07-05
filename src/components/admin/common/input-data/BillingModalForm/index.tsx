@@ -43,8 +43,6 @@ const BillingModalForm = () => {
 		0
 	);
 
-	const total = subtotal + dataToHandle?.shipping || 0;
-
 	const customerName = dataToHandle?.fullName
 		? `${formatToTitleCase(dataToHandle?.fullName)} - ${dataToHandle?.dni}`
 		: 'Consumidor Final';
@@ -63,7 +61,7 @@ const BillingModalForm = () => {
 							values: {
 								...dataToHandle,
 								...values,
-								total,
+								subtotal,
 								shopSlug: params?.shopSlug,
 								clientRequestId: uuidv4()
 							},
