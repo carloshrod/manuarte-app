@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Form, Select } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import FormButtons from '../../ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import {
@@ -21,7 +21,6 @@ import { v4 as uuidv4 } from 'uuid';
 const BillingModalForm = () => {
 	const { form, isLoading, submitCreateBilling, submitUpdateBilling } =
 		useForm();
-	const { billings } = useSelector((state: RootState) => state.billing);
 	const { dataToHandle, openModal, closeModal } = useModalStore.getState();
 	const params = useParams();
 	const { push } = useRouter();
@@ -65,15 +64,12 @@ const BillingModalForm = () => {
 								shopSlug: params?.shopSlug,
 								clientRequestId: uuidv4()
 							},
-							fetchBillings:
-								billings?.length === 0
-									? async () => {
-											const data = await billingServices.getAll(
-												params?.shopSlug as string
-											);
-											dispatch(setBillings(data));
-										}
-									: undefined
+							fetchBillings: async () => {
+								const data = await billingServices.getAll(
+									params?.shopSlug as string
+								);
+								dispatch(setBillings(data));
+							}
 						});
 
 						if (res?.status === 201) {
