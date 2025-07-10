@@ -134,7 +134,7 @@ export const generateBillingsData = (billings: Billing[]) => {
 					Cliente: formatToTitleCase(item.customerName) ?? 'Consumidor Final',
 					'Medio de Pago': PAYMENT_METHOD_MAP[item.paymentMethod],
 					Flete: item.shipping ?? 0,
-					Total: item.total
+					Total: item.subtotal
 				};
 			});
 		}
@@ -151,7 +151,7 @@ export const generateCustomerData = (recentActivity: Billing[] | Quote[]) => {
 		if (recentActivity?.length > 0) {
 			excelData = recentActivity?.map((item, i) => {
 				const paymentMethod = 'paymentMethod' in item && item.paymentMethod;
-				const total = 'total' in item ? Number(item.total) : 0;
+				const total = 'subtotal' in item ? Number(item.subtotal) : 0;
 
 				return {
 					'#': i + 1,

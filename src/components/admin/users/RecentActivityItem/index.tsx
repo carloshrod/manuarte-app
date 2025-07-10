@@ -50,10 +50,10 @@ const RecentActivityItem = ({ item }: { item: Billing | Quote }) => {
 						{PAYMENT_METHOD_MAP[item?.paymentMethod]}
 					</span>
 				) : null}
-				{'total' in item ? (
+				{'subtotal' in item ? (
 					<span className='text-[#000000E0]'>
 						<span className='text-[#00000073] font-semibold'>Total: </span>
-						{formatCurrency(item?.total)}
+						{formatCurrency(item?.subtotal)}
 					</span>
 				) : null}
 				<span className='text-[#00000073] font-semibold'>
