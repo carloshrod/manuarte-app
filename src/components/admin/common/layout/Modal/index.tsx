@@ -11,7 +11,8 @@ const CustomModal = () => {
 
 	const WIDTH: Record<string, number> = {
 		products: 600,
-		stockItems: 600
+		stockItems: 600,
+		billings: 600
 	};
 
 	useEffect(() => {

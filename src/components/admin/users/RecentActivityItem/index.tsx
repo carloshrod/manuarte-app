@@ -9,7 +9,7 @@ import { Tooltip } from 'antd';
 
 const RecentActivityItem = ({ item }: { item: Billing | Quote }) => {
 	const { openDrawer } = useDrawerStore.getState();
-	const isBilling = 'paymentMethod' in item;
+	const isBilling = 'paymentMethods' in item;
 
 	const handleShowDetails = async () => {
 		const dataToHandle = isBilling
@@ -45,9 +45,9 @@ const RecentActivityItem = ({ item }: { item: Billing | Quote }) => {
 				{isBilling ? (
 					<span className='text-[#000000E0]'>
 						<span className='text-[#00000073] font-semibold'>
-							Método de pago:{' '}
+							Métodos de pago:{' '}
 						</span>
-						{PAYMENT_METHOD_MAP[item?.paymentMethod]}
+						{item?.paymentMethods?.map(p => PAYMENT_METHOD_MAP[p]).join(', ')}
 					</span>
 				) : null}
 				{'subtotal' in item ? (

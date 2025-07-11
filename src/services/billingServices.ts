@@ -36,7 +36,7 @@ export const billingServices = {
 	},
 
 	update: async (
-		body: { status: string; paymentMethod: string },
+		body: { status: string; payments: Payment[] },
 		billingId: string
 	) => {
 		return await axiosPrivate.put(`${ENV.API.BILLINGS}/${billingId}`, body);

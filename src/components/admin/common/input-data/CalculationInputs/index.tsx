@@ -7,10 +7,12 @@ import { DiscountType } from '@/types/enums';
 
 const CalculationInputs = ({
 	form,
-	discountType
+	discountType,
+	isUpdatingBilling = false
 }: {
 	form: FormInstance;
 	discountType?: string;
+	isUpdatingBilling?: boolean;
 }) => {
 	const [checked, setChecked] = useState(false);
 
@@ -29,37 +31,39 @@ const CalculationInputs = ({
 				return (
 					<div key={index}>
 						{item.name === 'discountType' ? (
-							<div className='mb-3 flex items-center justify-end gap-2'>
-								<label
-									htmlFor='switch'
-									className='text-[12px] text-gray-500'
-								>{`${item.label} ${checked ? 'valor fijo' : 'porcentaje'}`}</label>
-								<Switch
-									defaultChecked={discountType === DiscountType.PERCENTAGE}
-									onChange={valueChecked => {
-										setChecked(valueChecked);
-										updateCalculations(form, valueChecked);
-										form.setFieldsValue({
-											discountType: valueChecked
-												? DiscountType.PERCENTAGE
-												: DiscountType.FIXED
-										});
-									}}
-									id='switch'
-									unCheckedChildren={
-										<span className='text-[14px] font-semibold'>$</span>
-									}
-									checkedChildren={
-										<span className='text-[14px] font-semibold'>%</span>
-									}
-									style={{
-										backgroundColor: '#1677ff'
-									}}
-								/>
-								<Form.Item name={item.name} noStyle hidden>
-									<Input hidden />
-								</Form.Item>
-							</div>
+							!isUpdatingBilling ? (
+								<div className='mb-3 flex items-center justify-end gap-2'>
+									<label
+										htmlFor='switch'
+										className='text-[12px] text-gray-500'
+									>{`${item.label} ${checked ? 'valor fijo' : 'porcentaje'}`}</label>
+									<Switch
+										defaultChecked={discountType === DiscountType.PERCENTAGE}
+										onChange={valueChecked => {
+											setChecked(valueChecked);
+											updateCalculations(form, valueChecked);
+											form.setFieldsValue({
+												discountType: valueChecked
+													? DiscountType.PERCENTAGE
+													: DiscountType.FIXED
+											});
+										}}
+										id='switch'
+										unCheckedChildren={
+											<span className='text-[14px] font-semibold'>$</span>
+										}
+										checkedChildren={
+											<span className='text-[14px] font-semibold'>%</span>
+										}
+										style={{
+											backgroundColor: '#1677ff'
+										}}
+									/>
+									<Form.Item name={item.name} noStyle hidden>
+										<Input hidden />
+									</Form.Item>
+								</div>
+							) : null
 						) : (
 							<Form.Item
 								name={item.name}
@@ -96,13 +100,18 @@ const CalculationInputs = ({
 
 										return checked ? percentageValue : formattedValue;
 									}}
-									variant={item.readOnly ? 'borderless' : 'outlined'}
+									variant={
+										item.readOnly || isUpdatingBilling
+											? 'borderless'
+											: 'outlined'
+									}
 									className='textRight'
 									style={{
 										width: '100%',
-										backgroundColor: item.readOnly ? '#e5e5e5' : undefined
+										backgroundColor:
+											item.readOnly || isUpdatingBilling ? '#e5e5e5' : undefined
 									}}
-									readOnly={item.readOnly}
+									readOnly={item.readOnly || isUpdatingBilling}
 									onChange={() => updateCalculations(form, checked)}
 								/>
 							</Form.Item>

@@ -55,10 +55,16 @@ const BillingPDF = ({
 		},
 		{
 			key: '7',
-			label: 'Método de Pago:',
-			children: billing?.paymentMethod?.includes('TRANSFER')
-				? 'Transferencia'
-				: formatToTitleCase(PAYMENT_METHOD_MAP[billing?.paymentMethod]),
+			label: 'Métodos de Pago:',
+			children: billing?.paymentMethods
+				.map(p => {
+					const paymenMethod = p.includes('TRANSFER')
+						? 'Transferencia'
+						: PAYMENT_METHOD_MAP[p];
+
+					return formatToTitleCase(paymenMethod);
+				})
+				.join(', '),
 			span: 3
 		}
 	];

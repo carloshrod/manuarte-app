@@ -11,13 +11,16 @@ const BillingsActions = ({ record }: { record: Billing }) => {
 	const { openModal } = useModalStore.getState();
 	const dispatch = useDispatch();
 
-	const handleEdit = () => {
+	const handleEdit = async () => {
+		const billing = await billingServices.getOne({
+			serialNumber: record?.serialNumber
+		});
+
 		openModal({
 			title: 'Editar Factura',
 			content: ModalContent.billings,
 			dataToHandle: {
-				...record,
-				fullName: record?.customerName,
+				...billing,
 				isUpdating: true
 			}
 		});

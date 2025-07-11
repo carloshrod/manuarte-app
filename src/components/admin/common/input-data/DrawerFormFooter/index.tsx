@@ -1,7 +1,7 @@
-import { Form, Select } from 'antd';
+import { Form, FormInstance, Select } from 'antd';
 import { ReactNode } from 'react';
+import PaymentAmounts from '../PaymentAmounts';
 import {
-	FOOTER_PRODUCTS_INPUTS_PROPS,
 	BILLING_STATUS_OPTIONS,
 	COL_PAYMENT_METHOD_OPTIONS,
 	ECU_PAYMENT_METHOD_OPTIONS,
@@ -9,12 +9,14 @@ import {
 } from '@/components/admin/consts';
 
 interface DrawerFormFooterProps {
+	form?: FormInstance;
 	isQuote: boolean;
 	shopSlug?: string;
 	children: ReactNode;
 }
 
 const DrawerFormFooter = ({
+	form,
 	isQuote,
 	shopSlug = '',
 	children
@@ -26,54 +28,56 @@ const DrawerFormFooter = ({
 		: ECU_PAYMENT_METHOD_OPTIONS;
 
 	return (
-		<div className='flex items-start gap-2 min-[1144px]:me-[36px] mt-8 overflow-x-auto custom-scrollbar'>
-			{FOOTER_PRODUCTS_INPUTS_PROPS.map((item, index) => {
-				return (
-					<div
-						key={index}
-						style={{
-							width: item.width,
-							minWidth: item.minWidth
-						}}
+		<div className='flex items-start justify-between gap-2 min-[1144px]:me-[36px] mt-8 overflow-x-auto custom-scrollbar'>
+			<div className='xl:flex gap-6'>
+				<div className='w-[250px]'>
+					<Form.Item
+						name='status'
+						label='Estado'
+						layout='horizontal'
+						rules={[
+							{
+								required: true,
+								message: 'El estado de la factura es requerido'
+							}
+						]}
 					>
-						{index === 0 ? (
-							<>
-								<Form.Item
-									name='status'
-									label='Estado'
-									layout='horizontal'
-									rules={[
-										{
-											required: true,
-											message: 'El estado de la factura es requerido'
-										}
-									]}
-								>
-									<Select options={statusOptions} />
-								</Form.Item>
-								{!isQuote ? (
-									<Form.Item
-										name='paymentMethod'
-										label='Método de Pago'
-										layout='horizontal'
-										rules={[
-											{
-												required: true,
-												message: 'El método de pago es requerido'
-											}
-										]}
-									>
-										<Select options={paymentMethodOptions} />
-									</Form.Item>
-								) : null}
-							</>
-						) : index === 5 ? (
-							// Calculation Inputs
-							children
-						) : null}
+						<Select options={statusOptions} />
+					</Form.Item>
+					{!isQuote ? (
+						<>
+							<Form.Item
+								name='selectedMethods'
+								label='Métodos de Pago:'
+								rules={[
+									{
+										required: true,
+										message: 'Al menos un método de pago es requerido'
+									}
+								]}
+							>
+								<Select
+									mode='multiple'
+									maxCount={3}
+									options={paymentMethodOptions}
+									placeholder='Selecciona hasta 3...'
+								/>
+							</Form.Item>
+						</>
+					) : null}
+				</div>
+
+				{!isQuote && form ? (
+					<div className='w-[250px]'>
+						<PaymentAmounts
+							form={form}
+							paymentMethodOptions={paymentMethodOptions}
+						/>
 					</div>
-				);
-			})}
+				) : null}
+			</div>
+
+			<div>{children}</div>
 		</div>
 	);
 };

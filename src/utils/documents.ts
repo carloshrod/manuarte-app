@@ -27,7 +27,7 @@ export interface ExcelBillingData {
 	'#': number;
 	'Número de Serial': string;
 	Cliente: string;
-	'Medio de Pago': string;
+	'Métodos de Pago': string;
 	Total: number;
 }
 
@@ -35,7 +35,7 @@ export interface ExcelCustomerActivityData {
 	'#': number;
 	Fecha: string;
 	'Número de Serial': string;
-	'Medio de Pago': string;
+	'Métodos de Pago': string;
 	Flete: number;
 	Total: number;
 }
@@ -132,7 +132,9 @@ export const generateBillingsData = (billings: Billing[]) => {
 					'#': i + 1,
 					'Número de Serial': item.serialNumber,
 					Cliente: formatToTitleCase(item.customerName) ?? 'Consumidor Final',
-					'Medio de Pago': PAYMENT_METHOD_MAP[item.paymentMethod],
+					'Métodos de Pago': item?.paymentMethods
+						?.map(p => PAYMENT_METHOD_MAP[p])
+						.join(', '),
 					Flete: item.shipping ?? 0,
 					Total: item.subtotal
 				};
@@ -150,14 +152,16 @@ export const generateCustomerData = (recentActivity: Billing[] | Quote[]) => {
 		let excelData: ExcelCustomerActivityData[] = [];
 		if (recentActivity?.length > 0) {
 			excelData = recentActivity?.map((item, i) => {
-				const paymentMethod = 'paymentMethod' in item && item.paymentMethod;
+				const paymentMethods = 'paymentMethods' in item && item.paymentMethods;
 				const total = 'subtotal' in item ? Number(item.subtotal) : 0;
 
 				return {
 					'#': i + 1,
-					Transacción: paymentMethod ? 'Factura' : 'Cotización',
+					Transacción: paymentMethods ? 'Factura' : 'Cotización',
 					'Número de Serial': item.serialNumber,
-					'Medio de Pago': PAYMENT_METHOD_MAP[paymentMethod as string] ?? '--',
+					'Métodos de Pago': Array.isArray(paymentMethods)
+						? paymentMethods?.map(p => PAYMENT_METHOD_MAP[p]).join(', ')
+						: '--',
 					Flete: item.shipping ?? 0,
 					Total: total,
 					Fecha: formatDate(item.createdDate) ?? '--'
@@ -447,7 +451,7 @@ export const downloadExcel = async ({
 					if (
 						headers[colNumber - 1] === 'Producto' ||
 						headers[colNumber - 1] === 'Cliente' ||
-						headers[colNumber - 1] === 'Medio de Pago'
+						headers[colNumber - 1] === 'Métodos de Pago'
 					) {
 						cell.alignment = { vertical: 'middle', horizontal: 'left' };
 					}

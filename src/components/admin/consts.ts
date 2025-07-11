@@ -95,41 +95,6 @@ export const TRANSACTIONS_PRODUCTS_LIST_INPUTS_PROPS = [
 	}
 ];
 
-export const FOOTER_PRODUCTS_INPUTS_PROPS = [
-	{
-		name: 'left',
-		minWidth: 200,
-		width: '30%'
-	},
-	{
-		name: 'empty',
-		minWidth: 0,
-		width: '10%'
-	},
-	{
-		name: 'empty',
-		minWidth: 0,
-		width: '10%'
-	},
-	{
-		name: 'empty',
-		minWidth: 0,
-		width: '10%'
-	},
-	{
-		name: 'empty',
-		minWidth: 0,
-		width: '20%'
-	},
-	{
-		name: 'totalPrice',
-		label: 'Precio Total',
-		type: 'number',
-		minWidth: 250,
-		width: '20%'
-	}
-];
-
 export const QUOTE_CALCULATIONS_INPUTS_PROPS = [
 	{
 		name: 'subtotal',

@@ -64,7 +64,8 @@ const BillingForm = () => {
 			: true;
 		if (!isValid) return;
 
-		const { total, ...restValues } = values;
+		if ('selectedMethods' in values) delete values.selectedMethods;
+		if ('total' in values) delete values.total;
 
 		let uniqueId: string = clientRequestId;
 		if (!clientRequestId) {
@@ -82,7 +83,7 @@ const BillingForm = () => {
 				onConfirm: async () => {
 					await submitCreateBilling({
 						values: {
-							...restValues,
+							...values,
 							shopSlug: params?.shopSlug as string,
 							personId: existingCustomer?.personId || dataToHandle?.personId,
 							customerId: existingCustomer?.customerId as string,
@@ -119,7 +120,11 @@ const BillingForm = () => {
 				isQuote={false}
 			/>
 
-			<DrawerFormFooter isQuote={false} shopSlug={params?.shopSlug as string}>
+			<DrawerFormFooter
+				form={form}
+				isQuote={false}
+				shopSlug={params?.shopSlug as string}
+			>
 				<CalculationInputs form={form} />
 			</DrawerFormFooter>
 

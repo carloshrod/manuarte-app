@@ -61,7 +61,7 @@ const useTableColumns = () => {
 			dataIndex: 'vId',
 			key: 'vId',
 			...getColumnSearchProps('vId'),
-			width: 100
+			width: 105
 		},
 		{
 			title: 'NOMBRE',
@@ -485,20 +485,35 @@ const useTableColumns = () => {
 				}
 			],
 			onFilter: (value, record) => record.status.indexOf(value as string) === 0,
-			render: value => BILLING_STATUS_MAP[value],
+			render: value => {
+				const STATUS_COLORS: Record<string, string> = {
+					PAID: 'success',
+					PENDING_PAYMENT: 'yellow',
+					CANCELED: 'red'
+				};
+
+				return (
+					<Tag color={STATUS_COLORS[value]}>{BILLING_STATUS_MAP[value]}</Tag>
+				);
+			},
 			width: 120
 		},
 		{
-			title: 'MÉTODO DE PAGO',
-			dataIndex: 'paymentMethod',
-			key: 'paymentMethod',
+			title: 'MÉTODOS DE PAGO',
+			dataIndex: 'paymentMethods',
+			key: 'paymentMethods',
 			filters: !params?.shopSlug?.includes('quito')
 				? COL_PAYMENT_METHOD_FILTER
 				: ECU_PAYMENT_METHOD_FILTER,
 			onFilter: (value, record) =>
-				record.paymentMethod.indexOf(value as string) === 0,
-			render: value => PAYMENT_METHOD_MAP[value],
-			width: 170
+				record.paymentMethods.includes(value as string),
+			render: value =>
+				value.map((p: string) => (
+					<Tag color='blue' key={p} style={{ marginBottom: 2 }}>
+						{PAYMENT_METHOD_MAP[p]}
+					</Tag>
+				)),
+			width: 175
 		},
 		{
 			title: 'CLIENTE',

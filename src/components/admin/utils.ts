@@ -5,17 +5,20 @@ import { FormInstance } from 'antd';
 
 export const updateCalculations = (
 	form: FormInstance,
-	discountByPercent: boolean = false
+	discountByPercent: boolean = false,
+	billingSubtotal?: number
 ) => {
 	const items: ProductVariantWithStock[] = form.getFieldValue('items') || [];
 	const shipping = parseFloat(form.getFieldValue('shipping')) || 0;
 	const discount = parseFloat(form.getFieldValue('discount')) || 0;
 	let totalDiscount = discount;
 
-	const subtotal = items.reduce((total, item) => {
-		const totalPrice = item?.totalPrice || 0;
-		return Number(total) + Number(totalPrice);
-	}, 0);
+	const subtotal =
+		billingSubtotal ??
+		items.reduce((total, item) => {
+			const totalPrice = item?.totalPrice || 0;
+			return Number(total) + Number(totalPrice);
+		}, 0);
 
 	if (discountByPercent) {
 		totalDiscount = subtotal * (discount / 100);

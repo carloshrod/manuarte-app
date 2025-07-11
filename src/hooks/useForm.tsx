@@ -283,14 +283,21 @@ const useForm = () => {
 	};
 
 	const submitUpdateBilling = async (
-		values: { status: string; paymentMethod: string },
+		values: { status: string; payments: Payment[] },
 		billingId: string
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
 				billingServices.update(valuesToUpdate, billingId),
 			values,
-			onSuccess: _res => dispatch(updateBilling({ id: billingId, ...values }))
+			onSuccess: _res =>
+				dispatch(
+					updateBilling({
+						id: billingId,
+						paymentMethods: values?.payments?.map(p => p?.paymentMethod),
+						status: values?.status
+					})
+				)
 		});
 	};
 

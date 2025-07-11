@@ -129,7 +129,7 @@ const CustomerDetailsPage = async ({
 										.map((item: Billing | Quote) => {
 											return {
 												children: <RecentActivityItem item={item} />,
-												color: 'paymentMethod' in item ? '#10b981' : '#0D6EFD'
+												color: 'paymentMethods' in item ? '#10b981' : '#0D6EFD'
 											};
 										})}
 								/>

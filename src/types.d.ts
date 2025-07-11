@@ -237,10 +237,15 @@ enum PaymentMethod {
 	OTHER = 'OTHER'
 }
 
+interface Payment {
+	paymentMethod: PaymentMethod;
+	amount: number;
+}
+
 interface BillingItem extends QuoteItem {}
 interface Billing extends Omit<Quote, 'status'> {
 	status: BillingStatus;
-	paymentMethod: PaymentMethod;
+	paymentMethods: string[];
 	subtotal: number;
 }
 
@@ -249,7 +254,7 @@ interface SubmitBillingDto extends SubmitCustomerDto {
 	shopId?: string;
 	items: ProductVariantWithStock[];
 	status: BillingStatus;
-	paymentMethod: PaymentMethod;
+	payments: Payment[];
 	discountType: string;
 	discount: number;
 	shipping: number;

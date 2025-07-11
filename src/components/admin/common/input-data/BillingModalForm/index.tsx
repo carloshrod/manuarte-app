@@ -15,8 +15,11 @@ import { billingServices } from '@/services/billingServices';
 import { setBillings } from '@/reducers/billings/billingSlice';
 import { formatToTitleCase } from '@/utils/formats';
 import { ROUTES } from '@/utils/routes';
-import { BillingStatus, ModalContent } from '@/types/enums';
+import { BillingStatus, DiscountType, ModalContent } from '@/types/enums';
 import { v4 as uuidv4 } from 'uuid';
+import PaymentAmounts from '../PaymentAmounts';
+import CalculationInputs from '../CalculationInputs';
+import { updateCalculations } from '@/components/admin/utils';
 
 const BillingModalForm = () => {
 	const { form, isLoading, submitCreateBilling, submitUpdateBilling } =
@@ -30,9 +33,27 @@ const BillingModalForm = () => {
 		if (dataToHandle?.isUpdating) {
 			form.setFieldsValue({
 				status: dataToHandle?.status,
-				paymentMethod: dataToHandle?.paymentMethod
+				selectedMethods: dataToHandle?.paymentMethods
 			});
 		}
+
+		form.setFieldsValue({
+			items: dataToHandle?.items?.map((item: QuoteItem) => {
+				return {
+					...item,
+					currency: dataToHandle.currency,
+					price: Number(item.price),
+					totalPrice: Number(item.totalPrice)
+				};
+			}),
+			discount: dataToHandle?.discount,
+			discountType: dataToHandle?.discountType,
+			shipping: dataToHandle?.shipping
+		});
+
+		const discountByPercent =
+			dataToHandle?.discountType === DiscountType.PERCENTAGE;
+		updateCalculations(form, discountByPercent, dataToHandle?.subtotal);
 	}, []);
 
 	const subtotal = dataToHandle?.items?.reduce(
@@ -83,9 +104,24 @@ const BillingModalForm = () => {
 				}
 			});
 		} else {
-			submitUpdateBilling(values, dataToHandle.id);
+			openModal({
+				title: '',
+				content: ModalContent.confirm,
+				componentProps: {
+					confirmTitle: `¿Estás seguro de que quieres editar la factura ${dataToHandle?.serialNumber}?`,
+					onConfirm: async () =>
+						await submitUpdateBilling(
+							{ status: values?.status, payments: values?.payments },
+							dataToHandle.id
+						)
+				}
+			});
 		}
 	};
+
+	const paymentMethodOptions = !params?.shopSlug?.includes('quito')
+		? COL_PAYMENT_METHOD_OPTIONS
+		: ECU_PAYMENT_METHOD_OPTIONS;
 
 	return (
 		<Form
@@ -112,36 +148,54 @@ const BillingModalForm = () => {
 				</div>
 			</div>
 
-			<Form.Item
-				name='status'
-				label='Estado'
-				rules={[
-					{
-						required: true,
-						message: 'El estado de la factura es requerido'
-					}
-				]}
-			>
-				<Select options={BILLING_STATUS_OPTIONS} />
-			</Form.Item>
-			<Form.Item
-				name='paymentMethod'
-				label='Método de Pago'
-				rules={[
-					{
-						required: true,
-						message: 'El método de pago es requerido'
-					}
-				]}
-			>
-				<Select
-					options={
-						!params?.shopSlug?.includes('quito')
-							? COL_PAYMENT_METHOD_OPTIONS
-							: ECU_PAYMENT_METHOD_OPTIONS
-					}
+			<div className='flex gap-4'>
+				<Form.Item
+					name='selectedMethods'
+					label='Métodos de Pago'
+					rules={[
+						{
+							required: true,
+							message: 'Al menos un método de pago es requerido'
+						}
+					]}
+					style={{ width: '60%' }}
+				>
+					<Select
+						mode='multiple'
+						maxCount={3}
+						placeholder='Seleccione hasta 3 métodos de pago...'
+						options={paymentMethodOptions}
+					/>
+				</Form.Item>
+				<Form.Item
+					name='status'
+					label='Estado'
+					rules={[
+						{
+							required: true,
+							message: 'El estado de la factura es requerido'
+						}
+					]}
+					style={{ width: '40%' }}
+				>
+					<Select options={BILLING_STATUS_OPTIONS} />
+				</Form.Item>
+			</div>
+
+			<div className='flex gap-6'>
+				<div className='w-[50%] pt-[6px]'>
+					<PaymentAmounts
+						form={form}
+						paymentMethodOptions={paymentMethodOptions}
+					/>
+				</div>
+
+				<CalculationInputs
+					form={form}
+					discountType={dataToHandle?.discountType}
+					isUpdatingBilling={dataToHandle?.isUpdating}
 				/>
-			</Form.Item>
+			</div>
 
 			<FormButtons
 				label={dataToHandle?.isUpdating ? 'Editar' : 'Generar'}
