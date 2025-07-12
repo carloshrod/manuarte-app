@@ -59,7 +59,9 @@ const CustomTable = ({
 						/>
 					) : null,
 					filterConfirm: 'Filtrar',
-					filterReset: 'Limpiar'
+					filterReset: 'Limpiar',
+					triggerAsc: 'Orden ascendente',
+					triggerDesc: 'Orden descendente'
 				}}
 				onChange={filterData}
 			/>

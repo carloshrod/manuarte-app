@@ -115,6 +115,7 @@ interface Customer {
 	fullName: string;
 	dni: string;
 	totalSpent: number;
+	billingCount: number;
 }
 
 interface ExistingCustomer extends Customer {

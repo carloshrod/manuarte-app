@@ -38,8 +38,6 @@ import {
 	ECU_PAYMENT_METHOD_FILTER,
 	TAG_COLORS
 } from './utils';
-import { useState } from 'react';
-import { SortOrder } from 'antd/es/table/interface';
 
 const useTableColumns = () => {
 	const { getColumnSearchProps, getColumnDateFilterProps } = useTable();
@@ -47,13 +45,6 @@ const useTableColumns = () => {
 	const params = useParams();
 	const { data: session } = useSession();
 	const isAdmin = session?.user?.roleName === 'admin';
-	const [sortOrder, setSortOrder] = useState<{
-		billingCount: SortOrder | undefined;
-		totalSpent: SortOrder | undefined;
-	}>({
-		billingCount: 'descend',
-		totalSpent: undefined
-	});
 
 	const productColumns: TableColumnsType<ProductVariant> = [
 		{
@@ -296,17 +287,9 @@ const useTableColumns = () => {
 			title: 'COMPRAS',
 			dataIndex: 'billingCount',
 			key: 'billingCount',
-			sorter: (a, b) => {
-				if (sortOrder.billingCount === undefined) {
-					setSortOrder({ billingCount: 'descend', totalSpent: undefined });
-				}
-				return a.billingCount - b.billingCount;
-			},
-			sortOrder: sortOrder.billingCount,
-			sortDirections: ['descend'],
-			showSorterTooltip: {
-				title: 'Ordenar descendentemente por total de compras'
-			},
+			sorter: (a, b) => a.billingCount - b.billingCount,
+			defaultSortOrder: 'descend',
+			sortDirections: ['descend', 'ascend', 'descend'],
 			width: 80,
 			align: 'center'
 		},
@@ -315,18 +298,8 @@ const useTableColumns = () => {
 			dataIndex: 'totalSpent',
 			key: 'totalSpent',
 			render: value => formatCurrency(value) ?? '--',
-			sorter: (a, b) => {
-				if (sortOrder.totalSpent === undefined) {
-					setSortOrder({ billingCount: undefined, totalSpent: 'descend' });
-				}
-
-				return a.totalSpent - b.totalSpent;
-			},
-			sortOrder: sortOrder.totalSpent,
-			sortDirections: ['descend'],
-			showSorterTooltip: {
-				title: 'Ordenar descendentemente por total facturado'
-			},
+			sorter: (a, b) => a.totalSpent - b.totalSpent,
+			sortDirections: ['descend', 'ascend', 'descend'],
 			width: 100,
 			align: 'center'
 		},

@@ -44,6 +44,16 @@ export interface ExcelCustomerActivityData {
 	Total: number;
 }
 
+export interface ExcelTopCustomersData {
+	'#': number;
+	'Nro de Documento': string;
+	Nombre: string;
+	Teléfono: string;
+	Ciudad: string;
+	Compras: number;
+	Facturado: number;
+}
+
 export const generateStockData = (
 	stockItems: StockItem[],
 	itemsInTransit: { productVariantId: string; qtyInTransit: string }[]
@@ -186,6 +196,29 @@ export const generateCustomerData = (recentActivity: Billing[] | Quote[]) => {
 	}
 };
 
+export const generateTopCustomersData = (data: Customer[]) => {
+	try {
+		let excelData: ExcelTopCustomersData[] = [];
+		if (data?.length > 0) {
+			excelData = data?.map((item, i) => {
+				return {
+					'#': i + 1,
+					'Nro de Documento': item.dni,
+					Nombre: item.fullName,
+					Teléfono: item.phoneNumber,
+					Ciudad: item.city ?? '--',
+					Compras: Number(item.billingCount),
+					Facturado: item.totalSpent
+				};
+			});
+		}
+
+		return excelData;
+	} catch (error) {
+		console.error(error);
+	}
+};
+
 export const downloadExcel = async ({
 	data,
 	fileName,
@@ -197,7 +230,8 @@ export const downloadExcel = async ({
 		| ExcelStockData[]
 		| ExcelStockHistoryData[]
 		| ExcelBillingData[]
-		| ExcelCustomerActivityData[];
+		| ExcelCustomerActivityData[]
+		| ExcelTopCustomersData[];
 	fileName: string;
 	title: string;
 	info?: CustomerInfo | undefined;
@@ -448,8 +482,21 @@ export const downloadExcel = async ({
 					}
 
 					if (
+						headers[colNumber - 1] === 'Nro de Documento' ||
+						headers[colNumber - 1] === 'Teléfono'
+					) {
+						cell.numFmt = '@';
+						cell.value = String(cell.value);
+					}
+
+					if (headers[colNumber - 1] === 'Compras') {
+						cell.numFmt = '#,##0';
+					}
+
+					if (
 						headers[colNumber - 1] === 'Total' ||
-						headers[colNumber - 1] === 'Flete'
+						headers[colNumber - 1] === 'Flete' ||
+						headers[colNumber - 1] === 'Facturado'
 					) {
 						cell.numFmt =
 							isUsd || info?.countryIsoCode === 'EC'
