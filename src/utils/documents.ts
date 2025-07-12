@@ -1,7 +1,6 @@
 import ExcelJS, { Fill } from 'exceljs';
 import { PAYMENT_METHOD_MAP, TRANSACTION_TYPES_MAP } from './mappings';
 import { formatDate, formatToTitleCase } from './formats';
-import { CustomerInfo } from '@/components/admin/users/GenerateCustomerReportButton';
 import { DiscountType } from '@/types/enums';
 
 export interface ExcelStockData {
@@ -208,7 +207,7 @@ export const generateTopCustomersData = (data: Customer[]) => {
 					Teléfono: item.phoneNumber,
 					Ciudad: item.city ?? '--',
 					Compras: Number(item.billingCount),
-					Facturado: item.totalSpent
+					Facturado: Number(item.totalSpent)
 				};
 			});
 		}
@@ -234,7 +233,7 @@ export const downloadExcel = async ({
 		| ExcelTopCustomersData[];
 	fileName: string;
 	title: string;
-	info?: CustomerInfo | undefined;
+	info?: any | undefined;
 	date?: string;
 }) => {
 	try {

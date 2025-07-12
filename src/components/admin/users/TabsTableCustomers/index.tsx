@@ -50,22 +50,22 @@ const TabsTableCustomers = ({
 		);
 	}
 
-	const activeKey = searchParams.get('tab') || '1';
+	const activeKey = searchParams.get('tab') || 'All';
 
 	const handleTabChange = (key: string) => {
 		router.push(`?tab=${key}`);
 	};
 
-	const allCustomers = activeKey === '1';
+	const allCustomers = activeKey === 'All';
 
 	const REPORT_DATA: Record<string, Customer[]> = {
-		2: topCustomers?.col,
-		3: topCustomers?.ecu
+		CO: topCustomers?.col,
+		EC: topCustomers?.ecu
 	};
 
 	const items: TabsProps['items'] = [
 		{
-			key: '1',
+			key: 'All',
 			label: 'Todos',
 			children: (
 				<CustomTable
@@ -76,7 +76,7 @@ const TabsTableCustomers = ({
 			)
 		},
 		{
-			key: '2',
+			key: 'CO',
 			label: 'Top Colombia',
 			children: (
 				<CustomTable
@@ -87,7 +87,7 @@ const TabsTableCustomers = ({
 			)
 		},
 		{
-			key: '3',
+			key: 'EC',
 			label: 'Top Ecuador',
 			children: (
 				<CustomTable
@@ -110,6 +110,7 @@ const TabsTableCustomers = ({
 					{allCustomers ? null : (
 						<GenerateTopCustomersReportButton
 							reportData={REPORT_DATA[activeKey]}
+							countryIsoCode={activeKey}
 						/>
 					)}
 					<AddButton
