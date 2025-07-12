@@ -2,6 +2,7 @@ import ExcelJS, { Fill } from 'exceljs';
 import { PAYMENT_METHOD_MAP, TRANSACTION_TYPES_MAP } from './mappings';
 import { formatDate, formatToTitleCase } from './formats';
 import { CustomerInfo } from '@/components/admin/users/GenerateCustomerReportButton';
+import { DiscountType } from '@/types/enums';
 
 export interface ExcelStockData {
 	'#': number;
@@ -28,6 +29,9 @@ export interface ExcelBillingData {
 	'Número de Serial': string;
 	Cliente: string;
 	'Métodos de Pago': string;
+	Subtotal: number;
+	Descuento: number;
+	Flete: number;
 	Total: number;
 }
 
@@ -128,6 +132,11 @@ export const generateBillingsData = (billings: Billing[]) => {
 		let excelData: ExcelBillingData[] = [];
 		if (billings?.length > 0) {
 			excelData = billings?.map((item, i) => {
+				const discount =
+					(item?.discountType === DiscountType.PERCENTAGE
+						? Number(item.subtotal) * (Number(item.discount) / 100)
+						: Number(item.discount)) || 0;
+
 				return {
 					'#': i + 1,
 					'Número de Serial': item.serialNumber,
@@ -135,8 +144,10 @@ export const generateBillingsData = (billings: Billing[]) => {
 					'Métodos de Pago': item?.paymentMethods
 						?.map(p => PAYMENT_METHOD_MAP[p])
 						.join(', '),
-					Flete: item.shipping ?? 0,
-					Total: item.subtotal
+					Subtotal: item.subtotal,
+					Descuento: discount,
+					Total: Number(item.subtotal) - discount,
+					Flete: item.shipping ?? 0
 				};
 			});
 		}
