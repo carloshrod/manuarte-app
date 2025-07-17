@@ -9,6 +9,7 @@ export const QUOTE_STATUS_MAP: Record<string, string> = {
 export const BILLING_STATUS_MAP: Record<string, string> = {
 	PAID: 'PAGADA',
 	PENDING_PAYMENT: 'PAGO PENDIENTE',
+	PARTIAL_PAYMENT: 'PAGO PARCIAL',
 	CANCELED: 'ANULADA'
 };
 

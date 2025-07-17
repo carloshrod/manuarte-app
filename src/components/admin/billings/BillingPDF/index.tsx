@@ -3,7 +3,7 @@ import { Descriptions, DescriptionsProps, Divider } from 'antd';
 import PDFTable from '../../common/display-data/PDFTable';
 import TermsCol from '../../Terms/TermsCol';
 import TermsEcu from '../../Terms/TermsEcu';
-import { PAYMENT_METHOD_MAP } from '@/utils/mappings';
+import { BILLING_STATUS_MAP, PAYMENT_METHOD_MAP } from '@/utils/mappings';
 import { formatDate, formatToTitleCase } from '@/utils/formats';
 import { BillingStatus } from '@/types/enums';
 
@@ -69,7 +69,7 @@ const BillingPDF = ({
 		}
 	];
 
-	const isCanceled = billing?.status === BillingStatus.CANCELED;
+	const isNotPaid = billing?.status !== BillingStatus.PAID;
 	const city = shopSlug?.split('-')[1];
 
 	return (
@@ -94,9 +94,9 @@ const BillingPDF = ({
 
 			<h1 className='text-3xl font-semibold'>
 				Factura # {billing?.serialNumber}{' '}
-				{isCanceled && (
+				{isNotPaid && (
 					<span className='px-2 rounded text-red-600 border-2 border-red-600'>
-						ANULADA
+						{BILLING_STATUS_MAP[billing?.status]}
 					</span>
 				)}
 			</h1>

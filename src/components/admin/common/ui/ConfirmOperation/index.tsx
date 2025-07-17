@@ -28,8 +28,8 @@ const ConfirmOperation = ({
 			<div className='block'>
 				<BsFillQuestionCircleFill size={50} className='m-auto text-red-500' />
 			</div>
-			<div>
-				<h3 className='text-center text-xl font-semibold mb-2 px-8'>
+			<div className='px-8'>
+				<h3 className='text-center text-xl font-semibold mb-2'>
 					{confirmTitle}
 				</h3>
 				<p className='text-center text-[#404040] font-medium'>{confirmText}</p>

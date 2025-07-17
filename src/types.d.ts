@@ -218,6 +218,7 @@ interface SubmitQuoteDto extends SubmitCustomerDto {
 enum BillingStatus {
 	PAID = 'PAID',
 	PENDING_PAYMENT = 'PENDING_PAYMENT',
+	PARTIAL_PAYMENT = 'PARTIAL_PAYMENT',
 	CANCELED = 'CANCELED'
 }
 

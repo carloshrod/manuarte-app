@@ -16,6 +16,7 @@ import { PRODUCTS_LIST_INPUTS_PROPS } from '@/components/admin/consts';
 import { StoreValue } from 'antd/es/form/interface';
 import { useParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
+import { BillingStatus } from '@/types/enums';
 
 interface ProductFormListProps {
 	form: FormInstance;
@@ -44,6 +45,8 @@ const ProductFormList = ({
 	const itemsList = Form.useWatch('items', form);
 	const { shops } = useSelector((state: RootState) => state.shop);
 	const stockId = shops.find(sh => sh.slug === params?.shopSlug)?.stockId;
+	const isPartialPayment =
+		form.getFieldValue('status') === BillingStatus.PARTIAL_PAYMENT;
 
 	const updateTotalPrice = (name: number) => {
 		const items: ProductVariantWithStock[] = form.getFieldValue('items');
@@ -72,7 +75,7 @@ const ProductFormList = ({
 
 	const handleAddProduct = (add: AddItemFormListFn) => {
 		if (selectedProduct) {
-			if (!isQuote) {
+			if (!isQuote && !isPartialPayment) {
 				if (selectedProduct.quantity === 0) {
 					return notification.error({ message: 'Producto sin stock!' });
 				}
@@ -151,7 +154,8 @@ const ProductFormList = ({
 																	!isQuote &&
 																	input.name === 'quantity' &&
 																	value &&
-																	value > maxQuantity
+																	value > maxQuantity &&
+																	!isPartialPayment
 																) {
 																	return Promise.reject(
 																		new Error(`Stock: ${maxQuantity}`)

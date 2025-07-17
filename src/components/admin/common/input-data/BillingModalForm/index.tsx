@@ -19,15 +19,24 @@ import { BillingStatus, DiscountType, ModalContent } from '@/types/enums';
 import { v4 as uuidv4 } from 'uuid';
 import PaymentAmounts from '../PaymentAmounts';
 import CalculationInputs from '../CalculationInputs';
-import { updateCalculations } from '@/components/admin/utils';
+import {
+	calculateTotalPayment,
+	updateCalculations
+} from '@/components/admin/utils';
 
 const BillingModalForm = () => {
 	const { form, isLoading, submitCreateBilling, submitUpdateBilling } =
 		useForm();
-	const { dataToHandle, openModal, closeModal } = useModalStore.getState();
+	const { content, dataToHandle, openModal, closeModal } =
+		useModalStore.getState();
 	const params = useParams();
 	const { push } = useRouter();
 	const dispatch = useDispatch();
+
+	const isPaid = dataToHandle?.status === BillingStatus.PAID;
+	const isPartialPayment =
+		content === ModalContent.billingsPartialPayment ||
+		dataToHandle?.status === BillingStatus.PARTIAL_PAYMENT;
 
 	useEffect(() => {
 		if (dataToHandle?.isUpdating) {
@@ -73,9 +82,16 @@ const BillingModalForm = () => {
 				title: '',
 				content: ModalContent.confirm,
 				componentProps: {
-					confirmTitle: '¿Estás seguro de que quieres generar esta factura?',
-					confirmText:
-						'Se descontarán del stock las cantidades para los items agregados',
+					confirmTitle: `¿Estás seguro de que quieres generar esta factura${
+						values?.status === BillingStatus.PARTIAL_PAYMENT
+							? ' como venta bajo pedido/abono?'
+							: '?'
+					}`,
+					confirmText: `${
+						values?.status === BillingStatus.PAID
+							? 'Se descontarán del stock los items agregados'
+							: 'No se descontarán del stock los items agregados, hasta que el pago esté completo'
+					}`,
 					onConfirm: async () => {
 						const res = await submitCreateBilling({
 							values: {
@@ -104,14 +120,33 @@ const BillingModalForm = () => {
 				}
 			});
 		} else {
+			const totalPayment = calculateTotalPayment(values?.payments);
+			const paymentCompleted = totalPayment === values?.total;
+
 			openModal({
 				title: '',
 				content: ModalContent.confirm,
 				componentProps: {
-					confirmTitle: `¿Estás seguro de que quieres editar la factura ${dataToHandle?.serialNumber}?`,
+					confirmTitle: `¿Estás seguro de que quieres ${
+						isPaid
+							? 'editar'
+							: `${paymentCompleted ? 'generar' : 'generar un abono a'}`
+					} la factura ${dataToHandle?.serialNumber}?`,
+					confirmText: `${
+						isPaid
+							? ''
+							: paymentCompleted
+								? 'Se descontarán del stock los items agregados'
+								: 'No se descontarán del stock los items agregados, hasta que el pago esté completo'
+					}`,
 					onConfirm: async () =>
 						await submitUpdateBilling(
-							{ status: values?.status, payments: values?.payments },
+							{
+								status: paymentCompleted ? BillingStatus.PAID : values?.status,
+								payments: values?.payments,
+								stockId: dataToHandle?.stockId,
+								items: dataToHandle?.items
+							},
 							dataToHandle.id
 						)
 				}
@@ -129,7 +164,9 @@ const BillingModalForm = () => {
 			form={form}
 			name='form_in_modal'
 			initialValues={{
-				status: BillingStatus.PAID
+				status: isPartialPayment
+					? BillingStatus.PARTIAL_PAYMENT
+					: BillingStatus.PAID
 			}}
 			onFinish={onFinish}
 		>
@@ -167,6 +204,7 @@ const BillingModalForm = () => {
 						options={paymentMethodOptions}
 					/>
 				</Form.Item>
+
 				<Form.Item
 					name='status'
 					label='Estado'
@@ -177,8 +215,9 @@ const BillingModalForm = () => {
 						}
 					]}
 					style={{ width: '40%' }}
+					className='custom-disabled-select'
 				>
-					<Select options={BILLING_STATUS_OPTIONS} />
+					<Select options={BILLING_STATUS_OPTIONS} disabled={true} />
 				</Form.Item>
 			</div>
 
@@ -198,7 +237,7 @@ const BillingModalForm = () => {
 			</div>
 
 			<FormButtons
-				label={dataToHandle?.isUpdating ? 'Editar' : 'Generar'}
+				label={dataToHandle?.isUpdating && isPaid ? 'Editar' : 'Generar'}
 				isLoading={isLoading}
 				onSubmit={() => form.submit()}
 			/>

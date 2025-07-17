@@ -10,6 +10,7 @@ const useDrawer = () => {
 	const DRAWER_CONTENT: Record<DrawerContent, ReactNode> = {
 		[DrawerContent.quotes]: <QuoteForm />,
 		[DrawerContent.billings]: <BillingForm />,
+		[DrawerContent.billingsPartialPayment]: <BillingForm />,
 		[DrawerContent.directEnter]: <TransactionsForm />,
 		[DrawerContent.transfer]: <TransactionsForm />,
 		[DrawerContent.enterByTransfer]: <TransactionsForm />,

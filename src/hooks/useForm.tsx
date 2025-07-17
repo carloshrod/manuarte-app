@@ -283,7 +283,12 @@ const useForm = () => {
 	};
 
 	const submitUpdateBilling = async (
-		values: { status: string; payments: Payment[] },
+		values: {
+			status: string;
+			payments: Payment[];
+			stockId: string;
+			items: BillingItem[];
+		},
 		billingId: string
 	) => {
 		await handleSubmit({

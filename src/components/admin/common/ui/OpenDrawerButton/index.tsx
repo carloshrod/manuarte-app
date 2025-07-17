@@ -4,6 +4,7 @@ import { IoMdAdd } from 'react-icons/io';
 import { DrawerContent } from '@/types/enums';
 import { ReactNode } from 'react';
 import { useDrawerStore } from '@/stores/drawerStore';
+import { ButtonVariantType } from 'antd/es/button';
 
 interface OpenDrawerButtonProps {
 	title: string;
@@ -11,6 +12,7 @@ interface OpenDrawerButtonProps {
 	buttonLabel: string;
 	prependIcon?: boolean;
 	appendIcon: ReactNode;
+	variant?: ButtonVariantType;
 }
 
 const OpenDrawerButton = ({
@@ -18,13 +20,14 @@ const OpenDrawerButton = ({
 	drawerContent,
 	buttonLabel,
 	prependIcon = true,
-	appendIcon
+	appendIcon,
+	variant = 'outlined'
 }: OpenDrawerButtonProps) => {
 	const { openDrawer } = useDrawerStore.getState();
 
 	return (
 		<Button
-			variant='outlined'
+			variant={variant}
 			color='primary'
 			icon={
 				prependIcon ? (

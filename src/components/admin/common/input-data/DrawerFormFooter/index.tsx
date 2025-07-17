@@ -7,6 +7,7 @@ import {
 	ECU_PAYMENT_METHOD_OPTIONS,
 	QUOTE_STATUS_OPTIONS
 } from '@/components/admin/consts';
+import { BillingStatus } from '@/types/enums';
 
 interface DrawerFormFooterProps {
 	form?: FormInstance;
@@ -21,11 +22,18 @@ const DrawerFormFooter = ({
 	shopSlug = '',
 	children
 }: DrawerFormFooterProps) => {
-	const statusOptions = isQuote ? QUOTE_STATUS_OPTIONS : BILLING_STATUS_OPTIONS;
+	const statusOptions = isQuote
+		? QUOTE_STATUS_OPTIONS
+		: BILLING_STATUS_OPTIONS.filter(
+				opt => opt.value !== BillingStatus.PARTIAL_PAYMENT
+			);
 
 	const paymentMethodOptions = !shopSlug?.includes('quito')
 		? COL_PAYMENT_METHOD_OPTIONS
 		: ECU_PAYMENT_METHOD_OPTIONS;
+
+	const isPartialPayment =
+		form?.getFieldValue('status') === BillingStatus.PARTIAL_PAYMENT;
 
 	return (
 		<div className='flex items-start justify-between gap-2 min-[1144px]:me-[36px] mt-8 overflow-x-auto custom-scrollbar'>
@@ -42,7 +50,18 @@ const DrawerFormFooter = ({
 							}
 						]}
 					>
-						<Select options={statusOptions} />
+						<Select
+							options={
+								isPartialPayment
+									? [
+											{
+												value: BillingStatus.PARTIAL_PAYMENT,
+												label: 'Pago parcial'
+											}
+										]
+									: statusOptions
+							}
+						/>
 					</Form.Item>
 					{!isQuote ? (
 						<>

@@ -6,10 +6,12 @@ import { TbCancel } from 'react-icons/tb';
 import PopConfirm from '../PopConfirm';
 import { ImEye } from 'react-icons/im';
 import { MdTimeline } from 'react-icons/md';
+import { HiOutlineDocumentAdd } from 'react-icons/hi';
 
 interface TableActionsProps {
 	record?: Record<string, any>;
 	onEdit?: () => void;
+	onGenerate?: () => void;
 	onShowDetails?: () => void;
 	onEditPermissions?: () => void;
 	onTracking?: () => void;
@@ -24,6 +26,7 @@ interface TableActionsProps {
 const TableActions = ({
 	record,
 	onEdit,
+	onGenerate,
 	onShowDetails,
 	onEditPermissions,
 	onTracking,
@@ -49,6 +52,22 @@ const TableActions = ({
 							/>
 						}
 						onClick={onEdit}
+						disabled={!isEditable}
+					/>
+				</Tooltip>
+			) : null}
+
+			{onGenerate ? (
+				<Tooltip title={isEditable ? 'Generar' : ''}>
+					<Button
+						type='text'
+						icon={
+							<HiOutlineDocumentAdd
+								size={20}
+								color={isEditable ? '#0D6EFD' : '#A0AEC0'}
+							/>
+						}
+						onClick={onGenerate}
 						disabled={!isEditable}
 					/>
 				</Tooltip>

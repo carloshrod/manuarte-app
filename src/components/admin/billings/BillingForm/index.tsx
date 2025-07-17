@@ -9,13 +9,19 @@ import { updateCalculations } from '../../utils';
 import { useParams } from 'next/navigation';
 import { customerSchema, validateForm } from '@/utils/validators';
 import { useModalStore } from '@/stores/modalStore';
-import { DiscountType, ModalContent } from '@/types/enums';
+import {
+	BillingStatus,
+	DiscountType,
+	DrawerContent,
+	ModalContent
+} from '@/types/enums';
 import { useDrawerStore } from '@/stores/drawerStore';
 import { v4 as uuidv4 } from 'uuid';
 
 const BillingForm = () => {
 	const { form, itemsError, setItemsError, submitCreateBilling } = useForm();
 	const {
+		content,
 		dataToHandle,
 		customerInfo: existingCustomer,
 		noCustomer
@@ -23,6 +29,8 @@ const BillingForm = () => {
 	const params = useParams() ?? {};
 	const { openModal } = useModalStore.getState();
 	const [clientRequestId, setClientRequestId] = useState<string>('');
+
+	const isPartialPayment = content === DrawerContent.billingsPartialPayment;
 
 	useEffect(() => {
 		if (dataToHandle) {
@@ -77,9 +85,10 @@ const BillingForm = () => {
 			title: '',
 			content: ModalContent.confirm,
 			componentProps: {
-				confirmTitle: '¿Estás seguro de que quieres generar esta factura?',
-				confirmText:
-					'Se descontarán del stock las cantidades para los items agregados',
+				confirmTitle: `¿Estás seguro de que quieres generar esta factura${isPartialPayment ? ' como venta bajo pedido/abono?' : '?'}`,
+				confirmText: !isPartialPayment
+					? 'Se descontarán del stock los items agregados'
+					: 'No se descontarán del stock los items agregados, hasta que el pago esté completo',
 				onConfirm: async () => {
 					await submitCreateBilling({
 						values: {
@@ -101,7 +110,9 @@ const BillingForm = () => {
 			layout='vertical'
 			initialValues={{
 				items: [],
-				status: 'PAID',
+				status: isPartialPayment
+					? BillingStatus.PARTIAL_PAYMENT
+					: BillingStatus.PAID,
 				subtotal: 0,
 				total: 0,
 				discountType: DiscountType.FIXED

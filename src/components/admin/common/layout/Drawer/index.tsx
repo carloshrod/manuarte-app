@@ -46,7 +46,9 @@ const CustomDrawer = () => {
 		pathname.includes('clientes');
 
 	const showExtra =
-		content === DrawerContent.quotes || content === DrawerContent.billings;
+		content === DrawerContent.quotes ||
+		content === DrawerContent.billings ||
+		content === DrawerContent.billingsPartialPayment;
 
 	return (
 		<Drawer

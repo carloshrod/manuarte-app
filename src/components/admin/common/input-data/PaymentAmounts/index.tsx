@@ -1,4 +1,6 @@
+import { calculateTotalPayment } from '@/components/admin/utils';
 import { useModalStore } from '@/stores/modalStore';
+import { BillingStatus } from '@/types/enums';
 import { formatInputCurrency } from '@/utils/formats';
 import { Form, FormInstance, InputNumber } from 'antd';
 import { useEffect, useState } from 'react';
@@ -25,9 +27,6 @@ const PaymentAmounts = ({
 			? dataToHandle?.payments
 			: paymentList;
 
-	const calculateTotalPayment = (payments: any[]) =>
-		payments.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-
 	useEffect(() => {
 		if (!selectedMethods) return;
 
@@ -46,10 +45,25 @@ const PaymentAmounts = ({
 	const totalPayment = calculateTotalPayment(currentPayments);
 	const difference = total - totalPayment;
 
+	const isPartialPayment =
+		Form.useWatch('status', form) === BillingStatus.PARTIAL_PAYMENT;
+
 	useEffect(() => {
 		const timeout = setTimeout(() => {
 			setDebouncedDifference(difference);
 		}, 1000);
+
+		if (dataToHandle?.payments && difference === 0) {
+			form.setFieldsValue({ status: BillingStatus.PAID });
+		}
+
+		if (
+			dataToHandle?.status === BillingStatus.PARTIAL_PAYMENT &&
+			difference > 0
+		) {
+			form.setFieldsValue({ status: BillingStatus.PARTIAL_PAYMENT });
+		}
+
 		return () => clearTimeout(timeout);
 	}, [difference]);
 
@@ -57,9 +71,11 @@ const PaymentAmounts = ({
 		if (debouncedDifference > 0) {
 			return `Saldo $${debouncedDifference.toLocaleString()}`;
 		}
+
 		if (debouncedDifference < 0) {
 			return `Monto excedido por $${Math.abs(debouncedDifference).toLocaleString()}`;
 		}
+
 		return 'Monto exacto';
 	};
 
@@ -89,15 +105,25 @@ const PaymentAmounts = ({
 								(item: any) => item.amount > 0
 							);
 
-							if (totalPayment !== total) {
-								throw new Error(
-									`La suma de los montos ($${totalPayment.toLocaleString()}) debe ser igual al total ($${total.toLocaleString()})`
-								);
-							}
-
 							if (!allAmountsGreaterThanZero) {
 								throw new Error(
 									'Todos los montos deben tener un valor mayor a cero, de lo contrario elimine el método de pago'
+								);
+							}
+
+							if (isPartialPayment && totalPayment >= total) {
+								throw new Error(
+									`No puedes generar una venta bajo pedido/abono, si la suma de los montos ($${totalPayment.toLocaleString()}) es mayor o igual al total ($${total.toLocaleString()})`
+								);
+							}
+
+							if (isPartialPayment) {
+								return Promise.resolve();
+							}
+
+							if (totalPayment !== total) {
+								throw new Error(
+									`La suma de los montos ($${totalPayment.toLocaleString()}) debe ser igual al total ($${total.toLocaleString()})`
 								);
 							}
 						}

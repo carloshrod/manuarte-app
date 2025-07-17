@@ -461,7 +461,8 @@ const useTableColumns = () => {
 			render: value => {
 				const STATUS_COLORS: Record<string, string> = {
 					PAID: 'success',
-					PENDING_PAYMENT: 'yellow',
+					PENDING_PAYMENT: 'orange',
+					PARTIAL_PAYMENT: 'yellow',
 					CANCELED: 'red'
 				};
 

@@ -24,9 +24,11 @@ export const updateCalculations = (
 		totalDiscount = subtotal * (discount / 100);
 	}
 
+	const total = Math.round((subtotal - totalDiscount + shipping) * 100) / 100;
+
 	form.setFieldsValue({
 		subtotal,
-		total: subtotal - totalDiscount + shipping
+		total
 	});
 };
 
@@ -129,3 +131,6 @@ export const selectFilterOption = (
 		return false;
 	}
 };
+
+export const calculateTotalPayment = (payments: any[]) =>
+	payments.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
