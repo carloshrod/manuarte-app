@@ -135,7 +135,7 @@ const PDFActions = ({
 					Enviar
 				</Button>
 			</div>
-			{isQuote ? <DropdownMenu items={dropDownItems} /> : null}
+			{isQuote ? <DropdownMenu items={dropDownItems} label='Factura' /> : null}
 		</div>
 	);
 };

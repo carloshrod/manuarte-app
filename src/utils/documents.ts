@@ -3,7 +3,7 @@ import { PAYMENT_METHOD_MAP, TRANSACTION_TYPES_MAP } from './mappings';
 import { formatDate, formatToTitleCase } from './formats';
 import { DiscountType } from '@/types/enums';
 
-export interface ExcelStockData {
+export interface ExcelRestockData {
 	'#': number;
 	Código: string;
 	Producto: string;
@@ -12,6 +12,16 @@ export interface ExcelStockData {
 	'Cantidad actual': number;
 	'Cantidad en tránsito': number;
 	'Cantidad requerida': number;
+}
+
+export interface ExcelCostStockData {
+	'#': number;
+	Código: string;
+	Producto: string;
+	Cantidad: number;
+	Precio: number;
+	Costo: number;
+	'Costo Total': number;
 }
 
 export interface ExcelStockHistoryData {
@@ -53,12 +63,12 @@ export interface ExcelTopCustomersData {
 	Facturado: number;
 }
 
-export const generateStockData = (
+export const generateRestockData = (
 	stockItems: StockItem[],
 	itemsInTransit: { productVariantId: string; qtyInTransit: string }[]
 ) => {
 	try {
-		let excelData: ExcelStockData[] = [];
+		let excelData: ExcelRestockData[] = [];
 
 		const itemsInTransitMap =
 			itemsInTransit?.length > 0 &&
@@ -96,8 +106,37 @@ export const generateStockData = (
 						'Cantidad requerida': requiredQty
 					});
 				}
+
 				return acc;
-			}, [] as ExcelStockData[]);
+			}, [] as ExcelRestockData[]);
+		}
+
+		return excelData;
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+export const generateCostStockData = (stockItems: StockItem[]) => {
+	try {
+		let excelData: ExcelCostStockData[] = [];
+
+		if (stockItems?.length > 0) {
+			excelData = stockItems.reduce((acc, item) => {
+				if (item.quantity > 0) {
+					acc.push({
+						'#': acc.length + 1,
+						Código: item.vId,
+						Producto: `${item.productName} - ${item.productVariantName}`,
+						Cantidad: item.quantity,
+						Precio: item.price,
+						Costo: item.cost,
+						'Costo Total': Number(item.quantity) * Number(item.cost)
+					});
+				}
+
+				return acc;
+			}, [] as ExcelCostStockData[]);
 		}
 
 		return excelData;
@@ -226,11 +265,12 @@ export const downloadExcel = async ({
 	date
 }: {
 	data:
-		| ExcelStockData[]
+		| ExcelRestockData[]
 		| ExcelStockHistoryData[]
 		| ExcelBillingData[]
 		| ExcelCustomerActivityData[]
-		| ExcelTopCustomersData[];
+		| ExcelTopCustomersData[]
+		| ExcelCostStockData[];
 	fileName: string;
 	title: string;
 	info?: any | undefined;
@@ -493,9 +533,14 @@ export const downloadExcel = async ({
 					}
 
 					if (
+						headers[colNumber - 1] === 'Subtotal' ||
+						headers[colNumber - 1] === 'Descuento' ||
 						headers[colNumber - 1] === 'Total' ||
 						headers[colNumber - 1] === 'Flete' ||
-						headers[colNumber - 1] === 'Facturado'
+						headers[colNumber - 1] === 'Facturado' ||
+						headers[colNumber - 1] === 'Precio' ||
+						headers[colNumber - 1] === 'Costo' ||
+						headers[colNumber - 1] === 'Costo Total'
 					) {
 						cell.numFmt =
 							isUsd || info?.countryIsoCode === 'EC'
@@ -527,7 +572,20 @@ export const downloadExcel = async ({
 			if (totalIndex !== -1 && customerIndex !== -1) {
 				const sumRow = worksheet.addRow(Array(headers.length).fill(''));
 				const totalRowNumber = worksheet.rowCount;
-				sumTotals(totalIndex, totalRowNumber, sumRow, isUsd);
+				sumTotals(
+					totalIndex,
+					totalRowNumber,
+					sumRow,
+					isUsd,
+					'Total ventas del día'
+				);
+			}
+
+			const totalCostIndex = headers.findIndex(h => h === 'Costo Total');
+			if (totalCostIndex !== -1) {
+				const sumRow = worksheet.addRow(Array(headers.length).fill(''));
+				const totalRowNumber = worksheet.rowCount;
+				sumTotals(totalCostIndex, totalRowNumber, sumRow, isUsd, 'Valor total');
 			}
 
 			const COL_WIDTHS: Record<string, number> = {
@@ -597,7 +655,8 @@ const sumTotals = (
 	totalIndex: number,
 	totalRowNumber: number,
 	sumRow: ExcelJS.Row,
-	isUsd: boolean
+	isUsd: boolean,
+	label: string
 ) => {
 	const colLetter = getColLetter(totalIndex);
 
@@ -624,7 +683,7 @@ const sumTotals = (
 	totalCell.numFmt = isUsd ? '"$" #,##0.00' : '"$" #,##0';
 
 	const labelCell = sumRow.getCell(totalIndex);
-	labelCell.value = 'Total ventas del día';
+	labelCell.value = label;
 	labelCell.font = { bold: true };
 	labelCell.alignment = { horizontal: 'center' };
 	labelCell.border = {

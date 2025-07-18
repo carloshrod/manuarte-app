@@ -1,10 +1,12 @@
+import { MenuProps, Space } from 'antd';
 import { GiCardboardBox } from 'react-icons/gi';
 import { MdOutlineWarehouse } from 'react-icons/md';
-import { auth } from '@/auth';
 import AddButton from '@/components/admin/common/ui/AddButton';
 import GoBack from '@/components/admin/common/ui/GoBack';
 import GenerateStockReportButton from '@/components/admin/stock/GenerateStockReportButton';
 import StockItemsTable from '@/components/admin/stock/StockItemsTable';
+import DropdownMenu from '@/components/admin/common/ui/DropdownMenu';
+import { auth } from '@/auth';
 import { ModalContent } from '@/types/enums';
 
 interface StockItemsPageProps {
@@ -21,6 +23,33 @@ const StockItemsPage = async (props: StockItemsPageProps) => {
 	const session = await auth();
 	const isAdmin = !session?.user?.shop;
 
+	const dropDownItems: MenuProps['items'] = [
+		{
+			key: '1',
+			label: (
+				<Space className='px-2'>
+					<GenerateStockReportButton
+						shopSlug={shopSlug}
+						variant='text'
+						label='Pedido de Stock'
+					/>
+				</Space>
+			)
+		},
+		{
+			key: '2',
+			label: (
+				<Space className='px-2'>
+					<GenerateStockReportButton
+						shopSlug={shopSlug}
+						variant='text'
+						label='Valoración de Stock'
+					/>
+				</Space>
+			)
+		}
+	];
+
 	return (
 		<section className='flex flex-col gap-6'>
 			<div className='flex justify-between items-center'>
@@ -36,7 +65,12 @@ const StockItemsPage = async (props: StockItemsPageProps) => {
 				<div className='flex gap-2'>
 					{isAdmin ? (
 						<>
-							<GenerateStockReportButton shopSlug={shopSlug} />
+							<DropdownMenu
+								items={dropDownItems}
+								variant='solid'
+								prependIcon={false}
+								label='Generar Reportes'
+							/>
 							<AddButton
 								title='Agregar Stock de Producto'
 								modalContent={ModalContent.stockItems}

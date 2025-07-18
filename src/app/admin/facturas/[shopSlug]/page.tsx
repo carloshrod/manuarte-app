@@ -71,7 +71,7 @@ const BillingsPage = async (props: QuotesPageProps) => {
 				</div>
 				<div className='flex gap-2'>
 					<GenerateBillingReportButton shopSlug={shopSlug} />
-					<DropdownMenu items={dropDownItems} />
+					<DropdownMenu items={dropDownItems} label='Factura' />
 				</div>
 			</div>
 			<BillingsTable shopSlug={shopSlug} />
