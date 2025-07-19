@@ -11,7 +11,9 @@ const BillingsActions = ({ record }: { record: Billing }) => {
 	const { openModal } = useModalStore.getState();
 	const dispatch = useDispatch();
 
-	const isPartialPayment = record.status === BillingStatus.PARTIAL_PAYMENT;
+	const isPreOrder =
+		record.status === BillingStatus.PARTIAL_PAYMENT ||
+		record.status === BillingStatus.PENDING_DELIVERY;
 
 	const handleEdit = async () => {
 		const billing = await billingServices.getOne({
@@ -19,7 +21,7 @@ const BillingsActions = ({ record }: { record: Billing }) => {
 		});
 
 		openModal({
-			title: `${isPartialPayment ? 'Generar' : 'Editar'} Factura`,
+			title: `${isPreOrder ? 'Generar' : 'Editar'} Factura`,
 			content: ModalContent.billings,
 			dataToHandle: {
 				...billing,
@@ -70,8 +72,8 @@ const BillingsActions = ({ record }: { record: Billing }) => {
 
 	return (
 		<TableActions
-			onEdit={!isPartialPayment ? handleEdit : undefined}
-			onGenerate={isPartialPayment ? handleEdit : undefined}
+			onEdit={!isPreOrder ? handleEdit : undefined}
+			onGenerate={isPreOrder ? handleEdit : undefined}
 			onDelete={!isCancelable ? handleDelete : undefined}
 			onCancel={isCancelable ? handleCancel : undefined}
 			popTitle={`${record.serialNumber} - ${record.customerName ?? 'Consumidor final'}`}
@@ -80,7 +82,7 @@ const BillingsActions = ({ record }: { record: Billing }) => {
 					? '¿Estás seguro de que quieres anular esta factura?'
 					: undefined
 			}
-			isEditable={isCancelable || isPartialPayment}
+			isEditable={isCancelable || isPreOrder}
 			isDeletable={isCancelable}
 		/>
 	);

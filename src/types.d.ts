@@ -219,6 +219,7 @@ enum BillingStatus {
 	PAID = 'PAID',
 	PENDING_PAYMENT = 'PENDING_PAYMENT',
 	PARTIAL_PAYMENT = 'PARTIAL_PAYMENT',
+	PENDING_DELIVERY = 'PENDING_DELIVERY',
 	CANCELED = 'CANCELED'
 }
 
@@ -264,6 +265,7 @@ interface SubmitBillingDto extends SubmitCustomerDto {
 	total?: number;
 	currency: string;
 	clientRequestId: string;
+	comments: string;
 }
 
 interface StockItem {

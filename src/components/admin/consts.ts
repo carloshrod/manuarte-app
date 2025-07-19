@@ -184,7 +184,8 @@ export const QUOTE_STATUS_OPTIONS = [
 export const BILLING_STATUS_OPTIONS = [
 	{ value: 'PAID', label: 'Pagada' },
 	{ value: 'PENDING_PAYMENT', label: 'Pago pendiente' },
-	{ value: 'PARTIAL_PAYMENT', label: 'Pago parcial' }
+	{ value: 'PARTIAL_PAYMENT', label: 'Pago parcial' },
+	{ value: 'PENDING_DELIVERY', label: 'Por entregar' }
 ];
 
 export const COL_PAYMENT_METHOD_OPTIONS = [

@@ -46,7 +46,7 @@ const BillingsPage = async (props: QuotesPageProps) => {
 				<Space className='px-2'>
 					<OpenDrawerButton
 						title={`Pedido | Abono - ${shopName}`}
-						drawerContent={DrawerContent.billingsPartialPayment}
+						drawerContent={DrawerContent.preOrder}
 						buttonLabel='Pedido | Abono'
 						prependIcon={false}
 						appendIcon={<MdOutlinePendingActions size={18} />}

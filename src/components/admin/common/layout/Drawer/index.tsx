@@ -48,7 +48,7 @@ const CustomDrawer = () => {
 	const showExtra =
 		content === DrawerContent.quotes ||
 		content === DrawerContent.billings ||
-		content === DrawerContent.billingsPartialPayment;
+		content === DrawerContent.preOrder;
 
 	return (
 		<Drawer

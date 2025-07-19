@@ -41,6 +41,7 @@ export const billingServices = {
 			payments: Payment[];
 			stockId: string;
 			items: BillingItem[];
+			comments: string;
 		},
 		billingId: string
 	) => {

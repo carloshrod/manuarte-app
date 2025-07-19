@@ -60,7 +60,8 @@ export const mapBillingBody = (body: SubmitBillingDto) => {
 		phoneNumber,
 		location,
 		cityId,
-		clientRequestId
+		clientRequestId,
+		comments
 	} = body;
 
 	return {
@@ -75,7 +76,8 @@ export const mapBillingBody = (body: SubmitBillingDto) => {
 			shipping,
 			subtotal,
 			currency,
-			clientRequestId
+			clientRequestId,
+			comments
 		},
 		customerData: {
 			personId,

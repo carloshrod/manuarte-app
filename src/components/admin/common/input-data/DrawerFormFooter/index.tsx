@@ -7,7 +7,8 @@ import {
 	ECU_PAYMENT_METHOD_OPTIONS,
 	QUOTE_STATUS_OPTIONS
 } from '@/components/admin/consts';
-import { BillingStatus } from '@/types/enums';
+import { DrawerContent } from '@/types/enums';
+import { useDrawerStore } from '@/stores/drawerStore';
 
 interface DrawerFormFooterProps {
 	form?: FormInstance;
@@ -22,18 +23,14 @@ const DrawerFormFooter = ({
 	shopSlug = '',
 	children
 }: DrawerFormFooterProps) => {
-	const statusOptions = isQuote
-		? QUOTE_STATUS_OPTIONS
-		: BILLING_STATUS_OPTIONS.filter(
-				opt => opt.value !== BillingStatus.PARTIAL_PAYMENT
-			);
+	const { content } = useDrawerStore.getState();
+	const isPreOrder = content === DrawerContent.preOrder;
+
+	const statusOptions = isQuote ? QUOTE_STATUS_OPTIONS : BILLING_STATUS_OPTIONS;
 
 	const paymentMethodOptions = !shopSlug?.includes('quito')
 		? COL_PAYMENT_METHOD_OPTIONS
 		: ECU_PAYMENT_METHOD_OPTIONS;
-
-	const isPartialPayment =
-		form?.getFieldValue('status') === BillingStatus.PARTIAL_PAYMENT;
 
 	return (
 		<div className='flex items-start justify-between gap-2 min-[1144px]:me-[36px] mt-8 overflow-x-auto custom-scrollbar'>
@@ -49,19 +46,9 @@ const DrawerFormFooter = ({
 								message: 'El estado de la factura es requerido'
 							}
 						]}
+						className='custom-disabled-select'
 					>
-						<Select
-							options={
-								isPartialPayment
-									? [
-											{
-												value: BillingStatus.PARTIAL_PAYMENT,
-												label: 'Pago parcial'
-											}
-										]
-									: statusOptions
-							}
-						/>
+						<Select options={statusOptions} disabled={true} />
 					</Form.Item>
 					{!isQuote ? (
 						<>
@@ -91,6 +78,7 @@ const DrawerFormFooter = ({
 						<PaymentAmounts
 							form={form}
 							paymentMethodOptions={paymentMethodOptions}
+							isPreOrder={isPreOrder}
 						/>
 					</div>
 				) : null}

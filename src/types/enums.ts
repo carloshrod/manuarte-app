@@ -7,7 +7,7 @@ export enum ModalContent {
 	permissions = 'permissions',
 	customers = 'customers',
 	billings = 'billings',
-	billingsPartialPayment = 'billingsPartialPayment',
+	preOrder = 'preOrder',
 	stockItems = 'stockItems',
 	confirm = 'confirm'
 }
@@ -15,7 +15,7 @@ export enum ModalContent {
 export enum DrawerContent {
 	quotes = 'quotes',
 	billings = 'billings',
-	billingsPartialPayment = 'billingsPartialPayment',
+	preOrder = 'preOrder',
 	directEnter = 'directEnter',
 	transfer = 'transfer',
 	enterByTransfer = 'enterByTransfer',
@@ -37,6 +37,7 @@ export enum BillingStatus {
 	PAID = 'PAID',
 	PENDING_PAYMENT = 'PENDING_PAYMENT',
 	PARTIAL_PAYMENT = 'PARTIAL_PAYMENT',
+	PENDING_DELIVERY = 'PENDING_DELIVERY',
 	CANCELED = 'CANCELED'
 }
 

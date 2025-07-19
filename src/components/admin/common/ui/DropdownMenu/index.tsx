@@ -18,7 +18,7 @@ const DropdownMenu = ({
 }: DropdownMenuProps) => {
 	return (
 		<Dropdown menu={{ items }}>
-			<Button variant={variant} color='primary'>
+			<Button variant={variant} color='primary' style={{ cursor: 'default' }}>
 				{prependIcon ? (
 					<IoMdAdd
 						size={18}

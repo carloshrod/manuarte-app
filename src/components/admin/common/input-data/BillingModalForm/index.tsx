@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Form, Select } from 'antd';
+import { Form, Select, Input } from 'antd';
 import { useDispatch } from 'react-redux';
 import FormButtons from '../../ui/FormButtons';
 import useForm from '@/hooks/useForm';
@@ -23,6 +23,7 @@ import {
 	calculateTotalPayment,
 	updateCalculations
 } from '@/components/admin/utils';
+const { TextArea } = Input;
 
 const BillingModalForm = () => {
 	const { form, isLoading, submitCreateBilling, submitUpdateBilling } =
@@ -34,9 +35,10 @@ const BillingModalForm = () => {
 	const dispatch = useDispatch();
 
 	const isPaid = dataToHandle?.status === BillingStatus.PAID;
-	const isPartialPayment =
-		content === ModalContent.billingsPartialPayment ||
-		dataToHandle?.status === BillingStatus.PARTIAL_PAYMENT;
+	const isPreOrder =
+		content === ModalContent.preOrder ||
+		dataToHandle?.status === BillingStatus.PARTIAL_PAYMENT ||
+		dataToHandle?.status === BillingStatus.PENDING_DELIVERY;
 
 	useEffect(() => {
 		if (dataToHandle?.isUpdating) {
@@ -57,7 +59,8 @@ const BillingModalForm = () => {
 			}),
 			discount: dataToHandle?.discount,
 			discountType: dataToHandle?.discountType,
-			shipping: dataToHandle?.shipping
+			shipping: dataToHandle?.shipping,
+			comments: dataToHandle?.comments
 		});
 
 		const discountByPercent =
@@ -83,14 +86,12 @@ const BillingModalForm = () => {
 				content: ModalContent.confirm,
 				componentProps: {
 					confirmTitle: `¿Estás seguro de que quieres generar esta factura${
-						values?.status === BillingStatus.PARTIAL_PAYMENT
-							? ' como venta bajo pedido/abono?'
-							: '?'
+						isPreOrder ? ' como venta bajo pedido/abono?' : '?'
 					}`,
 					confirmText: `${
 						values?.status === BillingStatus.PAID
 							? 'Se descontarán del stock los items agregados'
-							: 'No se descontarán del stock los items agregados, hasta que el pago esté completo'
+							: 'No se descontarán del stock los items agregados'
 					}`,
 					onConfirm: async () => {
 						const res = await submitCreateBilling({
@@ -137,7 +138,7 @@ const BillingModalForm = () => {
 							? ''
 							: paymentCompleted
 								? 'Se descontarán del stock los items agregados'
-								: 'No se descontarán del stock los items agregados, hasta que el pago esté completo'
+								: 'No se descontarán del stock los items agregados'
 					}`,
 					onConfirm: async () =>
 						await submitUpdateBilling(
@@ -145,7 +146,8 @@ const BillingModalForm = () => {
 								status: paymentCompleted ? BillingStatus.PAID : values?.status,
 								payments: values?.payments,
 								stockId: dataToHandle?.stockId,
-								items: dataToHandle?.items
+								items: dataToHandle?.items,
+								comments: values?.comments
 							},
 							dataToHandle.id
 						)
@@ -164,9 +166,7 @@ const BillingModalForm = () => {
 			form={form}
 			name='form_in_modal'
 			initialValues={{
-				status: isPartialPayment
-					? BillingStatus.PARTIAL_PAYMENT
-					: BillingStatus.PAID
+				status: isPreOrder ? BillingStatus.PARTIAL_PAYMENT : BillingStatus.PAID
 			}}
 			onFinish={onFinish}
 		>
@@ -226,6 +226,7 @@ const BillingModalForm = () => {
 					<PaymentAmounts
 						form={form}
 						paymentMethodOptions={paymentMethodOptions}
+						isPreOrder={isPreOrder}
 					/>
 				</div>
 
@@ -235,6 +236,10 @@ const BillingModalForm = () => {
 					isUpdatingBilling={dataToHandle?.isUpdating}
 				/>
 			</div>
+
+			<Form.Item name='comments' label='Comentarios'>
+				<TextArea rows={2} />
+			</Form.Item>
 
 			<FormButtons
 				label={dataToHandle?.isUpdating && isPaid ? 'Editar' : 'Generar'}

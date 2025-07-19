@@ -92,7 +92,7 @@ const PDFActions = ({
 						onClick={() =>
 							openModal({
 								title: 'Pedido | Abono',
-								content: ModalContent.billingsPartialPayment,
+								content: ModalContent.preOrder,
 								dataToHandle: data
 							})
 						}

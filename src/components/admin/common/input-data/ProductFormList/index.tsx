@@ -16,13 +16,13 @@ import { PRODUCTS_LIST_INPUTS_PROPS } from '@/components/admin/consts';
 import { StoreValue } from 'antd/es/form/interface';
 import { useParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import { BillingStatus } from '@/types/enums';
 
 interface ProductFormListProps {
 	form: FormInstance;
 	itemsError: boolean;
 	setItemsError: Dispatch<SetStateAction<boolean>>;
 	isQuote: boolean;
+	isPreOrder?: boolean;
 }
 
 type AddItemFormListFn = (
@@ -34,7 +34,8 @@ const ProductFormList = ({
 	form,
 	itemsError,
 	setItemsError,
-	isQuote
+	isQuote,
+	isPreOrder = false
 }: ProductFormListProps) => {
 	const [selectedProduct, setSelectedProduct] =
 		useState<ProductVariantWithStock | null>(null);
@@ -45,8 +46,6 @@ const ProductFormList = ({
 	const itemsList = Form.useWatch('items', form);
 	const { shops } = useSelector((state: RootState) => state.shop);
 	const stockId = shops.find(sh => sh.slug === params?.shopSlug)?.stockId;
-	const isPartialPayment =
-		form.getFieldValue('status') === BillingStatus.PARTIAL_PAYMENT;
 
 	const updateTotalPrice = (name: number) => {
 		const items: ProductVariantWithStock[] = form.getFieldValue('items');
@@ -75,7 +74,7 @@ const ProductFormList = ({
 
 	const handleAddProduct = (add: AddItemFormListFn) => {
 		if (selectedProduct) {
-			if (!isQuote && !isPartialPayment) {
+			if (!isQuote && !isPreOrder) {
 				if (selectedProduct.quantity === 0) {
 					return notification.error({ message: 'Producto sin stock!' });
 				}
@@ -155,7 +154,7 @@ const ProductFormList = ({
 																	input.name === 'quantity' &&
 																	value &&
 																	value > maxQuantity &&
-																	!isPartialPayment
+																	!isPreOrder
 																) {
 																	return Promise.reject(
 																		new Error(`Stock: ${maxQuantity}`)

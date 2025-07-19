@@ -22,7 +22,7 @@ const useModal = () => {
 		[ModalContent.permissions]: <PermissionsForm />,
 		[ModalContent.customers]: <CustomersForm />,
 		[ModalContent.billings]: <BillingModalForm />,
-		[ModalContent.billingsPartialPayment]: <BillingModalForm />,
+		[ModalContent.preOrder]: <BillingModalForm />,
 		[ModalContent.stockItems]: <StockItemForm />,
 		[ModalContent.confirm]: componentProps ? (
 			<ConfirmOperation {...componentProps} />

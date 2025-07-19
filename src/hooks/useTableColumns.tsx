@@ -445,8 +445,17 @@ const useTableColumns = () => {
 			key: 'status',
 			filters: [
 				{
-					text: 'PAGADA',
+					text: 'FACTURADA',
 					value: 'PAID'
+				},
+				{
+					text: 'ENTREGA PENDIENTE',
+					value: 'PENDING_DELIVERY'
+				},
+
+				{
+					text: 'PAGO PARCIAL',
+					value: 'PARTIAL_PAYMENT'
 				},
 				{
 					text: 'PAGO PENDIENTE',
@@ -461,6 +470,7 @@ const useTableColumns = () => {
 			render: value => {
 				const STATUS_COLORS: Record<string, string> = {
 					PAID: 'success',
+					PENDING_DELIVERY: 'cyan',
 					PENDING_PAYMENT: 'orange',
 					PARTIAL_PAYMENT: 'yellow',
 					CANCELED: 'red'

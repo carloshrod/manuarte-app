@@ -11,11 +11,13 @@ interface PaymentAmountsProps {
 		value: string;
 		label: string;
 	}[];
+	isPreOrder?: boolean;
 }
 
 const PaymentAmounts = ({
 	form,
-	paymentMethodOptions
+	paymentMethodOptions,
+	isPreOrder = false
 }: PaymentAmountsProps) => {
 	const { dataToHandle } = useModalStore.getState();
 	const [debouncedDifference, setDebouncedDifference] = useState(0);
@@ -45,13 +47,25 @@ const PaymentAmounts = ({
 	const totalPayment = calculateTotalPayment(currentPayments);
 	const difference = total - totalPayment;
 
-	const isPartialPayment =
-		Form.useWatch('status', form) === BillingStatus.PARTIAL_PAYMENT;
+	const status = Form.useWatch('status', form);
+	const isPartialPayment = status === BillingStatus.PARTIAL_PAYMENT;
 
 	useEffect(() => {
 		const timeout = setTimeout(() => {
 			setDebouncedDifference(difference);
 		}, 1000);
+
+		if (status === BillingStatus.PAID) return;
+
+		if (isPreOrder) {
+			if (difference > 0) {
+				form.setFieldsValue({ status: BillingStatus.PARTIAL_PAYMENT });
+			}
+
+			if (difference === 0) {
+				form.setFieldsValue({ status: BillingStatus.PENDING_DELIVERY });
+			}
+		}
 
 		if (dataToHandle?.payments && difference === 0) {
 			form.setFieldsValue({ status: BillingStatus.PAID });
@@ -108,12 +122,6 @@ const PaymentAmounts = ({
 							if (!allAmountsGreaterThanZero) {
 								throw new Error(
 									'Todos los montos deben tener un valor mayor a cero, de lo contrario elimine el método de pago'
-								);
-							}
-
-							if (isPartialPayment && totalPayment >= total) {
-								throw new Error(
-									`No puedes generar una venta bajo pedido/abono, si la suma de los montos ($${totalPayment.toLocaleString()}) es mayor o igual al total ($${total.toLocaleString()})`
 								);
 							}
 

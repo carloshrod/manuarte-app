@@ -1,5 +1,5 @@
 import useForm from '@/hooks/useForm';
-import { Button, Divider, Form } from 'antd';
+import { Button, Divider, Form, Input } from 'antd';
 import CustomerInfoInputs from '../../common/input-data/CustomerInfoInputs';
 import ProductFormList from '../../common/input-data/ProductFormList';
 import DrawerFormFooter from '../../common/input-data/DrawerFormFooter';
@@ -17,6 +17,7 @@ import {
 } from '@/types/enums';
 import { useDrawerStore } from '@/stores/drawerStore';
 import { v4 as uuidv4 } from 'uuid';
+const { TextArea } = Input;
 
 const BillingForm = () => {
 	const { form, itemsError, setItemsError, submitCreateBilling } = useForm();
@@ -30,7 +31,7 @@ const BillingForm = () => {
 	const { openModal } = useModalStore.getState();
 	const [clientRequestId, setClientRequestId] = useState<string>('');
 
-	const isPartialPayment = content === DrawerContent.billingsPartialPayment;
+	const isPreOrder = content === DrawerContent.preOrder;
 
 	useEffect(() => {
 		if (dataToHandle) {
@@ -85,10 +86,10 @@ const BillingForm = () => {
 			title: '',
 			content: ModalContent.confirm,
 			componentProps: {
-				confirmTitle: `¿Estás seguro de que quieres generar esta factura${isPartialPayment ? ' como venta bajo pedido/abono?' : '?'}`,
-				confirmText: !isPartialPayment
+				confirmTitle: `¿Estás seguro de que quieres generar esta factura${isPreOrder ? ' como venta bajo pedido/abono?' : '?'}`,
+				confirmText: !isPreOrder
 					? 'Se descontarán del stock los items agregados'
-					: 'No se descontarán del stock los items agregados, hasta que el pago esté completo',
+					: 'No se descontarán del stock los items agregados',
 				onConfirm: async () => {
 					await submitCreateBilling({
 						values: {
@@ -110,9 +111,7 @@ const BillingForm = () => {
 			layout='vertical'
 			initialValues={{
 				items: [],
-				status: isPartialPayment
-					? BillingStatus.PARTIAL_PAYMENT
-					: BillingStatus.PAID,
+				status: isPreOrder ? BillingStatus.PARTIAL_PAYMENT : BillingStatus.PAID,
 				subtotal: 0,
 				total: 0,
 				discountType: DiscountType.FIXED
@@ -129,6 +128,7 @@ const BillingForm = () => {
 				itemsError={itemsError}
 				setItemsError={setItemsError}
 				isQuote={false}
+				isPreOrder={isPreOrder}
 			/>
 
 			<DrawerFormFooter
@@ -139,7 +139,11 @@ const BillingForm = () => {
 				<CalculationInputs form={form} />
 			</DrawerFormFooter>
 
-			<div className='flex justify-end mt-4'>
+			<div className='flex flex-col items-end'>
+				<Form.Item name='comments' label='Comentarios' className='w-[50%]'>
+					<TextArea rows={2} />
+				</Form.Item>
+
 				<Button
 					type='primary'
 					className='w-[90%] max-w-[250px]'
