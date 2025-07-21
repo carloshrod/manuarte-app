@@ -20,20 +20,18 @@ const PaymentAmounts = ({
 	isPreOrder = false
 }: PaymentAmountsProps) => {
 	const { dataToHandle } = useModalStore.getState();
-	const [debouncedDifference, setDebouncedDifference] = useState(0);
+	const [debouncedDifference, setDebouncedDifference] = useState<number | null>(
+		null
+	);
 
 	const selectedMethods = Form.useWatch('selectedMethods', form);
 	const paymentList = Form.useWatch('payments', form) || [];
-	const paymentListData =
-		dataToHandle && dataToHandle?.payments?.length > 0
-			? dataToHandle?.payments
-			: paymentList;
 
 	useEffect(() => {
 		if (!selectedMethods) return;
 
 		const newList = selectedMethods.map((paymentMethod: string) => {
-			const existing = paymentListData?.find(
+			const existing = paymentList?.find(
 				(p: any) => p.paymentMethod === paymentMethod
 			);
 			return existing || { paymentMethod, amount: 0 };
@@ -43,8 +41,12 @@ const PaymentAmounts = ({
 	}, [selectedMethods]);
 
 	const total = Form.useWatch('total', form) || 0;
-	const currentPayments = Form.useWatch('payments', form) || [];
-	const totalPayment = calculateTotalPayment(currentPayments);
+	const existingPayments = dataToHandle?.payments || [];
+	const newPayments = Form.useWatch('payments', form) || [];
+	const totalPayment = calculateTotalPayment([
+		...newPayments,
+		...existingPayments
+	]);
 	const difference = total - totalPayment;
 
 	const status = Form.useWatch('status', form);
@@ -53,7 +55,7 @@ const PaymentAmounts = ({
 	useEffect(() => {
 		const timeout = setTimeout(() => {
 			setDebouncedDifference(difference);
-		}, 1000);
+		}, 700);
 
 		if (status === BillingStatus.PAID) return;
 
@@ -65,23 +67,16 @@ const PaymentAmounts = ({
 			if (difference === 0) {
 				form.setFieldsValue({ status: BillingStatus.PENDING_DELIVERY });
 			}
-		}
-
-		if (dataToHandle?.payments && difference === 0) {
+		} else {
 			form.setFieldsValue({ status: BillingStatus.PAID });
-		}
-
-		if (
-			dataToHandle?.status === BillingStatus.PARTIAL_PAYMENT &&
-			difference > 0
-		) {
-			form.setFieldsValue({ status: BillingStatus.PARTIAL_PAYMENT });
 		}
 
 		return () => clearTimeout(timeout);
 	}, [difference]);
 
 	const getDifferenceMessage = () => {
+		if (debouncedDifference === null) return;
+
 		if (debouncedDifference > 0) {
 			return `Saldo $${debouncedDifference.toLocaleString()}`;
 		}
@@ -93,109 +88,145 @@ const PaymentAmounts = ({
 		return 'Monto exacto';
 	};
 
-	return selectedMethods?.length > 0 ? (
+	return (
 		<>
-			<div
-				className={`text-end text-[14px] font-medium pe-3 pb-4 ${
-					debouncedDifference === 0
-						? 'text-[#10b981]'
-						: debouncedDifference > 0
-							? 'text-[#0D6EFD]'
-							: 'text-[#E53535]'
-				}`}
-			>
-				{getDifferenceMessage()}
-			</div>
+			{debouncedDifference !== null && total > 0 && (
+				<div
+					className={`text-end text-[14px] font-medium pe-3 pb-4 ${
+						debouncedDifference === 0
+							? 'text-[#10b981]'
+							: debouncedDifference > 0
+								? 'text-[#0D6EFD]'
+								: 'text-[#E53535]'
+					}`}
+				>
+					{getDifferenceMessage()}
+				</div>
+			)}
 
-			<Form.Item
-				name='payments'
-				layout='horizontal'
-				rules={[
-					{
-						validator: async (_, value) => {
-							const total = form.getFieldValue('total') || 0;
-							const totalPayment = calculateTotalPayment(value);
-							const allAmountsGreaterThanZero = value.every(
-								(item: any) => item.amount > 0
-							);
-
-							if (!allAmountsGreaterThanZero) {
-								throw new Error(
-									'Todos los montos deben tener un valor mayor a cero, de lo contrario elimine el método de pago'
+			{selectedMethods?.length ? (
+				<Form.Item
+					name='payments'
+					layout='horizontal'
+					rules={[
+						{
+							validator: async (_, value) => {
+								const total = form.getFieldValue('total') || 0;
+								const totalPayment = calculateTotalPayment([
+									...value,
+									...existingPayments
+								]);
+								const allAmountsGreaterThanZero = value.every(
+									(item: any) => item.amount > 0
 								);
-							}
 
-							if (isPartialPayment) {
-								return Promise.resolve();
-							}
+								if (!allAmountsGreaterThanZero) {
+									throw new Error(
+										'Todos los montos deben tener un valor mayor a cero, de lo contrario elimine el método de pago'
+									);
+								}
 
-							if (totalPayment !== total) {
-								throw new Error(
-									`La suma de los montos ($${totalPayment.toLocaleString()}) debe ser igual al total ($${total.toLocaleString()})`
-								);
+								if (isPartialPayment) {
+									return Promise.resolve();
+								}
+
+								if (totalPayment !== total) {
+									throw new Error(
+										`La suma de los montos ($${totalPayment.toLocaleString()}) debe ser igual al total ($${total.toLocaleString()})`
+									);
+								}
 							}
 						}
-					}
-				]}
-			>
-				<Form.List name='payments'>
-					{fields => (
-						<>
-							{fields.map(({ key, name, ...restField }) => {
-								const methodValue = form.getFieldValue([
-									'payments',
-									name,
-									'paymentMethod'
-								]);
-								const methodOption = paymentMethodOptions.find(
-									item => item.value === methodValue
-								);
+					]}
+					style={{ marginBottom: 0 }}
+				>
+					<Form.List name='payments'>
+						{fields => (
+							<>
+								{fields.map(({ key, name, ...restField }) => {
+									const methodValue = form.getFieldValue([
+										'payments',
+										name,
+										'paymentMethod'
+									]);
+									const methodOption = paymentMethodOptions.find(
+										item => item.value === methodValue
+									);
 
-								return (
-									<div key={key}>
-										<Form.Item
-											{...restField}
-											name={[name, 'paymentMethod']}
-											noStyle
-											hidden
-										>
-											<InputNumber disabled hidden />
-										</Form.Item>
+									return (
+										<div key={key}>
+											<Form.Item
+												{...restField}
+												name={[name, 'paymentMethod']}
+												noStyle
+												hidden
+											>
+												<InputNumber disabled hidden />
+											</Form.Item>
 
-										<Form.Item
-											{...restField}
-											name={[name, 'amount']}
-											label={methodOption?.label}
-											labelCol={{ span: 13 }}
-											layout='horizontal'
-											rules={[
-												{ required: true, message: 'Ingresa monto' },
-												{
-													validator: (_, value) =>
-														value > 0
-															? Promise.resolve()
-															: Promise.reject(new Error())
-												}
-											]}
-										>
-											<InputNumber
-												min={0}
-												placeholder='Monto'
-												style={{ width: '100%' }}
-												controls={false}
-												formatter={value => formatInputCurrency(value)}
-												className='textRight'
-											/>
-										</Form.Item>
-									</div>
-								);
-							})}
-						</>
-					)}
-				</Form.List>
-			</Form.Item>
+											<Form.Item
+												{...restField}
+												name={[name, 'amount']}
+												label={methodOption?.label}
+												labelCol={{ span: 13 }}
+												layout='horizontal'
+												rules={[
+													{ required: true, message: 'Ingresa monto' },
+													{
+														validator: (_, value) =>
+															value > 0
+																? Promise.resolve()
+																: Promise.reject(new Error())
+													}
+												]}
+											>
+												<InputNumber
+													min={0}
+													placeholder='Monto'
+													style={{ width: '100%' }}
+													controls={false}
+													formatter={value => formatInputCurrency(value)}
+													className='textRight'
+												/>
+											</Form.Item>
+										</div>
+									);
+								})}
+							</>
+						)}
+					</Form.List>
+				</Form.Item>
+			) : null}
+
+			{existingPayments?.length > 0 ? (
+				<div className='flex flex-col'>
+					{existingPayments?.map((payment: Payment, index: number) => {
+						const methodOption = paymentMethodOptions.find(
+							item => item.value === payment.paymentMethod
+						);
+
+						return (
+							<Form.Item
+								key={payment.paymentMethod + index}
+								label={methodOption?.label}
+								labelCol={{ span: 13 }}
+								layout='horizontal'
+							>
+								<InputNumber
+									value={payment.amount}
+									variant='borderless'
+									style={{ width: '100%', backgroundColor: '#e5e5e5' }}
+									formatter={value => formatInputCurrency(value)}
+									className='textRight'
+									readOnly
+								/>
+							</Form.Item>
+						);
+					})}
+				</div>
+			) : null}
 		</>
-	) : null;
+	);
 };
 
 export default PaymentAmounts;

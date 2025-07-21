@@ -21,8 +21,40 @@ const BillingsActions = ({ record }: { record: Billing }) => {
 		});
 
 		openModal({
-			title: `${isPreOrder ? 'Generar' : 'Editar'} Factura`,
+			title: 'Editar Factura',
 			content: ModalContent.billings,
+			dataToHandle: {
+				...billing,
+				isUpdating: true
+			}
+		});
+	};
+
+	const handleGenerate = async ({
+		title,
+		content
+	}: {
+		title: string;
+		content: ModalContent;
+	}) => {
+		const billing = await billingServices.getOne({
+			serialNumber: record?.serialNumber
+		});
+
+		if (
+			content === ModalContent.preOrder &&
+			record?.status === BillingStatus.PENDING_DELIVERY
+		) {
+			notification.info({
+				message:
+					'El pedido está pendiente de entrega, genera una factura si quieres finalizarlo!'
+			});
+			return;
+		}
+
+		openModal({
+			title,
+			content,
 			dataToHandle: {
 				...billing,
 				isUpdating: true
@@ -73,7 +105,7 @@ const BillingsActions = ({ record }: { record: Billing }) => {
 	return (
 		<TableActions
 			onEdit={!isPreOrder ? handleEdit : undefined}
-			onGenerate={isPreOrder ? handleEdit : undefined}
+			onGenerate={isPreOrder ? handleGenerate : undefined}
 			onDelete={!isCancelable ? handleDelete : undefined}
 			onCancel={isCancelable ? handleCancel : undefined}
 			popTitle={`${record.serialNumber} - ${record.customerName ?? 'Consumidor final'}`}

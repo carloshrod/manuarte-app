@@ -1,17 +1,26 @@
-import { Button, Space, Tooltip } from 'antd';
+import { Button, MenuProps, Space, Tooltip } from 'antd';
 import React from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import { IoKeyOutline } from 'react-icons/io5';
 import { TbCancel } from 'react-icons/tb';
 import PopConfirm from '../PopConfirm';
 import { ImEye } from 'react-icons/im';
-import { MdTimeline } from 'react-icons/md';
+import { MdOutlinePendingActions, MdTimeline } from 'react-icons/md';
 import { HiOutlineDocumentAdd } from 'react-icons/hi';
+import DropdownMenu from '../DropdownMenu';
+import { ModalContent } from '@/types/enums';
+import { PiInvoice } from 'react-icons/pi';
 
 interface TableActionsProps {
 	record?: Record<string, any>;
 	onEdit?: () => void;
-	onGenerate?: () => void;
+	onGenerate?: ({
+		title,
+		content
+	}: {
+		title: string;
+		content: ModalContent;
+	}) => void;
 	onShowDetails?: () => void;
 	onEditPermissions?: () => void;
 	onTracking?: () => void;
@@ -39,6 +48,47 @@ const TableActions = ({
 }: TableActionsProps) => {
 	const isCancel = popDescription.includes('anular');
 
+	const dropDownItems: MenuProps['items'] = onGenerate && [
+		{
+			key: '1',
+			label: (
+				<Space className='px-2'>
+					<Button
+						variant='text'
+						color='primary'
+						onClick={() =>
+							onGenerate({
+								title: 'Generar Factura',
+								content: ModalContent.billings
+							})
+						}
+					>
+						Generar Factura <PiInvoice size={18} />
+					</Button>
+				</Space>
+			)
+		},
+		{
+			key: '2',
+			label: (
+				<Space className='px-2'>
+					<Button
+						variant='text'
+						color='primary'
+						onClick={() =>
+							onGenerate({
+								title: 'Generar Abono',
+								content: ModalContent.preOrder
+							})
+						}
+					>
+						Pedido | Abono <MdOutlinePendingActions size={18} />
+					</Button>
+				</Space>
+			)
+		}
+	];
+
 	return (
 		<Space size='small'>
 			{onEdit ? (
@@ -58,7 +108,7 @@ const TableActions = ({
 			) : null}
 
 			{onGenerate ? (
-				<Tooltip title={isEditable ? 'Generar' : ''}>
+				<DropdownMenu items={dropDownItems} label=''>
 					<Button
 						type='text'
 						icon={
@@ -67,10 +117,9 @@ const TableActions = ({
 								color={isEditable ? '#0D6EFD' : '#A0AEC0'}
 							/>
 						}
-						onClick={onGenerate}
-						disabled={!isEditable}
+						style={{ cursor: 'default' }}
 					/>
-				</Tooltip>
+				</DropdownMenu>
 			) : null}
 
 			{onShowDetails ? (

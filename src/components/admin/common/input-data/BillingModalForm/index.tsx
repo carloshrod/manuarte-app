@@ -19,10 +19,7 @@ import { BillingStatus, DiscountType, ModalContent } from '@/types/enums';
 import { v4 as uuidv4 } from 'uuid';
 import PaymentAmounts from '../PaymentAmounts';
 import CalculationInputs from '../CalculationInputs';
-import {
-	calculateTotalPayment,
-	updateCalculations
-} from '@/components/admin/utils';
+import { updateCalculations } from '@/components/admin/utils';
 const { TextArea } = Input;
 
 const BillingModalForm = () => {
@@ -35,16 +32,14 @@ const BillingModalForm = () => {
 	const dispatch = useDispatch();
 
 	const isPaid = dataToHandle?.status === BillingStatus.PAID;
-	const isPreOrder =
-		content === ModalContent.preOrder ||
-		dataToHandle?.status === BillingStatus.PARTIAL_PAYMENT ||
+	const isPendingDelivery =
 		dataToHandle?.status === BillingStatus.PENDING_DELIVERY;
+	const isPreOrder = content === ModalContent.preOrder;
 
 	useEffect(() => {
 		if (dataToHandle?.isUpdating) {
 			form.setFieldsValue({
-				status: dataToHandle?.status,
-				selectedMethods: dataToHandle?.paymentMethods
+				status: dataToHandle?.status
 			});
 		}
 
@@ -121,9 +116,6 @@ const BillingModalForm = () => {
 				}
 			});
 		} else {
-			const totalPayment = calculateTotalPayment(values?.payments);
-			const paymentCompleted = totalPayment === values?.total;
-
 			openModal({
 				title: '',
 				content: ModalContent.confirm,
@@ -131,19 +123,19 @@ const BillingModalForm = () => {
 					confirmTitle: `¿Estás seguro de que quieres ${
 						isPaid
 							? 'editar'
-							: `${paymentCompleted ? 'generar' : 'generar un abono a'}`
+							: `${values?.status === BillingStatus.PAID ? 'generar' : 'generar un abono a'}`
 					} la factura ${dataToHandle?.serialNumber}?`,
 					confirmText: `${
 						isPaid
 							? ''
-							: paymentCompleted
+							: values?.status === BillingStatus.PAID
 								? 'Se descontarán del stock los items agregados'
 								: 'No se descontarán del stock los items agregados'
 					}`,
 					onConfirm: async () =>
 						await submitUpdateBilling(
 							{
-								status: paymentCompleted ? BillingStatus.PAID : values?.status,
+								status: values?.status,
 								payments: values?.payments,
 								stockId: dataToHandle?.stockId,
 								items: dataToHandle?.items,
@@ -191,7 +183,7 @@ const BillingModalForm = () => {
 					label='Métodos de Pago'
 					rules={[
 						{
-							required: true,
+							required: !isPaid && !isPendingDelivery,
 							message: 'Al menos un método de pago es requerido'
 						}
 					]}
@@ -202,6 +194,7 @@ const BillingModalForm = () => {
 						maxCount={3}
 						placeholder='Seleccione hasta 3 métodos de pago...'
 						options={paymentMethodOptions}
+						disabled={isPaid || isPendingDelivery}
 					/>
 				</Form.Item>
 

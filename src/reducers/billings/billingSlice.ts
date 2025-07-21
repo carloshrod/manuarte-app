@@ -25,7 +25,15 @@ const billingSlice = createSlice({
 			const { id, status, paymentMethods } = action.payload;
 
 			state.billings = state.billings.map(billing =>
-				billing.id === id ? { ...billing, status, paymentMethods } : billing
+				billing.id === id
+					? {
+							...billing,
+							status,
+							paymentMethods: Array.from(
+								new Set([...billing.paymentMethods, ...paymentMethods])
+							)
+						}
+					: billing
 			);
 		},
 
