@@ -243,6 +243,7 @@ enum PaymentMethod {
 interface Payment {
 	paymentMethod: PaymentMethod;
 	amount: number;
+	createdDate: string;
 }
 
 interface BillingItem extends QuoteItem {}

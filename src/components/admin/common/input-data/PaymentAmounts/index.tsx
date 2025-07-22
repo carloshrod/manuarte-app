@@ -1,9 +1,10 @@
 import { calculateTotalPayment } from '@/components/admin/utils';
 import { useModalStore } from '@/stores/modalStore';
 import { BillingStatus } from '@/types/enums';
-import { formatInputCurrency } from '@/utils/formats';
-import { Form, FormInstance, InputNumber } from 'antd';
+import { formatDate, formatInputCurrency } from '@/utils/formats';
+import { Form, FormInstance, InputNumber, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
+import { IoInformationCircleOutline } from 'react-icons/io5';
 
 interface PaymentAmountsProps {
 	form: FormInstance;
@@ -206,21 +207,31 @@ const PaymentAmounts = ({
 						);
 
 						return (
-							<Form.Item
-								key={payment.paymentMethod + index}
-								label={methodOption?.label}
-								labelCol={{ span: 13 }}
-								layout='horizontal'
-							>
-								<InputNumber
-									value={payment.amount}
-									variant='borderless'
-									style={{ width: '100%', backgroundColor: '#e5e5e5' }}
-									formatter={value => formatInputCurrency(value)}
-									className='textRight'
-									readOnly
-								/>
-							</Form.Item>
+							<div key={payment.paymentMethod + index} className='relative'>
+								<Form.Item
+									label={methodOption?.label}
+									labelCol={{ span: 13 }}
+									layout='horizontal'
+								>
+									<InputNumber
+										value={payment.amount}
+										variant='borderless'
+										style={{ width: '100%', backgroundColor: '#e5e5e5' }}
+										formatter={value => formatInputCurrency(value)}
+										className='textRight'
+										readOnly
+									/>
+								</Form.Item>
+
+								<Tooltip
+									title={formatDate(payment.createdDate)}
+									className='absolute -right-5 top-2'
+								>
+									<span>
+										<IoInformationCircleOutline size={18} />
+									</span>
+								</Tooltip>
+							</div>
 						);
 					})}
 				</div>
