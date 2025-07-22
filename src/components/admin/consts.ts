@@ -202,7 +202,6 @@ export const COL_PAYMENT_METHOD_OPTIONS = [
 export const ECU_PAYMENT_METHOD_OPTIONS = [
 	{ value: 'CASH', label: 'Efectivo' },
 	{ value: 'BANK_TRANSFER_RT', label: 'Transferencia RI' },
-	{ value: 'BANK_TRANSFER_RBT', label: 'Transferencia RO' },
 	{ value: 'PAYPHONE', label: 'PayPhone' },
 	{ value: 'BANK_DEPOSIT', label: 'Depósito' },
 	{ value: 'OTHER', label: 'Otro' }
