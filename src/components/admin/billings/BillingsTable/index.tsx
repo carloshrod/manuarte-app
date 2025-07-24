@@ -54,9 +54,9 @@ const BillingsTable = ({ shopSlug }: { shopSlug: string }) => {
 		_pagination: TablePaginationConfig,
 		filters: Record<string, FilterValue | null>
 	) => {
-		const createdDateFilter = filters?.createdDate;
+		const effectiveDateFilter = filters?.effectiveDate;
 
-		if (!createdDateFilter || createdDateFilter.length === 0) {
+		if (!effectiveDateFilter || effectiveDateFilter.length === 0) {
 			dispatch(setFilteredBillings([]));
 			return;
 		}
@@ -65,7 +65,8 @@ const BillingsTable = ({ shopSlug }: { shopSlug: string }) => {
 
 		filtered = filtered?.filter(
 			item =>
-				moment(item?.createdDate).format('YYYY-MM-DD') === createdDateFilter[0]
+				moment(item?.effectiveDate).format('YYYY-MM-DD') ===
+				effectiveDateFilter[0]
 		);
 
 		filtered = filtered.filter(item => item.status === BillingStatus.PAID);

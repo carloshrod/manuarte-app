@@ -11,7 +11,7 @@ const GenerateBillingReportButton = ({ shopSlug }: { shopSlug: string }) => {
 	const handleDownloadExcel = async () => {
 		try {
 			const excelData = generateBillingsData(filteredBillings);
-			const date = filteredBillings[0].createdDate;
+			const date = filteredBillings[0].effectiveDate;
 
 			if (excelData) {
 				const shopName = shopSlug.toUpperCase().replace('-', ' ');
