@@ -510,12 +510,14 @@ const useTableColumns = () => {
 		},
 		{
 			title: 'FECHA',
-			dataIndex: 'createdDate',
-			key: 'createdDate',
-			...getColumnDateFilterProps('createdDate'),
-			render: (value: string) => (
-				<span>{value ? formatDate(value) : '--'}</span>
-			),
+			dataIndex: 'effectiveDate',
+			key: 'effectiveDate',
+			...getColumnDateFilterProps('effectiveDate'),
+			render: (value: string, record) => {
+				const valueDate = value || record?.createdDate;
+
+				return <span>{valueDate ? formatDate(valueDate) : '--'}</span>;
+			},
 			width: 140
 		},
 		{

@@ -300,8 +300,9 @@ const useForm = () => {
 				dispatch(
 					updateBilling({
 						id: billingId,
-						paymentMethods: values?.payments?.map(p => p?.paymentMethod) || [],
-						status: values?.status
+						status: values?.status,
+						effectiveDate: new Date().toISOString(),
+						paymentMethods: values?.payments?.map(p => p?.paymentMethod) || []
 					})
 				)
 		});

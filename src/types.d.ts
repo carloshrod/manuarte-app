@@ -251,6 +251,7 @@ interface Billing extends Omit<Quote, 'status'> {
 	status: BillingStatus;
 	paymentMethods: string[];
 	subtotal: number;
+	effectiveDate: string;
 }
 
 interface SubmitBillingDto extends SubmitCustomerDto {
