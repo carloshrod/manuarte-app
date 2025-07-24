@@ -22,13 +22,14 @@ const billingSlice = createSlice({
 		},
 
 		updateBilling: (state, action) => {
-			const { id, status, paymentMethods } = action.payload;
+			const { id, status, effectiveDate, paymentMethods } = action.payload;
 
 			state.billings = state.billings.map(billing =>
 				billing.id === id
 					? {
 							...billing,
 							status,
+							effectiveDate,
 							paymentMethods: Array.from(
 								new Set([...billing.paymentMethods, ...paymentMethods])
 							)

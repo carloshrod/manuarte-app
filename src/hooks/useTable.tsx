@@ -122,7 +122,7 @@ const useTable = () => {
 	});
 
 	const getColumnDateFilterProps = (
-		dateField: 'createdDate',
+		dateField: 'createdDate' | 'effectiveDate',
 		earlierThan?: boolean
 	): TableColumnType<any> => ({
 		filterDropdown: ({
@@ -179,11 +179,20 @@ const useTable = () => {
 		),
 
 		onFilter: (value, record) => {
-			const recordDate = record[dateField];
+			const recordDateBackup =
+				dateField === 'effectiveDate'
+					? record.createdDate
+					: record.effectiveDate;
+
+			const recordDate = record[dateField] || recordDateBackup;
+
+			if (!recordDate) return false;
+
+			const formattedRecordDate = moment(recordDate).format('YYYY-MM-DD');
 
 			return earlierThan
-				? moment(recordDate).format('YYYY-MM-DD') < value
-				: moment(recordDate).format('YYYY-MM-DD') === value;
+				? formattedRecordDate < value
+				: formattedRecordDate === value;
 		}
 	});
 
