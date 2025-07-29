@@ -1,4 +1,4 @@
-import ExcelJS, { Fill } from 'exceljs';
+import ExcelJS from 'exceljs';
 import { PAYMENT_METHOD_MAP, TRANSACTION_TYPES_MAP } from './mappings';
 import { formatDate, formatToTitleCase } from './formats';
 import { DiscountType } from '@/types/enums';
@@ -19,9 +19,12 @@ export interface ExcelCostStockData {
 	Código: string;
 	Producto: string;
 	Cantidad: number;
-	Precio: number;
-	Costo: number;
+	'Precio Venta': number;
+	'Total Precio Venta': number;
+	'Precio Costo': number;
 	'Costo Total': number;
+	'Ganancia Unitaria': number;
+	'% de Ganancia': number;
 }
 
 export interface ExcelStockHistoryData {
@@ -123,15 +126,19 @@ export const generateCostStockData = (stockItems: StockItem[]) => {
 
 		if (stockItems?.length > 0) {
 			excelData = stockItems.reduce((acc, item) => {
-				if (item.quantity > 0) {
+				if (item.quantity > 0 && item.cost > 0) {
 					acc.push({
 						'#': acc.length + 1,
 						Código: item.vId,
 						Producto: `${item.productName} - ${item.productVariantName}`,
 						Cantidad: item.quantity,
-						Precio: item.price,
-						Costo: item.cost,
-						'Costo Total': Number(item.quantity) * Number(item.cost)
+						'Precio Venta': item.price,
+						'Total Precio Venta': Number(item.quantity) * Number(item.price),
+						'Precio Costo': item.cost,
+						'Costo Total': Number(item.quantity) * Number(item.cost),
+						'Ganancia Unitaria': Number(item.price) - Number(item.cost),
+						'% de Ganancia':
+							(Number(item.price) - Number(item.cost)) / Number(item.cost)
 					});
 				}
 
@@ -538,9 +545,11 @@ export const downloadExcel = async ({
 						headers[colNumber - 1] === 'Total' ||
 						headers[colNumber - 1] === 'Flete' ||
 						headers[colNumber - 1] === 'Facturado' ||
-						headers[colNumber - 1] === 'Precio' ||
-						headers[colNumber - 1] === 'Costo' ||
-						headers[colNumber - 1] === 'Costo Total'
+						headers[colNumber - 1] === 'Precio Venta' ||
+						headers[colNumber - 1] === 'Total Precio Venta' ||
+						headers[colNumber - 1] === 'Precio Costo' ||
+						headers[colNumber - 1] === 'Costo Total' ||
+						headers[colNumber - 1] === 'Ganancia Unitaria'
 					) {
 						cell.numFmt =
 							isUsd || info?.countryIsoCode === 'EC'
@@ -548,6 +557,10 @@ export const downloadExcel = async ({
 								: '"$" #,##0';
 						cell.value = Number(cell.value);
 						cell.alignment = { vertical: 'middle', horizontal: 'right' };
+					}
+
+					if (headers[colNumber - 1] === '% de Ganancia') {
+						cell.numFmt = '0.00%';
 					}
 
 					if (
@@ -568,24 +581,46 @@ export const downloadExcel = async ({
 			}
 
 			const customerIndex = headers.findIndex(h => h === 'Cliente');
+			const subtotalIndex = headers.findIndex(h => h === 'Subtotal');
+			const descuentoIndex = headers.findIndex(h => h === 'Descuento');
 			const totalIndex = headers.findIndex(h => h === 'Total');
-			if (totalIndex !== -1 && customerIndex !== -1) {
+			const fleteIndex = headers.findIndex(h => h === 'Flete');
+			if (
+				customerIndex !== -1 &&
+				subtotalIndex !== -1 &&
+				descuentoIndex !== -1 &&
+				totalIndex !== -1 &&
+				fleteIndex !== -1
+			) {
+				const sumRow = worksheet.addRow(Array(headers.length).fill(''));
+				const totalRowNumber = worksheet.rowCount;
+				sumTotals(subtotalIndex, totalRowNumber, sumRow, isUsd, 'Totales');
+				sumTotals(descuentoIndex, totalRowNumber, sumRow, isUsd);
+				sumTotals(totalIndex, totalRowNumber, sumRow, isUsd);
+				sumTotals(fleteIndex, totalRowNumber, sumRow, isUsd);
+			}
+
+			const totalPriceIndex = headers.findIndex(
+				h => h === 'Total Precio Venta'
+			);
+			const totalCostIndex = headers.findIndex(h => h === 'Costo Total');
+			if (totalPriceIndex !== -1 && totalCostIndex !== -1) {
 				const sumRow = worksheet.addRow(Array(headers.length).fill(''));
 				const totalRowNumber = worksheet.rowCount;
 				sumTotals(
-					totalIndex,
+					totalPriceIndex,
 					totalRowNumber,
 					sumRow,
 					isUsd,
-					'Total ventas del día'
+					'Valor total precio'
 				);
-			}
-
-			const totalCostIndex = headers.findIndex(h => h === 'Costo Total');
-			if (totalCostIndex !== -1) {
-				const sumRow = worksheet.addRow(Array(headers.length).fill(''));
-				const totalRowNumber = worksheet.rowCount;
-				sumTotals(totalCostIndex, totalRowNumber, sumRow, isUsd, 'Valor total');
+				sumTotals(
+					totalCostIndex,
+					totalRowNumber,
+					sumRow,
+					isUsd,
+					'Valor total costo'
+				);
 			}
 
 			const COL_WIDTHS: Record<string, number> = {
@@ -656,15 +691,9 @@ const sumTotals = (
 	totalRowNumber: number,
 	sumRow: ExcelJS.Row,
 	isUsd: boolean,
-	label: string
+	label?: string
 ) => {
 	const colLetter = getColLetter(totalIndex);
-
-	const fillColor: Fill = {
-		type: 'pattern',
-		pattern: 'solid',
-		fgColor: { argb: 'C6E0B4' }
-	};
 
 	const totalCell = sumRow.getCell(totalIndex + 1);
 	totalCell.value = {
@@ -679,20 +708,30 @@ const sumTotals = (
 		bottom: { style: 'thin' },
 		right: { style: 'thin' }
 	};
-	totalCell.fill = fillColor;
+	totalCell.fill = {
+		type: 'pattern',
+		pattern: 'solid',
+		fgColor: { argb: 'C6E0B4' }
+	};
 	totalCell.numFmt = isUsd ? '"$" #,##0.00' : '"$" #,##0';
 
 	const labelCell = sumRow.getCell(totalIndex);
-	labelCell.value = label;
-	labelCell.font = { bold: true };
-	labelCell.alignment = { horizontal: 'center' };
-	labelCell.border = {
-		top: { style: 'thin' },
-		left: { style: 'thin' },
-		bottom: { style: 'thin' },
-		right: { style: 'thin' }
-	};
-	labelCell.fill = fillColor;
+	if (label) {
+		labelCell.value = label;
+		labelCell.font = { bold: true };
+		labelCell.alignment = { horizontal: 'center' };
+		labelCell.border = {
+			top: { style: 'thin' },
+			left: { style: 'thin' },
+			bottom: { style: 'thin' },
+			right: { style: 'thin' }
+		};
+		labelCell.fill = {
+			type: 'pattern',
+			pattern: 'solid',
+			fgColor: { argb: 'C5D9F1' }
+		};
+	}
 };
 
 const countRequiredQty = (
