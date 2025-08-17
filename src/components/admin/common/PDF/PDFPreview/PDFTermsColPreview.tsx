@@ -1,6 +1,6 @@
 import { formatToTitleCase } from '@/utils/formats';
 
-const TermsCol = ({ city }: { city: string }) => {
+const PDFTermsColPreview = ({ city }: { city: string }) => {
 	const BRANCHES: Record<
 		string,
 		{ address: string; phoneNumber: string; email: string }
@@ -136,4 +136,4 @@ const TermsCol = ({ city }: { city: string }) => {
 	);
 };
 
-export default TermsCol;
+export default PDFTermsColPreview;

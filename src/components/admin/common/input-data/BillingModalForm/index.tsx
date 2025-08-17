@@ -141,7 +141,13 @@ const BillingModalForm = () => {
 								items: dataToHandle?.items,
 								comments: values?.comments
 							},
-							dataToHandle.id
+							{
+								billingId: dataToHandle?.id,
+								currentStatus: dataToHandle?.status,
+								serialNumber: dataToHandle?.serialNumber,
+								phoneNumber: dataToHandle?.phoneNumber,
+								shopSlug: params?.shopSlug as string
+							}
 						)
 				}
 			});

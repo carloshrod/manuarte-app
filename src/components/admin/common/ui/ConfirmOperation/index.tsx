@@ -18,9 +18,12 @@ const ConfirmOperation = ({
 	const [loading, setLoading] = useState(false);
 
 	const handleConfirm = async () => {
-		setLoading(true);
-		await onConfirm();
-		setLoading(false);
+		try {
+			setLoading(true);
+			await onConfirm();
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	return (

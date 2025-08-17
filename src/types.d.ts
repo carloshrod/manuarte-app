@@ -195,6 +195,7 @@ interface Quote {
 	cityName: string;
 	regionName: string;
 	countryIsoCode: string;
+	callingCode: string;
 	createdDate: string;
 	updatedDate: string;
 	items: QuoteItem[];

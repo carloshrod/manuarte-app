@@ -1,75 +1,81 @@
 /* eslint-disable @next/next/no-img-element */
 import { Descriptions, DescriptionsProps, Divider } from 'antd';
-import PDFTable from '../../common/display-data/PDFTable';
-import TermsCol from '../../Terms/TermsCol';
-import TermsEcu from '../../Terms/TermsEcu';
+import PDFTablePreview from './PDFTablePreview';
+import PDFTermsColPreview from './PDFTermsColPreview';
+import PDFTermsEcuPreview from './PDFTermsEcuPreview';
 import { BILLING_STATUS_MAP, PAYMENT_METHOD_MAP } from '@/utils/mappings';
 import { formatDate, formatToTitleCase } from '@/utils/formats';
 import { BillingStatus } from '@/types/enums';
 
-const BillingPDF = ({
-	billing,
+const PDFPreview = ({
+	isQuote,
+	data,
 	pdfRef,
 	shopSlug
 }: {
-	billing: Billing;
+	isQuote: boolean;
+	data: Quote | Billing;
 	pdfRef: any;
 	shopSlug: string;
 }) => {
-	const billingInfo: DescriptionsProps['items'] = [
+	const docDetails: DescriptionsProps['items'] = [
 		{
 			key: '1',
 			label: 'Cliente:',
-			children: formatToTitleCase(billing?.fullName) ?? 'Consumidor Final',
+			children: formatToTitleCase(data?.fullName) ?? 'Consumidor Final',
 			span: 3
 		},
 		{
 			key: '2',
 			label: 'Nro. de Documento:',
-			children: billing?.dni ?? 'NA',
+			children: data?.dni ?? '--',
 			span: 3
 		},
 		{
 			key: '3',
 			label: 'Teléfono:',
-			children: billing?.phoneNumber ?? '--',
+			children: data?.phoneNumber ?? '--',
 			span: 3
 		},
 		{
 			key: '4',
 			label: 'Dirección:',
-			children: formatToTitleCase(billing?.location) ?? '--',
+			children: formatToTitleCase(data?.location) ?? '--',
 			span: 3
 		},
 		{
 			key: '5',
 			label: 'Ciudad:',
-			children: formatToTitleCase(billing?.cityName || billing?.city) ?? '--',
+			children: formatToTitleCase(data?.cityName || data?.city) ?? '--',
 			span: 3
 		},
 		{
 			key: '6',
 			label: 'Fecha:',
-			children: formatDate(billing?.createdDate) ?? '--',
+			children: formatDate(data?.createdDate) ?? '--',
 			span: 3
 		},
-		{
-			key: '7',
-			label: 'Métodos de Pago:',
-			children: billing?.paymentMethods
-				.map(p => {
-					const paymenMethod = p.includes('TRANSFER')
-						? 'Transferencia'
-						: PAYMENT_METHOD_MAP[p];
+		...(!isQuote
+			? [
+					{
+						key: '7',
+						label: 'Métodos de Pago:',
+						children: (data as Billing)?.paymentMethods
+							.map(p => {
+								const paymenMethod = p.includes('TRANSFER')
+									? 'Transferencia'
+									: PAYMENT_METHOD_MAP[p];
 
-					return formatToTitleCase(paymenMethod);
-				})
-				.join(', '),
-			span: 3
-		}
+								return formatToTitleCase(paymenMethod);
+							})
+							.join(', '),
+						span: 3
+					}
+				]
+			: [])
 	];
 
-	const isNotPaid = billing?.status !== BillingStatus.PAID;
+	const isNotPaid = !isQuote && data?.status !== BillingStatus.PAID;
 	const city = shopSlug?.split('-')[1];
 
 	return (
@@ -93,43 +99,38 @@ const BillingPDF = ({
 			</div>
 
 			<h1 className='text-3xl font-semibold'>
-				Factura # {billing?.serialNumber}{' '}
+				{isQuote ? 'Cotización' : 'Factura'} #{data?.serialNumber}{' '}
 				{isNotPaid && (
 					<span className='px-2 rounded text-red-600 border-2 border-red-600'>
-						{BILLING_STATUS_MAP[billing?.status]}
+						{BILLING_STATUS_MAP[data?.status]}
 					</span>
 				)}
 			</h1>
 
-			{/* Billing info */}
+			{/* Doc Details */}
 			<section>
 				<Descriptions
-					items={billingInfo}
+					items={docDetails}
 					bordered
 					labelStyle={{ fontWeight: 700, color: '#404040' }}
 				/>
 			</section>
 
 			{/* Table */}
-			{billing?.items?.length > 0 ? (
-				<PDFTable
-					items={billing?.items}
-					discountType={billing?.discountType}
-					discount={billing?.discount}
-					shipping={billing?.shipping}
-				/>
-			) : null}
+			{data?.items?.length > 0 ? <PDFTablePreview data={data} /> : null}
 
 			<Divider />
 
 			{/* Terms */}
-			{billing?.currency === 'COP' ? (
-				<TermsCol city={city === 'cascajal' ? 'barranquilla' : city} />
+			{data?.countryIsoCode === 'CO' ? (
+				<PDFTermsColPreview
+					city={city === 'cascajal' ? 'barranquilla' : city}
+				/>
 			) : (
-				<TermsEcu />
+				<PDFTermsEcuPreview />
 			)}
 		</div>
 	);
 };
 
-export default BillingPDF;
+export default PDFPreview;

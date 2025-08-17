@@ -1,7 +1,7 @@
 import { Tag } from 'antd';
 import { IoStorefrontOutline } from 'react-icons/io5';
 import { TbFileDollar } from 'react-icons/tb';
-import PDFContainer from '@/components/admin/common/layout/PDFContainer';
+import PDFContainer from '@/components/admin/common/PDF/PDFContainer';
 import GoBack from '@/components/admin/common/ui/GoBack';
 
 interface QuoteDetailPageProps {

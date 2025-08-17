@@ -1,3 +1,5 @@
+const WA_BASE_URL = `${process.env.NEXT_PUBLIC_WA_URL}/${process.env.NEXT_PUBLIC__WA_PHONE_NUMBER_ID}`;
+
 export const ENV = {
 	BASE_URL: process.env.NEXT_PUBLIC_API_URL,
 	API: {
@@ -14,5 +16,9 @@ export const ENV = {
 		STOCK_ITEMS: '/stock-items',
 		TRANSACTIONS: '/transactions',
 		CITIES: '/cities'
+	},
+	WA: {
+		MESSAGES: `${WA_BASE_URL}/messages`,
+		MEDIA: `${WA_BASE_URL}/media`
 	}
 };

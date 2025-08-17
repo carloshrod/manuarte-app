@@ -1,4 +1,4 @@
-const TermsEcu = () => {
+const PDFTermsEcuPreview = () => {
 	return (
 		<div className='flex flex-col gap-3'>
 			<p className='text-center text-[20px] font-bold'>
@@ -96,4 +96,4 @@ const TermsEcu = () => {
 	);
 };
 
-export default TermsEcu;
+export default PDFTermsEcuPreview;

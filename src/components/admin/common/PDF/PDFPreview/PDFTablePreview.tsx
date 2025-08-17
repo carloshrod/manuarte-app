@@ -1,34 +1,15 @@
-import { DiscountType } from '@/types/enums';
+import usePdf from '@/hooks/usePdf';
 import { formatCurrency } from '@/utils/formats';
 
-interface PDFTableProps {
-	items: QuoteItem[] | BillingItem[];
-	discountType?: string;
-	discount?: number;
-	shipping: number;
+interface Props {
+	data: Quote | Billing;
 }
 
-const PDFTable = ({
-	items,
-	discountType,
-	discount,
-	shipping = 0
-}: PDFTableProps) => {
-	const subtotal = items.reduce((acc, item) => {
-		return acc + Number(item.totalPrice);
-	}, 0);
-
-	const isFixedDiscount = discountType === DiscountType.FIXED;
-
-	const discountLabel =
-		!discountType || isFixedDiscount ? 'DESCUENTO' : `DESCUENTO (${discount}%)`;
-
-	const discountValue =
-		(!discountType || isFixedDiscount
-			? Number(discount)
-			: subtotal * (Number(discount) / 100)) || 0;
-
-	const total = subtotal - discountValue + Number(shipping);
+const PDFTablePreview = ({ data }: Props) => {
+	const { calculateTotals } = usePdf();
+	const items = data?.items;
+	const { subtotal, discountValue, discountLabel, total } =
+		calculateTotals(data);
 
 	return (
 		<div className='mb-16'>
@@ -68,7 +49,7 @@ const PDFTable = ({
 					<tr>
 						<td className='px-4 py-2 font-bold border-b-2'>FLETE</td>
 						<td className='px-4 py-2 border-b-2'>
-							{formatCurrency(shipping) ?? 0}
+							{formatCurrency(data?.shipping) ?? 0}
 						</td>
 					</tr>
 					<tr>
@@ -81,4 +62,4 @@ const PDFTable = ({
 	);
 };
 
-export default PDFTable;
+export default PDFTablePreview;

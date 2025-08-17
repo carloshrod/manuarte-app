@@ -36,9 +36,11 @@ import {
 	updateTransaction,
 	updateTransactionState
 } from '@/reducers/transactions/transactionSlice';
-import { validateUniqueProductVariantsName } from './utils';
 import { useModalStore } from '@/stores/modalStore';
 import { useDrawerStore } from '@/stores/drawerStore';
+import usePdf from './usePdf';
+import { validateUniqueProductVariantsName } from './utils';
+import { BillingStatus } from '@/types/enums';
 
 notification.config({
 	placement: 'topRight',
@@ -59,6 +61,7 @@ const useForm = () => {
 	const dispatch = useDispatch();
 	const { closeModal } = useModalStore.getState();
 	const { closeDrawer } = useDrawerStore.getState();
+	const { sendPdfAfterCreateDoc } = usePdf();
 
 	const handleSubmit = async ({
 		serviceFn,
@@ -245,7 +248,17 @@ const useForm = () => {
 		await handleSubmit({
 			serviceFn: quoteServices.create,
 			values,
-			onSuccess: res => dispatch(addQuote(res.data.newQuote))
+			onSuccess: async res => {
+				dispatch(addQuote(res?.data?.newQuote));
+
+				if (values?.phoneNumber) {
+					await sendPdfAfterCreateDoc({
+						isQuote: true,
+						serialNumber: res?.data?.newQuote?.serialNumber,
+						shopSlug: values?.shopSlug as string
+					});
+				}
+			}
 		});
 	};
 
@@ -259,7 +272,17 @@ const useForm = () => {
 			serviceFn: valuesToUpdate =>
 				quoteServices.update(valuesToUpdate, quoteId),
 			values,
-			onSuccess: res => dispatch(updateQuote(res.data.updatedQuote))
+			onSuccess: async res => {
+				dispatch(updateQuote(res.data.updatedQuote));
+
+				if (values?.phoneNumber) {
+					await sendPdfAfterCreateDoc({
+						isQuote: true,
+						serialNumber: res?.data?.updatedQuote?.serialNumber,
+						shopSlug: values?.shopSlug as string
+					});
+				}
+			}
 		});
 	};
 
@@ -273,11 +296,20 @@ const useForm = () => {
 		return await handleSubmit({
 			serviceFn: billingServices.create,
 			values,
-			onSuccess: res => {
+			onSuccess: async res => {
 				if (fetchBillings) {
 					fetchBillings();
 				}
 				dispatch(addBilling(res.data.newBilling));
+				const { status, serialNumber } = res?.data?.newBilling;
+
+				if (values?.phoneNumber && status === BillingStatus.PAID) {
+					await sendPdfAfterCreateDoc({
+						isQuote: false,
+						serialNumber,
+						shopSlug: values?.shopSlug as string
+					});
+				}
 			}
 		});
 	};
@@ -290,13 +322,22 @@ const useForm = () => {
 			items: BillingItem[];
 			comments: string;
 		},
-		billingId: string
+		currentBillingData: {
+			billingId: string;
+			currentStatus: BillingStatus;
+			serialNumber: string;
+			phoneNumber: string;
+			shopSlug: string;
+		}
 	) => {
+		const { billingId, currentStatus, serialNumber, phoneNumber, shopSlug } =
+			currentBillingData;
+
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
 				billingServices.update(valuesToUpdate, billingId),
 			values,
-			onSuccess: _res =>
+			onSuccess: async _res => {
 				dispatch(
 					updateBilling({
 						id: billingId,
@@ -304,7 +345,20 @@ const useForm = () => {
 						effectiveDate: new Date().toISOString(),
 						paymentMethods: values?.payments?.map(p => p?.paymentMethod) || []
 					})
-				)
+				);
+
+				if (
+					phoneNumber &&
+					currentStatus !== BillingStatus.PAID &&
+					values?.status === BillingStatus.PAID
+				) {
+					await sendPdfAfterCreateDoc({
+						isQuote: false,
+						serialNumber,
+						shopSlug: shopSlug as string
+					});
+				}
+			}
 		});
 	};
 
