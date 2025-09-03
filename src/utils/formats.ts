@@ -59,6 +59,9 @@ export const formatInputCurrency = (value: number | undefined) => {
 		: `$ ${formattedInteger}`;
 };
 
+export const normalizeAmount = (num: number, decimals = 2) =>
+	Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+
 export const formatUserExtraPermissions = (
 	extraPermissions: { id: string; name: string }[]
 ) => {

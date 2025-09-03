@@ -1,7 +1,11 @@
 import { calculateTotalPayment } from '@/components/admin/utils';
 import { useModalStore } from '@/stores/modalStore';
 import { BillingStatus } from '@/types/enums';
-import { formatDate, formatInputCurrency } from '@/utils/formats';
+import {
+	formatDate,
+	formatInputCurrency,
+	normalizeAmount
+} from '@/utils/formats';
 import { Form, FormInstance, InputNumber, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import { IoInformationCircleOutline } from 'react-icons/io5';
@@ -43,37 +47,41 @@ const PaymentAmounts = ({
 
 	const total = Form.useWatch('total', form) || 0;
 	const existingPayments = dataToHandle?.payments || [];
-	const newPayments = Form.useWatch('payments', form) || [];
-	const totalPayment = calculateTotalPayment([
-		...newPayments,
-		...existingPayments
-	]);
-	const difference = total - totalPayment;
 
 	const status = Form.useWatch('status', form);
 	const isPartialPayment = status === BillingStatus.PARTIAL_PAYMENT;
 
-	useEffect(() => {
-		const timeout = setTimeout(() => {
-			setDebouncedDifference(difference);
-		}, 700);
+	const handleAmountChange = () => {
+		const total = form.getFieldValue('total') || 0;
+		const payments = form.getFieldValue('payments') || [];
+		const totalPayment = calculateTotalPayment([
+			...payments,
+			...existingPayments
+		]);
+
+		const newDifference =
+			normalizeAmount(total) - normalizeAmount(totalPayment);
+		setDebouncedDifference(newDifference);
 
 		if (status === BillingStatus.PAID) return;
 
 		if (isPreOrder) {
-			if (difference > 0) {
-				form.setFieldsValue({ status: BillingStatus.PARTIAL_PAYMENT });
+			if (newDifference > 0) {
+				form.setFieldsValue({
+					status: BillingStatus.PARTIAL_PAYMENT
+				});
 			}
-
-			if (difference === 0) {
-				form.setFieldsValue({ status: BillingStatus.PENDING_DELIVERY });
+			if (newDifference === 0) {
+				form.setFieldsValue({
+					status: BillingStatus.PENDING_DELIVERY
+				});
 			}
 		} else {
-			form.setFieldsValue({ status: BillingStatus.PAID });
+			form.setFieldsValue({
+				status: BillingStatus.PAID
+			});
 		}
-
-		return () => clearTimeout(timeout);
-	}, [difference]);
+	};
 
 	const getDifferenceMessage = () => {
 		if (debouncedDifference === null) return;
@@ -131,7 +139,7 @@ const PaymentAmounts = ({
 									return Promise.resolve();
 								}
 
-								if (totalPayment !== total) {
+								if (normalizeAmount(totalPayment) !== normalizeAmount(total)) {
 									throw new Error(
 										`La suma de los montos ($${totalPayment.toLocaleString()}) debe ser igual al total ($${total.toLocaleString()})`
 									);
@@ -188,6 +196,7 @@ const PaymentAmounts = ({
 													controls={false}
 													formatter={value => formatInputCurrency(value)}
 													className='textRight'
+													onChange={handleAmountChange}
 												/>
 											</Form.Item>
 										</div>
