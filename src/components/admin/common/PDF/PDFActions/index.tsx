@@ -20,7 +20,7 @@ const PDFActions = ({ isQuote, data, shopSlug }: Props) => {
 	const { openModal, closeModal } = useModalStore.getState();
 	const { sendPdf } = usePdf();
 
-	const city = data?.city?.toUpperCase() ?? 'NA';
+	const city = data?.cityName?.toUpperCase() ?? 'NA';
 	const customerName = data?.fullName?.toUpperCase() ?? 'CONSUMIDOR FINAL';
 	const isNotPaid = data?.status !== BillingStatus.PAID;
 
