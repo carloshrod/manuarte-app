@@ -25,9 +25,7 @@ const PaymentAmounts = ({
 	isPreOrder = false
 }: PaymentAmountsProps) => {
 	const { dataToHandle } = useModalStore.getState();
-	const [debouncedDifference, setDebouncedDifference] = useState<number | null>(
-		null
-	);
+	const [difference, setDifference] = useState<number | null>(null);
 
 	const selectedMethods = Form.useWatch('selectedMethods', form);
 	const paymentList = Form.useWatch('payments', form) || [];
@@ -51,8 +49,11 @@ const PaymentAmounts = ({
 	const status = Form.useWatch('status', form);
 	const isPartialPayment = status === BillingStatus.PARTIAL_PAYMENT;
 
+	useEffect(() => {
+		handleAmountChange();
+	}, [total]);
+
 	const handleAmountChange = () => {
-		const total = form.getFieldValue('total') || 0;
 		const payments = form.getFieldValue('payments') || [];
 		const totalPayment = calculateTotalPayment([
 			...payments,
@@ -61,7 +62,7 @@ const PaymentAmounts = ({
 
 		const newDifference =
 			normalizeAmount(total) - normalizeAmount(totalPayment);
-		setDebouncedDifference(newDifference);
+		setDifference(newDifference);
 
 		if (status === BillingStatus.PAID) return;
 
@@ -84,14 +85,14 @@ const PaymentAmounts = ({
 	};
 
 	const getDifferenceMessage = () => {
-		if (debouncedDifference === null) return;
+		if (difference === null) return;
 
-		if (debouncedDifference > 0) {
-			return `Saldo $${debouncedDifference.toLocaleString()}`;
+		if (difference > 0) {
+			return `Saldo $${difference.toLocaleString()}`;
 		}
 
-		if (debouncedDifference < 0) {
-			return `Monto excedido por $${Math.abs(debouncedDifference).toLocaleString()}`;
+		if (difference < 0) {
+			return `Monto excedido por $${Math.abs(difference).toLocaleString()}`;
 		}
 
 		return 'Monto exacto';
@@ -99,12 +100,12 @@ const PaymentAmounts = ({
 
 	return (
 		<>
-			{debouncedDifference !== null && total > 0 && (
+			{difference !== null && total > 0 && (
 				<div
 					className={`text-end text-[14px] font-medium pe-3 pb-4 ${
-						debouncedDifference === 0
+						difference === 0
 							? 'text-[#10b981]'
-							: debouncedDifference > 0
+							: difference > 0
 								? 'text-[#0D6EFD]'
 								: 'text-[#E53535]'
 					}`}
