@@ -5,7 +5,7 @@ import { create } from 'zustand';
 interface ModalParams {
 	title?: string | null;
 	content: ModalContent | null;
-	componentProps?: ConfirmOperationProps | null;
+	componentProps?: (ConfirmOperationProps | { shopId: string }) | null;
 	dataToHandle?: any;
 }
 

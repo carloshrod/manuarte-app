@@ -7,6 +7,7 @@ import billingsReducer from './billings/billingSlice';
 import stocksReducer from './stockItems/stockItemSlice';
 import transactionsReducer from './transactions/transactionSlice';
 import shopsReducer from './shops/shopSlice';
+import cashSessionReducer from './cashSession/cashSessionSlice';
 
 const appReducer = combineReducers({
 	product: productsReducer,
@@ -16,7 +17,8 @@ const appReducer = combineReducers({
 	billing: billingsReducer,
 	stock: stocksReducer,
 	transaction: transactionsReducer,
-	shop: shopsReducer
+	shop: shopsReducer,
+	cashSession: cashSessionReducer
 });
 
 const rootReducer = (

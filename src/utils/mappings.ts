@@ -52,3 +52,13 @@ export const TRANSACTION_TYPES_MAP: Record<string, string> = {
 	EXIT: 'Salida',
 	TRANSFER: 'Transferencia'
 };
+
+export const CASH_MOVEMENT_CAT_MAP: Record<string, string> = {
+	SALE: 'VENTA',
+	DELIVERY: 'DOMICILIO',
+	INBOUND_SHIPPING: 'FLETE DE ENTRADA',
+	PURCHASE: 'COMPRA',
+	CHANGE: 'CAMBIO',
+	PIGGY_BANK: 'ALCANCÍA',
+	OTHER: 'OTRO'
+};

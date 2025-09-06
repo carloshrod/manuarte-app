@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { GrDashboard } from 'react-icons/gr';
 import { BsBoxes } from 'react-icons/bs';
-import { PiUsersThree, PiInvoice } from 'react-icons/pi';
+import { PiUsersThree, PiInvoice, PiChartLineUpBold } from 'react-icons/pi';
 import { TbFileDollar, TbLogout2 } from 'react-icons/tb';
 import { GiCardboardBox } from 'react-icons/gi';
 import { RiExchangeBoxLine, RiUserSettingsLine } from 'react-icons/ri';
@@ -17,7 +17,8 @@ const {
 	QUOTE_SHOPS,
 	BILLING_SHOPS,
 	STOCKS,
-	TRANSACTIONS
+	TRANSACTIONS,
+	FINANCIAL_FLOW_SHOPS
 } = ROUTES;
 
 const getMenuItems = (session: Session) => {
@@ -62,6 +63,9 @@ export const allMenuItems = (shop?: string, mainStock?: boolean) => {
 	const QUOTE_PATH = !shop ? QUOTE_SHOPS : `${QUOTE_SHOPS}/${shop}`;
 	const BILLING_PATH = !shop ? BILLING_SHOPS : `${BILLING_SHOPS}/${shop}`;
 	const STOCK_PATH = !shop ? STOCKS : `${STOCKS}/${shop}`;
+	const FINANCIAL_FLOW_PATH = !shop
+		? FINANCIAL_FLOW_SHOPS
+		: `${FINANCIAL_FLOW_SHOPS}/${shop}`;
 
 	return [
 		{
@@ -120,6 +124,12 @@ export const allMenuItems = (shop?: string, mainStock?: boolean) => {
 			icon: <RiExchangeBoxLine style={{ fontSize: 20 }} />,
 			label: <Link href={TRANSACTIONS}>Movimientos Stock</Link>,
 			path: TRANSACTIONS
+		},
+		{
+			key: '9',
+			icon: <PiChartLineUpBold style={{ fontSize: 20 }} />,
+			label: <Link href={FINANCIAL_FLOW_PATH}>Flujo Financiero</Link>,
+			path: FINANCIAL_FLOW_PATH
 		}
 	];
 };

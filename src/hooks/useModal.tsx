@@ -6,10 +6,14 @@ import PermissionsForm from '@/components/admin/users/PermissionsForm';
 import CustomersForm from '@/components/admin/users/CustomersForm';
 import BillingModalForm from '@/components/admin/common/input-data/BillingModalForm';
 import StockItemForm from '@/components/admin/stock/StockItemForm';
-import ConfirmOperation from '@/components/admin/common/ui/ConfirmOperation';
+import CashMovementForm from '@/components/admin/financial-flow/CashMovementForm.tsx';
+import ConfirmOperation, {
+	ConfirmOperationProps
+} from '@/components/admin/common/ui/ConfirmOperation';
 import { useModalStore } from '@/stores/modalStore';
 import { ReactNode } from 'react';
 import { ModalContent } from '@/types/enums';
+import CashSessionForm from '@/components/admin/financial-flow/CashSessionForm';
 
 const useModal = () => {
 	const { componentProps } = useModalStore();
@@ -24,8 +28,20 @@ const useModal = () => {
 		[ModalContent.billings]: <BillingModalForm />,
 		[ModalContent.preOrder]: <BillingModalForm />,
 		[ModalContent.stockItems]: <StockItemForm />,
+		[ModalContent.openCashSession]: (
+			<CashSessionForm {...(componentProps as { shopId: string })} />
+		),
+		[ModalContent.closeCashSession]: (
+			<CashSessionForm {...(componentProps as { shopId: string })} />
+		),
+		[ModalContent.cashIncome]: (
+			<CashMovementForm {...(componentProps as { shopId: string })} />
+		),
+		[ModalContent.cashExpense]: (
+			<CashMovementForm {...(componentProps as { shopId: string })} />
+		),
 		[ModalContent.confirm]: componentProps ? (
-			<ConfirmOperation {...componentProps} />
+			<ConfirmOperation {...(componentProps as ConfirmOperationProps)} />
 		) : null
 	};
 

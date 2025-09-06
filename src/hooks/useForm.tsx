@@ -41,6 +41,11 @@ import { useDrawerStore } from '@/stores/drawerStore';
 import usePdf from './usePdf';
 import { validateUniqueProductVariantsName } from './utils';
 import { BillingStatus } from '@/types/enums';
+import { cashSessionServices } from '@/services/cashSessionServices';
+import {
+	addCashMovement,
+	setCashSession
+} from '@/reducers/cashSession/cashSessionSlice';
 
 notification.config({
 	placement: 'topRight',
@@ -445,6 +450,42 @@ const useForm = () => {
 		});
 	};
 
+	const submitOpenCashSession = async (
+		values: { declaredOpeningAmount: number; comments?: string },
+		shopId: string
+	) => {
+		await handleSubmit({
+			serviceFn: body => cashSessionServices.open(body, shopId),
+			values,
+			onSuccess: res => dispatch(setCashSession(res?.data?.cashSession))
+		});
+	};
+
+	const submitCloseCashSession = async (
+		values: { declaredClosingAmount: number; comments?: string },
+		shopId: string
+	) => {
+		await handleSubmit({
+			serviceFn: body => cashSessionServices.close(body, shopId),
+			values,
+			onSuccess: res => dispatch(setCashSession(res?.data?.cashSession))
+		});
+	};
+
+	const submitCreateCashMovement = async (
+		values: SubmitCashMovementDto,
+		shopId: string
+	) => {
+		await handleSubmit({
+			serviceFn: body => cashSessionServices.createMovement(body, shopId),
+			values,
+			onSuccess: res => {
+				const { newCashMovement, newBalance } = res.data ?? {};
+				dispatch(addCashMovement({ newCashMovement, newBalance }));
+			}
+		});
+	};
+
 	return {
 		form,
 		isLoading,
@@ -468,7 +509,10 @@ const useForm = () => {
 		submitCreateStockItem,
 		submitUpdateStockItem,
 		submitTransaction,
-		submitUpdateTransaction
+		submitUpdateTransaction,
+		submitCreateCashMovement,
+		submitOpenCashSession,
+		submitCloseCashSession
 	};
 };
 

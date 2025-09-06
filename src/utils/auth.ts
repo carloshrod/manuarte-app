@@ -38,7 +38,9 @@ export const AUTH_RULES = (
 				ROUTES.STOCKS,
 				ROUTES.STOCK_ITEMS,
 				ROUTES.STOCK_ITEM_HISTORY,
-				ROUTES.TRANSACTIONS
+				ROUTES.TRANSACTIONS,
+				ROUTES.FINANCIAL_FLOW_SHOPS,
+				ROUTES.FINANCIAL_FLOW
 			]
 		},
 		cajero: {
@@ -50,7 +52,8 @@ export const AUTH_RULES = (
 				ROUTES.BILLING_DETAIL,
 				`${ROUTES.STOCKS}/${shop}`,
 				`${ROUTES.STOCKS}/${shop}/historial`,
-				ROUTES.TRANSACTIONS
+				ROUTES.TRANSACTIONS,
+				`${ROUTES.FINANCIAL_FLOW_SHOPS}/${shop}`
 			]
 		},
 		bodeguero: {

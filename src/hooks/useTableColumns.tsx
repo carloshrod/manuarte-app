@@ -27,6 +27,7 @@ import useTable from './useTable';
 import { formatCurrency, formatDate, formatToTitleCase } from '@/utils/formats';
 import {
 	BILLING_STATUS_MAP,
+	CASH_MOVEMENT_CAT_MAP,
 	PAYMENT_METHOD_MAP,
 	QUOTE_STATUS_MAP,
 	TRANSACTION_STATES_MAP,
@@ -36,7 +37,8 @@ import {
 	getStockStatusColor,
 	COL_PAYMENT_METHOD_FILTER,
 	ECU_PAYMENT_METHOD_FILTER,
-	TAG_COLORS
+	TAG_COLORS,
+	CASH_MOVEMENT_CAT_FILTER
 } from './utils';
 
 const useTableColumns = () => {
@@ -911,6 +913,53 @@ const useTableColumns = () => {
 		}
 	];
 
+	const cashMovementsColumns: TableColumnsType<CashMovement> = [
+		{
+			title: 'CATEGORÍA',
+			dataIndex: 'category',
+			key: 'category',
+			filters: CASH_MOVEMENT_CAT_FILTER,
+			onFilter: (value, record) =>
+				record.category.indexOf(value as string) === 0,
+			render: (value, record) => {
+				return (
+					<span className='flex items-center'>
+						<Tag color='#0D6EFD'>{CASH_MOVEMENT_CAT_MAP[value]}</Tag>
+						{record?.comments && (
+							<Tooltip title={record?.comments}>
+								<span>
+									<IoInformationCircleOutline size={18} />
+								</span>
+							</Tooltip>
+						)}
+					</span>
+				);
+			},
+			width: 60
+		},
+		{
+			title: 'MONTO',
+			dataIndex: 'amount',
+			key: 'amount',
+			render: (value: string, record) => (
+				<span
+					className={`${record.type === 'INCOME' ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+				>
+					{formatCurrency(value) ?? '--'}
+				</span>
+			),
+			width: 50
+		},
+		{
+			title: 'REFERENCIA',
+			dataIndex: 'reference',
+			key: 'reference',
+			...getColumnSearchProps('reference'),
+			render: (value: string) => value ?? '--',
+			width: 75
+		}
+	];
+
 	return {
 		productColumns,
 		productCategoryColumns,
@@ -922,7 +971,8 @@ const useTableColumns = () => {
 		billingColumns,
 		stockItemsColumns,
 		stockItemsHistoryColumns,
-		transactionsColumns
+		transactionsColumns,
+		cashMovementsColumns
 	};
 };
 

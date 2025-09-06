@@ -9,6 +9,10 @@ export enum ModalContent {
 	billings = 'billings',
 	preOrder = 'preOrder',
 	stockItems = 'stockItems',
+	openCashSession = 'openCashSession',
+	closeCashSession = 'closeCashSession',
+	cashIncome = 'cashIncome',
+	cashExpense = 'cashExpense',
 	confirm = 'confirm'
 }
 
@@ -67,4 +71,14 @@ export enum TransactionType {
 export enum DiscountType {
 	FIXED = 'FIXED',
 	PERCENTAGE = 'PERCENTAGE'
+}
+
+export enum CashMovementCategory {
+	SALE = 'SALE',
+	DELIVERY = 'DELIVERY',
+	INBOUND_SHIPPING = 'INBOUND_SHIPPING',
+	PURCHASE = 'PURCHASE',
+	CHANGE = 'CHANGE',
+	PIGGY_BANK = 'PIGGY_BANK',
+	OTHER = 'OTHER'
 }

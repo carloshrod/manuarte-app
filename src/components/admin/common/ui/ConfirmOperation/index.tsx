@@ -6,21 +6,28 @@ import { BsFillQuestionCircleFill } from 'react-icons/bs';
 export type ConfirmOperationProps = {
 	confirmTitle: string;
 	confirmText?: string;
-	onConfirm: () => Promise<void>;
+	onConfirm: () => Promise<void> | void;
+	isPromise?: boolean;
 };
 
 const ConfirmOperation = ({
 	confirmTitle,
 	confirmText = undefined,
-	onConfirm
+	onConfirm,
+	isPromise = true
 }: ConfirmOperationProps) => {
 	const { closeModal } = useModalStore.getState();
 	const [loading, setLoading] = useState(false);
 
 	const handleConfirm = async () => {
 		try {
-			setLoading(true);
-			await onConfirm();
+			if (isPromise) {
+				setLoading(true);
+				await onConfirm();
+			} else {
+				onConfirm();
+				closeModal();
+			}
 		} finally {
 			setLoading(false);
 		}

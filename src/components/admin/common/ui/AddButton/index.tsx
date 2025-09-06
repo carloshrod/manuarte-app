@@ -4,18 +4,23 @@ import { ModalContent } from '@/types/enums';
 import { Button } from 'antd';
 import React, { ReactNode } from 'react';
 import { IoMdAdd } from 'react-icons/io';
+import { ConfirmOperationProps } from '../ConfirmOperation';
 
 interface AddButtonProps {
 	title: string;
 	modalContent: ModalContent;
+	componentProps?: ConfirmOperationProps | { shopId: string };
 	buttonLabel: string;
+	addIcon?: boolean;
 	appendIcon: ReactNode;
 }
 
 const AddButton = ({
 	title,
 	modalContent,
+	componentProps,
 	buttonLabel,
+	addIcon = true,
 	appendIcon
 }: AddButtonProps) => {
 	const { openModal } = useModalStore.getState();
@@ -25,9 +30,16 @@ const AddButton = ({
 			variant='outlined'
 			color='primary'
 			icon={
-				<IoMdAdd size={18} style={{ display: 'flex', alignItems: 'center' }} />
+				addIcon && (
+					<IoMdAdd
+						size={18}
+						style={{ display: 'flex', alignItems: 'center' }}
+					/>
+				)
 			}
-			onClick={() => openModal({ title, content: modalContent })}
+			onClick={() =>
+				openModal({ title, content: modalContent, componentProps })
+			}
 		>
 			<p className='max-sm:hidden'>{buttonLabel}</p> {appendIcon}
 		</Button>

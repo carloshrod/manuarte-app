@@ -1,3 +1,5 @@
+import { CashMovementCategory } from '@/types/enums';
+
 export const COL_PAYMENT_METHOD_FILTER = [
 	{ text: 'EFECTIVO', value: 'CASH' },
 	{ text: 'TRANSFERENCIA RI', value: 'BANK_TRANSFER_RT' },
@@ -15,6 +17,16 @@ export const ECU_PAYMENT_METHOD_FILTER = [
 	{ text: 'PAYPHONE', value: 'PAYPHONE' },
 	{ text: 'DEPÓSITO', value: 'BANK_DEPOSIT' },
 	{ text: 'OTRO', value: 'OTHER' }
+];
+
+export const CASH_MOVEMENT_CAT_FILTER = [
+	{ text: 'Venta', value: CashMovementCategory.SALE },
+	{ text: 'Domicilio', value: CashMovementCategory.DELIVERY },
+	{ text: 'Flete de Entrada', value: CashMovementCategory.INBOUND_SHIPPING },
+	{ text: 'Compra', value: CashMovementCategory.PURCHASE },
+	{ text: 'Cambio', value: CashMovementCategory.CHANGE },
+	{ text: 'Alcancía', value: CashMovementCategory.PIGGY_BANK },
+	{ text: 'Otro', value: CashMovementCategory.OTHER }
 ];
 
 export const validateUniqueProductVariantsName = (

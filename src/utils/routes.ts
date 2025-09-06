@@ -15,5 +15,7 @@ export const ROUTES = {
 	STOCKS: '/admin/stock',
 	STOCK_ITEMS: '/admin/stock/[shopSlug]',
 	STOCK_ITEM_HISTORY: '/admin/stock/[shopSlug]/historial',
-	TRANSACTIONS: '/admin/movimientos-stock'
+	TRANSACTIONS: '/admin/movimientos-stock',
+	FINANCIAL_FLOW_SHOPS: '/admin/flujo-financiero',
+	FINANCIAL_FLOW: '/admin/flujo-financiero/[shopSlug]'
 };

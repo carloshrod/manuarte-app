@@ -351,6 +351,65 @@ interface TransactionItem {
 	stockItemQuantity: string;
 }
 
+enum CashMovementCategory {
+	SALE = 'SALE',
+	DELIVERY = 'DELIVERY',
+	INBOUND_SHIPPING = 'INBOUND_SHIPPING',
+	PURCHASE = 'PURCHASE',
+	CHANGE = 'CHANGE',
+	PIGGY_BANK = 'PIGGY_BANK',
+	OTHER = 'OTHER'
+}
+
+interface CashMovement {
+	id: string;
+	cashSessionId: string;
+	billingPaymentId: string | null;
+	amount: number;
+	type: 'INCOME' | 'EXPENSE';
+	category: CashMovementCategory;
+	comments: string | null;
+	createdBy: string;
+	createdDate: string;
+	updatedDate: string;
+	deletedDate: string | null;
+}
+
+interface CashSession {
+	id: string;
+	shopId: string;
+	openingAmount: number;
+	declaredOpeningAmount: number;
+	openingDifference: number;
+	openedBy: string;
+	closingAmount: number | null;
+	declaredClosingAmount: number | null;
+	closingDifference: number | null;
+	closedBy: string | null;
+	comments: string | null;
+	openedAt: string;
+	closedAt: string | null;
+	createdDate: string;
+	updatedDate: string;
+	deletedDate: string | null;
+	movements: CashMovement[];
+}
+interface LastCashSession {
+	canOpen: boolean;
+	canRegisterMovements: boolean;
+	reason: string;
+	initialAmount: number;
+	balance: number;
+	data: CashSession;
+}
+
+interface SubmitCashMovementDto {
+	type: string;
+	category: string;
+	amount: number;
+	comments?: string;
+}
+
 type DataTable =
 	| ProductVariant
 	| ProductCategory
@@ -359,7 +418,8 @@ type DataTable =
 	| Quote
 	| Billing
 	| StockItem
-	| Transaction;
+	| Transaction
+	| CashMovement;
 
 interface RootState {
 	product: {
@@ -392,5 +452,8 @@ interface RootState {
 	};
 	shop: {
 		shops: Shop[];
+	};
+	cashSession: {
+		currentCashSession: LastCashSession;
 	};
 }

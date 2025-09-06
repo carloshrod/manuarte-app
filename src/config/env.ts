@@ -15,7 +15,8 @@ export const ENV = {
 		BILLINGS: '/billings',
 		STOCK_ITEMS: '/stock-items',
 		TRANSACTIONS: '/transactions',
-		CITIES: '/cities'
+		CITIES: '/cities',
+		CASH_SESSION: '/cash-sessions'
 	},
 	WA: {
 		MESSAGES: `${WA_BASE_URL}/messages`,

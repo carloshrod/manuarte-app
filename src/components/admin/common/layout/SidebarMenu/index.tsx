@@ -68,7 +68,7 @@ const SidebarMenu = ({ session }: { session: Session | null }) => {
 		/>
 	) : (
 		<ul className='flex flex-col gap-1'>
-			{Array.from({ length: 8 }).map((_, index) => (
+			{Array.from({ length: 10 }).map((_, index) => (
 				<li key={index} className='m-1'>
 					<Skeleton.Button
 						active
