@@ -14,6 +14,7 @@ import { useModalStore } from '@/stores/modalStore';
 import { ReactNode } from 'react';
 import { ModalContent } from '@/types/enums';
 import CashSessionForm from '@/components/admin/financial-flow/CashSessionForm';
+import PiggyBankWithdrawForm from '@/components/admin/financial-flow/PiggyBankWithdrawForm';
 
 const useModal = () => {
 	const { componentProps } = useModalStore();
@@ -39,6 +40,9 @@ const useModal = () => {
 		),
 		[ModalContent.cashExpense]: (
 			<CashMovementForm {...(componentProps as { shopId: string })} />
+		),
+		[ModalContent.piggyBankWithdraw]: (
+			<PiggyBankWithdrawForm {...(componentProps as { shopId: string })} />
 		),
 		[ModalContent.confirm]: componentProps ? (
 			<ConfirmOperation {...(componentProps as ConfirmOperationProps)} />

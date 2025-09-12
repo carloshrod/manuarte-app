@@ -1,82 +1,230 @@
 import { Skeleton } from 'antd';
-import { DollarCircleOutlined } from '@ant-design/icons';
 import { formatCurrency, formatDate } from '@/utils/formats';
 import { useSelector } from 'react-redux';
 import CustomTable from '../../common/display-data/Table';
 import useTableColumns from '@/hooks/useTableColumns';
+import esES from 'antd/es/date-picker/locale/es_ES';
+import moment, { Moment } from 'moment';
+import 'moment/locale/es';
 
-const CashFlow = ({ isLoading }: { isLoading: boolean }) => {
-	const {
-		currentCashSession: { balance, data, canOpen }
-	} = useSelector((state: RootState) => state.cashSession);
+import generatePicker from 'antd/es/date-picker/generatePicker';
+import momentGenerateConfig from 'rc-picker/lib/generate/moment';
+import AddButton from '../../common/ui/AddButton';
+import { CurrentCashSessionStatus, ModalContent } from '@/types/enums';
+import { BiMoneyWithdraw } from 'react-icons/bi';
+
+const DatePicker = generatePicker<Moment>(momentGenerateConfig);
+moment.locale('es');
+
+interface Props {
+	shopId: string;
+	isLoading: boolean;
+	onChangeDate: (date: Moment) => void;
+}
+
+const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
+	const { currentCashSession } = useSelector(
+		(state: RootState) => state.financialFlow
+	);
+	const { status, reason, balance, data } = currentCashSession ?? {};
 	const { cashMovementsColumns } = useTableColumns();
-
-	const movements: CashMovement[] = data?.movements ?? [];
-	const incomes = movements.filter(mov => mov?.type === 'INCOME');
-	const expenses = movements.filter(mov => mov?.type === 'EXPENSE');
 
 	return (
 		<div className='space-y-4'>
-			<div className='flex items-center gap-4 ps-3'>
-				<div
-					className={`h-6 w-6 rounded-full ${canOpen ? 'border-4 border-gray-300' : 'bg-[#10b981]'}`}
+			<div className='flex justify-between'>
+				<DatePicker
+					defaultValue={moment(data?.openedAt)}
+					format={value => value.format('DD-MMM-YYYY').toUpperCase()}
+					locale={esES}
+					disabledDate={current => {
+						return current && current > moment().endOf('day');
+					}}
+					onChange={onChangeDate}
+					allowClear={false}
 				/>
 
-				{data?.openedAt && (
-					<h2>
-						<span className='font-bold'>Fecha de apertura:</span>{' '}
-						{formatDate(data?.openedAt)}
-					</h2>
-				)}
-				{data?.closedAt && (
-					<h2>
-						<span className='font-bold'>Fecha de cierre:</span>{' '}
-						{formatDate(data?.closedAt)}
-					</h2>
-				)}
-				<h2 className='font-bold'>
-					Balance:{' '}
-					{isLoading ? (
-						<Skeleton.Button
-							active
-							style={{
-								width: 100,
-								height: 20,
-								outline: '1px solid transparent'
-							}}
-						/>
-					) : (
-						<span
-							className={`${balance > 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
-						>
-							{formatCurrency(balance ?? 0)}
-						</span>
+				<div className='flex items-end gap-2'>
+					{data && status === 'blocked' && (
+						<h2 className='text-[16px] text-[#E53535] border border-[#E53535] font-semibold px-3'>
+							{reason}
+						</h2>
 					)}
-				</h2>
+
+					{data !== null && data?.openedAt && (
+						<h2 className='text-[16px] font-semibold'>
+							{`Sesión del ${formatDate(data?.openedAt)}`}
+						</h2>
+					)}
+
+					<div
+						className={`h-6 w-6 rounded-full ${!data || data?.closedAt ? 'border-4 border-gray-300' : 'bg-[#10b981]'}`}
+					/>
+				</div>
 			</div>
-			<div className='flex gap-4'>
+
+			<div className='grid grid-cols-2 gap-8'>
 				<div className='w-full space-y-2'>
-					<h3 className='ps-4 text-[#10b981] font-bold'>
-						Ingresos <DollarCircleOutlined style={{ color: '#10b981' }} />
-					</h3>
 					<CustomTable
 						columns={cashMovementsColumns}
-						dataSource={isLoading ? [] : incomes}
+						dataSource={isLoading ? [] : data?.movements}
 						isLoading={isLoading}
 					/>
 				</div>
 
-				<div className='w-full space-y-2'>
-					<h3 className='ps-4 text-[#E53535] font-bold'>
-						Gastos{' '}
-						<DollarCircleOutlined style={{ color: '#E53535', fontSize: 16 }} />
-					</h3>
-					<CustomTable
-						columns={cashMovementsColumns}
-						dataSource={isLoading ? [] : expenses}
-						isLoading={isLoading}
-					/>
-				</div>
+				{data ? (
+					<div className='w-full space-y-5 p-4'>
+						{!data?.closedAt && (
+							<h2 className='font-bold'>
+								Balance:{' '}
+								{isLoading ? (
+									<Skeleton.Button
+										active
+										style={{
+											width: 100,
+											height: 20,
+											outline: '1px solid transparent'
+										}}
+									/>
+								) : (
+									balance && (
+										<span
+											className={`${balance > 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+										>
+											{formatCurrency(balance ?? 0)}
+										</span>
+									)
+								)}
+							</h2>
+						)}
+
+						<div className='space-y-2'>
+							{data?.openedAt && (
+								<>
+									<h2 className='font-bold text-[16px] text-[#0D6EFD]'>
+										Apertura
+									</h2>
+									<h2>
+										<span className='font-bold'>Fecha y hora:</span>{' '}
+										{formatDate(data?.openedAt, true)}
+									</h2>
+								</>
+							)}
+
+							<div className='flex gap-4'>
+								{data?.openingAmount && (
+									<div>
+										<span className='font-bold'>Sistema:</span>{' '}
+										{formatCurrency(data?.openingAmount)}
+									</div>
+								)}
+
+								{data?.declaredOpeningAmount && (
+									<div>
+										<span className='font-bold'>Declarado:</span>{' '}
+										{formatCurrency(data?.declaredOpeningAmount)}
+									</div>
+								)}
+
+								{data?.openingDifference && (
+									<div>
+										<span className='font-bold'>Diferencia:</span>{' '}
+										<span
+											className={`${data?.openingDifference >= 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+										>
+											{formatCurrency(data?.openingDifference)}
+										</span>
+									</div>
+								)}
+							</div>
+
+							{data?.openingComments && (
+								<div>
+									<span className='font-bold'>Observaciones:</span>
+									<p>{data?.openingComments}</p>
+								</div>
+							)}
+						</div>
+
+						<div className='space-y-2'>
+							{data?.closedAt && (
+								<>
+									<h2 className='font-bold text-[16px] text-[#0D6EFD]'>
+										Cierre
+									</h2>
+									<h2>
+										<span className='font-bold'>Fecha y hora:</span>{' '}
+										{formatDate(data?.closedAt, true)}
+									</h2>
+								</>
+							)}
+
+							<div className='flex gap-4'>
+								{data?.closingAmount && (
+									<div>
+										<span className='font-bold'>Sistema:</span>{' '}
+										{formatCurrency(data?.closingAmount)}
+									</div>
+								)}
+
+								{data?.declaredClosingAmount && (
+									<div>
+										<span className='font-bold'>Declarado:</span>{' '}
+										{formatCurrency(data?.declaredClosingAmount)}
+									</div>
+								)}
+
+								{/* TODO: Corregir color de diferencia negativa */}
+								{data?.closingDifference && (
+									<div>
+										<span className='font-bold'>Diferencia:</span>{' '}
+										<span
+											className={`${data?.openingDifference >= 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+										>
+											{formatCurrency(data?.closingDifference)}
+										</span>
+									</div>
+								)}
+							</div>
+
+							{data?.closingComments && (
+								<div>
+									<span className='font-bold'>Observaciones:</span>
+									<p>{data?.closingComments}</p>
+								</div>
+							)}
+						</div>
+
+						<div className='space-y-2'>
+							<h2 className='font-bold text-[16px] text-[#eab308]'>Alcancía</h2>
+
+							<div className='flex items-center gap-6'>
+								<div>
+									<span className='font-bold'>Acumulado:</span>{' '}
+									{formatCurrency(data?.piggyBankAmount as number) ?? 0}
+								</div>
+
+								{status === CurrentCashSessionStatus.OPEN &&
+									data?.piggyBankAmount &&
+									data?.piggyBankAmount > 0 && (
+										<AddButton
+											title='Retiro de la Alcancía'
+											modalContent={ModalContent.piggyBankWithdraw}
+											componentProps={{ shopId }}
+											buttonLabel='Retirar'
+											addIcon={false}
+											appendIcon={<BiMoneyWithdraw />}
+										/>
+									)}
+							</div>
+						</div>
+					</div>
+				) : (
+					<div className='h-full flex items-center justify-center'>
+						<h2 className='text-gray-400 font-bold text-[24px] text-center'>
+							¡Realiza la apertura de la caja para ver más información!
+						</h2>
+					</div>
+				)}
 			</div>
 		</div>
 	);

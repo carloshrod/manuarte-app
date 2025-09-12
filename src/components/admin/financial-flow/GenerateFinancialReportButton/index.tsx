@@ -1,0 +1,74 @@
+'use client';
+import {
+	downloadFinancialExcel,
+	generateFinancialData
+} from '@/utils/documents';
+import { Button } from 'antd';
+import { IoMdDownload } from 'react-icons/io';
+import { useSelector } from 'react-redux';
+
+const GenerateFinancialReportButton = ({ shopSlug }: { shopSlug: string }) => {
+	const {
+		currentCashSession: { data, balance },
+		bankTransferMovements
+	} = useSelector((state: RootState) => state.financialFlow);
+	const cashMovements = data?.movements;
+	const piggyBankAmount = data?.piggyBankAmount;
+
+	const canGenerateReport = Boolean(
+		cashMovements?.length > 0 && bankTransferMovements?.length > 0
+	);
+
+	const handleDownloadExcel = async () => {
+		try {
+			const { cashIncomes, cashExpenses, bankData } = generateFinancialData(
+				cashMovements,
+				bankTransferMovements
+			);
+
+			const sufix = 'reporte-flujo-financiero';
+			const shopName = shopSlug.toUpperCase().replace('-', ' ');
+
+			if (
+				cashIncomes &&
+				cashExpenses &&
+				bankData &&
+				balance &&
+				piggyBankAmount
+			) {
+				const title = `Reporte - Flujo Financiero ${shopName}`;
+
+				downloadFinancialExcel({
+					cashIncomes,
+					cashExpenses,
+					bankData,
+					balance,
+					piggyBankAmount,
+					fileName: `${shopSlug}-${sufix}`,
+					title
+				});
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	return (
+		<Button
+			variant='solid'
+			color='primary'
+			icon={
+				<IoMdDownload
+					size={18}
+					style={{ display: 'flex', alignItems: 'center' }}
+				/>
+			}
+			onClick={handleDownloadExcel}
+			disabled={!canGenerateReport}
+		>
+			Generar Reporte
+		</Button>
+	);
+};
+
+export default GenerateFinancialReportButton;

@@ -29,7 +29,7 @@ interface TableActionsProps {
 	popTitle?: string;
 	popDescription?: string;
 	isEditable?: boolean;
-	isDeletable?: boolean;
+	isCancelable?: boolean;
 }
 
 const TableActions = ({
@@ -44,7 +44,7 @@ const TableActions = ({
 	popTitle,
 	popDescription = '¿Estás seguro de que quieres borrar este elemento?',
 	isEditable = true,
-	isDeletable = true
+	isCancelable = false
 }: TableActionsProps) => {
 	const isCancel = popDescription.includes('anular');
 
@@ -166,7 +166,7 @@ const TableActions = ({
 				>
 					<Tooltip
 						title={
-							(isDeletable || !isCancel) && (!record || record?.quantity === 0)
+							!isCancel && (!record || record?.quantity === 0)
 								? 'Eliminar'
 								: 'No puedes eliminar un item con cantidad en stock'
 						}
@@ -177,8 +177,7 @@ const TableActions = ({
 								<AiOutlineDelete
 									size={20}
 									color={
-										(isDeletable || !isCancel) &&
-										(!record || record?.quantity === 0)
+										!isCancel && (!record || record?.quantity === 0)
 											? '#E53535'
 											: '#FCBABA'
 									}
@@ -196,15 +195,16 @@ const TableActions = ({
 					description={popDescription}
 					onConfirm={onCancel}
 				>
-					<Tooltip title={isDeletable ? 'Anular' : ''}>
+					<Tooltip title={isCancelable ? 'Anular' : undefined}>
 						<Button
 							type='text'
 							icon={
 								<TbCancel
 									size={20}
-									color={isDeletable ? '#E53535' : '#FCBABA'}
+									color={isCancelable ? '#E53535' : '#FCBABA'}
 								/>
 							}
+							disabled={!isCancelable}
 						/>
 					</Tooltip>
 				</PopConfirm>

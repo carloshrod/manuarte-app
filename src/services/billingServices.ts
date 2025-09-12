@@ -52,9 +52,5 @@ export const billingServices = {
 		return await axiosPrivate.delete(
 			`${ENV.API.BILLINGS}/cancel/${serialNumber}`
 		);
-	},
-
-	delete: async (billingId: string) => {
-		return await axiosPrivate.delete(`${ENV.API.BILLINGS}/${billingId}`);
 	}
 };

@@ -9,7 +9,7 @@ import {
 	Tag,
 	Tooltip
 } from 'antd';
-import { CheckCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, DollarCircleOutlined } from '@ant-design/icons';
 import { BsFileEarmarkPdf } from 'react-icons/bs';
 import { TiArrowDown, TiArrowUp } from 'react-icons/ti';
 import { IoInformationCircleOutline } from 'react-icons/io5';
@@ -40,6 +40,7 @@ import {
 	TAG_COLORS,
 	CASH_MOVEMENT_CAT_FILTER
 } from './utils';
+import { PaymentMethod } from '@/types/enums';
 
 const useTableColumns = () => {
 	const { getColumnSearchProps, getColumnDateFilterProps } = useTable();
@@ -915,6 +916,27 @@ const useTableColumns = () => {
 
 	const cashMovementsColumns: TableColumnsType<CashMovement> = [
 		{
+			title: 'TIPO',
+			dataIndex: 'type',
+			key: 'type',
+			filters: [
+				{ text: 'INGRESO', value: 'INCOME' },
+				{ text: 'EGRESO', value: 'EXPENSE' }
+			],
+			onFilter: (value, record) => record.type.indexOf(value as string) === 0,
+			render: value => {
+				return (
+					<span className='flex items-center justify-center'>
+						<DollarCircleOutlined
+							style={{ color: value === 'INCOME' ? '#10b981' : '#E53535' }}
+						/>
+					</span>
+				);
+			},
+			width: 80,
+			align: 'center'
+		},
+		{
 			title: 'CATEGORÍA',
 			dataIndex: 'category',
 			key: 'category',
@@ -924,7 +946,7 @@ const useTableColumns = () => {
 			render: (value, record) => {
 				return (
 					<span className='flex items-center'>
-						<Tag color='#0D6EFD'>{CASH_MOVEMENT_CAT_MAP[value]}</Tag>
+						<Tag color='blue'>{CASH_MOVEMENT_CAT_MAP[value]}</Tag>
 						{record?.comments && (
 							<Tooltip title={record?.comments}>
 								<span>
@@ -935,28 +957,92 @@ const useTableColumns = () => {
 					</span>
 				);
 			},
-			width: 60
+			width: 140
 		},
 		{
 			title: 'MONTO',
 			dataIndex: 'amount',
 			key: 'amount',
-			render: (value: string, record) => (
+			render: (value: number, record) => (
 				<span
 					className={`${record.type === 'INCOME' ? 'text-[#10b981]' : 'text-[#E53535]'}`}
 				>
 					{formatCurrency(value) ?? '--'}
 				</span>
 			),
-			width: 50
+			width: 120
 		},
 		{
 			title: 'REFERENCIA',
 			dataIndex: 'reference',
 			key: 'reference',
 			...getColumnSearchProps('reference'),
-			render: (value: string) => value ?? '--',
-			width: 75
+			render: (value: string) => value ?? '--'
+		}
+	];
+
+	const bankTransferMovementsColumns: TableColumnsType<BankTransferMovement> = [
+		{
+			title: 'TIPO',
+			dataIndex: 'type',
+			key: 'type',
+			filters: [
+				{ text: 'INGRESO', value: 'INCOME' },
+				{ text: 'EGRESO', value: 'EXPENSE' }
+			],
+			onFilter: (value, record) => record.type.indexOf(value as string) === 0,
+			render: value => {
+				return (
+					<span className='flex items-center justify-center'>
+						<DollarCircleOutlined
+							style={{ color: value === 'INCOME' ? '#10b981' : '#E53535' }}
+						/>
+					</span>
+				);
+			},
+			align: 'center'
+		},
+		{
+			title: 'MONTO',
+			dataIndex: 'amount',
+			key: 'amount',
+			render: (value: number, record) => (
+				<span
+					className={`${record.type === 'INCOME' ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+				>
+					{formatCurrency(value) ?? '--'}
+				</span>
+			)
+		},
+		{
+			title: 'REFERENCIA',
+			dataIndex: 'reference',
+			key: 'reference',
+			...getColumnSearchProps('reference'),
+			render: (value: string) => value ?? '--'
+		},
+		{
+			title: 'MÉTODO DE PAGO',
+			dataIndex: 'paymentMethod',
+			key: 'paymentMethod',
+			filters: !params?.shopSlug?.includes('quito')
+				? COL_PAYMENT_METHOD_FILTER.filter(
+						pm => pm.value !== PaymentMethod.CASH
+					)
+				: ECU_PAYMENT_METHOD_FILTER.filter(
+						pm => pm.value !== PaymentMethod.CASH
+					),
+			onFilter: (value, record) =>
+				record.paymentMethod.indexOf(value as string) === 0,
+			render: (value: string) => (
+				<Tag color='blue'>{PAYMENT_METHOD_MAP[value] ?? '--'}</Tag>
+			)
+		},
+		{
+			title: 'OBSERVACIONES',
+			dataIndex: 'comments',
+			key: 'comments',
+			render: (value: string) => value ?? '--'
 		}
 	];
 
@@ -972,7 +1058,8 @@ const useTableColumns = () => {
 		stockItemsColumns,
 		stockItemsHistoryColumns,
 		transactionsColumns,
-		cashMovementsColumns
+		cashMovementsColumns,
+		bankTransferMovementsColumns
 	};
 };
 

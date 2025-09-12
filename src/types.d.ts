@@ -368,6 +368,23 @@ interface CashMovement {
 	amount: number;
 	type: 'INCOME' | 'EXPENSE';
 	category: CashMovementCategory;
+	reference: string;
+	comments: string | null;
+	createdBy: string;
+	createdDate: string;
+	updatedDate: string;
+	deletedDate: string | null;
+}
+
+interface BankTransferMovement {
+	id: string;
+	sessionId: string;
+	billingPaymentId: string | null;
+	amount: number;
+	type: 'INCOME' | 'EXPENSE';
+	reference: string;
+	paymentMethod: string;
+
 	comments: string | null;
 	createdBy: string;
 	createdDate: string;
@@ -385,8 +402,10 @@ interface CashSession {
 	closingAmount: number | null;
 	declaredClosingAmount: number | null;
 	closingDifference: number | null;
+	piggyBankAmount: number | null;
 	closedBy: string | null;
-	comments: string | null;
+	openingComments: string | null;
+	closingComments: string | null;
 	openedAt: string;
 	closedAt: string | null;
 	createdDate: string;
@@ -394,12 +413,22 @@ interface CashSession {
 	deletedDate: string | null;
 	movements: CashMovement[];
 }
-interface LastCashSession {
+
+enum CurrentCashSessionStatus {
+	FIRST_SESSION = 'first-session',
+	OPEN = 'open',
+	CLOSED = 'closed',
+	NO_SESSION = 'no-session',
+	BLOCKED = 'blocked',
+	OVERDUE = 'OVERDUE'
+}
+
+interface CurrentCashSession {
+	status: CurrentCashSessionStatus;
 	canOpen: boolean;
-	canRegisterMovements: boolean;
+	canClose: boolean;
 	reason: string;
-	initialAmount: number;
-	balance: number;
+	balance?: number;
 	data: CashSession;
 }
 
@@ -419,7 +448,8 @@ type DataTable =
 	| Billing
 	| StockItem
 	| Transaction
-	| CashMovement;
+	| CashMovement
+	| BankTransferMovement;
 
 interface RootState {
 	product: {
@@ -453,7 +483,8 @@ interface RootState {
 	shop: {
 		shops: Shop[];
 	};
-	cashSession: {
-		currentCashSession: LastCashSession;
+	financialFlow: {
+		currentCashSession: CurrentCashSession;
+		bankTransferMovements: BankTransferMovement[];
 	};
 }

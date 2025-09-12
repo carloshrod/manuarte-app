@@ -75,11 +75,15 @@ export const formatUserExtraPermissions = (
 	}
 };
 
-export const formatDate = (date: Date | string) => {
+export const formatDate = (date: Date | string, showTime: boolean = false) => {
 	try {
 		if (!date) return '--';
 
-		return moment(date).startOf('day').format('DD-MMM-YYYY').toUpperCase();
+		const m = moment(date);
+
+		return showTime
+			? m.format('DD-MMM-YYYY, h:mm A').toUpperCase()
+			: m.startOf('day').format('DD-MMM-YYYY').toUpperCase();
 	} catch (error) {
 		console.error(error);
 	}

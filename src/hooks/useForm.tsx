@@ -41,11 +41,8 @@ import { useDrawerStore } from '@/stores/drawerStore';
 import usePdf from './usePdf';
 import { validateUniqueProductVariantsName } from './utils';
 import { BillingStatus } from '@/types/enums';
-import { cashSessionServices } from '@/services/cashSessionServices';
-import {
-	addCashMovement,
-	setCashSession
-} from '@/reducers/cashSession/cashSessionSlice';
+import { financialFlowServices } from '@/services/financialFlowServices';
+import { setCurrentCashSession } from '@/reducers/financialFlow/financialFlowSlice';
 
 notification.config({
 	placement: 'topRight',
@@ -451,13 +448,17 @@ const useForm = () => {
 	};
 
 	const submitOpenCashSession = async (
-		values: { declaredOpeningAmount: number; comments?: string },
+		values: {
+			declaredOpeningAmount: number;
+			initialPiggyBankAmount?: number;
+			comments?: string;
+		},
 		shopId: string
 	) => {
 		await handleSubmit({
-			serviceFn: body => cashSessionServices.open(body, shopId),
+			serviceFn: body => financialFlowServices.openCashSession(body, shopId),
 			values,
-			onSuccess: res => dispatch(setCashSession(res?.data?.cashSession))
+			onSuccess: res => dispatch(setCurrentCashSession(res?.data?.cashSession))
 		});
 	};
 
@@ -466,9 +467,9 @@ const useForm = () => {
 		shopId: string
 	) => {
 		await handleSubmit({
-			serviceFn: body => cashSessionServices.close(body, shopId),
+			serviceFn: body => financialFlowServices.closeCashSession(body, shopId),
 			values,
-			onSuccess: res => dispatch(setCashSession(res?.data?.cashSession))
+			onSuccess: res => dispatch(setCurrentCashSession(res?.data?.cashSession))
 		});
 	};
 
@@ -477,12 +478,23 @@ const useForm = () => {
 		shopId: string
 	) => {
 		await handleSubmit({
-			serviceFn: body => cashSessionServices.createMovement(body, shopId),
+			serviceFn: body => financialFlowServices.createCashMovement(body, shopId),
 			values,
-			onSuccess: res => {
-				const { newCashMovement, newBalance } = res.data ?? {};
-				dispatch(addCashMovement({ newCashMovement, newBalance }));
-			}
+			onSuccess: res =>
+				dispatch(setCurrentCashSession(res?.data?.currentSessionUpdated))
+		});
+	};
+
+	const submitPiggyBankWithdraw = async (
+		values: { amount: number; comments?: string },
+		shopId: string
+	) => {
+		await handleSubmit({
+			serviceFn: body =>
+				financialFlowServices.withdrawFromPiggyBank(body, shopId),
+			values,
+			onSuccess: res =>
+				dispatch(setCurrentCashSession(res?.data?.currentSessionUpdated))
 		});
 	};
 
@@ -512,7 +524,8 @@ const useForm = () => {
 		submitUpdateTransaction,
 		submitCreateCashMovement,
 		submitOpenCashSession,
-		submitCloseCashSession
+		submitCloseCashSession,
+		submitPiggyBankWithdraw
 	};
 };
 

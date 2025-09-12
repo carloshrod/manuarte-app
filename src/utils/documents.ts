@@ -1,5 +1,9 @@
 import ExcelJS from 'exceljs';
-import { PAYMENT_METHOD_MAP, TRANSACTION_TYPES_MAP } from './mappings';
+import {
+	CASH_MOVEMENT_CAT_MAP,
+	PAYMENT_METHOD_MAP,
+	TRANSACTION_TYPES_MAP
+} from './mappings';
 import { formatDate, formatToTitleCase } from './formats';
 import { DiscountType } from '@/types/enums';
 
@@ -261,6 +265,42 @@ export const generateTopCustomersData = (data: Customer[]) => {
 		return excelData;
 	} catch (error) {
 		console.error(error);
+	}
+};
+
+export const generateFinancialData = (
+	cashMovements: CashMovement[],
+	bankTransferMovements: BankTransferMovement[]
+) => {
+	try {
+		const cashIncomes = cashMovements
+			.filter(item => item.type === 'INCOME')
+			.map(item => ({
+				reference: item.reference ?? '--',
+				category: CASH_MOVEMENT_CAT_MAP[item.category],
+				amount: Number(item.amount)
+			}));
+
+		const cashExpenses = cashMovements
+			.filter(item => item.type === 'EXPENSE')
+			.map(item => ({
+				reference: item.reference ?? '--',
+				category: CASH_MOVEMENT_CAT_MAP[item.category],
+				amount: Number(item.amount)
+			}));
+
+		const bankData = bankTransferMovements
+			.filter(item => item.type === 'INCOME')
+			.map(item => ({
+				reference: item.reference ?? '--',
+				paymentMethod: PAYMENT_METHOD_MAP[item.paymentMethod],
+				amount: Number(item.amount)
+			}));
+
+		return { cashIncomes, cashExpenses, bankData };
+	} catch (error) {
+		console.error(error);
+		return { cashIncomes: [], cashExpenses: [], bankData: [] };
 	}
 };
 
@@ -644,6 +684,322 @@ export const downloadExcel = async ({
 			link.download = `${fileName}.xlsx`;
 			link.click();
 		}
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+export const downloadFinancialExcel = async ({
+	cashIncomes,
+	cashExpenses,
+	bankData,
+	piggyBankAmount,
+	balance,
+	fileName,
+	title,
+	date
+}: {
+	cashIncomes: any[];
+	cashExpenses: any[];
+	bankData: any[];
+	piggyBankAmount: number;
+	balance: number;
+	fileName: string;
+	title: string;
+	date?: string;
+}) => {
+	try {
+		const workbook = new ExcelJS.Workbook();
+		const worksheet = workbook.addWorksheet('Reporte Financiero');
+
+		// ==== Fila 1: Título y Fecha ====
+		worksheet.mergeCells('A1:F1');
+		const titleCell = worksheet.getCell('A1');
+		titleCell.value = title;
+		titleCell.font = { bold: true, size: 12 };
+		titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+		const dateCell = worksheet.getCell('G1');
+		dateCell.value = date ? formatDate(date) : formatDate(new Date());
+		dateCell.font = { bold: true, size: 11 };
+		dateCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+		// ==== Fila 2: Subtítulos ====
+		worksheet.mergeCells('A2:C2');
+		worksheet.getCell('A2').value = 'Efectivo (Ingresos)';
+		worksheet.getCell('A2').fill = {
+			type: 'pattern',
+			pattern: 'solid',
+			fgColor: { argb: 'C5D9F1' }
+		};
+		worksheet.getCell('A2').font = { bold: true };
+		worksheet.getCell('A2').alignment = { horizontal: 'center' };
+		worksheet.getCell('A2').border = {
+			top: { style: 'thin' },
+			left: { style: 'thin' },
+			bottom: { style: 'thin' },
+			right: { style: 'thin' }
+		};
+
+		worksheet.mergeCells('E2:G2');
+		worksheet.getCell('E2').value = 'Depósitos';
+		worksheet.getCell('E2').fill = {
+			type: 'pattern',
+			pattern: 'solid',
+			fgColor: { argb: 'C5D9F1' }
+		};
+		worksheet.getCell('E2').font = { bold: true };
+		worksheet.getCell('E2').alignment = { horizontal: 'center' };
+		worksheet.getCell('E2').border = {
+			top: { style: 'thin' },
+			left: { style: 'thin' },
+			bottom: { style: 'thin' },
+			right: { style: 'thin' }
+		};
+
+		// ==== Tabla de ingresos (fila 3+) ====
+		const headers = [
+			'Categoría',
+			'Referencia',
+			'Monto',
+			'',
+			'Método de Pago',
+			'Referencia',
+			'Monto'
+		];
+		const headerRow = worksheet.addRow(headers);
+
+		// estilos headers efectivo
+		[1, 2, 3].forEach(colIdx => {
+			const cell = headerRow.getCell(colIdx);
+			cell.fill = {
+				type: 'pattern',
+				pattern: 'solid',
+				fgColor: { argb: 'C5D9F1' }
+			};
+			cell.font = { bold: true };
+			cell.alignment = { horizontal: 'center', vertical: 'middle' };
+			cell.border = {
+				top: { style: 'thin' },
+				left: { style: 'thin' },
+				bottom: { style: 'thin' },
+				right: { style: 'thin' }
+			};
+		});
+		// headers depósitos
+		[5, 6, 7].forEach(colIdx => {
+			const cell = headerRow.getCell(colIdx);
+			cell.fill = {
+				type: 'pattern',
+				pattern: 'solid',
+				fgColor: { argb: 'C5D9F1' }
+			};
+			cell.font = { bold: true };
+			cell.alignment = { horizontal: 'center', vertical: 'middle' };
+			cell.border = {
+				top: { style: 'thin' },
+				left: { style: 'thin' },
+				bottom: { style: 'thin' },
+				right: { style: 'thin' }
+			};
+		});
+
+		// ==== Filas de ingresos ====
+		const maxIncomeRows = Math.max(cashIncomes.length, bankData.length);
+		for (let i = 0; i < maxIncomeRows; i++) {
+			const cash = cashIncomes[i] ?? {
+				category: '',
+				reference: '',
+				amount: ''
+			};
+			const bank = bankData[i] ?? {
+				paymentMethod: '',
+				reference: '',
+				amount: ''
+			};
+
+			const row = worksheet.addRow([
+				cash.category,
+				cash.reference,
+				cash.amount,
+				'',
+				bank.paymentMethod,
+				bank.reference,
+				bank.amount
+			]);
+
+			[1, 2, 3, 5, 6, 7].forEach(colIdx => {
+				const cell = row.getCell(colIdx);
+				cell.border = {
+					top: { style: 'thin' },
+					left: { style: 'thin' },
+					bottom: { style: 'thin' },
+					right: { style: 'thin' }
+				};
+			});
+		}
+
+		// Totales ingresos
+		const totalRow = worksheet.addRow([
+			'',
+			'Total efectivo:',
+			{ formula: `SUM(C4:C${3 + cashIncomes.length})` },
+			'',
+			'',
+			'Total depósitos:',
+			{ formula: `SUM(G4:G${3 + bankData.length})` }
+		]);
+		totalRow.font = { bold: true };
+		[2, 3, 6, 7].forEach(colIdx => {
+			totalRow.getCell(colIdx).fill = {
+				type: 'pattern',
+				pattern: 'solid',
+				fgColor: { argb: 'D9D9D9' }
+			};
+			totalRow.getCell(colIdx).border = {
+				top: { style: 'thin' },
+				left: { style: 'thin' },
+				bottom: { style: 'thin' },
+				right: { style: 'thin' }
+			};
+		});
+
+		// ==== Fila en blanco ====
+		worksheet.addRow([]);
+
+		// ==== Subtítulo gastos ====
+		const expensesStartRow = worksheet.lastRow!.number + 1;
+		worksheet.mergeCells(`A${expensesStartRow}:C${expensesStartRow}`);
+		worksheet.getCell(`A${expensesStartRow}`).value = 'Efectivo (Gastos)';
+		worksheet.getCell(`A${expensesStartRow}`).alignment = {
+			horizontal: 'center'
+		};
+		worksheet.getCell(`A${expensesStartRow}`).fill = {
+			type: 'pattern',
+			pattern: 'solid',
+			fgColor: { argb: 'C5D9F1' }
+		};
+		worksheet.getCell(`A${expensesStartRow}`).font = { bold: true };
+		worksheet.getCell(`A${expensesStartRow}`).border = {
+			top: { style: 'thin' },
+			left: { style: 'thin' },
+			bottom: { style: 'thin' },
+			right: { style: 'thin' }
+		};
+
+		// ==== Headers gastos ====
+		const expHeaders = ['Categoría', 'Referencia', 'Monto'];
+		const expHeaderRow = worksheet.addRow(expHeaders);
+		[1, 2, 3].forEach(colIdx => {
+			const cell = expHeaderRow.getCell(colIdx);
+			cell.fill = {
+				type: 'pattern',
+				pattern: 'solid',
+				fgColor: { argb: 'C5D9F1' }
+			};
+			cell.font = { bold: true };
+			cell.alignment = { horizontal: 'center', vertical: 'middle' };
+			cell.border = {
+				top: { style: 'thin' },
+				left: { style: 'thin' },
+				bottom: { style: 'thin' },
+				right: { style: 'thin' }
+			};
+		});
+
+		// ==== Filas gastos ====
+		for (const exp of cashExpenses) {
+			const row = worksheet.addRow([exp.category, exp.reference, exp.amount]);
+			[1, 2, 3].forEach(colIdx => {
+				row.getCell(colIdx).border = {
+					top: { style: 'thin' },
+					left: { style: 'thin' },
+					bottom: { style: 'thin' },
+					right: { style: 'thin' }
+				};
+			});
+		}
+
+		// Totales gastos
+		const totalExpRow = worksheet.addRow([
+			'',
+			'Total gastos:',
+			{
+				formula: `SUM(C${expHeaderRow.number + 1}:C${expHeaderRow.number + cashExpenses.length})`
+			}
+		]);
+		totalExpRow.font = { bold: true };
+		[2, 3].forEach(colIdx => {
+			totalExpRow.getCell(colIdx).fill = {
+				type: 'pattern',
+				pattern: 'solid',
+				fgColor: { argb: 'D9D9D9' }
+			};
+			totalExpRow.getCell(colIdx).border = {
+				top: { style: 'thin' },
+				left: { style: 'thin' },
+				bottom: { style: 'thin' },
+				right: { style: 'thin' }
+			};
+		});
+
+		// ==== Bloque Alcancía / Caja Final ====
+		const blockCol = 5; // E
+		const blockStartRow = expHeaderRow.number;
+		worksheet.getCell(blockStartRow, blockCol).value = 'Alcancía';
+		worksheet.getCell(blockStartRow, blockCol).fill = {
+			type: 'pattern',
+			pattern: 'solid',
+			fgColor: { argb: 'C5D9F1' }
+		};
+		worksheet.getCell(blockStartRow, blockCol + 1).value =
+			Number(piggyBankAmount) ?? 0;
+
+		worksheet.getCell(blockStartRow + 1, blockCol).value = 'Caja final';
+		worksheet.getCell(blockStartRow + 1, blockCol).fill = {
+			type: 'pattern',
+			pattern: 'solid',
+			fgColor: { argb: 'C5D9F1' }
+		};
+		worksheet.getCell(blockStartRow + 1, blockCol + 1).value =
+			Number(balance) ?? 0;
+
+		// estilos bloque
+		for (let r = 0; r < 2; r++) {
+			for (let c = blockCol; c <= blockCol + 1; c++) {
+				const cell = worksheet.getCell(blockStartRow + r, c);
+				cell.border = {
+					top: { style: 'thin' },
+					left: { style: 'thin' },
+					bottom: { style: 'thin' },
+					right: { style: 'thin' }
+				};
+				if (c === blockCol) {
+					cell.font = { bold: true };
+				}
+			}
+		}
+
+		// ==== Estilos globales ====
+		worksheet.getColumn(3).numFmt = '"$" #,##0.00';
+		worksheet.getColumn(6).numFmt = '"$" #,##0.00';
+		worksheet.getColumn(7).numFmt = '"$" #,##0.00';
+		worksheet.getColumn(1).width = 22;
+		worksheet.getColumn(2).width = 22;
+		worksheet.getColumn(3).width = 18;
+		worksheet.getColumn(5).width = 22;
+		worksheet.getColumn(6).width = 22;
+		worksheet.getColumn(7).width = 18;
+
+		// Descargar
+		const buffer = await workbook.xlsx.writeBuffer();
+		const blob = new Blob([buffer], {
+			type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+		});
+		const link = document.createElement('a');
+		link.href = URL.createObjectURL(blob);
+		link.download = `${fileName}.xlsx`;
+		link.click();
 	} catch (error) {
 		console.error(error);
 	}

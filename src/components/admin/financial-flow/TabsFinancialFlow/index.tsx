@@ -1,30 +1,47 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Tabs, TabsProps } from 'antd';
+import { notification, Tabs, TabsProps } from 'antd';
 import { GiPayMoney, GiReceiveMoney } from 'react-icons/gi';
 import AddButton from '../../common/ui/AddButton';
-import { cashSessionServices } from '@/services/cashSessionServices';
-import { ModalContent } from '@/types/enums';
+import { financialFlowServices } from '@/services/financialFlowServices';
+import { CurrentCashSessionStatus, ModalContent } from '@/types/enums';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCashSession } from '@/reducers/cashSession/cashSessionSlice';
+import {
+	setBankTransferMovements,
+	setCurrentCashSession
+} from '@/reducers/financialFlow/financialFlowSlice';
 import { RiSafe2Fill, RiSafe2Line } from 'react-icons/ri';
 import CashFlow from '../CashFlow';
+import BankTransfers from '../BankTransfers';
+import { Moment } from 'moment';
 
 const TabsFinancialFlow = ({ shopId }: { shopId: string | undefined }) => {
-	const {
-		currentCashSession: { canOpen, canRegisterMovements }
-	} = useSelector((state: RootState) => state.cashSession);
+	const { currentCashSession } = useSelector(
+		(state: RootState) => state.financialFlow
+	);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isCash, setIsCash] = useState(true);
 	const dispatch = useDispatch();
+	const { status, canOpen, data } = currentCashSession;
 
 	const fetchCashSession = async () => {
-		if (shopId) {
-			const data = await cashSessionServices.getOne(shopId);
-			if (data) {
-				dispatch(setCashSession(data));
-				setIsLoading(false);
+		try {
+			if (shopId) {
+				const cashSessionData =
+					await financialFlowServices.getCurrentCashSession(shopId);
+				const bankTransferData =
+					await financialFlowServices.getBankTransferMovements(shopId);
+
+				if (cashSessionData) {
+					dispatch(setCurrentCashSession(cashSessionData));
+				}
+
+				if (bankTransferData) {
+					dispatch(setBankTransferMovements(bankTransferData));
+				}
 			}
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -32,16 +49,65 @@ const TabsFinancialFlow = ({ shopId }: { shopId: string | undefined }) => {
 		fetchCashSession();
 	}, [shopId]);
 
+	const onChangeDate = async (date: Moment) => {
+		const formattedDate = date?.toDate().toISOString();
+
+		if (shopId && formattedDate) {
+			setIsLoading(true);
+
+			try {
+				const data = await financialFlowServices.getCashSessionByDate(
+					shopId,
+					formattedDate
+				);
+				const data2 = await financialFlowServices.getBankTransferMovements(
+					shopId,
+					formattedDate
+				);
+
+				if (data) {
+					dispatch(setCurrentCashSession({ ...currentCashSession, data }));
+				} else {
+					dispatch(
+						setCurrentCashSession({ ...currentCashSession, data: null })
+					);
+					notification.error({
+						message: 'No hay caja para la fecha seleccionada'
+					});
+				}
+
+				if (data2) {
+					dispatch(setBankTransferMovements(data2));
+				} else {
+					dispatch(setBankTransferMovements([]));
+					notification.error({
+						message: 'No hay depósitos para la fecha seleccionada'
+					});
+				}
+			} finally {
+				setIsLoading(false);
+			}
+		}
+	};
+
 	const items: TabsProps['items'] = [
 		{
 			key: '1',
 			label: 'Flujo de Caja',
-			children: <CashFlow isLoading={isLoading} />
+			children: (
+				<CashFlow
+					shopId={shopId as string}
+					isLoading={isLoading}
+					onChangeDate={onChangeDate}
+				/>
+			)
 		},
 		{
 			key: '2',
 			label: 'Transferencias Bancarias',
-			children: <p>Transfers</p>
+			children: (
+				<BankTransfers isLoading={isLoading} onChangeDate={onChangeDate} />
+			)
 		}
 	];
 
@@ -50,7 +116,7 @@ const TabsFinancialFlow = ({ shopId }: { shopId: string | undefined }) => {
 	};
 
 	const operations = isCash ? (
-		<div className='flex gap-2 max-[460px]:flex-col'>
+		<div className='flex items-center gap-10 max-[460px]:flex-col'>
 			{canOpen ? (
 				<AddButton
 					title='Apertura de Caja'
@@ -61,34 +127,40 @@ const TabsFinancialFlow = ({ shopId }: { shopId: string | undefined }) => {
 					appendIcon={<RiSafe2Line size={18} />}
 				/>
 			) : (
-				<AddButton
-					title='Cierre de Caja'
-					modalContent={ModalContent.closeCashSession}
-					componentProps={{ shopId: shopId as string }}
-					buttonLabel='Cerrar Caja'
-					addIcon={false}
-					appendIcon={<RiSafe2Fill size={18} />}
-				/>
+				data &&
+				!data?.closedAt && (
+					<AddButton
+						title='Cierre de Caja'
+						modalContent={ModalContent.closeCashSession}
+						componentProps={{ shopId: shopId as string }}
+						buttonLabel='Cerrar Caja'
+						addIcon={false}
+						appendIcon={<RiSafe2Fill size={18} />}
+					/>
+				)
 			)}
 
-			{canRegisterMovements && (
-				<>
-					<AddButton
-						title='Registrar Ingreso'
-						modalContent={ModalContent.cashIncome}
-						componentProps={{ shopId: shopId as string }}
-						buttonLabel='Ingreso'
-						appendIcon={<GiReceiveMoney size={18} />}
-					/>
-					<AddButton
-						title='Registrar Gasto'
-						modalContent={ModalContent.cashExpense}
-						componentProps={{ shopId: shopId as string }}
-						buttonLabel='Gasto'
-						appendIcon={<GiPayMoney size={18} />}
-					/>
-				</>
-			)}
+			<div className='flex gap-2'>
+				{status === CurrentCashSessionStatus.OPEN &&
+					data?.closedAt === null && (
+						<>
+							<AddButton
+								title='Registrar Ingreso'
+								modalContent={ModalContent.cashIncome}
+								componentProps={{ shopId: shopId as string }}
+								buttonLabel='Ingreso'
+								appendIcon={<GiReceiveMoney size={18} />}
+							/>
+							<AddButton
+								title='Registrar Gasto'
+								modalContent={ModalContent.cashExpense}
+								componentProps={{ shopId: shopId as string }}
+								buttonLabel='Gasto'
+								appendIcon={<GiPayMoney size={18} />}
+							/>
+						</>
+					)}
+			</div>
 		</div>
 	) : null;
 

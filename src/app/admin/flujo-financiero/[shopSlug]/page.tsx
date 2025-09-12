@@ -3,6 +3,7 @@ import GoBack from '@/components/admin/common/ui/GoBack';
 import { PiChartLineUpBold } from 'react-icons/pi';
 import TabsFinancialFlow from '@/components/admin/financial-flow/TabsFinancialFlow';
 import { shopServices } from '@/services/shopServices';
+import GenerateFinancialReportButton from '@/components/admin/financial-flow/GenerateFinancialReportButton';
 
 interface QuotesPageProps {
 	params: {
@@ -35,7 +36,7 @@ const FinancialFlowPage = async (props: QuotesPageProps) => {
 					</span>
 				</div>
 
-				{/* TODO: Report */}
+				<GenerateFinancialReportButton shopSlug={shopSlug} />
 			</div>
 
 			<TabsFinancialFlow shopId={shopId} />

@@ -13,6 +13,7 @@ export enum ModalContent {
 	closeCashSession = 'closeCashSession',
 	cashIncome = 'cashIncome',
 	cashExpense = 'cashExpense',
+	piggyBankWithdraw = 'piggyBankWithdraw',
 	confirm = 'confirm'
 }
 
@@ -81,4 +82,13 @@ export enum CashMovementCategory {
 	CHANGE = 'CHANGE',
 	PIGGY_BANK = 'PIGGY_BANK',
 	OTHER = 'OTHER'
+}
+
+export enum CurrentCashSessionStatus {
+	FIRST_SESSION = 'first-session',
+	OPEN = 'open',
+	CLOSED = 'closed',
+	NO_SESSION = 'no-session',
+	BLOCKED = 'blocked',
+	OVERDUE = 'OVERDUE'
 }

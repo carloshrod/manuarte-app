@@ -5,12 +5,12 @@ import TextArea from 'antd/es/input/TextArea';
 import { useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
 import { useModalStore } from '@/stores/modalStore';
-import { ModalContent } from '@/types/enums';
+import { CurrentCashSessionStatus, ModalContent } from '@/types/enums';
 
 const CashSessionForm = ({ shopId }: { shopId: string }) => {
 	const {
-		currentCashSession: { canOpen, initialAmount, balance }
-	} = useSelector((state: RootState) => state.cashSession);
+		currentCashSession: { status, canOpen, balance }
+	} = useSelector((state: RootState) => state.financialFlow);
 
 	const { form, isLoading, submitOpenCashSession, submitCloseCashSession } =
 		useForm();
@@ -46,46 +46,82 @@ const CashSessionForm = ({ shopId }: { shopId: string }) => {
 			clearOnDestroy
 			onFinish={onFinish}
 		>
-			{canOpen ? (
-				<div className='my-4'>
-					Monto inicial:{' '}
-					<span
-						className={`'font-semibold' ${initialAmount > 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
-					>
-						{formatCurrency(initialAmount ?? 0)}
-					</span>
-				</div>
-			) : (
-				<div className='my-4'>
-					Monto de cierre:{' '}
-					<span
-						className={`'font-semibold' ${balance > 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
-					>
-						{formatCurrency(balance ?? 0)}
-					</span>
+			{status === CurrentCashSessionStatus.FIRST_SESSION && (
+				<div className='text-gray-400 font-semibold italic my-4'>
+					Primera apertura de caja
 				</div>
 			)}
 
-			<Form.Item
-				name={canOpen ? 'declaredOpeningAmount' : 'declaredClosingAmount'}
-				label={`Monto ${canOpen ? 'Inicial' : 'de Cierre'} Declarado`}
-				rules={[
-					{
-						required: true,
-						message: 'Requerido'
-					}
-				]}
-				style={{ width: '50%' }}
-			>
-				<InputNumber
-					min={0}
-					controls={false}
-					placeholder='Ingresa el monto'
-					formatter={value => formatInputCurrency(value)}
-					className='textRight'
-					style={{ width: '100%' }}
-				/>
-			</Form.Item>
+			{balance ? (
+				canOpen ? (
+					<div className='my-4'>
+						Monto inicial:{' '}
+						<span
+							className={`'font-semibold' ${balance > 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+						>
+							{formatCurrency(balance ?? 0)}
+						</span>
+					</div>
+				) : (
+					<div className='my-4'>
+						Monto de cierre:{' '}
+						<span
+							className={`'font-semibold' ${balance > 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+						>
+							{formatCurrency(balance ?? 0)}
+						</span>
+					</div>
+				)
+			) : null}
+
+			<div className='flex gap-6'>
+				<Form.Item
+					name={canOpen ? 'declaredOpeningAmount' : 'declaredClosingAmount'}
+					label={`Monto ${canOpen ? 'Inicial' : 'de Cierre'} Declarado`}
+					rules={[
+						{
+							required: true,
+							message: 'Requerido'
+						}
+					]}
+					style={{ width: '50%' }}
+				>
+					<InputNumber
+						min={0}
+						controls={false}
+						placeholder='Ingresa el monto'
+						formatter={value => formatInputCurrency(value)}
+						className='textRight'
+						style={{ width: '100%' }}
+					/>
+				</Form.Item>
+				{/* TODO: Recordarle al cajero que cuente la plata */}
+				{/* TODO: Mostrar si hay un faltante o diferencia en caja */}
+				{/* TODO: Mostrar monto que se retiró de la alcancía */}
+
+				{canOpen && status === CurrentCashSessionStatus.FIRST_SESSION && (
+					<Form.Item
+						name='initialPiggyBankAmount'
+						label='Monto Inicial de la Alcancía'
+						rules={[
+							{
+								required: true,
+								message: 'Requerido'
+							}
+						]}
+						style={{ width: '50%' }}
+					>
+						<InputNumber
+							min={0}
+							controls={false}
+							placeholder='Ingresa el monto'
+							formatter={value => formatInputCurrency(value)}
+							className='textRight'
+							style={{ width: '100%' }}
+						/>
+					</Form.Item>
+				)}
+			</div>
 
 			<Form.Item name='comments' label='Comentarios'>
 				<TextArea rows={2} />

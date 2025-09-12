@@ -1,14 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-	currentCashSession: {} as LastCashSession
+	currentCashSession: {} as CurrentCashSession,
+	bankTransferMovements: [] as BankTransferMovement[]
 };
 
-const cashSessionSlice = createSlice({
-	name: 'cashSession',
+const financialFlowSlice = createSlice({
+	name: 'financialFlow',
 	initialState,
 	reducers: {
-		setCashSession: (state, action) => {
+		setCurrentCashSession: (state, action) => {
 			state.currentCashSession = action.payload;
 		},
 
@@ -25,9 +26,17 @@ const cashSessionSlice = createSlice({
 					movements: [newCashMovement, ...data.movements]
 				}
 			};
+		},
+
+		setBankTransferMovements: (state, action) => {
+			state.bankTransferMovements = action.payload;
 		}
 	}
 });
 
-export const { setCashSession, addCashMovement } = cashSessionSlice.actions;
-export default cashSessionSlice.reducer;
+export const {
+	setCurrentCashSession,
+	addCashMovement,
+	setBankTransferMovements
+} = financialFlowSlice.actions;
+export default financialFlowSlice.reducer;
