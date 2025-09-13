@@ -124,7 +124,7 @@ const ProductFormList = ({
 						/>
 
 						<div className='overflow-x-auto custom-scrollbar'>
-							{fields.map(({ key, name, ...restField }) => {
+							{fields.reverse().map(({ key, name, ...restField }) => {
 								const item = form.getFieldValue('items')[name];
 								const maxQuantity = addedProducts[item?.productVariantId] || 1;
 
@@ -141,7 +141,9 @@ const ProductFormList = ({
 													{...restField}
 													key={`${input.name}-${index}`}
 													name={[name, input.name]}
-													label={name === 0 ? input.label : null}
+													label={
+														name === fields?.length - 1 ? input.label : null
+													}
 													rules={[
 														{
 															required: editableField,
@@ -213,7 +215,7 @@ const ProductFormList = ({
 										<Tooltip title='Eliminar producto'>
 											<Button
 												style={{
-													marginTop: name === 0 ? 4 : -24
+													marginTop: name === fields?.length - 1 ? 4 : -24
 												}}
 												type='text'
 												icon={<AiOutlineDelete size={28} color={'#E53535'} />}
