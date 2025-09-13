@@ -379,7 +379,7 @@ interface CashMovement {
 interface PiggyBankMovement {
 	id: string;
 	cashSessionId: string;
-	type: 'INCOME' | 'EXPENSE';
+	type: 'DEPOSIT' | 'WITHDRAW';
 	amount: number;
 	comments: string | null;
 	createdBy: string;

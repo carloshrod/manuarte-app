@@ -75,51 +75,53 @@ const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
 
 				{data ? (
 					<div className='w-full space-y-5 p-4'>
-						<div className='space-y-2'>
-							<h2 className='font-bold'>
-								Balance:{' '}
-								{isLoading ? (
-									<Skeleton.Button
-										active
-										style={{
-											width: 100,
-											height: 20,
-											outline: '1px solid transparent'
-										}}
-									/>
-								) : (
-									balance && (
-										<span
-											className={`${balance > 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
-										>
-											{formatCurrency(balance ?? 0)}
-										</span>
-									)
-								)}
-							</h2>
+						{data?.closedAt === null && (
+							<div className='space-y-2'>
+								<h2 className='font-bold'>
+									Balance:{' '}
+									{isLoading ? (
+										<Skeleton.Button
+											active
+											style={{
+												width: 100,
+												height: 20,
+												outline: '1px solid transparent'
+											}}
+										/>
+									) : (
+										balance && (
+											<span
+												className={`${balance > 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+											>
+												{formatCurrency(balance ?? 0)}
+											</span>
+										)
+									)}
+								</h2>
 
-							<h2 className='font-bold'>
-								Diferencia acumulada:{' '}
-								{isLoading ? (
-									<Skeleton.Button
-										active
-										style={{
-											width: 100,
-											height: 20,
-											outline: '1px solid transparent'
-										}}
-									/>
-								) : (
-									accumulatedDifference && (
-										<span
-											className={`${accumulatedDifference >= 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
-										>
-											{formatCurrency(accumulatedDifference ?? 0)}
-										</span>
-									)
-								)}
-							</h2>
-						</div>
+								<h2 className='font-bold'>
+									Diferencia acumulada:{' '}
+									{isLoading ? (
+										<Skeleton.Button
+											active
+											style={{
+												width: 100,
+												height: 20,
+												outline: '1px solid transparent'
+											}}
+										/>
+									) : (
+										accumulatedDifference && (
+											<span
+												className={`${accumulatedDifference >= 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+											>
+												{formatCurrency(accumulatedDifference ?? 0)}
+											</span>
+										)
+									)}
+								</h2>
+							</div>
+						)}
 
 						<div className='space-y-2'>
 							{data?.openedAt && (
@@ -246,8 +248,14 @@ const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
 										<div key={pbm?.id} className='flex items-center gap-2'>
 											<div className='w-3 h-3 bg-[#eab308] rounded-full' />
 											<span>
-												Retiro por valor de {formatCurrency(pbm.amount)} el{' '}
-												{formatDate(pbm?.createdDate)}{' '}
+												{pbm?.type === 'DEPOSIT' ? 'Depósito' : 'Retiro'} por
+												valor de{' '}
+												<span
+													className={`${pbm?.type === 'DEPOSIT' ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+												>
+													{formatCurrency(pbm.amount)}
+												</span>{' '}
+												el {formatDate(pbm?.createdDate)}{' '}
 											</span>
 											{pbm?.comments && (
 												<Tooltip title={pbm?.comments}>
