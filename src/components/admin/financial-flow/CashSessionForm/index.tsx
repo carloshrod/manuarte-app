@@ -76,7 +76,7 @@ const CashSessionForm = ({ shopId }: { shopId: string }) => {
 				)
 			) : null}
 
-			{accumulatedDifference && (
+			{accumulatedDifference ? (
 				<>
 					<div className='my-4'>
 						Diferencia acumulada:{' '}
@@ -96,59 +96,57 @@ const CashSessionForm = ({ shopId }: { shopId: string }) => {
 						</span>
 					</div>
 				</>
-			)}
+			) : null}
 
-			<div className='w-full flex gap-6'>
-				<div className='w-full flex items-end gap-2 justify-between'>
-					<Form.Item
-						name={canOpen ? 'declaredOpeningAmount' : 'declaredClosingAmount'}
-						label={`Monto ${canOpen ? 'Inicial' : 'de Cierre'} Declarado`}
-						rules={[
-							{
-								required: true,
-								message: 'Requerido'
-							}
-						]}
-						style={{ width: '45%' }}
-					>
-						<InputNumber
-							min={0}
-							controls={false}
-							placeholder='Ingresa el monto'
-							formatter={value => formatInputCurrency(value)}
-							className='textRight'
-							style={{ width: '100%' }}
-						/>
-					</Form.Item>
+			<div className='w-full flex items-end gap-2'>
+				<Form.Item
+					name={canOpen ? 'declaredOpeningAmount' : 'declaredClosingAmount'}
+					label={`Monto ${canOpen ? 'Inicial' : 'de Cierre'} Declarado`}
+					rules={[
+						{
+							required: true,
+							message: 'Requerido'
+						}
+					]}
+					style={{ width: '45%' }}
+				>
+					<InputNumber
+						min={0}
+						controls={false}
+						placeholder='Ingresa el monto'
+						formatter={value => formatInputCurrency(value)}
+						className='textRight'
+						style={{ width: '100%' }}
+					/>
+				</Form.Item>
 
-					<div className='text-[#0D6EFD] mb-6'>
-						Asegurate de contar el dinero en la caja
-					</div>
+				<div className='text-[#0D6EFD] mb-6'>
+					Asegurate de contar el dinero en la caja
 				</div>
-
-				{canOpen && status === CurrentCashSessionStatus.FIRST_SESSION && (
-					<Form.Item
-						name='initialPiggyBankAmount'
-						label='Monto Inicial de la Alcancía'
-						rules={[
-							{
-								required: true,
-								message: 'Requerido'
-							}
-						]}
-						style={{ width: '50%' }}
-					>
-						<InputNumber
-							min={0}
-							controls={false}
-							placeholder='Ingresa el monto'
-							formatter={value => formatInputCurrency(value)}
-							className='textRight'
-							style={{ width: '100%' }}
-						/>
-					</Form.Item>
-				)}
 			</div>
+
+			{canOpen && status === CurrentCashSessionStatus.FIRST_SESSION && (
+				<Form.Item
+					name='initialPiggyBankAmount'
+					label='Monto Inicial de la Alcancía'
+					rules={[
+						{
+							required: true,
+							message: 'Requerido'
+						}
+					]}
+					style={{ width: '45%' }}
+				>
+					<InputNumber
+						min={0}
+						controls={false}
+						placeholder='Ingresa el monto'
+						formatter={value => formatInputCurrency(value)}
+						className='textRight'
+						style={{ width: '100%' }}
+					/>
+				</Form.Item>
+			)}
 
 			<Form.Item name='comments' label='Comentarios'>
 				<TextArea rows={2} />
