@@ -9,7 +9,7 @@ import { CurrentCashSessionStatus, ModalContent } from '@/types/enums';
 
 const CashSessionForm = ({ shopId }: { shopId: string }) => {
 	const {
-		currentCashSession: { status, canOpen, balance }
+		currentCashSession: { status, canOpen, balance, accumulatedDifference }
 	} = useSelector((state: RootState) => state.financialFlow);
 
 	const { form, isLoading, submitOpenCashSession, submitCloseCashSession } =
@@ -63,41 +63,68 @@ const CashSessionForm = ({ shopId }: { shopId: string }) => {
 						</span>
 					</div>
 				) : (
-					<div className='my-4'>
-						Monto de cierre:{' '}
-						<span
-							className={`'font-semibold' ${balance > 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
-						>
-							{formatCurrency(balance ?? 0)}
-						</span>
+					<div className='flex flex-col gap-4 my-4'>
+						<div>
+							Monto de cierre:{' '}
+							<span
+								className={`'font-semibold' ${balance > 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+							>
+								{formatCurrency(balance ?? 0)}
+							</span>
+						</div>
 					</div>
 				)
 			) : null}
 
-			<div className='flex gap-6'>
-				<Form.Item
-					name={canOpen ? 'declaredOpeningAmount' : 'declaredClosingAmount'}
-					label={`Monto ${canOpen ? 'Inicial' : 'de Cierre'} Declarado`}
-					rules={[
-						{
-							required: true,
-							message: 'Requerido'
-						}
-					]}
-					style={{ width: '50%' }}
-				>
-					<InputNumber
-						min={0}
-						controls={false}
-						placeholder='Ingresa el monto'
-						formatter={value => formatInputCurrency(value)}
-						className='textRight'
-						style={{ width: '100%' }}
-					/>
-				</Form.Item>
-				{/* TODO: Recordarle al cajero que cuente la plata */}
-				{/* TODO: Mostrar si hay un faltante o diferencia en caja */}
-				{/* TODO: Mostrar monto que se retiró de la alcancía */}
+			{accumulatedDifference && (
+				<>
+					<div className='my-4'>
+						Diferencia acumulada:{' '}
+						<span
+							className={`'font-semibold' ${accumulatedDifference >= 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+						>
+							{formatCurrency(accumulatedDifference ?? 0)}
+						</span>
+					</div>
+
+					<div className='my-4'>
+						Monto esperado:{' '}
+						<span className='font-semibold text-[#0D6EFD]'>
+							{formatCurrency(
+								Number(balance) + Number(accumulatedDifference * -1)
+							)}
+						</span>
+					</div>
+				</>
+			)}
+
+			<div className='w-full flex gap-6'>
+				<div className='w-full flex items-end gap-2 justify-between'>
+					<Form.Item
+						name={canOpen ? 'declaredOpeningAmount' : 'declaredClosingAmount'}
+						label={`Monto ${canOpen ? 'Inicial' : 'de Cierre'} Declarado`}
+						rules={[
+							{
+								required: true,
+								message: 'Requerido'
+							}
+						]}
+						style={{ width: '45%' }}
+					>
+						<InputNumber
+							min={0}
+							controls={false}
+							placeholder='Ingresa el monto'
+							formatter={value => formatInputCurrency(value)}
+							className='textRight'
+							style={{ width: '100%' }}
+						/>
+					</Form.Item>
+
+					<div className='text-[#0D6EFD] mb-6'>
+						Asegurate de contar el dinero en la caja
+					</div>
+				</div>
 
 				{canOpen && status === CurrentCashSessionStatus.FIRST_SESSION && (
 					<Form.Item

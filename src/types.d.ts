@@ -376,6 +376,18 @@ interface CashMovement {
 	deletedDate: string | null;
 }
 
+interface PiggyBankMovement {
+	id: string;
+	cashSessionId: string;
+	type: 'INCOME' | 'EXPENSE';
+	amount: number;
+	comments: string | null;
+	createdBy: string;
+	createdDate: string;
+	updatedDate: string;
+	deletedDate: string | null;
+}
+
 interface BankTransferMovement {
 	id: string;
 	sessionId: string;
@@ -412,6 +424,7 @@ interface CashSession {
 	updatedDate: string;
 	deletedDate: string | null;
 	movements: CashMovement[];
+	piggyBankMovements: PiggyBankMovement[];
 }
 
 enum CurrentCashSessionStatus {
@@ -429,6 +442,7 @@ interface CurrentCashSession {
 	canClose: boolean;
 	reason: string;
 	balance?: number;
+	accumulatedDifference?: number;
 	data: CashSession;
 }
 

@@ -1,4 +1,4 @@
-import { Skeleton } from 'antd';
+import { Skeleton, Tooltip } from 'antd';
 import { formatCurrency, formatDate } from '@/utils/formats';
 import { useSelector } from 'react-redux';
 import CustomTable from '../../common/display-data/Table';
@@ -12,6 +12,7 @@ import momentGenerateConfig from 'rc-picker/lib/generate/moment';
 import AddButton from '../../common/ui/AddButton';
 import { CurrentCashSessionStatus, ModalContent } from '@/types/enums';
 import { BiMoneyWithdraw } from 'react-icons/bi';
+import { IoInformationCircleOutline } from 'react-icons/io5';
 
 const DatePicker = generatePicker<Moment>(momentGenerateConfig);
 moment.locale('es');
@@ -26,7 +27,8 @@ const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
 	const { currentCashSession } = useSelector(
 		(state: RootState) => state.financialFlow
 	);
-	const { status, reason, balance, data } = currentCashSession ?? {};
+	const { status, reason, balance, accumulatedDifference, data } =
+		currentCashSession ?? {};
 	const { cashMovementsColumns } = useTableColumns();
 
 	return (
@@ -73,7 +75,7 @@ const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
 
 				{data ? (
 					<div className='w-full space-y-5 p-4'>
-						{!data?.closedAt && (
+						<div className='space-y-2'>
 							<h2 className='font-bold'>
 								Balance:{' '}
 								{isLoading ? (
@@ -95,7 +97,29 @@ const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
 									)
 								)}
 							</h2>
-						)}
+
+							<h2 className='font-bold'>
+								Diferencia acumulada:{' '}
+								{isLoading ? (
+									<Skeleton.Button
+										active
+										style={{
+											width: 100,
+											height: 20,
+											outline: '1px solid transparent'
+										}}
+									/>
+								) : (
+									accumulatedDifference && (
+										<span
+											className={`${accumulatedDifference >= 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+										>
+											{formatCurrency(accumulatedDifference ?? 0)}
+										</span>
+									)
+								)}
+							</h2>
+						</div>
 
 						<div className='space-y-2'>
 							{data?.openedAt && (
@@ -173,12 +197,11 @@ const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
 									</div>
 								)}
 
-								{/* TODO: Corregir color de diferencia negativa */}
 								{data?.closingDifference && (
 									<div>
 										<span className='font-bold'>Diferencia:</span>{' '}
 										<span
-											className={`${data?.openingDifference >= 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+											className={`${data?.closingDifference >= 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
 										>
 											{formatCurrency(data?.closingDifference)}
 										</span>
@@ -215,6 +238,26 @@ const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
 											appendIcon={<BiMoneyWithdraw />}
 										/>
 									)}
+							</div>
+
+							<div className='py-2'>
+								{data?.piggyBankMovements?.length > 0 &&
+									data?.piggyBankMovements?.map(pbm => (
+										<div key={pbm?.id} className='flex items-center gap-2'>
+											<div className='w-3 h-3 bg-[#eab308] rounded-full' />
+											<span>
+												Retiro por valor de {formatCurrency(pbm.amount)} el{' '}
+												{formatDate(pbm?.createdDate)}{' '}
+											</span>
+											{pbm?.comments && (
+												<Tooltip title={pbm?.comments}>
+													<span>
+														<IoInformationCircleOutline size={18} />
+													</span>
+												</Tooltip>
+											)}
+										</div>
+									))}
 							</div>
 						</div>
 					</div>
