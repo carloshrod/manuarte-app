@@ -13,10 +13,12 @@ const GenerateFinancialReportButton = ({ shopSlug }: { shopSlug: string }) => {
 		bankTransferMovements
 	} = useSelector((state: RootState) => state.financialFlow);
 	const cashMovements = data?.movements;
+	const finalCash =
+		data?.closedAt === null ? balance : data?.declaredClosingAmount;
 	const piggyBankAmount = data?.piggyBankAmount;
 
 	const canGenerateReport = Boolean(
-		cashMovements?.length > 0 && bankTransferMovements?.length > 0
+		cashMovements?.length > 0 || bankTransferMovements?.length > 0
 	);
 
 	const handleDownloadExcel = async () => {
@@ -33,7 +35,7 @@ const GenerateFinancialReportButton = ({ shopSlug }: { shopSlug: string }) => {
 				cashIncomes &&
 				cashExpenses &&
 				bankData &&
-				balance &&
+				finalCash &&
 				piggyBankAmount
 			) {
 				const title = `Reporte - Flujo Financiero ${shopName}`;
@@ -42,7 +44,7 @@ const GenerateFinancialReportButton = ({ shopSlug }: { shopSlug: string }) => {
 					cashIncomes,
 					cashExpenses,
 					bankData,
-					balance,
+					finalCash,
 					piggyBankAmount,
 					fileName: `${shopSlug}-${sufix}`,
 					title

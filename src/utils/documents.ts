@@ -694,7 +694,7 @@ export const downloadFinancialExcel = async ({
 	cashExpenses,
 	bankData,
 	piggyBankAmount,
-	balance,
+	finalCash,
 	fileName,
 	title,
 	date
@@ -703,7 +703,7 @@ export const downloadFinancialExcel = async ({
 	cashExpenses: any[];
 	bankData: any[];
 	piggyBankAmount: number;
-	balance: number;
+	finalCash: number;
 	fileName: string;
 	title: string;
 	date?: string;
@@ -962,7 +962,7 @@ export const downloadFinancialExcel = async ({
 			fgColor: { argb: 'C5D9F1' }
 		};
 		worksheet.getCell(blockStartRow + 1, blockCol + 1).value =
-			Number(balance) ?? 0;
+			Number(finalCash) ?? 0;
 
 		// estilos bloque
 		for (let r = 0; r < 2; r++) {
