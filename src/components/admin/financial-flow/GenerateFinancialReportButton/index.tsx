@@ -47,7 +47,8 @@ const GenerateFinancialReportButton = ({ shopSlug }: { shopSlug: string }) => {
 					finalCash,
 					piggyBankAmount,
 					fileName: `${shopSlug}-${sufix}`,
-					title
+					title,
+					date: data?.openedAt
 				});
 			}
 		} catch (error) {

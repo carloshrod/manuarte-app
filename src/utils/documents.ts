@@ -706,7 +706,7 @@ export const downloadFinancialExcel = async ({
 	finalCash: number;
 	fileName: string;
 	title: string;
-	date?: string;
+	date: string;
 }) => {
 	try {
 		const workbook = new ExcelJS.Workbook();
@@ -720,7 +720,7 @@ export const downloadFinancialExcel = async ({
 		titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
 		const dateCell = worksheet.getCell('G1');
-		dateCell.value = date ? formatDate(date) : formatDate(new Date());
+		dateCell.value = formatDate(date);
 		dateCell.font = { bold: true, size: 11 };
 		dateCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
