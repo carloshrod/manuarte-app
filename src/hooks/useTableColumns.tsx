@@ -41,6 +41,7 @@ import {
 	CASH_MOVEMENT_CAT_FILTER
 } from './utils';
 import { PaymentMethod } from '@/types/enums';
+import CopyableText from '@/components/admin/common/ui/CopyableText';
 
 const useTableColumns = () => {
 	const { getColumnSearchProps, getColumnDateFilterProps } = useTable();
@@ -55,6 +56,7 @@ const useTableColumns = () => {
 			dataIndex: 'vId',
 			key: 'vId',
 			...getColumnSearchProps('vId'),
+			render: value => <CopyableText text={value} />,
 			width: 105
 		},
 		{
@@ -212,6 +214,7 @@ const useTableColumns = () => {
 			dataIndex: 'dni',
 			key: 'dni',
 			...getColumnSearchProps('dni'),
+			render: value => <CopyableText text={value} />,
 			width: 100
 		},
 		{
@@ -226,7 +229,7 @@ const useTableColumns = () => {
 			dataIndex: 'email',
 			key: 'email',
 			...getColumnSearchProps('email'),
-			render: value => value || '--',
+			render: value => (value ? <CopyableText text={value} /> : '--'),
 			width: 140
 		},
 		{
@@ -234,6 +237,7 @@ const useTableColumns = () => {
 			dataIndex: 'phoneNumber',
 			key: 'phoneNumber',
 			...getColumnSearchProps('phoneNumber'),
+			render: value => (value ? <CopyableText text={value} /> : '--'),
 			width: 100
 		},
 		{
@@ -269,6 +273,7 @@ const useTableColumns = () => {
 			dataIndex: 'dni',
 			key: 'dni',
 			...getColumnSearchProps('dni'),
+			render: value => <CopyableText text={value} />,
 			width: 100
 		},
 		{
@@ -344,6 +349,7 @@ const useTableColumns = () => {
 			dataIndex: 'serialNumber',
 			key: 'serialNumber',
 			...getColumnSearchProps('serialNumber'),
+			render: value => <CopyableText text={value} />,
 			width: 180
 		},
 		{
@@ -440,6 +446,7 @@ const useTableColumns = () => {
 			dataIndex: 'serialNumber',
 			key: 'serialNumber',
 			...getColumnSearchProps('serialNumber'),
+			render: value => <CopyableText text={value} />,
 			width: 160
 		},
 		{
@@ -712,7 +719,12 @@ const useTableColumns = () => {
 			dataIndex: 'identifier',
 			key: 'identifier',
 			...getColumnSearchProps('identifier'),
-			render: value => formatToTitleCase(value) ?? '--',
+			render: value =>
+				value ? (
+					<CopyableText text={formatToTitleCase(value) as string} />
+				) : (
+					'--'
+				),
 			width: 140
 		},
 		{
@@ -977,7 +989,7 @@ const useTableColumns = () => {
 			dataIndex: 'reference',
 			key: 'reference',
 			...getColumnSearchProps('reference'),
-			render: (value: string) => value ?? '--'
+			render: (value: string) => (value ? <CopyableText text={value} /> : '--')
 		}
 	];
 
@@ -1019,7 +1031,7 @@ const useTableColumns = () => {
 			dataIndex: 'reference',
 			key: 'reference',
 			...getColumnSearchProps('reference'),
-			render: (value: string) => value ?? '--'
+			render: (value: string) => (value ? <CopyableText text={value} /> : '--')
 		},
 		{
 			title: 'MÉTODO DE PAGO',
