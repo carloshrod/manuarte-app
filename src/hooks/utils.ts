@@ -26,6 +26,7 @@ export const CASH_MOVEMENT_CAT_FILTER = [
 	{ text: 'Compra', value: CashMovementCategory.PURCHASE },
 	{ text: 'Cambio', value: CashMovementCategory.CHANGE },
 	{ text: 'Alcancía', value: CashMovementCategory.PIGGY_BANK },
+	{ text: 'Cobertura de faltante', value: CashMovementCategory.SHORTAGE_COVER },
 	{ text: 'Otro', value: CashMovementCategory.OTHER }
 ];
 

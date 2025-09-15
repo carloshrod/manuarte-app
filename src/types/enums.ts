@@ -74,16 +74,6 @@ export enum DiscountType {
 	PERCENTAGE = 'PERCENTAGE'
 }
 
-export enum CashMovementCategory {
-	SALE = 'SALE',
-	DELIVERY = 'DELIVERY',
-	INBOUND_SHIPPING = 'INBOUND_SHIPPING',
-	PURCHASE = 'PURCHASE',
-	CHANGE = 'CHANGE',
-	PIGGY_BANK = 'PIGGY_BANK',
-	OTHER = 'OTHER'
-}
-
 export enum CurrentCashSessionStatus {
 	FIRST_SESSION = 'first-session',
 	OPEN = 'open',
@@ -91,4 +81,15 @@ export enum CurrentCashSessionStatus {
 	NO_SESSION = 'no-session',
 	BLOCKED = 'blocked',
 	OVERDUE = 'OVERDUE'
+}
+
+export enum CashMovementCategory {
+	SALE = 'SALE',
+	DELIVERY = 'DELIVERY',
+	INBOUND_SHIPPING = 'INBOUND_SHIPPING',
+	PURCHASE = 'PURCHASE',
+	CHANGE = 'CHANGE',
+	PIGGY_BANK = 'PIGGY_BANK',
+	SHORTAGE_COVER = 'SHORTAGE_COVER',
+	OTHER = 'OTHER'
 }

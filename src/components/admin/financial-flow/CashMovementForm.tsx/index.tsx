@@ -6,7 +6,6 @@ import { useModalStore } from '@/stores/modalStore';
 import { CashMovementCategory, ModalContent } from '@/types/enums';
 import useForm from '@/hooks/useForm';
 import { selectFilterOption } from '../../utils';
-import { useEffect } from 'react';
 
 const CashMovementForm = ({ shopId }: { shopId: string }) => {
 	const { form, isLoading, submitCreateCashMovement } = useForm();
@@ -22,22 +21,24 @@ const CashMovementForm = ({ shopId }: { shopId: string }) => {
 		{ value: CashMovementCategory.PURCHASE, label: 'Compra' },
 		{ value: CashMovementCategory.CHANGE, label: 'Cambio' },
 		{ value: CashMovementCategory.PIGGY_BANK, label: 'Alcancía' },
+		{
+			value: CashMovementCategory.SHORTAGE_COVER,
+			label: 'Cobertura de faltante'
+		},
 		{ value: CashMovementCategory.OTHER, label: 'Otro' }
 	];
 
 	const filteredOptions = isIncome
 		? cashMovemenCatOptions.filter(
-				opt => opt.value === CashMovementCategory.OTHER
+				opt =>
+					opt.value === CashMovementCategory.OTHER ||
+					opt.value === CashMovementCategory.SHORTAGE_COVER
 			)
 		: cashMovemenCatOptions.filter(
-				opt => opt.value !== CashMovementCategory.SALE
+				opt =>
+					opt.value !== CashMovementCategory.SALE &&
+					opt.value !== CashMovementCategory.SHORTAGE_COVER
 			);
-
-	useEffect(() => {
-		form.setFieldsValue({
-			category: isIncome ? CashMovementCategory.OTHER : undefined
-		});
-	}, []);
 
 	return (
 		<Form

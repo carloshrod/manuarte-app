@@ -957,7 +957,7 @@ const useTableColumns = () => {
 					</span>
 				);
 			},
-			width: 140
+			width: 160
 		},
 		{
 			title: 'MONTO',

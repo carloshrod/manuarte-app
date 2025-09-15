@@ -60,5 +60,6 @@ export const CASH_MOVEMENT_CAT_MAP: Record<string, string> = {
 	PURCHASE: 'COMPRA',
 	CHANGE: 'CAMBIO',
 	PIGGY_BANK: 'ALCANCÍA',
+	SHORTAGE_COVER: 'COB. DE FALTANTE',
 	OTHER: 'OTRO'
 };
