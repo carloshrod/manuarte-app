@@ -985,11 +985,20 @@ const useTableColumns = () => {
 			width: 120
 		},
 		{
+			title: 'CLIENTE',
+			dataIndex: 'customerName',
+			key: 'customerName',
+			...getColumnSearchProps('customerName'),
+			render: (value: string) => (value ? <CopyableText text={value} /> : '--'),
+			width: 160
+		},
+		{
 			title: 'REFERENCIA',
 			dataIndex: 'reference',
 			key: 'reference',
 			...getColumnSearchProps('reference'),
-			render: (value: string) => (value ? <CopyableText text={value} /> : '--')
+			render: (value: string) => (value ? <CopyableText text={value} /> : '--'),
+			width: 160
 		}
 	];
 
@@ -1012,6 +1021,7 @@ const useTableColumns = () => {
 					</span>
 				);
 			},
+			width: 80,
 			align: 'center'
 		},
 		{
@@ -1024,7 +1034,15 @@ const useTableColumns = () => {
 				>
 					{formatCurrency(value) ?? '--'}
 				</span>
-			)
+			),
+			width: 120
+		},
+		{
+			title: 'CLIENTE',
+			dataIndex: 'customerName',
+			key: 'customerName',
+			...getColumnSearchProps('customerName'),
+			render: (value: string) => (value ? <CopyableText text={value} /> : '--')
 		},
 		{
 			title: 'REFERENCIA',

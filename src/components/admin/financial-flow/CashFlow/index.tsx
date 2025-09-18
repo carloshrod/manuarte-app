@@ -64,8 +64,8 @@ const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
 				</div>
 			</div>
 
-			<div className='grid grid-cols-2 gap-8'>
-				<div className='w-full space-y-2'>
+			<div className='grid grid-cols-3 gap-6'>
+				<div className='col-span-2 space-y-2'>
 					<CustomTable
 						columns={cashMovementsColumns}
 						dataSource={isLoading ? [] : data?.movements}
@@ -74,7 +74,7 @@ const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
 				</div>
 
 				{data ? (
-					<div className='w-full space-y-5 p-4'>
+					<div className='space-y-5 p-4'>
 						{data?.closedAt === null && (
 							<div className='space-y-2'>
 								<h2 className='font-bold'>
@@ -171,8 +171,8 @@ const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
 							)}
 						</div>
 
-						<div className='space-y-2'>
-							{data?.closedAt && (
+						{data?.closedAt && (
+							<div className='space-y-2'>
 								<>
 									<h2 className='font-bold text-[16px] text-[#0D6EFD]'>
 										Cierre
@@ -182,42 +182,42 @@ const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
 										{formatDate(data?.closedAt, true)}
 									</h2>
 								</>
-							)}
 
-							<div className='flex gap-4'>
-								{data?.closingAmount && (
-									<div>
-										<span className='font-bold'>Sistema:</span>{' '}
-										{formatCurrency(data?.closingAmount)}
-									</div>
-								)}
+								<div className='flex gap-4'>
+									{data?.closingAmount && (
+										<div>
+											<span className='font-bold'>Sistema:</span>{' '}
+											{formatCurrency(data?.closingAmount)}
+										</div>
+									)}
 
-								{data?.declaredClosingAmount && (
-									<div>
-										<span className='font-bold'>Declarado:</span>{' '}
-										{formatCurrency(data?.declaredClosingAmount)}
-									</div>
-								)}
+									{data?.declaredClosingAmount && (
+										<div>
+											<span className='font-bold'>Declarado:</span>{' '}
+											{formatCurrency(data?.declaredClosingAmount)}
+										</div>
+									)}
 
-								{data?.closingDifference && (
+									{data?.closingDifference && (
+										<div>
+											<span className='font-bold'>Diferencia:</span>{' '}
+											<span
+												className={`${data?.closingDifference >= 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
+											>
+												{formatCurrency(data?.closingDifference)}
+											</span>
+										</div>
+									)}
+								</div>
+
+								{data?.closingComments && (
 									<div>
-										<span className='font-bold'>Diferencia:</span>{' '}
-										<span
-											className={`${data?.closingDifference >= 0 ? 'text-[#10b981]' : 'text-[#E53535]'}`}
-										>
-											{formatCurrency(data?.closingDifference)}
-										</span>
+										<span className='font-bold'>Observaciones:</span>
+										<p>{data?.closingComments}</p>
 									</div>
 								)}
 							</div>
-
-							{data?.closingComments && (
-								<div>
-									<span className='font-bold'>Observaciones:</span>
-									<p>{data?.closingComments}</p>
-								</div>
-							)}
-						</div>
+						)}
 
 						<div className='space-y-2'>
 							<h2 className='font-bold text-[16px] text-[#eab308]'>Alcancía</h2>

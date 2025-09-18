@@ -375,6 +375,7 @@ interface CashMovement {
 	createdDate: string;
 	updatedDate: string;
 	deletedDate: string | null;
+	customerName: string | null;
 }
 
 interface PiggyBankMovement {
@@ -397,12 +398,12 @@ interface BankTransferMovement {
 	type: 'INCOME' | 'EXPENSE';
 	reference: string;
 	paymentMethod: string;
-
 	comments: string | null;
 	createdBy: string;
 	createdDate: string;
 	updatedDate: string;
 	deletedDate: string | null;
+	customerName: string | null;
 }
 
 interface CashSession {
