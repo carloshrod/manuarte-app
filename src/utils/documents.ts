@@ -276,24 +276,27 @@ export const generateFinancialData = (
 		const cashIncomes = cashMovements
 			.filter(item => item.type === 'INCOME')
 			.map(item => ({
-				reference: item.reference ?? '--',
 				category: CASH_MOVEMENT_CAT_MAP[item.category],
+				customer: item.customerName ?? '--',
+				reference: item.reference ?? '--',
 				amount: Number(item.amount)
 			}));
 
 		const cashExpenses = cashMovements
 			.filter(item => item.type === 'EXPENSE')
 			.map(item => ({
-				reference: item.reference ?? '--',
 				category: CASH_MOVEMENT_CAT_MAP[item.category],
+				customer: item.customerName ?? '--',
+				reference: item.reference ?? '--',
 				amount: Number(item.amount)
 			}));
 
 		const bankData = bankTransferMovements
 			.filter(item => item.type === 'INCOME')
 			.map(item => ({
-				reference: item.reference ?? '--',
 				paymentMethod: PAYMENT_METHOD_MAP[item.paymentMethod],
+				customer: item.customerName ?? '--',
+				reference: item.reference ?? '--',
 				amount: Number(item.amount)
 			}));
 
@@ -713,19 +716,19 @@ export const downloadFinancialExcel = async ({
 		const worksheet = workbook.addWorksheet('Reporte Financiero');
 
 		// ==== Fila 1: Título y Fecha ====
-		worksheet.mergeCells('A1:F1');
+		worksheet.mergeCells('A1:H1');
 		const titleCell = worksheet.getCell('A1');
 		titleCell.value = title;
 		titleCell.font = { bold: true, size: 12 };
 		titleCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
-		const dateCell = worksheet.getCell('G1');
+		const dateCell = worksheet.getCell('I1');
 		dateCell.value = formatDate(date);
 		dateCell.font = { bold: true, size: 11 };
 		dateCell.alignment = { vertical: 'middle', horizontal: 'center' };
 
 		// ==== Fila 2: Subtítulos ====
-		worksheet.mergeCells('A2:C2');
+		worksheet.mergeCells('A2:D2');
 		worksheet.getCell('A2').value = 'Efectivo (Ingresos)';
 		worksheet.getCell('A2').fill = {
 			type: 'pattern',
@@ -741,16 +744,16 @@ export const downloadFinancialExcel = async ({
 			right: { style: 'thin' }
 		};
 
-		worksheet.mergeCells('E2:G2');
-		worksheet.getCell('E2').value = 'Depósitos';
-		worksheet.getCell('E2').fill = {
+		worksheet.mergeCells('F2:I2');
+		worksheet.getCell('F2').value = 'Depósitos';
+		worksheet.getCell('F2').fill = {
 			type: 'pattern',
 			pattern: 'solid',
 			fgColor: { argb: 'C5D9F1' }
 		};
-		worksheet.getCell('E2').font = { bold: true };
-		worksheet.getCell('E2').alignment = { horizontal: 'center' };
-		worksheet.getCell('E2').border = {
+		worksheet.getCell('F2').font = { bold: true };
+		worksheet.getCell('F2').alignment = { horizontal: 'center' };
+		worksheet.getCell('F2').border = {
 			top: { style: 'thin' },
 			left: { style: 'thin' },
 			bottom: { style: 'thin' },
@@ -760,17 +763,19 @@ export const downloadFinancialExcel = async ({
 		// ==== Tabla de ingresos (fila 3+) ====
 		const headers = [
 			'Categoría',
+			'Cliente',
 			'Referencia',
 			'Monto',
 			'',
 			'Método de Pago',
+			'Cliente',
 			'Referencia',
 			'Monto'
 		];
 		const headerRow = worksheet.addRow(headers);
 
 		// estilos headers efectivo
-		[1, 2, 3].forEach(colIdx => {
+		[1, 2, 3, 4].forEach(colIdx => {
 			const cell = headerRow.getCell(colIdx);
 			cell.fill = {
 				type: 'pattern',
@@ -787,7 +792,7 @@ export const downloadFinancialExcel = async ({
 			};
 		});
 		// headers depósitos
-		[5, 6, 7].forEach(colIdx => {
+		[6, 7, 8, 9].forEach(colIdx => {
 			const cell = headerRow.getCell(colIdx);
 			cell.fill = {
 				type: 'pattern',
@@ -809,26 +814,30 @@ export const downloadFinancialExcel = async ({
 		for (let i = 0; i < maxIncomeRows; i++) {
 			const cash = cashIncomes[i] ?? {
 				category: '',
+				customer: '',
 				reference: '',
 				amount: ''
 			};
 			const bank = bankData[i] ?? {
 				paymentMethod: '',
+				customer: '',
 				reference: '',
 				amount: ''
 			};
 
 			const row = worksheet.addRow([
 				cash.category,
+				cash.customer,
 				cash.reference,
 				cash.amount,
 				'',
 				bank.paymentMethod,
+				bank.customer,
 				bank.reference,
 				bank.amount
 			]);
 
-			[1, 2, 3, 5, 6, 7].forEach(colIdx => {
+			[1, 2, 3, 4, 6, 7, 8, 9].forEach(colIdx => {
 				const cell = row.getCell(colIdx);
 				cell.border = {
 					top: { style: 'thin' },
@@ -842,15 +851,18 @@ export const downloadFinancialExcel = async ({
 		// Totales ingresos
 		const totalRow = worksheet.addRow([
 			'',
+			'',
 			'Total efectivo:',
-			{ formula: `SUM(C4:C${3 + cashIncomes.length})` },
+			{ formula: `SUM(D4:D${3 + cashIncomes.length})` },
+			'',
 			'',
 			'',
 			'Total depósitos:',
-			{ formula: `SUM(G4:G${3 + bankData.length})` }
+			{ formula: `SUM(I4:I${3 + bankData.length})` }
 		]);
+
 		totalRow.font = { bold: true };
-		[2, 3, 6, 7].forEach(colIdx => {
+		[3, 4, 8, 9].forEach(colIdx => {
 			totalRow.getCell(colIdx).fill = {
 				type: 'pattern',
 				pattern: 'solid',
@@ -869,7 +881,7 @@ export const downloadFinancialExcel = async ({
 
 		// ==== Subtítulo gastos ====
 		const expensesStartRow = worksheet.lastRow!.number + 1;
-		worksheet.mergeCells(`A${expensesStartRow}:C${expensesStartRow}`);
+		worksheet.mergeCells(`A${expensesStartRow}:D${expensesStartRow}`);
 		worksheet.getCell(`A${expensesStartRow}`).value = 'Efectivo (Gastos)';
 		worksheet.getCell(`A${expensesStartRow}`).alignment = {
 			horizontal: 'center'
@@ -888,9 +900,9 @@ export const downloadFinancialExcel = async ({
 		};
 
 		// ==== Headers gastos ====
-		const expHeaders = ['Categoría', 'Referencia', 'Monto'];
+		const expHeaders = ['Categoría', 'Cliente', 'Referencia', 'Monto'];
 		const expHeaderRow = worksheet.addRow(expHeaders);
-		[1, 2, 3].forEach(colIdx => {
+		[1, 2, 3, 4].forEach(colIdx => {
 			const cell = expHeaderRow.getCell(colIdx);
 			cell.fill = {
 				type: 'pattern',
@@ -909,8 +921,8 @@ export const downloadFinancialExcel = async ({
 
 		// ==== Filas gastos ====
 		for (const exp of cashExpenses) {
-			const row = worksheet.addRow([exp.category, exp.reference, exp.amount]);
-			[1, 2, 3].forEach(colIdx => {
+			const row = worksheet.addRow([exp.category, exp.customer, exp.reference, exp.amount]);
+			[1, 2, 3, 4].forEach(colIdx => {
 				row.getCell(colIdx).border = {
 					top: { style: 'thin' },
 					left: { style: 'thin' },
@@ -923,13 +935,15 @@ export const downloadFinancialExcel = async ({
 		// Totales gastos
 		const totalExpRow = worksheet.addRow([
 			'',
+			'',
 			'Total gastos:',
 			{
-				formula: `SUM(C${expHeaderRow.number + 1}:C${expHeaderRow.number + cashExpenses.length})`
+				formula: `SUM(D${expHeaderRow.number + 1}:D${expHeaderRow.number + cashExpenses.length})`
 			}
 		]);
+
 		totalExpRow.font = { bold: true };
-		[2, 3].forEach(colIdx => {
+		[3, 4].forEach(colIdx => {
 			totalExpRow.getCell(colIdx).fill = {
 				type: 'pattern',
 				pattern: 'solid',
@@ -944,7 +958,7 @@ export const downloadFinancialExcel = async ({
 		});
 
 		// ==== Bloque Alcancía / Caja Final ====
-		const blockCol = 5; // E
+		const blockCol = 6; // F
 		const blockStartRow = expHeaderRow.number;
 		worksheet.getCell(blockStartRow, blockCol).value = 'Alcancía';
 		worksheet.getCell(blockStartRow, blockCol).fill = {
@@ -981,15 +995,17 @@ export const downloadFinancialExcel = async ({
 		}
 
 		// ==== Estilos globales ====
-		worksheet.getColumn(3).numFmt = '"$" #,##0.00';
-		worksheet.getColumn(6).numFmt = '"$" #,##0.00';
+		worksheet.getColumn(4).numFmt = '"$" #,##0.00';
 		worksheet.getColumn(7).numFmt = '"$" #,##0.00';
+		worksheet.getColumn(9).numFmt = '"$" #,##0.00';
 		worksheet.getColumn(1).width = 22;
 		worksheet.getColumn(2).width = 22;
-		worksheet.getColumn(3).width = 18;
-		worksheet.getColumn(5).width = 22;
+		worksheet.getColumn(3).width = 22;
+		worksheet.getColumn(4).width = 18;
 		worksheet.getColumn(6).width = 22;
-		worksheet.getColumn(7).width = 18;
+		worksheet.getColumn(7).width = 22;
+		worksheet.getColumn(8).width = 22;
+		worksheet.getColumn(9).width = 18;
 
 		// Descargar
 		const buffer = await workbook.xlsx.writeBuffer();
