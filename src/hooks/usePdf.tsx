@@ -60,7 +60,7 @@ const usePdf = () => {
 	}) => {
 		try {
 			const doc = await generatePDFBlob({ isQuote, data, shopSlug });
-			const mediaId = await messagingServices.uploadMedia(doc);
+			const mediaId = await messagingServices.uploadMedia(doc, data.serialNumber);
 
 			const customerName = data?.fullName?.toUpperCase() ?? 'CONSUMIDOR FINAL';
 			const recipientPhoneNumber = `${data?.callingCode}${data?.phoneNumber}`;

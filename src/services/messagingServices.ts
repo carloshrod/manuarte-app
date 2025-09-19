@@ -82,23 +82,19 @@ export const messagingServices = {
 		}
 	},
 
-	uploadMedia: async (doc: any) => {
+	uploadMedia: async (doc: any, serialNumber: string) => {
 		try {
 			const formData = new FormData();
-			formData.append('file', doc, 'cotizacion.pdf');
+			formData.append('file', doc, `${serialNumber}.pdf`);
 			formData.append('type', 'document');
 			formData.append('messaging_product', 'whatsapp');
 
-			const res = await axios.post(
-				ENV.WA.MEDIA,
-				{ messaging_product: 'whatsapp', file: doc },
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-						'Content-Type': 'multipart/form-data'
-					}
+			const res = await axios.post(ENV.WA.MEDIA, formData, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'multipart/form-data'
 				}
-			);
+			});
 
 			if (res.status !== 200) {
 				throw new Error('Error subiendo el documento');
