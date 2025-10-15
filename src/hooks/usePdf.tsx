@@ -60,14 +60,16 @@ const usePdf = () => {
 	}) => {
 		try {
 			const doc = await generatePDFBlob({ isQuote, data, shopSlug });
-			const mediaId = await messagingServices.uploadMedia(doc, data.serialNumber);
+			const mediaId = await messagingServices.uploadMedia(
+				doc,
+				data.serialNumber
+			);
 
 			const customerName = data?.fullName?.toUpperCase() ?? 'CONSUMIDOR FINAL';
 			const recipientPhoneNumber = `${data?.callingCode}${data?.phoneNumber}`;
 			const { total } = calculateTotals(data);
 
-			const res = await messagingServices.sendDocMessage({
-				recipientPhoneNumber,
+			const messageData = {
 				templateName: isQuote ? 'send_quote' : 'send_billing',
 				mediaId,
 				params: {
@@ -76,11 +78,34 @@ const usePdf = () => {
 					total,
 					docName: `${isQuote ? 'CTZ' : 'FCT'}-${data?.serialNumber}`
 				}
+			};
+
+			// Enviar al cliente
+			const res = await messagingServices.sendDocMessage({
+				recipientPhoneNumber,
+				...messageData
 			});
 
 			if (res?.status === 200) {
 				notification.success({
 					message: 'Documento enviado con éxito'
+				});
+			}
+
+			// Enviar copia al número de WhatsApp de la tienda
+			const shopPhoneNumber =
+				data?.countryIsoCode === 'CO'
+					? process.env.NEXT_PUBLIC_SHOP_CO_PHONE_NUMBER
+					: process.env.NEXT_PUBLIC_SHOP_EC_PHONE_NUMBER;
+
+			const res2 = await messagingServices.sendDocMessage({
+				recipientPhoneNumber: shopPhoneNumber as string,
+				...messageData
+			});
+
+			if (res2?.status === 200) {
+				notification.success({
+					message: 'Copia del documento enviada a la tienda'
 				});
 			}
 		} catch (error) {
