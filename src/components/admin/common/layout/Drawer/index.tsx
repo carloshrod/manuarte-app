@@ -9,15 +9,8 @@ import { useMediaQuery } from 'react-responsive';
 import { useDrawerStore } from '@/stores/drawerStore';
 
 const CustomDrawer = () => {
-	const {
-		isOpen,
-		title,
-		content,
-		dataToHandle,
-		noCustomer,
-		updateDrawer,
-		closeDrawer
-	} = useDrawerStore();
+	const { isOpen, title, content, noCustomer, updateDrawer, closeDrawer } =
+		useDrawerStore();
 	const { DRAWER_CONTENT } = useDrawer();
 	const pathname = usePathname();
 	const [checked, setChecked] = useState(false);
@@ -30,10 +23,8 @@ const CustomDrawer = () => {
 	const drawerContent = DRAWER_CONTENT[content as DrawerContent] ?? null;
 
 	const onChange: CheckboxProps['onChange'] = e => {
-		if (!dataToHandle) {
-			setChecked(e.target.checked);
-			updateDrawer({ noCustomer: e.target.checked });
-		}
+		setChecked(e.target.checked);
+		updateDrawer({ noCustomer: e.target.checked });
 	};
 
 	useEffect(() => {
@@ -69,11 +60,9 @@ const CustomDrawer = () => {
 				!showExtra ? null : (
 					<div className='flex gap-2 items-center'>
 						{!noCustomer ? <SearchCustomer /> : null}
-						{!dataToHandle || noCustomer ? (
-							<Checkbox checked={checked} onChange={onChange}>
-								Consumidor final
-							</Checkbox>
-						) : null}
+						<Checkbox checked={checked} onChange={onChange}>
+							Consumidor final
+						</Checkbox>
 					</div>
 				)
 			}

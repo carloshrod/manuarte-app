@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Button, Divider, Form } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import CustomerInfoInputs from '../../common/input-data/CustomerInfoInputs';
 import ProductFormList from '../../common/input-data/ProductFormList';
 import DrawerFormFooter from '../../common/input-data/DrawerFormFooter';
@@ -22,17 +23,19 @@ const QuoteForm = () => {
 	} = useForm();
 	const {
 		dataToHandle,
-		customerInfo: existingCustomer,
-		noCustomer
+		customerInfo: searchedCustomer,
+		noCustomer,
+		updateDrawer
 	} = useDrawerStore.getState();
 	const params = useParams() ?? {};
+	const [isCleanCustomer, setIsCleanCustomer] = useState(false);
 
 	useEffect(() => {
 		if (dataToHandle) {
 			let fieldsData = dataToHandle;
 
-			if (existingCustomer?.personId) {
-				fieldsData = { ...dataToHandle, ...existingCustomer };
+			if (searchedCustomer?.personId) {
+				fieldsData = { ...dataToHandle, ...searchedCustomer };
 			}
 
 			const preparedFields = {
@@ -54,16 +57,16 @@ const QuoteForm = () => {
 				dataToHandle?.discountType === DiscountType.PERCENTAGE;
 			updateCalculations(form, discountByPercent);
 		} else {
-			if (existingCustomer?.personId) {
+			if (searchedCustomer?.personId) {
 				form.setFieldsValue({
-					...existingCustomer,
-					city: existingCustomer?.cityName
-						? `${existingCustomer?.cityName}, ${existingCustomer?.regionName}, ${existingCustomer?.countryIsoCode}`
-						: existingCustomer?.city
+					...searchedCustomer,
+					city: searchedCustomer?.cityName
+						? `${searchedCustomer?.cityName}, ${searchedCustomer?.regionName}, ${searchedCustomer?.countryIsoCode}`
+						: searchedCustomer?.city
 				});
 			}
 		}
-	}, [existingCustomer]);
+	}, [searchedCustomer]);
 
 	const onSubmit = async (values: SubmitQuoteDto) => {
 		const isValid = !noCustomer
@@ -77,21 +80,57 @@ const QuoteForm = () => {
 			await submitCreateQuote({
 				...restValues,
 				shopSlug: params?.shopSlug as string,
-				personId: (existingCustomer as ExistingCustomer)?.personId,
-				customerId: existingCustomer?.customerId as string
+				personId: (searchedCustomer as ExistingCustomer)?.personId ?? null,
+				customerId: (searchedCustomer?.customerId as string) ?? null
 			});
 		} else {
 			submitUpdateQuote(
 				{
 					...restValues,
 					shopSlug: params?.shopSlug as string,
-					personId: existingCustomer?.personId || dataToHandle?.personId,
-					customerId: existingCustomer?.customerId || dataToHandle?.customerId
+					personId:
+						noCustomer || isCleanCustomer
+							? null
+							: searchedCustomer?.personId || dataToHandle?.personId,
+					customerId:
+						noCustomer || isCleanCustomer
+							? null
+							: searchedCustomer?.customerId || dataToHandle?.customerId
 				},
 				dataToHandle.id
 			);
 		}
+
+		setIsCleanCustomer(false);
 	};
+
+	const cleanCustomer = () => {
+		form.setFieldsValue({
+			dni: '',
+			fullName: '',
+			email: '',
+			phoneNumber: '',
+			location: '',
+			cityId: ''
+		});
+
+		updateDrawer({ customerInfo: null });
+		setIsCleanCustomer(true);
+	};
+
+	// Resetear isCleanCustomer si se selecciona un cliente existente después de limpiar
+	useEffect(() => {
+		if (
+			isCleanCustomer &&
+			searchedCustomer?.personId &&
+			searchedCustomer?.customerId
+		) {
+			setIsCleanCustomer(false);
+		}
+	}, [searchedCustomer]);
+
+	const showCleanCustomerBtn =
+		(dataToHandle?.dni || searchedCustomer) && !isCleanCustomer;
 
 	return (
 		<Form
@@ -113,6 +152,20 @@ const QuoteForm = () => {
 					<Divider orientation='left' style={{ marginTop: 0 }}>
 						Datos del Cliente
 					</Divider>
+
+					{showCleanCustomerBtn && (
+						<div className='flex gap-1 items-center justify-end mb-3'>
+							<label htmlFor='cleanCustBtn'>Limpiar cliente</label>
+							<Button
+								id='cleanCustBtn'
+								type='text'
+								danger
+								icon={<CloseOutlined style={{ fontSize: 20 }} />}
+								onClick={cleanCustomer}
+							/>
+						</div>
+					)}
+
 					<CustomerInfoInputs />
 				</>
 			) : null}
