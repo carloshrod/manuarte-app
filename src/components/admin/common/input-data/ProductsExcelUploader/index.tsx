@@ -74,9 +74,11 @@ const ProductsExcelUploader = ({
 					}))
 					.filter(item => item.requiredQty > 0);
 
+				const productCodes = filteredData.map(item => item.productCode.trim());
+
 				try {
 					const resData = await productServices.bulkSearchProductVariants(
-						filteredData.map(item => item.productCode),
+						productCodes,
 						fromStockId
 					);
 
