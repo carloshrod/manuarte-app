@@ -6,6 +6,7 @@ import {
 import { Button } from 'antd';
 import { IoMdDownload } from 'react-icons/io';
 import { useSelector } from 'react-redux';
+import { formatDate } from '@/utils/formats';
 
 const GenerateFinancialReportButton = ({ shopSlug }: { shopSlug: string }) => {
 	const {
@@ -40,13 +41,15 @@ const GenerateFinancialReportButton = ({ shopSlug }: { shopSlug: string }) => {
 			) {
 				const title = `Reporte - Flujo Financiero ${shopName}`;
 
+				const dateString = formatDate(data?.openedAt);
+
 				downloadFinancialExcel({
 					cashIncomes,
 					cashExpenses,
 					bankData,
 					finalCash,
 					piggyBankAmount,
-					fileName: `${shopSlug}-${sufix}`,
+					fileName: `${shopSlug}-${sufix}-${dateString}`,
 					title,
 					date: data?.openedAt
 				});

@@ -70,36 +70,16 @@ export interface ExcelTopCustomersData {
 	Facturado: number;
 }
 
-export const generateRestockData = (
-	stockItems: StockItem[],
-	itemsInTransit: { productVariantId: string; qtyInTransit: string }[]
-) => {
+export const generateRestockData = (stockItems: StockItem[]) => {
 	try {
 		let excelData: ExcelRestockData[] = [];
 
-		const itemsInTransitMap =
-			itemsInTransit?.length > 0 &&
-			new Map(
-				itemsInTransit.map(
-					(q: { productVariantId: string; qtyInTransit: string }) => [
-						q.productVariantId,
-						parseInt(q.qtyInTransit)
-					]
-				)
-			);
-
-		const updatedStockItems = itemsInTransitMap
-			? stockItems.map(product => ({
-					...product,
-					qtyInTransit: itemsInTransitMap.get(product.productVariantId) ?? 0
-				}))
-			: stockItems;
-
-		if (updatedStockItems?.length > 0) {
-			excelData = updatedStockItems.reduce((acc, item) => {
-				const qtyInTransit = Number(item.qtyInTransit) || 0;
+		if (stockItems?.length > 0) {
+			excelData = stockItems.reduce((acc, item) => {
 				const requiredQty =
-					Number(item.maxQty) - Number(item.quantity) - qtyInTransit;
+					Number(item.maxQty) -
+					Number(item.quantity) -
+					Number(item.quantityInTransit);
 
 				if (item.maxQty > 0 && item.minQty > 0 && requiredQty > 0) {
 					acc.push({
@@ -109,7 +89,7 @@ export const generateRestockData = (
 						'Cantidad mínima': item.minQty,
 						'Cantidad máxima': item.maxQty,
 						'Cantidad actual': item.quantity,
-						'Cantidad en tránsito': qtyInTransit,
+						'Cantidad en tránsito': item.quantityInTransit,
 						'Cantidad requerida': requiredQty
 					});
 				}
@@ -255,7 +235,7 @@ export const generateTopCustomersData = (data: Customer[]) => {
 					'Nro de Documento': item.dni,
 					Nombre: item.fullName,
 					Teléfono: item.phoneNumber,
-					Ciudad: item.city ?? '--',
+					Ciudad: (item.cityName || item.city) ?? '--',
 					Compras: Number(item.billingCount),
 					Facturado: Number(item.totalSpent)
 				};
@@ -291,14 +271,39 @@ export const generateFinancialData = (
 				amount: Number(item.amount)
 			}));
 
-		const bankData = bankTransferMovements
-			.filter(item => item.type === 'INCOME')
-			.map(item => ({
-				paymentMethod: PAYMENT_METHOD_MAP[item.paymentMethod],
-				customer: item.customerName ?? '--',
-				reference: item.reference ?? '--',
-				amount: Number(item.amount)
-			}));
+		// Agrupar movimientos bancarios por referencia y método de pago
+		const grouped = new Map<
+			string,
+			{
+				paymentMethod: string;
+				customer: string;
+				reference: string;
+				amount: number;
+			}
+		>();
+
+		for (const item of bankTransferMovements) {
+			const key = `${item.paymentMethod}|${item.reference}`;
+			const paymentMethod = PAYMENT_METHOD_MAP[item.paymentMethod];
+			const customer = item.customerName ?? '--';
+			const reference = item.reference ?? '--';
+			const amount = Number(item.amount);
+
+			if (!grouped.has(key)) {
+				grouped.set(key, { paymentMethod, customer, reference, amount: 0 });
+			}
+			const entry = grouped.get(key)!;
+			if (item.type === 'INCOME') {
+				entry.amount += amount;
+			} else if (item.type === 'EXPENSE') {
+				entry.amount -= amount;
+			}
+		}
+
+		// Filtrar los que tengan amount > 0 para mostrar solo los netos positivos
+		const bankData = Array.from(grouped.values())
+			.filter(entry => entry.amount > 0)
+			.sort((a, b) => b.paymentMethod.localeCompare(a.paymentMethod));
 
 		return { cashIncomes, cashExpenses, bankData };
 	} catch (error) {
@@ -921,7 +926,12 @@ export const downloadFinancialExcel = async ({
 
 		// ==== Filas gastos ====
 		for (const exp of cashExpenses) {
-			const row = worksheet.addRow([exp.category, exp.customer, exp.reference, exp.amount]);
+			const row = worksheet.addRow([
+				exp.category,
+				exp.customer,
+				exp.reference,
+				exp.amount
+			]);
 			[1, 2, 3, 4].forEach(colIdx => {
 				row.getCell(colIdx).border = {
 					top: { style: 'thin' },

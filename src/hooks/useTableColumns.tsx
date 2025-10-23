@@ -608,6 +608,20 @@ const useTableColumns = () => {
 			width: 110,
 			align: 'center'
 		},
+		{
+			title: 'EN TRANSITO',
+			dataIndex: 'quantityInTransit',
+			key: 'quantityInTransit',
+			render: value => {
+				return (
+					<span className={`${value > 0 && 'text-[#0D6EFD]'} font-semibold`}>
+						{value}
+					</span>
+				);
+			},
+			width: 110,
+			align: 'center'
+		},
 		...(isAdmin
 			? [
 					{
@@ -636,14 +650,14 @@ const useTableColumns = () => {
 						title: 'CANT. MIN',
 						dataIndex: 'minQty',
 						key: 'minQty',
-						width: 70,
+						width: 80,
 						align: 'center' as const
 					},
 					{
 						title: 'CANT. MAX',
 						dataIndex: 'maxQty',
 						key: 'maxQty',
-						width: 70,
+						width: 80,
 						align: 'center' as const
 					}
 				]
@@ -1042,14 +1056,16 @@ const useTableColumns = () => {
 			dataIndex: 'customerName',
 			key: 'customerName',
 			...getColumnSearchProps('customerName'),
-			render: (value: string) => (value ? <CopyableText text={value} /> : '--')
+			render: (value: string) => (value ? <CopyableText text={value} /> : '--'),
+			width: 160
 		},
 		{
 			title: 'REFERENCIA',
 			dataIndex: 'reference',
 			key: 'reference',
 			...getColumnSearchProps('reference'),
-			render: (value: string) => (value ? <CopyableText text={value} /> : '--')
+			render: (value: string) => (value ? <CopyableText text={value} /> : '--'),
+			width: 160
 		},
 		{
 			title: 'MÉTODO DE PAGO',
@@ -1066,7 +1082,8 @@ const useTableColumns = () => {
 				record.paymentMethod.indexOf(value as string) === 0,
 			render: (value: string) => (
 				<Tag color='blue'>{PAYMENT_METHOD_MAP[value] ?? '--'}</Tag>
-			)
+			),
+			width: 200
 		},
 		{
 			title: 'OBSERVACIONES',

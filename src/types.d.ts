@@ -112,6 +112,7 @@ interface Customer {
 	phoneNumber: string;
 	createdDate: string;
 	city: string;
+	cityName: string;
 	fullName: string;
 	dni: string;
 	totalSpent: number;
@@ -280,6 +281,7 @@ interface StockItem {
 	currency: string;
 	price: number;
 	quantity: number;
+	quantityInTransit: number;
 	cost: number;
 	maxQty: number;
 	minQty: number;

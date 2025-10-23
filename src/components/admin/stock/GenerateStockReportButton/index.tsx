@@ -8,7 +8,6 @@ import {
 	generateRestockData,
 	generateStockHistoryData
 } from '@/utils/documents';
-import { transactionServices } from '@/services/transactionServices';
 import { ButtonVariantType } from 'antd/es/button';
 
 const GenerateStockReportButton = ({
@@ -35,11 +34,8 @@ const GenerateStockReportButton = ({
 			if (history) {
 				excelData = generateStockHistoryData(history);
 			} else {
-				const itemsInTransit = await transactionServices.getItemsInTransit(
-					stockItems[0].stockId
-				);
 				excelData = isRestockData
-					? generateRestockData(stockItems, itemsInTransit)
+					? generateRestockData(stockItems)
 					: generateCostStockData(stockItems);
 			}
 
