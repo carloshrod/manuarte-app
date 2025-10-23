@@ -20,14 +20,14 @@ export const ECU_PAYMENT_METHOD_FILTER = [
 ];
 
 export const CASH_MOVEMENT_CAT_FILTER = [
-	{ text: 'Venta', value: CashMovementCategory.SALE },
-	{ text: 'Domicilio', value: CashMovementCategory.DELIVERY },
-	{ text: 'Flete de Entrada', value: CashMovementCategory.INBOUND_SHIPPING },
-	{ text: 'Compra', value: CashMovementCategory.PURCHASE },
-	{ text: 'Cambio', value: CashMovementCategory.CHANGE },
-	{ text: 'Alcancía', value: CashMovementCategory.PIGGY_BANK },
-	{ text: 'Cobertura de faltante', value: CashMovementCategory.SHORTAGE_COVER },
-	{ text: 'Otro', value: CashMovementCategory.OTHER }
+	{ text: 'VENTA', value: CashMovementCategory.SALE },
+	{ text: 'DOMICILIO', value: CashMovementCategory.DELIVERY },
+	{ text: 'PAGO DE FLETE', value: CashMovementCategory.INBOUND_SHIPPING },
+	{ text: 'COMPRA', value: CashMovementCategory.PURCHASE },
+	{ text: 'CAMBIO', value: CashMovementCategory.CHANGE },
+	{ text: 'ALCANCÍA', value: CashMovementCategory.PIGGY_BANK },
+	{ text: 'COBERTURA DE FALTANTE', value: CashMovementCategory.SHORTAGE_COVER },
+	{ text: 'OTRO', value: CashMovementCategory.OTHER }
 ];
 
 export const validateUniqueProductVariantsName = (

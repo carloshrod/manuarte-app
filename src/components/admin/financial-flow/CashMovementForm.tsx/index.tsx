@@ -17,7 +17,7 @@ const CashMovementForm = ({ shopId }: { shopId: string }) => {
 	const cashMovemenCatOptions = [
 		{ value: CashMovementCategory.SALE, label: 'Venta' },
 		{ value: CashMovementCategory.DELIVERY, label: 'Domicilio' },
-		{ value: CashMovementCategory.INBOUND_SHIPPING, label: 'Flete de Entrada' },
+		{ value: CashMovementCategory.INBOUND_SHIPPING, label: 'Pago de Flete' },
 		{ value: CashMovementCategory.PURCHASE, label: 'Compra' },
 		{ value: CashMovementCategory.CHANGE, label: 'Cambio' },
 		{ value: CashMovementCategory.PIGGY_BANK, label: 'Alcancía' },
