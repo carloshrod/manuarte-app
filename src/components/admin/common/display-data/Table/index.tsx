@@ -32,7 +32,8 @@ const CustomTable = ({
 					y:
 						dataSource?.length > 0
 							? `calc(100vh - ${scrollMinus}px)`
-							: undefined
+							: undefined,
+					x: 'max-content'
 				}}
 				pagination={{
 					locale: { items_per_page: '/ página' },

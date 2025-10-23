@@ -1,4 +1,5 @@
-import { notification, Upload, UploadProps } from 'antd';
+import { useState } from 'react';
+import { notification, Upload, UploadProps, Spin } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import { productServices } from '@/services/productServices';
@@ -13,6 +14,8 @@ const ProductsExcelUploader = ({
 	onAddBulkProduct: (productList: any[]) => void;
 	fromStockId: string;
 }) => {
+	const [loading, setLoading] = useState(false);
+
 	const props: UploadProps = {
 		name: 'file',
 		multiple: false,
@@ -37,6 +40,7 @@ const ProductsExcelUploader = ({
 			return true;
 		},
 		customRequest({ file, onSuccess }) {
+			setLoading(true);
 			const reader = new FileReader();
 
 			reader.onload = async e => {
@@ -57,6 +61,7 @@ const ProductsExcelUploader = ({
 					notification.error({
 						message: 'No se encontraron las columnas requeridas'
 					});
+					setLoading(false);
 					return;
 				}
 
@@ -102,6 +107,8 @@ const ProductsExcelUploader = ({
 							? error?.response?.data.message
 							: 'Ocurrió un error. Inténtalo más tarde';
 					notification.error({ message, duration: null });
+				} finally {
+					setLoading(false);
 				}
 			};
 
@@ -109,6 +116,7 @@ const ProductsExcelUploader = ({
 				notification.error({
 					message: 'Error al leer el archivo'
 				});
+				setLoading(false);
 			};
 
 			reader.readAsArrayBuffer(file as Blob);
@@ -116,17 +124,19 @@ const ProductsExcelUploader = ({
 	};
 
 	return (
-		<Dragger {...props} style={{ marginBottom: 12 }}>
-			<p className='ant-upload-drag-icon'>
-				<InboxOutlined />
-			</p>
-			<p className='ant-upload-text'>
-				Haz clic o arrastra un archivo excel para cargarlo
-			</p>
-			<p className='ant-upload-hint'>
-				Asegurate de que tenga el formato correcto
-			</p>
-		</Dragger>
+		<Spin spinning={loading}>
+			<Dragger {...props} style={{ marginBottom: 12 }}>
+				<p className='ant-upload-drag-icon'>
+					<InboxOutlined />
+				</p>
+				<p className='ant-upload-text'>
+					Haz clic o arrastra un archivo excel para cargarlo
+				</p>
+				<p className='ant-upload-hint'>
+					Asegurate de que tenga el formato correcto
+				</p>
+			</Dragger>
+		</Spin>
 	);
 };
 
