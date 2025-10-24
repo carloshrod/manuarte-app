@@ -89,7 +89,7 @@ const ProductsExcelUploader = ({
 
 					const processedData = resData.reverse().map((resItem: any) => {
 						const match = filteredData.find(
-							item => item.productCode === resItem.productCode
+							item => item.productCode.trim() === resItem.productCode.trim()
 						);
 
 						return {
