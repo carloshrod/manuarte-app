@@ -18,6 +18,8 @@ const ProductVariantForm = () => {
 	const dispatch = useDispatch();
 
 	const fetchProducts = async () => {
+		if (products.length > 0) return;
+
 		const data = await productServices.getAllProducts();
 		dispatch(getProducts(data));
 	};
