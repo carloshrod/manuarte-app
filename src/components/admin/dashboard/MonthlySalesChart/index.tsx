@@ -65,9 +65,7 @@ const MonthlySalesChart = ({ data = [], country }: MonthlySalesChartProps) => {
 						<BarChart width={730} height={250} data={data}>
 							<XAxis
 								dataKey='month'
-								tickFormatter={(month: string) =>
-									month.slice(0, 3).toUpperCase()
-								}
+								tickFormatter={(month: string) => month.slice(0, 3)}
 							/>
 							<YAxis tickFormatter={formatYAxisValue} />
 							<Tooltip formatter={(value: number) => formatCurrency(value)} />
