@@ -43,6 +43,19 @@ const StockItemsPage = async (props: StockItemsPageProps) => {
 					<GenerateStockReportButton
 						shopSlug={shopSlug}
 						variant='text'
+						label='Pedido de Moldes'
+						isMoldesReport={true}
+					/>
+				</Space>
+			)
+		},
+		{
+			key: '3',
+			label: (
+				<Space className='px-2'>
+					<GenerateStockReportButton
+						shopSlug={shopSlug}
+						variant='text'
 						label='Valoración de Stock'
 					/>
 				</Space>

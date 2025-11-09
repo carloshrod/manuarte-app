@@ -10,19 +10,23 @@ import {
 } from '@/utils/documents';
 import { ButtonVariantType } from 'antd/es/button';
 
-const GenerateStockReportButton = ({
-	shopSlug,
-	history,
-	product,
-	variant = 'solid',
-	label = 'Generar Reporte'
-}: {
+interface Props {
 	shopSlug: string;
 	history?: StockItemHistory[];
 	product?: { productName: string; productVariantName: string };
 	variant?: ButtonVariantType;
 	label?: string;
-}) => {
+	isMoldesReport?: boolean;
+}
+
+const GenerateStockReportButton = ({
+	shopSlug,
+	history,
+	product,
+	variant = 'solid',
+	label = 'Generar Reporte',
+	isMoldesReport = false
+}: Props) => {
 	const { stockItems } = useSelector((state: RootState) => state.stock);
 	const data = history ?? stockItems;
 	const isRestockData = label.toLowerCase().includes('pedido');
@@ -35,19 +39,23 @@ const GenerateStockReportButton = ({
 				excelData = generateStockHistoryData(history);
 			} else {
 				excelData = isRestockData
-					? generateRestockData(stockItems)
+					? generateRestockData(stockItems, isMoldesReport)
 					: generateCostStockData(stockItems);
 			}
 
+			const restockSufix = isMoldesReport
+				? 'reporte-pedido-moldes-stock'
+				: 'reporte-pedido-stock';
+
 			const sufix = history
 				? 'reporte-historial-stock'
-				: `${isRestockData ? 'reporte-pedido-stock' : 'reporte-stock'}`;
+				: `${isRestockData ? restockSufix : 'reporte-stock'}`;
 			const shopName = shopSlug.toUpperCase().replace('-', ' ');
 
 			if (excelData) {
 				const title = product
 					? `${shopName}: ${product?.productName} - ${product?.productVariantName}`
-					: `${isRestockData ? 'Pedido de ' : ''}Stock - ${shopName}`;
+					: `${isRestockData ? 'Pedido de ' : ''}Stock ${isMoldesReport ? 'de Moldes ' : ''}- ${shopName}`;
 
 				downloadExcel({
 					data: excelData,

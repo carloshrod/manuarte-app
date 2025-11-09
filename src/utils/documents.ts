@@ -70,12 +70,23 @@ export interface ExcelTopCustomersData {
 	Facturado: number;
 }
 
-export const generateRestockData = (stockItems: StockItem[]) => {
+export const generateRestockData = (
+	stockItems: StockItem[],
+	isMoldesReport: boolean
+) => {
 	try {
 		let excelData: ExcelRestockData[] = [];
 
-		if (stockItems?.length > 0) {
-			excelData = stockItems.reduce((acc, item) => {
+		const filteredStockItems = isMoldesReport
+			? stockItems.filter(
+					item => item.productCategoryGroupName.toLowerCase() === 'moldes'
+				)
+			: stockItems.filter(
+					item => item.productCategoryGroupName.toLowerCase() !== 'moldes'
+				);
+
+		if (filteredStockItems?.length > 0) {
+			excelData = filteredStockItems.reduce((acc, item) => {
 				const requiredQty =
 					Number(item.maxQty) -
 					Number(item.quantity) -
