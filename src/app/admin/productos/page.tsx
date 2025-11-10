@@ -1,11 +1,21 @@
 import TabsTableProducts from '@/components/admin/products/TabsTableProducts';
-import { productServices } from '@/services/productServices';
 import { productCategoryServices } from '@/services/productCategoryServices';
 
 export const dynamic = 'force-dynamic';
 
-const ProducstPage = async () => {
-	const productVariantsData = await productServices.getAllProductVariants();
+interface Props {
+	searchParams: {
+		page?: string;
+		pageSize?: string;
+		vId?: string;
+		productName?: string;
+		name?: string;
+		productDescription?: string;
+		productCategoryName?: string;
+	};
+}
+
+const ProducstPage = async ({ searchParams }: Props) => {
 	const productCategoriesData =
 		await productCategoryServices.getAllProductCategories();
 
@@ -13,7 +23,7 @@ const ProducstPage = async () => {
 		<section className='flex flex-col gap-4'>
 			<h2 className='text-2xl font-semibold px-4'>Productos</h2>
 			<TabsTableProducts
-				productVariantsData={productVariantsData}
+				searchParams={searchParams}
 				productCategoriesData={productCategoriesData}
 			/>
 		</section>

@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { Form, notification } from 'antd';
 import { useDispatch } from 'react-redux';
 import { AxiosError, AxiosResponse } from 'axios';
+import { productLibs } from '@/libs/api/product';
 import { productServices } from '@/services/productServices';
 import { productCategoryServices } from '@/services/productCategoryServices';
 import { userServices } from '@/services/userServices';
 import {
 	addProduct,
 	addProductVariant,
-	getProductVariants
+	setProductVariants
 } from '@/reducers/products/productSlice';
 import {
 	addProductCategory,
@@ -123,9 +124,8 @@ const useForm = () => {
 				productServices.updateProduct(valuesToUpdate, productId),
 			values,
 			onSuccess: async () => {
-				const productVariantsData =
-					await productServices.getAllProductVariants(false);
-				dispatch(getProductVariants(productVariantsData));
+				const productVariantsData = await productLibs.getAllProductVariants();
+				dispatch(setProductVariants(productVariantsData));
 			}
 		});
 	};
@@ -139,9 +139,8 @@ const useForm = () => {
 				productServices.updateProductVariant(valuesToUpdate, productVariantId),
 			values,
 			onSuccess: async () => {
-				const productVariantsData =
-					await productServices.getAllProductVariants(false);
-				dispatch(getProductVariants(productVariantsData));
+				const productVariantsData = await productLibs.getAllProductVariants();
+				dispatch(setProductVariants(productVariantsData));
 			}
 		});
 	};

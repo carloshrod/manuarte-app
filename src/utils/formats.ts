@@ -88,3 +88,13 @@ export const formatDate = (date: Date | string, showTime: boolean = false) => {
 		console.error(error);
 	}
 };
+
+export const objectToSearchParams = (
+	obj: Record<string, any>
+): URLSearchParams => {
+	const params = new URLSearchParams();
+	Object.entries(obj).forEach(([key, value]) => {
+		if (value !== undefined) params.set(key, String(value));
+	});
+	return params;
+};

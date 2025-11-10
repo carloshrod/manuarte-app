@@ -1,31 +1,25 @@
 import { useEffect, useState } from 'react';
 import { Divider, Form, Input, InputNumber, Select } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
-import useForm from '@/hooks/useForm';
-import { getProducts } from '@/reducers/products/productSlice';
-import { productServices } from '@/services/productServices';
-import { PRODUCT_VARIANT_PROPS } from '../../consts';
-import { formatInputCurrency } from '@/utils/formats';
 import SelectStocks from '../SelectStocks';
+import useProductServices from '@/services/product';
+import useForm from '@/hooks/useForm';
+import { formatInputCurrency } from '@/utils/formats';
 import { selectFilterOption } from '../../utils';
+import { PRODUCT_VARIANT_PROPS } from '../../consts';
 
 const ProductVariantForm = () => {
 	const { form, isLoading, submitAddProductVariant } = useForm();
 	const { products } = useSelector((state: RootState) => state.product);
 	const { shops } = useSelector((state: RootState) => state.shop);
 	const [isQuitoSelected, setIsQuitoSelected] = useState(true);
-	const dispatch = useDispatch();
-
-	const fetchProducts = async () => {
-		if (products.length > 0) return;
-
-		const data = await productServices.getAllProducts();
-		dispatch(getProducts(data));
-	};
+	const { getProducts } = useProductServices();
 
 	useEffect(() => {
-		fetchProducts();
+		if (products.length > 0) return;
+
+		getProducts();
 	}, []);
 
 	const onSubmit = (values: SubmitProductVariantDto) => {

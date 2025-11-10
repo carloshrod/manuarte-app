@@ -470,10 +470,18 @@ type DataTable =
 	| CashMovement
 	| BankTransferMovement;
 
+type Pagination = {
+	total: number;
+	page: number;
+	pageSize: number;
+	totalPages: number;
+};
+
 interface RootState {
 	product: {
 		products: Product[];
 		productVariants: ProductVariant[];
+		productVariantsPagination: Pagination;
 	};
 	productCategory: {
 		productCategories: ProductCategory[];

@@ -1,42 +1,83 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Tabs, TabsProps } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { TablePaginationConfig, Tabs, TabsProps } from 'antd';
+import { useSelector } from 'react-redux';
 import { AiOutlineAppstore } from 'react-icons/ai';
 import { BiPackage } from 'react-icons/bi';
 import { MdOutlineCategory } from 'react-icons/md';
 import CustomTable from '../../common/display-data/Table';
-import useTableColumns from '@/hooks/useTableColumns';
-import { getProductVariants } from '@/reducers/products/productSlice';
-import { getProductCategories } from '@/reducers/productCategories/productCategorySlice';
 import { ModalContent } from '@/types/enums';
 import AddButton from '../../common/ui/AddButton';
+import useProductServices from '@/services/product';
+import { FilterValue } from 'antd/es/table/interface';
+import ProductCols from './cols';
+
+interface SearchParams {
+	page?: string;
+	pageSize?: string;
+	vId?: string;
+	productName?: string;
+	name?: string;
+	productDescription?: string;
+	productCategoryName?: string;
+}
 
 type TabsTableProductsProps = {
-	productVariantsData: ProductVariant[];
+	searchParams: SearchParams;
 	productCategoriesData: ProductCategory[];
 };
 
 const TabsTableProducts = ({
-	productVariantsData,
+	searchParams,
 	productCategoriesData
 }: TabsTableProductsProps) => {
 	const [isProducts, setIsProducts] = useState(true);
-	const { productColumns, productCategoryColumns } = useTableColumns();
-	const { productVariants } = useSelector((state: RootState) => state.product);
+	const { productVariants, productVariantsPagination } = useSelector(
+		(state: RootState) => state.product
+	);
 	const { productCategories } = useSelector(
 		(state: RootState) => state.productCategory
 	);
-	const [isLoading, setIsLoading] = useState(true);
-	const dispatch = useDispatch();
+	const {
+		getProductVariants,
+		updatePaginationParams,
+		getProductCategories,
+		synchronizeFilters,
+		isLoading,
+		tableFilters
+	} = useProductServices();
+	const { productVariantColumns, productCategoryColumns } = ProductCols({
+		tableFilters
+	});
+
+	const page = Number(searchParams.page) || 1;
+	const pageSize = Number(searchParams.pageSize) || 30;
+
+	const filters = {
+		vId: searchParams.vId,
+		productName: searchParams.productName,
+		name: searchParams.name,
+		productDescription: searchParams.productDescription,
+		productCategoryName: searchParams.productCategoryName
+	};
 
 	useEffect(() => {
-		dispatch(getProductVariants(productVariantsData));
-		dispatch(getProductCategories(productCategoriesData));
-		setIsLoading(false);
-	}, []);
+		getProductVariants({ page, pageSize, ...filters });
+		getProductCategories(productCategoriesData);
+	}, [page, pageSize, ...Object.values(filters)]);
 
-	const onChange = (key: string) => {
+	useEffect(() => {
+		synchronizeFilters(filters);
+	}, [searchParams]);
+
+	const handleTableChange = (
+		pagination: TablePaginationConfig,
+		filters: Record<string, FilterValue | null>
+	) => {
+		updatePaginationParams(pagination, searchParams, filters);
+	};
+
+	const onTabChange = (key: string) => {
 		setIsProducts(key === '1');
 	};
 
@@ -46,9 +87,16 @@ const TabsTableProducts = ({
 			label: 'Presentaciones',
 			children: (
 				<CustomTable
-					columns={productColumns}
-					dataSource={isLoading ? [] : productVariants}
+					columns={productVariantColumns}
+					dataSource={productVariants}
 					isLoading={isLoading}
+					pagination={{
+						current: productVariantsPagination.page,
+						pageSize: productVariantsPagination.pageSize,
+						total: productVariantsPagination.total,
+						showSizeChanger: true
+					}}
+					onChange={handleTableChange}
 				/>
 			)
 		},
@@ -94,7 +142,7 @@ const TabsTableProducts = ({
 			defaultActiveKey='1'
 			items={items}
 			tabBarExtraContent={operations}
-			onChange={onChange}
+			onChange={onTabChange}
 		/>
 	);
 };

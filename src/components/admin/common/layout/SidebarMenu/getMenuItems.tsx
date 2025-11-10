@@ -77,7 +77,16 @@ export const allMenuItems = (shop?: string, mainStock?: boolean) => {
 		{
 			key: '2',
 			icon: <BsBoxes style={{ fontSize: 20 }} />,
-			label: <Link href={PRODUCTS}>Productos</Link>,
+			label: (
+				<Link
+					href={{
+						pathname: PRODUCTS,
+						query: { page: 1, pageSize: 30 }
+					}}
+				>
+					Productos
+				</Link>
+			),
 			path: PRODUCTS
 		},
 		{

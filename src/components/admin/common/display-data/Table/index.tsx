@@ -7,8 +7,14 @@ interface CustomTableProps {
 	dataSource: DataTable[];
 	isLoading?: boolean;
 	scrollMinus?: number;
+	pagination?: TablePaginationConfig;
+	filters?: Record<string, FilterValue | null>;
 	filterData?: (
 		_pagination: TablePaginationConfig,
+		filters: Record<string, FilterValue | null>
+	) => void;
+	onChange?: (
+		pagination: TablePaginationConfig,
 		filters: Record<string, FilterValue | null>
 	) => void;
 }
@@ -18,9 +24,17 @@ const CustomTable = ({
 	dataSource,
 	isLoading = false,
 	scrollMinus = 380,
-	filterData = () => null
+	pagination,
+	onChange = () => null
 }: CustomTableProps) => {
 	const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+
+	const defaultPagination: TablePaginationConfig = {
+		locale: { items_per_page: '/ página' },
+		size: isMobile ? 'small' : 'default',
+		defaultPageSize: 30,
+		pageSizeOptions: ['30', '50', '100']
+	};
 
 	return (
 		<div className='py-2 px-4 shadow-[6px_6px_24px_rgba(0,0,0,0.25)] rounded-lg'>
@@ -33,13 +47,11 @@ const CustomTable = ({
 						dataSource?.length > 0
 							? `calc(100vh - ${scrollMinus}px)`
 							: undefined,
-					x: 'max-content'
+					x: !isLoading ? 'max-content' : undefined
 				}}
 				pagination={{
-					locale: { items_per_page: '/ página' },
-					size: isMobile ? 'small' : 'default',
-					defaultPageSize: 30,
-					pageSizeOptions: ['30', '50', '100']
+					...defaultPagination,
+					...(pagination ?? {})
 				}}
 				style={{ minHeight: isLoading ? 'calc(100vh - 300px)' : undefined }}
 				loading={{
@@ -64,7 +76,7 @@ const CustomTable = ({
 					triggerAsc: 'Orden ascendente',
 					triggerDesc: 'Orden descendente'
 				}}
-				onChange={filterData}
+				onChange={onChange}
 			/>
 		</div>
 	);

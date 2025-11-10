@@ -1,21 +1,11 @@
 import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
-import {
-	Badge,
-	Button,
-	QRCode,
-	Space,
-	TableColumnsType,
-	Tag,
-	Tooltip
-} from 'antd';
+import { Badge, Button, TableColumnsType, Tag, Tooltip } from 'antd';
 import { CheckCircleOutlined, DollarCircleOutlined } from '@ant-design/icons';
 import { BsFileEarmarkPdf } from 'react-icons/bs';
 import { TiArrowDown, TiArrowUp } from 'react-icons/ti';
 import { IoInformationCircleOutline } from 'react-icons/io5';
 import { useSession } from 'next-auth/react';
-import ProductActions from '@/components/admin/products/ProductActions';
-import ProductCategoryActions from '@/components/admin/products/ProductCategoryActions';
 import StaffActions from '@/components/admin/users/StaffActions';
 import CustomersActions from '@/components/admin/users/CustomersActions';
 import QuotesActions from '@/components/admin/quotes/QuotesActions';
@@ -42,117 +32,14 @@ import {
 } from './utils';
 import { PaymentMethod } from '@/types/enums';
 import CopyableText from '@/components/admin/common/ui/CopyableText';
+import { FilterValue } from 'antd/es/table/interface';
 
-const useTableColumns = () => {
+const useTableColumns = (tableFilters?: Record<string, FilterValue | null>) => {
 	const { getColumnSearchProps, getColumnDateFilterProps } = useTable();
 	const pathname = usePathname();
 	const params = useParams();
 	const { data: session } = useSession();
 	const isAdmin = session?.user?.roleName === 'admin';
-
-	const productColumns: TableColumnsType<ProductVariant> = [
-		{
-			title: '#',
-			dataIndex: 'vId',
-			key: 'vId',
-			...getColumnSearchProps('vId'),
-			render: value => <CopyableText text={value} />,
-			width: 105
-		},
-		{
-			title: 'NOMBRE',
-			dataIndex: 'productName',
-			key: 'productName',
-			...getColumnSearchProps('productName'),
-			width: 150
-		},
-		{
-			title: 'PRESENTACIÓN',
-			dataIndex: 'name',
-			key: 'name',
-			...getColumnSearchProps('name'),
-			render: value => formatToTitleCase(value),
-			width: 120
-		},
-		{
-			title: 'DESCRIPCIÓN',
-			dataIndex: 'productDescription',
-			key: 'productDescription',
-			...getColumnSearchProps('productDescription'),
-			width: 150
-		},
-
-		{
-			title: 'CATEGORÍA',
-			dataIndex: 'productCategoryName',
-			key: 'productCategoryName',
-			...getColumnSearchProps('productCategoryName'),
-			width: 150
-		},
-		{
-			title: 'CÓDIGO QR',
-			dataIndex: 'vId',
-			key: 'vId',
-			render: (value: string) => {
-				return (
-					<Space align='center'>
-						<QRCode value={value || 'NO vID'} size={80} />
-					</Space>
-				);
-			},
-			width: 100
-		},
-		{
-			title: 'ACCIONES',
-			key: 'actions',
-			className: 'actions',
-			render: (_, record: ProductVariant) => <ProductActions record={record} />,
-			width: 100
-		}
-	];
-
-	const productCategoryColumns: TableColumnsType<ProductCategory> = [
-		{
-			title: '#',
-			dataIndex: 'cId',
-			key: 'cId',
-			...getColumnSearchProps('cId'),
-			width: 50
-		},
-		{
-			title: 'NOMBRE',
-			dataIndex: 'name',
-			key: 'name',
-			...getColumnSearchProps('name'),
-			width: 200
-		},
-		{
-			title: 'GRUPO',
-			dataIndex: 'groupName',
-			key: 'groupName',
-			...getColumnSearchProps('groupName'),
-			render: (value: string) => value ?? '--',
-			width: 150
-		},
-		{
-			title: 'FECHA DE CREACIÓN',
-			dataIndex: 'createdDate',
-			key: 'createdDate',
-			render: (value: string) => (
-				<span>{value ? formatDate(value) : '--'}</span>
-			),
-			width: 150
-		},
-		{
-			title: 'ACCIONES',
-			key: 'actions',
-			className: 'actions',
-			render: (_, record: ProductCategory) => (
-				<ProductCategoryActions record={record} />
-			),
-			width: 100
-		}
-	];
 
 	const staffColumns: TableColumnsType<Staff> = [
 		{
@@ -1094,8 +981,6 @@ const useTableColumns = () => {
 	];
 
 	return {
-		productColumns,
-		productCategoryColumns,
 		staffColumns,
 		customerColumns,
 		topCustomerColumns,

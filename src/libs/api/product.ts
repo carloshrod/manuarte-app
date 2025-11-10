@@ -1,10 +1,39 @@
 import { ENV } from '@/config/env';
 import { axiosPrivate } from './axios';
 
-export const productServices = {
+type ProductVariantsApiResponse = {
+	productVariants: ProductVariant[];
+	total: number;
+	page: number;
+	pageSize: number;
+	totalPages: number;
+};
+
+export const productLibs = {
 	getAllProducts: async () => {
 		try {
 			const res = await axiosPrivate.get(ENV.API.PRODUCTS);
+
+			return res.data;
+		} catch (error) {
+			console.error(error);
+		}
+	},
+
+	getAllProductVariants: async (params?: {
+		page?: number;
+		pageSize?: number;
+		vId?: string;
+		productName?: string;
+		name?: string;
+		productDescription?: string;
+		productCategoryName?: string;
+	}) => {
+		try {
+			const res = await axiosPrivate.get<ProductVariantsApiResponse>(
+				ENV.API.PRODUCT_VARIANTS,
+				{ params }
+			);
 
 			return res.data;
 		} catch (error) {

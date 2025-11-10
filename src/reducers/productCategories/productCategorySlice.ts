@@ -8,7 +8,7 @@ export const productCategorySlice = createSlice({
 	name: 'productCategories',
 	initialState,
 	reducers: {
-		getProductCategories: (state, action) => {
+		setProductCategories: (state, action) => {
 			state.productCategories = action.payload;
 		},
 
@@ -34,7 +34,7 @@ export const productCategorySlice = createSlice({
 });
 
 export const {
-	getProductCategories,
+	setProductCategories,
 	addProductCategory,
 	updateProductCategory,
 	removeProductCategory
