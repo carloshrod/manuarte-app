@@ -1,12 +1,22 @@
 import { ENV } from '@/config/env';
 import { axiosPrivate } from './axios';
 
-type ProductVariantsApiResponse = {
+type ProductVariantApiResponse = {
 	productVariants: ProductVariant[];
 	total: number;
 	page: number;
 	pageSize: number;
 	totalPages: number;
+};
+
+export type ProductVariantParams = {
+	page?: number;
+	pageSize?: number;
+	vId?: string;
+	productName?: string;
+	name?: string;
+	productDescription?: string;
+	productCategoryName?: string;
 };
 
 export const productLibs = {
@@ -20,17 +30,9 @@ export const productLibs = {
 		}
 	},
 
-	getAllProductVariants: async (params?: {
-		page?: number;
-		pageSize?: number;
-		vId?: string;
-		productName?: string;
-		name?: string;
-		productDescription?: string;
-		productCategoryName?: string;
-	}) => {
+	getAllProductVariants: async (params?: ProductVariantParams) => {
 		try {
-			const res = await axiosPrivate.get<ProductVariantsApiResponse>(
+			const res = await axiosPrivate.get<ProductVariantApiResponse>(
 				ENV.API.PRODUCT_VARIANTS,
 				{ params }
 			);

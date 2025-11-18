@@ -1,15 +1,12 @@
-import { productLibs } from '@/libs/api/product';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { productLibs, ProductVariantParams } from '@/libs/api/product';
 import { setProductCategories } from '@/reducers/productCategories/productCategorySlice';
 import {
 	setProducts,
 	setProductVariants
 } from '@/reducers/products/productSlice';
-import { objectToSearchParams } from '@/utils/formats';
-import { TablePaginationConfig } from 'antd';
 import { FilterValue } from 'antd/es/table/interface';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 type ProductFilters = {
 	vId?: string;
@@ -25,22 +22,13 @@ const useProductServices = () => {
 		Record<string, FilterValue | null>
 	>({});
 	const dispatch = useDispatch();
-	const router = useRouter();
 
 	const getProducts = async () => {
 		const data = await productLibs.getAllProducts();
 		dispatch(setProducts(data));
 	};
 
-	const getProductVariants = async (params?: {
-		page?: number;
-		pageSize?: number;
-		vId?: string;
-		productName?: string;
-		name?: string;
-		productDescription?: string;
-		productCategoryName?: string;
-	}) => {
+	const getProductVariants = async (params?: ProductVariantParams) => {
 		try {
 			setIsLoading(true);
 			const data = await productLibs.getAllProductVariants(params);
@@ -51,24 +39,6 @@ const useProductServices = () => {
 		} finally {
 			setIsLoading(false);
 		}
-	};
-
-	const updatePaginationParams = (
-		pagination: TablePaginationConfig,
-		searchParams: Record<string, any>,
-		filters: Record<string, FilterValue | null>
-	) => {
-		const params = objectToSearchParams(searchParams);
-
-		params.set('page', String(pagination.current ?? 1));
-		params.set('pageSize', String(pagination.pageSize ?? 10));
-
-		Object.entries(filters).forEach(([key, value]) => {
-			if (value && value.length > 0) params.set(key, String(value[0]));
-			else params.delete(key);
-		});
-
-		router.replace(`?${params.toString()}`);
 	};
 
 	const getProductCategories = (data: ProductCategory[]) => {
@@ -88,7 +58,6 @@ const useProductServices = () => {
 	return {
 		getProducts,
 		getProductVariants,
-		updatePaginationParams,
 		getProductCategories,
 		synchronizeFilters,
 		isLoading,

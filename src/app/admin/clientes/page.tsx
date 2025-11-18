@@ -1,23 +1,26 @@
 import { auth } from '@/auth';
 import AddButton from '@/components/admin/common/ui/AddButton';
 import TabsTableCustomers from '@/components/admin/users/TabsTableCustomers';
-import { userServices } from '@/services/userServices';
+import { CustomerParams } from '@/libs/api/user';
 import { ModalContent } from '@/types/enums';
 import { HiOutlineUser } from 'react-icons/hi';
 import { IoStorefrontOutline } from 'react-icons/io5';
 
 export const dynamic = 'force-dynamic';
 
-const CustomersPage = async () => {
+interface Props {
+	searchParams: {
+		tab?: string;
+		page?: string;
+		pageSize?: string;
+	} & CustomerParams;
+}
+
+const CustomersPage = async ({ searchParams }: Props) => {
 	const session = await auth();
 	const isAdmin = session?.user?.roleName === 'admin';
 	const shopName = session?.user?.shop?.toUpperCase().replace('-', ' ');
 	const title = shopName ? 'Clientes:' : 'Clientes';
-
-	const customersData = await userServices.getAllCustomers(
-		session?.user?.isoCode
-	);
-	const topCustomersData = await userServices.getTopCustomers();
 
 	return (
 		<section className='flex flex-col gap-4'>
@@ -40,8 +43,8 @@ const CustomersPage = async () => {
 				) : null}
 			</div>
 			<TabsTableCustomers
-				customersData={customersData}
-				topCustomersData={topCustomersData}
+				session={session}
+				searchParams={searchParams}
 				isAdmin={isAdmin}
 			/>
 		</section>

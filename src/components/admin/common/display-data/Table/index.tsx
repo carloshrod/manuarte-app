@@ -8,7 +8,6 @@ interface CustomTableProps {
 	isLoading?: boolean;
 	scrollMinus?: number;
 	pagination?: TablePaginationConfig;
-	filters?: Record<string, FilterValue | null>;
 	filterData?: (
 		_pagination: TablePaginationConfig,
 		filters: Record<string, FilterValue | null>
@@ -47,7 +46,7 @@ const CustomTable = ({
 						dataSource?.length > 0
 							? `calc(100vh - ${scrollMinus}px)`
 							: undefined,
-					x: !isLoading ? 'max-content' : undefined
+					x: !isLoading && dataSource?.length > 0 ? 'max-content' : undefined
 				}}
 				pagination={{
 					...defaultPagination,

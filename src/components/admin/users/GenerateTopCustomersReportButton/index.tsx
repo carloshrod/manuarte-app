@@ -1,31 +1,39 @@
+import { CustomerParams, userLibs } from '@/libs/api/user';
 import { downloadExcel, generateTopCustomersData } from '@/utils/documents';
 import { Button } from 'antd';
+import { useState } from 'react';
 import { IoMdDownload } from 'react-icons/io';
 
 const GenerateTopCustomersReportButton = ({
-	reportData,
-	countryIsoCode
+	reportParams
 }: {
-	reportData: Customer[];
-	countryIsoCode: string;
+	reportParams: CustomerParams;
 }) => {
+	const [reportData, setReportData] = useState<Customer[]>();
+	const [loading, setLoading] = useState(false);
+
 	const handleDownloadExcel = async () => {
 		try {
-			const excelData = generateTopCustomersData(reportData);
+			setLoading(true);
+			const { topCustomers } = await userLibs.getTopCustomers(reportParams);
+			setReportData(topCustomers);
+			const excelData = generateTopCustomersData(topCustomers);
 			if (excelData) {
-				const fileName = `reporte-general-de-clientes-${countryIsoCode}`;
-				const country = countryIsoCode === 'CO' ? 'Colombia' : 'Ecuador';
+				const fileName = `reporte-general-de-clientes-${reportParams.isoCode}`;
+				const country = reportParams.isoCode === 'CO' ? 'Colombia' : 'Ecuador';
 				const title = `Reporte de Clientes - ${country}`;
 
 				downloadExcel({
 					data: excelData,
 					fileName,
 					title,
-					info: { countryIsoCode }
+					info: { countryIsoCode: reportParams.isoCode }
 				});
 			}
 		} catch (error) {
 			console.error(error);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -40,9 +48,10 @@ const GenerateTopCustomersReportButton = ({
 				/>
 			}
 			onClick={handleDownloadExcel}
-			disabled={reportData?.length === 0}
+			disabled={reportData?.length === 0 || loading}
+			loading={loading}
 		>
-			Generar Reporte
+			{loading ? 'Generando...' : 'Generar Reporte'}
 		</Button>
 	);
 };

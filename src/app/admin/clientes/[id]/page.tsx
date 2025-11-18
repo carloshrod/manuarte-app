@@ -2,7 +2,7 @@ import GoBack from '@/components/admin/common/ui/GoBack';
 import CustomerStats from '@/components/admin/users/CustomerStats';
 import GenerateCustomerReportButton from '@/components/admin/users/GenerateCustomerReportButton';
 import RecentActivityItem from '@/components/admin/users/RecentActivityItem';
-import TopProductsTable from '@/components/admin/users/TopProductsTable';
+import TopProductsTable from '@/components/admin/users/TabsTableCustomers/TopProductsTable';
 import { userServices } from '@/services/userServices';
 import { Card, Descriptions, DescriptionsProps, Empty, Timeline } from 'antd';
 import { HiOutlineUser } from 'react-icons/hi';

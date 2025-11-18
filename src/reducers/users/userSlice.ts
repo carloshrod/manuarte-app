@@ -3,17 +3,33 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
 	staff: [] as Staff[],
 	customers: [] as Customer[],
-	topCustomers: {
-		col: [] as Customer[],
-		ecu: [] as Customer[]
-	}
+	customersPagination: {
+		total: 0,
+		page: 1,
+		pageSize: 10,
+		totalPages: 1
+	} as Pagination,
+	topCustomersCO: [] as Customer[],
+	topCustomersCoPagination: {
+		total: 0,
+		page: 1,
+		pageSize: 10,
+		totalPages: 1
+	} as Pagination,
+	topCustomersEC: [] as Customer[],
+	topCustomersEcPagination: {
+		total: 0,
+		page: 1,
+		pageSize: 10,
+		totalPages: 1
+	} as Pagination
 };
 
 export const userSlice = createSlice({
 	name: 'users',
 	initialState,
 	reducers: {
-		getStaff: (state, action) => {
+		setStaff: (state, action) => {
 			state.staff = action.payload;
 		},
 
@@ -53,11 +69,33 @@ export const userSlice = createSlice({
 		},
 
 		setCustomers: (state, action) => {
-			state.customers = action.payload;
+			state.customers = action.payload.customers;
+			state.customersPagination = {
+				total: action.payload.total,
+				page: action.payload.page,
+				pageSize: action.payload.pageSize,
+				totalPages: action.payload.totalPages
+			};
 		},
 
-		setTopCustomers: (state, action) => {
-			state.topCustomers = action.payload;
+		setTopCustomersCO: (state, action) => {
+			state.topCustomersCO = action.payload.topCustomers;
+			state.topCustomersCoPagination = {
+				total: action.payload.total,
+				page: action.payload.page,
+				pageSize: action.payload.pageSize,
+				totalPages: action.payload.totalPages
+			};
+		},
+
+		setTopCustomersEC: (state, action) => {
+			state.topCustomersEC = action.payload.topCustomers;
+			state.topCustomersEcPagination = {
+				total: action.payload.total,
+				page: action.payload.page,
+				pageSize: action.payload.pageSize,
+				totalPages: action.payload.totalPages
+			};
 		},
 
 		addCustomer: (state, action) => {
@@ -80,13 +118,14 @@ export const userSlice = createSlice({
 });
 
 export const {
-	getStaff,
+	setStaff,
 	addStaff,
 	updateStaff,
 	removeStaff,
 	updateStaffPermissions,
 	setCustomers,
-	setTopCustomers,
+	setTopCustomersCO,
+	setTopCustomersEC,
 	addCustomer,
 	updateCustomer,
 	removeCustomer

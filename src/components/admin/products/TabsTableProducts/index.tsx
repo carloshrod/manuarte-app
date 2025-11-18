@@ -11,6 +11,7 @@ import AddButton from '../../common/ui/AddButton';
 import useProductServices from '@/services/product';
 import { FilterValue } from 'antd/es/table/interface';
 import ProductCols from './cols';
+import useFilters from '@/hooks/useFilters';
 
 interface SearchParams {
 	page?: string;
@@ -40,7 +41,6 @@ const TabsTableProducts = ({
 	);
 	const {
 		getProductVariants,
-		updatePaginationParams,
 		getProductCategories,
 		synchronizeFilters,
 		isLoading,
@@ -49,6 +49,7 @@ const TabsTableProducts = ({
 	const { productVariantColumns, productCategoryColumns } = ProductCols({
 		tableFilters
 	});
+	const { updateFilterParams } = useFilters();
 
 	const page = Number(searchParams.page) || 1;
 	const pageSize = Number(searchParams.pageSize) || 30;
@@ -74,7 +75,7 @@ const TabsTableProducts = ({
 		pagination: TablePaginationConfig,
 		filters: Record<string, FilterValue | null>
 	) => {
-		updatePaginationParams(pagination, searchParams, filters);
+		updateFilterParams(pagination, searchParams, filters);
 	};
 
 	const onTabChange = (key: string) => {

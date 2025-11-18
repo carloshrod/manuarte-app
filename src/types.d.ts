@@ -489,10 +489,11 @@ interface RootState {
 	user: {
 		staff: Staff[];
 		customers: Customer[];
-		topCustomers: {
-			col: Customer[];
-			ecu: Customer[];
-		};
+		customersPagination: Pagination;
+		topCustomersCO: Customer[];
+		topCustomersCoPagination: Pagination;
+		topCustomersEC: Customer[];
+		topCustomersEcPagination: Pagination;
 	};
 	quote: {
 		quotes: Quote[];

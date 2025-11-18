@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomTable from '../../common/display-data/Table';
 import useTableColumns from '@/hooks/useTableColumns';
-import { getStaff } from '@/reducers/users/userSlice';
+import { setStaff } from '@/reducers/users/userSlice';
 
 const StaffTable = ({ staffData }: { staffData: Staff[] }) => {
 	const { staffColumns } = useTableColumns();
@@ -12,7 +12,7 @@ const StaffTable = ({ staffData }: { staffData: Staff[] }) => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(getStaff(staffData));
+		dispatch(setStaff(staffData));
 		setIsLoading(false);
 	}, []);
 
