@@ -15,9 +15,10 @@ export async function middleware(req: NextRequest) {
 
 	const roleName = session?.user?.roleName as string;
 	const shop = session?.user?.shop as string;
+	const shopId = session?.user?.shopId as string;
 	const extraPermissions = session?.user?.extraPermissions || [];
 
-	const roleRules = AUTH_RULES(shop)[roleName] || {
+	const roleRules = AUTH_RULES(shop, shopId)[roleName] || {
 		defaultPath: LOGIN,
 		allowedPaths: []
 	};
@@ -52,13 +53,15 @@ export const config = { matcher: ['/admin/:path*', '/auth/login'] };
 
 function isPathAllowed(requestedPage: string, allowedPaths: string[]): boolean {
 	return allowedPaths.some(allowedPath => {
-		if (allowedPath.includes('[')) {
+		const allowedPathname = allowedPath.split('?')[0];
+
+		if (allowedPathname.includes('[')) {
 			// Convertir la ruta dinámica en un regex
 			const dynamicRegex = new RegExp(
-				'^' + allowedPath.replace(/\[.*?\]/g, '[^/]+') + '$'
+				'^' + allowedPathname.replace(/\[.*?\]/g, '[^/]+') + '$'
 			);
 			return dynamicRegex.test(requestedPage);
 		}
-		return allowedPath === requestedPage;
+		return allowedPathname === requestedPage;
 	});
 }

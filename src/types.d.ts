@@ -497,6 +497,7 @@ interface RootState {
 	};
 	quote: {
 		quotes: Quote[];
+		quotesPagination: Pagination;
 	};
 	billing: {
 		billings: Billing[];

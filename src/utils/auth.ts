@@ -18,7 +18,8 @@ export const generatePermissionOptions = (
 };
 
 export const AUTH_RULES = (
-	shop: string
+	shop: string,
+	shopId: string
 ): Record<string, { defaultPath: string; allowedPaths: string[] }> => {
 	return {
 		admin: {
@@ -44,9 +45,9 @@ export const AUTH_RULES = (
 			]
 		},
 		cajero: {
-			defaultPath: `${ROUTES.QUOTE_SHOPS}/${shop}`,
+			defaultPath: `${ROUTES.QUOTE_SHOPS}/${shop}?shopId=${shopId}`,
 			allowedPaths: [
-				`${ROUTES.QUOTE_SHOPS}/${shop}`,
+				`${ROUTES.QUOTE_SHOPS}/${shop}?shopId=${shopId}`,
 				ROUTES.QUOTE_DETAIL,
 				`${ROUTES.BILLING_SHOPS}/${shop}`,
 				ROUTES.BILLING_DETAIL,

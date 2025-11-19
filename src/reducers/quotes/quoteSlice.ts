@@ -1,7 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-	quotes: [] as Quote[]
+	quotes: [] as Quote[],
+	quotesPagination: {
+		total: 0,
+		page: 1,
+		pageSize: 10,
+		totalPages: 1
+	} as Pagination
 };
 
 const quoteSlice = createSlice({
@@ -9,7 +15,15 @@ const quoteSlice = createSlice({
 	initialState,
 	reducers: {
 		setQuotes: (state, action) => {
-			state.quotes = action.payload;
+			const { quotes, total, page, pageSize, totalPages } = action.payload;
+
+			state.quotes = quotes;
+			state.quotesPagination = {
+				total,
+				page,
+				pageSize,
+				totalPages
+			};
 		},
 
 		addQuote: (state, action) => {

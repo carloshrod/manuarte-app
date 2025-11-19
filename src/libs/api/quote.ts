@@ -1,12 +1,23 @@
-import { ENV } from '@/config/env';
 import { axiosPrivate } from './axios';
-import { mapQuoteBody } from './utils';
+import { ENV } from '@/config/env';
+import { mapQuoteBody } from '@/services/utils';
 
-export const quoteServices = {
-	getAll: async (shopId: string) => {
+export type QuoteParams = {
+	page?: number;
+	pageSize?: number;
+	shopId: string;
+	serialNumber?: string;
+	status?: QuoteStatus;
+	customerName?: string;
+	dateStart?: string;
+	dateEnd?: string;
+};
+
+export const quoteLibs = {
+	getAll: async (params?: QuoteParams) => {
 		try {
 			const res = await axiosPrivate.get(ENV.API.QUOTES, {
-				params: { shopId }
+				params
 			});
 
 			return res.data;

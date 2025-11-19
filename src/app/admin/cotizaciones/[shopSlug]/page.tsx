@@ -5,16 +5,19 @@ import QuotesTable from '@/components/admin/quotes/QuotesTable';
 import GoBack from '@/components/admin/common/ui/GoBack';
 import OpenDrawerButton from '@/components/admin/common/ui/OpenDrawerButton';
 import { DrawerContent } from '@/types/enums';
+import { QuoteParams } from '@/libs/api/quote';
 
 interface QuotesPageProps {
 	params: {
 		shopSlug: string;
 	};
+	searchParams: QuoteParams;
 }
 
 const QuotesPage = async (props: QuotesPageProps) => {
 	const {
-		params: { shopSlug }
+		params: { shopSlug },
+		searchParams
 	} = props;
 	const shopName = shopSlug.toUpperCase().replace('-', ' ');
 	const session = await auth();
@@ -39,7 +42,7 @@ const QuotesPage = async (props: QuotesPageProps) => {
 					appendIcon={<TbFileDollar size={18} />}
 				/>
 			</div>
-			<QuotesTable shopSlug={shopSlug} />
+			<QuotesTable searchParams={searchParams} />
 		</section>
 	);
 };

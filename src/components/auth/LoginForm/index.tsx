@@ -24,10 +24,13 @@ const LoginForm = () => {
 
 			if (res) {
 				const session = await getSession();
+
 				const roleName = session?.user?.roleName as string;
 				const shop = session?.user?.shop as string;
+				const shopId = session?.user?.shopId as string;
+
 				const redirectTo =
-					AUTH_RULES(shop)[roleName].defaultPath ?? ROUTES.LOGIN;
+					AUTH_RULES(shop, shopId)[roleName].defaultPath ?? ROUTES.LOGIN;
 
 				router.push(redirectTo);
 				notification.success({ message: 'Bienvenido!' });

@@ -6,24 +6,9 @@ import {
 	setTopCustomersCO,
 	setTopCustomersEC
 } from '@/reducers/users/userSlice';
-import { FilterValue } from 'antd/es/table/interface';
-
-type CustomerFilters = {
-	isoCode?: string;
-	page?: number;
-	pageSize?: number;
-	dni?: string;
-	fullName?: string;
-	email?: string;
-	phoneNumber?: string;
-	cityName?: string;
-};
 
 const useUserService = () => {
 	const [isLoading, setIsLoading] = useState(true);
-	const [tableFilters, setTableFilters] = useState<
-		Record<string, FilterValue | null>
-	>({});
 
 	const dispatch = useDispatch();
 
@@ -73,23 +58,11 @@ const useUserService = () => {
 		}
 	};
 
-	const synchronizeFilters = (filters: CustomerFilters) => {
-		const initialFilters: Record<string, FilterValue | null> = {};
-		Object.entries(filters).forEach(([key, value]) => {
-			if (value !== undefined && value !== null && value !== '') {
-				initialFilters[key] = [value];
-			}
-		});
-		setTableFilters(initialFilters);
-	};
-
 	return {
 		getAllCustomers,
 		getTopCustomersCO,
 		getTopCustomersEC,
-		synchronizeFilters,
-		isLoading,
-		tableFilters
+		isLoading
 	};
 };
 

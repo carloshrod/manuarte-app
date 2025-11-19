@@ -1,3 +1,4 @@
+import { useParams } from 'next/navigation';
 import TableActions from '../../common/ui/TableActions';
 import { useDispatch } from 'react-redux';
 import { DrawerContent } from '@/types/enums';
@@ -7,16 +8,14 @@ import { quoteServices } from '@/services/quoteServices';
 import { removeQuote } from '@/reducers/quotes/quoteSlice';
 import { useDrawerStore } from '@/stores/drawerStore';
 
-const QuotesActions = ({
-	record,
-	shopSlug
-}: {
-	record: Quote;
-	shopSlug: string;
-}) => {
+const QuotesActions = ({ record }: { record: Quote }) => {
 	const { openDrawer } = useDrawerStore.getState();
 	const dispatch = useDispatch();
-	const shopName = shopSlug.toUpperCase().replace('-', ' ');
+	const params = useParams();
+	const shopName =
+		typeof params.shopSlug === 'string'
+			? params.shopSlug.toUpperCase().replace('-', ' ')
+			: '';
 
 	const handleEdit = async () => {
 		const dataToHandle = await quoteServices.getOne({

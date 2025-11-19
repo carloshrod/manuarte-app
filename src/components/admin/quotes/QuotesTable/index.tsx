@@ -1,19 +1,41 @@
 'use client';
-import useTableColumns from '@/hooks/useTableColumns';
 import CustomTable from '../../common/display-data/Table';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setQuotes } from '@/reducers/quotes/quoteSlice';
-import { quoteServices } from '@/services/quoteServices';
 import { shopServices } from '@/services/shopServices';
 import { setShops } from '@/reducers/shops/shopSlice';
+import QuoteCols from './cols';
+import useQuoteService from '@/services/quote';
+import useFilters from '@/hooks/useFilters';
+import { QuoteParams } from '@/libs/api/quote';
+import { TablePaginationConfig } from 'antd';
+import { FilterValue } from 'antd/es/table/interface';
 
-const QuotesTable = ({ shopSlug }: { shopSlug: string }) => {
-	const { quoteColumns } = useTableColumns();
+interface Props {
+	searchParams: QuoteParams;
+}
+
+const QuotesTable = ({ searchParams }: Props) => {
 	const { shops } = useSelector((state: RootState) => state.shop);
-	const { quotes } = useSelector((state: RootState) => state.quote);
-	const [isLoading, setIsLoading] = useState(true);
+	const { quotes, quotesPagination } = useSelector(
+		(state: RootState) => state.quote
+	);
 	const dispatch = useDispatch();
+	const { getQuotes, isLoading } = useQuoteService();
+	const { updateFilterParams, synchronizeFilters, tableFilters } = useFilters();
+	const { quoteColumns } = QuoteCols({ tableFilters });
+
+	const page = Number(searchParams.page) || 1;
+	const pageSize = Number(searchParams.pageSize) || 30;
+
+	const filters = {
+		shopId: searchParams.shopId,
+		serialNumber: searchParams.serialNumber,
+		status: searchParams.status,
+		customerName: searchParams.customerName,
+		dateStart: searchParams.dateStart,
+		dateEnd: searchParams.dateEnd
+	};
 
 	const fetchShops = async () => {
 		if (shops?.length === 0) {
@@ -24,25 +46,35 @@ const QuotesTable = ({ shopSlug }: { shopSlug: string }) => {
 		}
 	};
 
-	const fetchQuotes = async () => {
-		if (shopSlug && quotes.length === 0) {
-			const data = await quoteServices.getAll(shopSlug);
-			dispatch(setQuotes(data));
-		}
-		setIsLoading(false);
-	};
+	useEffect(() => {
+		synchronizeFilters(filters);
+	}, [searchParams]);
 
 	useEffect(() => {
 		fetchShops();
-		fetchQuotes();
-	}, []);
+		getQuotes({ page, pageSize, ...filters });
+	}, [page, pageSize, ...Object.values(filters)]);
+
+	const handleTableChange = (
+		pagination: TablePaginationConfig,
+		filters: Record<string, FilterValue | null>
+	) => {
+		updateFilterParams(pagination, searchParams, filters);
+	};
 
 	return (
 		<CustomTable
 			columns={quoteColumns}
-			dataSource={isLoading ? [] : quotes}
+			dataSource={quotes}
 			isLoading={isLoading}
 			scrollMinus={335}
+			pagination={{
+				current: quotesPagination.page,
+				pageSize: quotesPagination.pageSize,
+				total: quotesPagination.total,
+				showSizeChanger: true
+			}}
+			onChange={handleTableChange}
 		/>
 	);
 };

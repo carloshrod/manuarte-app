@@ -11,13 +11,21 @@ import {
 import { FilterDropdownProps } from 'antd/es/table/interface';
 import { FilterFilled, SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import moment, { Moment } from 'moment';
+import dayjs, { Dayjs } from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
+
+const { RangePicker } = DatePicker;
 
 const useTable = () => {
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef<InputRef>(null);
-	const [selectedDate, setSelectedDate] = useState<Moment | null>(null);
+	const [selectedDate, setSelectedDate] = useState<
+		[Dayjs | null, Dayjs | null] | null
+	>(null);
 
 	const handleSearch = (
 		selectedKeys: string[],
@@ -133,78 +141,101 @@ const useTable = () => {
 
 	const getColumnDateFilterProps = (
 		dateField: 'createdDate' | 'effectiveDate',
-		earlierThan?: boolean
-	): TableColumnType<any> => ({
-		filterDropdown: ({
-			setSelectedKeys,
-			selectedKeys,
-			confirm,
-			clearFilters
-		}) => (
-			<div style={{ padding: 8 }}>
-				<DatePicker
-					placeholder='Seleccionar fecha...'
-					value={selectedDate}
-					onChange={(date: Moment | null, dateString: string | string[]) => {
-						setSelectedDate(date);
-						setSelectedKeys(
-							Array.isArray(dateString)
-								? dateString.filter(Boolean)
-								: dateString
-									? [dateString]
-									: []
+		localFilter: boolean = false
+	): TableColumnType<any> => {
+		const props: TableColumnType<any> = {
+			filterDropdown: ({
+				setSelectedKeys,
+				selectedKeys,
+				confirm,
+				clearFilters
+			}) => (
+				<div
+					style={{ padding: 8 }}
+					className='flex flex-col items-center gap-2'
+				>
+					<RangePicker
+						placeholder={['Filtrar desde...', 'Filtrar hasta...']}
+						value={selectedDate}
+						onChange={(dates, dateStrings) => {
+							setSelectedDate(dates as [Dayjs | null, Dayjs | null]);
+							setSelectedKeys(
+								Array.isArray(dateStrings)
+									? dateStrings.filter(Boolean)
+									: dateStrings
+										? [dateStrings]
+										: []
+							);
+						}}
+					/>
+					<Space>
+						<Button
+							type='primary'
+							onClick={() => {
+								confirm();
+							}}
+							size='small'
+							style={{ width: 90 }}
+						>
+							Filtrar
+						</Button>
+						<Button
+							onClick={() => {
+								clearFilters && clearFilters();
+								confirm();
+								setSelectedDate(null);
+							}}
+							size='small'
+							style={{ width: 90 }}
+						>
+							Limpiar
+						</Button>
+					</Space>
+				</div>
+			),
+			filterIcon: filtered => (
+				<Tooltip title={'Filtrar por rango de fechas'}>
+					<FilterFilled style={{ color: filtered ? '#1890ff' : undefined }} />
+				</Tooltip>
+			)
+		};
+
+		if (localFilter) {
+			props.onFilter = (value, record) => {
+				const recordDateBackup =
+					dateField === 'effectiveDate'
+						? record.createdDate
+						: record.effectiveDate;
+
+				const recordDate = record[dateField] || recordDateBackup;
+
+				if (!recordDate) return false;
+
+				const formattedRecordDate = dayjs(recordDate).format('YYYY-MM-DD');
+
+				if (Array.isArray(value) && value.length === 2) {
+					const [start, end] = value;
+					if (start && end) {
+						return (
+							dayjs(formattedRecordDate).isSameOrAfter(dayjs(start)) &&
+							dayjs(formattedRecordDate).isSameOrBefore(dayjs(end))
 						);
-					}}
-					style={{ marginBottom: 8, display: 'block' }}
-				/>
-				<Space>
-					<Button
-						type='primary'
-						onClick={() => {
-							confirm();
-						}}
-						size='small'
-						style={{ width: 90 }}
-					>
-						Filtrar
-					</Button>
-					<Button
-						onClick={() => {
-							clearFilters && clearFilters();
-							confirm();
-							setSelectedDate(null);
-						}}
-						size='small'
-						style={{ width: 90 }}
-					>
-						Limpiar
-					</Button>
-				</Space>
-			</div>
-		),
-		filterIcon: filtered => (
-			<Tooltip title={earlierThan ? 'Filtrar anteriores a fecha' : ''}>
-				<FilterFilled style={{ color: filtered ? '#1890ff' : undefined }} />
-			</Tooltip>
-		),
-
-		onFilter: (value, record) => {
-			const recordDateBackup =
-				dateField === 'effectiveDate'
-					? record.createdDate
-					: record.effectiveDate;
-
-			const recordDate = record[dateField] || recordDateBackup;
-
-			if (!recordDate) return false;
-
-			const formattedRecordDate = moment(recordDate).format('YYYY-MM-DD');
-
-			return earlierThan
-				? formattedRecordDate < value
-				: formattedRecordDate === value;
+					}
+					if (start) {
+						return dayjs(formattedRecordDate).isSameOrAfter(dayjs(start));
+					}
+					if (end) {
+						return dayjs(formattedRecordDate).isSameOrBefore(dayjs(end));
+					}
+				} else if (typeof value === 'string') {
+					return formattedRecordDate === value;
+				}
+				return false;
+			};
 		}
-	});
+
+		return props;
+	};
 
 	return {
 		getColumnSearchProps,

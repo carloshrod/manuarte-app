@@ -25,17 +25,18 @@ const getMenuItems = (session: Session) => {
 	const { user } = session ?? {};
 	const roleName = user?.roleName as string;
 	const shop = user?.shop as string;
+	const shopId = user?.shopId as string;
 	const mainStock = user?.mainStock;
 	const extraPermissions = user?.extraPermissions as string[];
 
-	const roleRules = AUTH_RULES(shop)[roleName] || { allowedPaths: [] };
+	const roleRules = AUTH_RULES(shop, shopId)[roleName] || { allowedPaths: [] };
 
 	const permissionToPathMap: Record<string, string> = {
 		'product-read': PRODUCTS,
 		'customer-read': CUSTOMERS
 	};
 
-	const filteredItems = allMenuItems(shop, mainStock).filter(item => {
+	const filteredItems = allMenuItems(shop, shopId, mainStock).filter(item => {
 		const hasRoleAccess = roleRules.allowedPaths?.includes(item.path);
 
 		const hasExtraPermissionAccess = Object.entries(permissionToPathMap).some(
@@ -59,8 +60,14 @@ const getMenuItems = (session: Session) => {
 
 export default getMenuItems;
 
-export const allMenuItems = (shop?: string, mainStock?: boolean) => {
-	const QUOTE_PATH = !shop ? QUOTE_SHOPS : `${QUOTE_SHOPS}/${shop}`;
+export const allMenuItems = (
+	shop?: string,
+	shopId?: string,
+	mainStock?: boolean
+) => {
+	const QUOTE_PATH = !shop
+		? QUOTE_SHOPS
+		: `${QUOTE_SHOPS}/${shop}?shopId=${shopId}`;
 	const BILLING_PATH = !shop ? BILLING_SHOPS : `${BILLING_SHOPS}/${shop}`;
 	const STOCK_PATH = !shop ? STOCKS : `${STOCKS}/${shop}`;
 	const FINANCIAL_FLOW_PATH = !shop

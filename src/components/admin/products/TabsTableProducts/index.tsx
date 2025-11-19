@@ -42,14 +42,13 @@ const TabsTableProducts = ({
 	const {
 		getProductVariants,
 		getProductCategories,
-		synchronizeFilters,
-		isLoading,
-		tableFilters
+
+		isLoading
 	} = useProductServices();
+	const { updateFilterParams, synchronizeFilters, tableFilters } = useFilters();
 	const { productVariantColumns, productCategoryColumns } = ProductCols({
 		tableFilters
 	});
-	const { updateFilterParams } = useFilters();
 
 	const page = Number(searchParams.page) || 1;
 	const pageSize = Number(searchParams.pageSize) || 30;

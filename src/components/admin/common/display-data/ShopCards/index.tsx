@@ -36,7 +36,10 @@ const ShopCards = async ({
 							<Link
 								href={{
 									pathname: `${route}/${shop.slug}`,
-									query: isShop ? undefined : { main: shop.mainStock }
+									query: {
+										shopId: shop.id,
+										main: isShop ? undefined : shop.mainStock
+									}
 								}}
 							>
 								<div className='max-h-[200px] shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-12 rounded-lg transform transition duration-300 hover:scale-105'>

@@ -38,19 +38,13 @@ const TabsTableCustomers = ({
 		topCustomersEC,
 		topCustomersEcPagination
 	} = useSelector((state: RootState) => state.user);
-	const {
-		getAllCustomers,
-		getTopCustomersCO,
-		getTopCustomersEC,
-		synchronizeFilters,
-		isLoading,
-		tableFilters
-	} = useUserService();
+	const { getAllCustomers, getTopCustomersCO, getTopCustomersEC, isLoading } =
+		useUserService();
+	const { updateFilterParams, synchronizeFilters, tableFilters } = useFilters();
 	const { customerColumns, topCustomerColumns } = CustomerCols({
 		isAdmin,
 		tableFilters
 	});
-	const { updateFilterParams } = useFilters();
 	const router = useRouter();
 
 	const [tabState, setTabState] = useState<

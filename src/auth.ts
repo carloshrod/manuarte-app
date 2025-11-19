@@ -63,6 +63,7 @@ export const {
 						email: user.email,
 						roleName: decodedToken.user.roleName,
 						shop: decodedToken.user.shop,
+						shopId: decodedToken.user.shopId,
 						isoCode: decodedToken.user.isoCode,
 						mainStock: decodedToken.user.mainStock,
 						extraPermissions: decodedToken.user.extraPermissions

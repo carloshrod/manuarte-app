@@ -7,7 +7,6 @@ import { TiArrowDown, TiArrowUp } from 'react-icons/ti';
 import { IoInformationCircleOutline } from 'react-icons/io5';
 import { useSession } from 'next-auth/react';
 import StaffActions from '@/components/admin/users/StaffActions';
-import QuotesActions from '@/components/admin/quotes/QuotesActions';
 import BillingsActions from '@/components/admin/billings/BillingsActions';
 import StockItemActions from '@/components/admin/stock/StockItemActions';
 import StockItemsHistoryActions from '@/components/admin/stock/StockItemHistoryActions';
@@ -18,7 +17,6 @@ import {
 	BILLING_STATUS_MAP,
 	CASH_MOVEMENT_CAT_MAP,
 	PAYMENT_METHOD_MAP,
-	QUOTE_STATUS_MAP,
 	TRANSACTION_STATES_MAP,
 	TRANSACTION_TYPES_MAP
 } from '@/utils/mappings';
@@ -90,103 +88,6 @@ const useTableColumns = () => {
 			className: 'actions',
 			render: (_, record: Staff) => <StaffActions record={record} />,
 			width: 100
-		}
-	];
-
-	const quoteColumns: TableColumnsType<Quote> = [
-		{
-			title: 'SERIAL',
-			dataIndex: 'serialNumber',
-			key: 'serialNumber',
-			...getColumnSearchProps('serialNumber'),
-			render: value => <CopyableText text={value} />,
-			width: 180
-		},
-		{
-			title: 'ESTADO',
-			dataIndex: 'status',
-			key: 'status',
-			filters: [
-				{
-					text: 'POR PAGAR',
-					value: 'PENDING'
-				},
-				{
-					text: 'ACEPTADA',
-					value: 'ACCEPTED'
-				},
-				{
-					text: 'CANCELADA',
-					value: 'CANCELED'
-				},
-				{
-					text: 'EN REVISIÓN',
-					value: 'REVISION'
-				},
-				{
-					text: 'VENCIDA',
-					value: 'OVERDUE'
-				}
-			],
-			onFilter: (value, record) => record.status.indexOf(value as string) === 0,
-			render: value => QUOTE_STATUS_MAP[value],
-			width: 140
-		},
-		{
-			title: 'CLIENTE',
-			dataIndex: 'customerName',
-			key: 'customerName',
-			...getColumnSearchProps('customerName'),
-			render: (value: string = 'Consumidor final') =>
-				value ? formatToTitleCase(value) : 'Consumidor final',
-			width: 300
-		},
-		{
-			title: 'FECHA',
-			dataIndex: 'createdDate',
-			key: 'createdDate',
-			...getColumnDateFilterProps('createdDate'),
-			render: (value: string) => (
-				<span>{value ? formatDate(value) : '--'}</span>
-			),
-			width: 140
-		},
-		{
-			title: 'PDF',
-			dataIndex: 'id',
-			key: 'id',
-			render: (value: string, record: Quote) => {
-				return (
-					<span>
-						{value ? (
-							<Link href={`${pathname}/${record.serialNumber}`}>
-								<Button
-									variant='filled'
-									color='danger'
-									icon={
-										<BsFileEarmarkPdf
-											size={24}
-											style={{ display: 'flex', alignItems: 'center' }}
-										/>
-									}
-								/>
-							</Link>
-						) : (
-							'--'
-						)}
-					</span>
-				);
-			},
-			width: 100
-		},
-		{
-			title: 'ACCIONES',
-			key: 'actions',
-			className: 'actions',
-			render: (_, record: Quote) => (
-				<QuotesActions record={record} shopSlug={params?.shopSlug as string} />
-			),
-			width: 140
 		}
 	];
 
@@ -845,7 +746,6 @@ const useTableColumns = () => {
 
 	return {
 		staffColumns,
-		quoteColumns,
 		billingColumns,
 		stockItemsColumns,
 		stockItemsHistoryColumns,
