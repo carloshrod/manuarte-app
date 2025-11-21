@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react';
 import { Button, Col, Divider, Row } from 'antd';
 import TransactionsItemList from '../TransactionItemsList';
 import { transactionServices } from '@/services/transactionServices';
+import { billingLibs } from '@/libs/api/billing';
+import { useDrawerStore } from '@/stores/drawerStore';
 import {
 	TRANSACTION_STATES_MAP,
 	TRANSACTION_TYPES_MAP
 } from '@/utils/mappings';
-import { DrawerContent, TransactionType } from '@/types/enums';
-import { useDrawerStore } from '@/stores/drawerStore';
 import { formatDate } from '@/utils/formats';
-import { billingServices } from '@/services/billingServices';
+import { DrawerContent, TransactionType } from '@/types/enums';
 
 const TransactionDetails = () => {
 	const { dataToHandle, closeDrawer, content } = useDrawerStore.getState();
@@ -36,7 +36,7 @@ const TransactionDetails = () => {
 	};
 
 	const fetchBillingItems = async () => {
-		const data = await billingServices.getOne({
+		const data = await billingLibs.getOne({
 			serialNumber: dataToHandle?.identifier
 		});
 

@@ -23,7 +23,7 @@ import {
 } from '@/reducers/users/userSlice';
 import { quoteLibs } from '@/libs/api/quote';
 import { addQuote, updateQuote } from '@/reducers/quotes/quoteSlice';
-import { billingServices } from '@/services/billingServices';
+import { billingLibs } from '@/libs/api/billing';
 import { addBilling, updateBilling } from '@/reducers/billings/billingSlice';
 import { stockItemServices } from '@/services/stockItemServices';
 import {
@@ -292,7 +292,7 @@ const useForm = () => {
 		fetchBillings?: () => void;
 	}) => {
 		return await handleSubmit({
-			serviceFn: billingServices.create,
+			serviceFn: billingLibs.create,
 			values,
 			onSuccess: async res => {
 				if (fetchBillings) {
@@ -333,7 +333,7 @@ const useForm = () => {
 
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				billingServices.update(valuesToUpdate, billingId),
+				billingLibs.update(valuesToUpdate, billingId),
 			values,
 			onSuccess: async _res => {
 				dispatch(

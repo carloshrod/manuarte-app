@@ -1,10 +1,10 @@
+import { notification } from 'antd';
 import PDFDoc from '@/components/admin/common/PDF/PDFDoc';
-import { billingServices } from '@/services/billingServices';
 import { messagingServices } from '@/services/messagingServices';
 import { quoteLibs } from '@/libs/api/quote';
+import { billingLibs } from '@/libs/api/billing';
 import { DiscountType } from '@/types/enums';
 import { pdf } from '@react-pdf/renderer';
-import { notification } from 'antd';
 
 const usePdf = () => {
 	const calculateTotals = (data: Quote | Billing) => {
@@ -124,7 +124,7 @@ const usePdf = () => {
 	}) => {
 		const newQuoteData = isQuote
 			? await quoteLibs.getOne({ serialNumber })
-			: await billingServices.getOne({ serialNumber });
+			: await billingLibs.getOne({ serialNumber });
 
 		await sendPdf({
 			isQuote,

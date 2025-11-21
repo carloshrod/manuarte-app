@@ -11,7 +11,7 @@ import {
 } from '@/components/admin/consts';
 import { quoteLibs } from '@/libs/api/quote';
 import { useModalStore } from '@/stores/modalStore';
-import { billingServices } from '@/services/billingServices';
+
 import { setBillings } from '@/reducers/billings/billingSlice';
 import { formatToTitleCase } from '@/utils/formats';
 import { ROUTES } from '@/utils/routes';
@@ -20,6 +20,7 @@ import { v4 as uuidv4 } from 'uuid';
 import PaymentAmounts from '../PaymentAmounts';
 import CalculationInputs from '../CalculationInputs';
 import { updateCalculations } from '@/components/admin/utils';
+import { billingLibs } from '@/libs/api/billing';
 
 const { TextArea } = Input;
 
@@ -99,9 +100,9 @@ const BillingModalForm = () => {
 								clientRequestId: uuidv4()
 							},
 							fetchBillings: async () => {
-								const data = await billingServices.getAll(
-									params?.shopSlug as string
-								);
+								const data = await billingLibs.getAll({
+									shopId: dataToHandle?.shopId
+								});
 								dispatch(setBillings(data));
 							}
 						});
@@ -109,7 +110,9 @@ const BillingModalForm = () => {
 						if (res?.status === 201) {
 							const quoteId = dataToHandle.id;
 							await quoteLibs.delete(quoteId);
-							push(`${ROUTES.BILLING_SHOPS}/${params?.shopSlug}`);
+							push(
+								`${ROUTES.BILLING_SHOPS}/${params?.shopSlug}?shopId=${dataToHandle?.shopId}`
+							);
 						} else {
 							closeModal();
 						}

@@ -2,7 +2,7 @@ import { notification } from 'antd';
 import { useDispatch } from 'react-redux';
 import { AxiosError } from 'axios';
 import TableActions from '../../common/ui/TableActions';
-import { billingServices } from '@/services/billingServices';
+import { billingLibs } from '@/libs/api/billing';
 import { BillingStatus, ModalContent } from '@/types/enums';
 import { cancelBilling } from '@/reducers/billings/billingSlice';
 import { useModalStore } from '@/stores/modalStore';
@@ -16,7 +16,7 @@ const BillingsActions = ({ record }: { record: Billing }) => {
 		record.status === BillingStatus.PENDING_DELIVERY;
 
 	const handleEdit = async () => {
-		const billing = await billingServices.getOne({
+		const billing = await billingLibs.getOne({
 			serialNumber: record?.serialNumber
 		});
 
@@ -37,7 +37,7 @@ const BillingsActions = ({ record }: { record: Billing }) => {
 		title: string;
 		content: ModalContent;
 	}) => {
-		const billing = await billingServices.getOne({
+		const billing = await billingLibs.getOne({
 			serialNumber: record?.serialNumber
 		});
 
@@ -64,7 +64,7 @@ const BillingsActions = ({ record }: { record: Billing }) => {
 
 	const handleCancel = async () => {
 		try {
-			const res = await billingServices.cancel(record.serialNumber);
+			const res = await billingLibs.cancel(record.serialNumber);
 			if (res.status === 200) {
 				dispatch(cancelBilling({ ...record, status: BillingStatus.CANCELED }));
 				notification.success({

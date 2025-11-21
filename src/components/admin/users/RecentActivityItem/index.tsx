@@ -1,11 +1,11 @@
 'use client';
-import { billingServices } from '@/services/billingServices';
+import { Tooltip } from 'antd';
+import { billingLibs } from '@/libs/api/billing';
 import { quoteLibs } from '@/libs/api/quote';
 import { useDrawerStore } from '@/stores/drawerStore';
-import { DrawerContent } from '@/types/enums';
 import { formatCurrency, formatDate } from '@/utils/formats';
 import { PAYMENT_METHOD_MAP } from '@/utils/mappings';
-import { Tooltip } from 'antd';
+import { DrawerContent } from '@/types/enums';
 
 const RecentActivityItem = ({ item }: { item: Billing | Quote }) => {
 	const { openDrawer } = useDrawerStore.getState();
@@ -13,7 +13,7 @@ const RecentActivityItem = ({ item }: { item: Billing | Quote }) => {
 
 	const handleShowDetails = async () => {
 		const dataToHandle = isBilling
-			? await billingServices.getOne({
+			? await billingLibs.getOne({
 					serialNumber: item.serialNumber,
 					server: false
 				})
