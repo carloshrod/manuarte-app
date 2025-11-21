@@ -8,6 +8,7 @@ import { BsFileEarmarkPdf } from 'react-icons/bs';
 import QuotesActions from '../QuotesActions';
 import { usePathname } from 'next/navigation';
 import { FilterValue } from 'antd/es/table/interface';
+import { Dayjs } from 'dayjs';
 
 const QuoteCols = ({
 	tableFilters
@@ -73,7 +74,11 @@ const QuoteCols = ({
 			dataIndex: 'createdDate',
 			key: 'createdDate',
 			filteredValue: tableFilters.createdDate || null,
-			...getColumnDateFilterProps('createdDate'),
+			...getColumnDateFilterProps(
+				'createdDate',
+				false,
+				tableFilters.createdDate as [Dayjs | null, Dayjs | null] | null
+			),
 			render: (value: string) => (
 				<span>{value ? formatDate(value) : '--'}</span>
 			),

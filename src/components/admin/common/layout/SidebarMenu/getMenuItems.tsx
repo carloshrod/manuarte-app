@@ -68,8 +68,13 @@ export const allMenuItems = (
 	const QUOTE_PATH = !shop
 		? QUOTE_SHOPS
 		: `${QUOTE_SHOPS}/${shop}?shopId=${shopId}`;
-	const BILLING_PATH = !shop ? BILLING_SHOPS : `${BILLING_SHOPS}/${shop}`;
+
+	const BILLING_PATH = !shop
+		? BILLING_SHOPS
+		: `${BILLING_SHOPS}/${shop}?shopId=${shopId}`;
+
 	const STOCK_PATH = !shop ? STOCKS : `${STOCKS}/${shop}`;
+
 	const FINANCIAL_FLOW_PATH = !shop
 		? FINANCIAL_FLOW_SHOPS
 		: `${FINANCIAL_FLOW_SHOPS}/${shop}`;

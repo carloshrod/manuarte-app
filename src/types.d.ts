@@ -501,7 +501,7 @@ interface RootState {
 	};
 	billing: {
 		billings: Billing[];
-		filteredBillings: Billing[];
+		billingsPagination: Pagination;
 	};
 	stock: {
 		stockItems: StockItem[];

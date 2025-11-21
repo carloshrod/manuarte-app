@@ -141,8 +141,11 @@ const useTable = () => {
 
 	const getColumnDateFilterProps = (
 		dateField: 'createdDate' | 'effectiveDate',
-		localFilter: boolean = false
+		localFilter: boolean = false,
+		filteredValue?: [Dayjs | null, Dayjs | null] | null
 	): TableColumnType<any> => {
+		const initialDate = filteredValue || selectedDate;
+
 		const props: TableColumnType<any> = {
 			filterDropdown: ({
 				setSelectedKeys,
@@ -156,7 +159,7 @@ const useTable = () => {
 				>
 					<RangePicker
 						placeholder={['Filtrar desde...', 'Filtrar hasta...']}
-						value={selectedDate}
+						value={initialDate}
 						onChange={(dates, dateStrings) => {
 							setSelectedDate(dates as [Dayjs | null, Dayjs | null]);
 							setSelectedKeys(

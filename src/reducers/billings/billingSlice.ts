@@ -2,7 +2,12 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
 	billings: [] as Billing[],
-	filteredBillings: [] as Billing[]
+	billingsPagination: {
+		total: 0,
+		page: 1,
+		pageSize: 10,
+		totalPages: 1
+	} as Pagination
 };
 
 const billingSlice = createSlice({
@@ -10,11 +15,15 @@ const billingSlice = createSlice({
 	initialState,
 	reducers: {
 		setBillings: (state, action) => {
-			state.billings = action.payload;
-		},
+			const { billings, total, page, pageSize, totalPages } = action.payload;
 
-		setFilteredBillings: (state, action) => {
-			state.filteredBillings = action.payload;
+			state.billings = billings;
+			state.billingsPagination = {
+				total,
+				page,
+				pageSize,
+				totalPages
+			};
 		},
 
 		addBilling: (state, action) => {
@@ -58,7 +67,6 @@ export const {
 	addBilling,
 	updateBilling,
 	cancelBilling,
-	removeBilling,
-	setFilteredBillings
+	removeBilling
 } = billingSlice.actions;
 export default billingSlice.reducer;

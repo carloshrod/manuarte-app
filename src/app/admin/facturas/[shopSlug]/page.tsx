@@ -9,16 +9,19 @@ import OpenDrawerButton from '@/components/admin/common/ui/OpenDrawerButton';
 import { DrawerContent } from '@/types/enums';
 import { PiInvoice } from 'react-icons/pi';
 import { MdOutlinePendingActions } from 'react-icons/md';
+import { BillingParams } from '@/libs/api/billing';
 
 interface QuotesPageProps {
 	params: {
 		shopSlug: string;
 	};
+	searchParams: BillingParams;
 }
 
 const BillingsPage = async (props: QuotesPageProps) => {
 	const {
-		params: { shopSlug }
+		params: { shopSlug },
+		searchParams
 	} = props;
 	const shopName = shopSlug.toUpperCase().replace('-', ' ');
 	const session = await auth();
@@ -70,11 +73,14 @@ const BillingsPage = async (props: QuotesPageProps) => {
 					</span>
 				</div>
 				<div className='flex gap-2'>
-					<GenerateBillingReportButton shopSlug={shopSlug} />
+					<GenerateBillingReportButton
+						shopSlug={shopSlug}
+						searchParams={searchParams}
+					/>
 					<DropdownMenu items={dropDownItems} label='Factura' />
 				</div>
 			</div>
-			<BillingsTable shopSlug={shopSlug} />
+			<BillingsTable searchParams={searchParams} shopSlug={shopSlug} />
 		</section>
 	);
 };

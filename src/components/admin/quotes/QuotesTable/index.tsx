@@ -47,7 +47,7 @@ const QuotesTable = ({ searchParams }: Props) => {
 	};
 
 	useEffect(() => {
-		synchronizeFilters(filters);
+		synchronizeFilters(filters, 'createdDate');
 	}, [searchParams]);
 
 	useEffect(() => {

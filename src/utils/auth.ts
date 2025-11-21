@@ -49,7 +49,7 @@ export const AUTH_RULES = (
 			allowedPaths: [
 				`${ROUTES.QUOTE_SHOPS}/${shop}?shopId=${shopId}`,
 				ROUTES.QUOTE_DETAIL,
-				`${ROUTES.BILLING_SHOPS}/${shop}`,
+				`${ROUTES.BILLING_SHOPS}/${shop}?shopId=${shopId}`,
 				ROUTES.BILLING_DETAIL,
 				`${ROUTES.STOCKS}/${shop}`,
 				`${ROUTES.STOCKS}/${shop}/historial`,

@@ -1,49 +1,58 @@
 'use client';
-import useTableColumns from '@/hooks/useTableColumns';
+import { useEffect } from 'react';
 import CustomTable from '../../common/display-data/Table';
-import { useEffect, useState } from 'react';
-import { billingServices } from '@/services/billingServices';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-	setBillings,
-	setFilteredBillings
-} from '@/reducers/billings/billingSlice';
 import { TablePaginationConfig } from 'antd';
 import { FilterValue } from 'antd/es/table/interface';
-import moment from 'moment';
-import {
-	BillingStatus,
-	CurrentCashSessionStatus,
-	ModalContent
-} from '@/types/enums';
+import { CurrentCashSessionStatus, ModalContent } from '@/types/enums';
 import { shopServices } from '@/services/shopServices';
 import { setShops } from '@/reducers/shops/shopSlice';
 import { financialFlowServices } from '@/services/financialFlowServices';
 import { useModalStore } from '@/stores/modalStore';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/utils/routes';
+import { BillingParams } from '@/libs/api/billing';
+import useBillingService from '@/services/billing';
+import useFilters from '@/hooks/useFilters';
+import BillingCols from './cols';
 
-interface DataType {
-	createdDate?: string;
-	status?: string;
-	[key: string]: any;
+interface Props {
+	searchParams: BillingParams;
+	shopSlug: string;
 }
 
-const BillingsTable = ({ shopSlug }: { shopSlug: string }) => {
-	const { billingColumns } = useTableColumns();
-	const { shops } = useSelector((state: RootState) => state.shop);
-	const { billings } = useSelector((state: RootState) => state.billing);
-	const [isLoading, setIsLoading] = useState(true);
-	const dispatch = useDispatch();
-	const shopId = shops?.find(sh => sh?.slug === shopSlug)?.id;
+const BillingsTable = ({ searchParams, shopSlug }: Props) => {
 	const { openModal } = useModalStore.getState();
+	const { shops } = useSelector((state: RootState) => state.shop);
+	const { billings, billingsPagination } = useSelector(
+		(state: RootState) => state.billing
+	);
+	const { fetchBillings, isLoading } = useBillingService();
+	const { updateFilterParams, synchronizeFilters, tableFilters } = useFilters();
+	const { billingColumns } = BillingCols({ tableFilters, shopSlug });
+	const dispatch = useDispatch();
 	const router = useRouter();
+
+	const page = Number(searchParams.page) || 1;
+	const pageSize = Number(searchParams.pageSize) || 30;
+
+	const filters = {
+		shopId: searchParams.shopId,
+		serialNumber: searchParams.serialNumber,
+		status: searchParams.status,
+		paymentMethods: searchParams.paymentMethods,
+		customerName: searchParams.customerName,
+		dateStart: searchParams.dateStart,
+		dateEnd: searchParams.dateEnd
+	};
 
 	useEffect(() => {
 		const fetchCashSession = async () => {
-			if (!shopId) return;
+			if (!searchParams?.shopId) return;
 
-			const data = await financialFlowServices.getCurrentCashSession(shopId);
+			const data = await financialFlowServices.getCurrentCashSession(
+				searchParams?.shopId
+			);
 
 			if (data) {
 				if (data?.status !== CurrentCashSessionStatus.OPEN) {
@@ -63,7 +72,11 @@ const BillingsTable = ({ shopSlug }: { shopSlug: string }) => {
 		};
 
 		fetchCashSession();
-	}, [shopId]);
+	}, [searchParams?.shopId]);
+
+	useEffect(() => {
+		synchronizeFilters(filters, 'effectiveDate');
+	}, [searchParams]);
 
 	const fetchShops = async () => {
 		if (shops?.length === 0) {
@@ -74,50 +87,31 @@ const BillingsTable = ({ shopSlug }: { shopSlug: string }) => {
 		}
 	};
 
-	const fetchBillings = async () => {
-		if (shopSlug && billings.length === 0) {
-			const data = await billingServices.getAll(shopSlug);
-			dispatch(setBillings(data));
-		}
-		setIsLoading(false);
-	};
-
 	useEffect(() => {
 		fetchShops();
-		fetchBillings();
-	}, []);
+		fetchBillings({ page, pageSize, ...filters });
+	}, [page, pageSize, ...Object.values(filters)]);
 
-	const filterBillings = (
-		_pagination: TablePaginationConfig,
+	const handleTableChange = (
+		pagination: TablePaginationConfig,
 		filters: Record<string, FilterValue | null>
 	) => {
-		const effectiveDateFilter = filters?.effectiveDate;
-
-		if (!effectiveDateFilter || effectiveDateFilter.length === 0) {
-			dispatch(setFilteredBillings([]));
-			return;
-		}
-
-		let filtered: DataType[] = [...billings];
-
-		filtered = filtered?.filter(
-			item =>
-				moment(item?.effectiveDate).format('YYYY-MM-DD') ===
-				effectiveDateFilter[0]
-		);
-
-		filtered = filtered.filter(item => item.status === BillingStatus.PAID);
-
-		dispatch(setFilteredBillings(filtered));
+		updateFilterParams(pagination, searchParams, filters);
 	};
 
 	return (
 		<CustomTable
 			columns={billingColumns}
-			dataSource={isLoading ? [] : billings}
+			dataSource={billings}
 			isLoading={isLoading}
 			scrollMinus={335}
-			filterData={filterBillings}
+			pagination={{
+				current: billingsPagination.page,
+				pageSize: billingsPagination.pageSize,
+				total: billingsPagination.total,
+				showSizeChanger: true
+			}}
+			onChange={handleTableChange}
 		/>
 	);
 };

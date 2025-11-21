@@ -1,20 +1,16 @@
-import Link from 'next/link';
-import { useParams, usePathname } from 'next/navigation';
-import { Badge, Button, TableColumnsType, Tag, Tooltip } from 'antd';
+import { useParams } from 'next/navigation';
+import { Badge, TableColumnsType, Tag, Tooltip } from 'antd';
 import { CheckCircleOutlined, DollarCircleOutlined } from '@ant-design/icons';
-import { BsFileEarmarkPdf } from 'react-icons/bs';
 import { TiArrowDown, TiArrowUp } from 'react-icons/ti';
 import { IoInformationCircleOutline } from 'react-icons/io5';
 import { useSession } from 'next-auth/react';
 import StaffActions from '@/components/admin/users/StaffActions';
-import BillingsActions from '@/components/admin/billings/BillingsActions';
 import StockItemActions from '@/components/admin/stock/StockItemActions';
 import StockItemsHistoryActions from '@/components/admin/stock/StockItemHistoryActions';
 import TransactionActions from '@/components/admin/transactions/TransactionAction';
 import useTable from './useTable';
 import { formatCurrency, formatDate, formatToTitleCase } from '@/utils/formats';
 import {
-	BILLING_STATUS_MAP,
 	CASH_MOVEMENT_CAT_MAP,
 	PAYMENT_METHOD_MAP,
 	TRANSACTION_STATES_MAP,
@@ -32,7 +28,6 @@ import CopyableText from '@/components/admin/common/ui/CopyableText';
 
 const useTableColumns = () => {
 	const { getColumnSearchProps, getColumnDateFilterProps } = useTable();
-	const pathname = usePathname();
 	const params = useParams();
 	const { data: session } = useSession();
 	const isAdmin = session?.user?.roleName === 'admin';
@@ -87,133 +82,6 @@ const useTableColumns = () => {
 			key: 'actions',
 			className: 'actions',
 			render: (_, record: Staff) => <StaffActions record={record} />,
-			width: 100
-		}
-	];
-
-	const billingColumns: TableColumnsType<Billing> = [
-		{
-			title: 'SERIAL',
-			dataIndex: 'serialNumber',
-			key: 'serialNumber',
-			...getColumnSearchProps('serialNumber'),
-			render: value => <CopyableText text={value} />,
-			width: 160
-		},
-		{
-			title: 'ESTADO',
-			dataIndex: 'status',
-			key: 'status',
-			filters: [
-				{
-					text: 'FACTURADA',
-					value: 'PAID'
-				},
-				{
-					text: 'ENTREGA PENDIENTE',
-					value: 'PENDING_DELIVERY'
-				},
-
-				{
-					text: 'PAGO PARCIAL',
-					value: 'PARTIAL_PAYMENT'
-				},
-				{
-					text: 'PAGO PENDIENTE',
-					value: 'PENDING_PAYMENT'
-				},
-				{
-					text: 'ANULADA',
-					value: 'CANCELED'
-				}
-			],
-			onFilter: (value, record) => record.status.indexOf(value as string) === 0,
-			render: value => {
-				const STATUS_COLORS: Record<string, string> = {
-					PAID: 'success',
-					PENDING_DELIVERY: 'cyan',
-					PENDING_PAYMENT: 'orange',
-					PARTIAL_PAYMENT: 'yellow',
-					CANCELED: 'red'
-				};
-
-				return (
-					<Tag color={STATUS_COLORS[value]}>{BILLING_STATUS_MAP[value]}</Tag>
-				);
-			},
-			width: 120
-		},
-		{
-			title: 'MÉTODOS DE PAGO',
-			dataIndex: 'paymentMethods',
-			key: 'paymentMethods',
-			filters: !params?.shopSlug?.includes('quito')
-				? COL_PAYMENT_METHOD_FILTER
-				: ECU_PAYMENT_METHOD_FILTER,
-			onFilter: (value, record) =>
-				record.paymentMethods.includes(value as string),
-			render: value =>
-				value.map((p: string) => (
-					<Tag color='blue' key={p} style={{ marginBottom: 2 }}>
-						{PAYMENT_METHOD_MAP[p]}
-					</Tag>
-				)),
-			width: 175
-		},
-		{
-			title: 'CLIENTE',
-			dataIndex: 'customerName',
-			key: 'customerName',
-			...getColumnSearchProps('customerName'),
-			render: (value: string = 'Consumidor final') =>
-				value ? formatToTitleCase(value) : 'Consumidor final',
-			width: 260
-		},
-		{
-			title: 'FECHA',
-			dataIndex: 'effectiveDate',
-			key: 'effectiveDate',
-			...getColumnDateFilterProps('effectiveDate'),
-			render: (value: string, record) => {
-				const valueDate = value || record?.createdDate;
-
-				return <span>{valueDate ? formatDate(valueDate) : '--'}</span>;
-			},
-			width: 140
-		},
-		{
-			title: 'PDF',
-			dataIndex: 'id',
-			key: 'id',
-			render: (value: string, record: Billing) => {
-				return (
-					<span>
-						{value ? (
-							<Link href={`${pathname}/${record.serialNumber}`}>
-								<Button
-									variant='filled'
-									color='danger'
-									icon={
-										<BsFileEarmarkPdf
-											size={24}
-											style={{ display: 'flex', alignItems: 'center' }}
-										/>
-									}
-								/>
-							</Link>
-						) : (
-							'--'
-						)}
-					</span>
-				);
-			},
-			width: 100
-		},
-		{
-			title: 'ACCIONES',
-			key: 'actions',
-			className: 'actions',
-			render: (_, record: Billing) => <BillingsActions record={record} />,
 			width: 100
 		}
 	];
@@ -746,7 +614,6 @@ const useTableColumns = () => {
 
 	return {
 		staffColumns,
-		billingColumns,
 		stockItemsColumns,
 		stockItemsHistoryColumns,
 		transactionsColumns,
