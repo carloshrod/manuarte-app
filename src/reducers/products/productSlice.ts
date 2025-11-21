@@ -34,12 +34,38 @@ export const productSlice = createSlice({
 			const newProduct = action.payload;
 			const newProductVariants = formatProductVariantState(newProduct);
 
-			state.products = [newProduct, ...state.products];
+			state.products =
+				state.products.length > 0 ? [newProduct, ...state.products] : [];
 			state.productVariants = [
 				...newProductVariants,
 				...state.productVariants
 			].slice(0, state.productVariantsPagination.pageSize);
 			state.productVariantsPagination.total += newProductVariants.length;
+		},
+
+		updateProduct: (state, action) => {
+			const { productVariant, ...product } = action.payload;
+
+			const newProductData =
+				state.products.length > 0
+					? state.products.map(p =>
+							p.id === product.id ? { ...p, name: product.name } : p
+						)
+					: [];
+
+			const newProductVariantData = state.productVariants.map(pv =>
+				pv.productId === product.id
+					? {
+							...pv,
+							name: pv.id === productVariant.id ? productVariant.name : pv.name,
+							productName: product.name,
+							productDescription: product.description
+						}
+					: pv
+			);
+
+			state.products = newProductData;
+			state.productVariants = newProductVariantData;
 		},
 
 		addProductVariant: (state, action) => {
@@ -48,6 +74,16 @@ export const productSlice = createSlice({
 				state.productVariantsPagination.pageSize
 			);
 			state.productVariantsPagination.total += 1;
+		},
+
+		updateProductVariant: (state, action) => {
+			const productVariant = action.payload;
+
+			const newData = state.productVariants.map(pv =>
+				pv.id === productVariant.id ? { ...pv, name: productVariant.name } : pv
+			);
+
+			state.productVariants = newData;
 		},
 
 		removeProduct: (state, action) => {
@@ -70,7 +106,9 @@ export const {
 	setProducts,
 	setProductVariants,
 	addProduct,
+	updateProduct,
 	addProductVariant,
+	updateProductVariant,
 	removeProduct
 } = productSlice.actions;
 export default productSlice.reducer;

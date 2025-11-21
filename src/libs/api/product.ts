@@ -83,6 +83,13 @@ export const productLibs = {
 		return await axiosPrivate.put(`${ENV.API.PRODUCTS}/${productId}`, body);
 	},
 
+	addProductVariant: async (body: { name: string }, productId: string) => {
+		return axiosPrivate.post(
+			`${ENV.API.PRODUCTS}/add-variant/${productId}`,
+			body
+		);
+	},
+
 	updateProductVariant: async (
 		body: SubmitProductDto,
 		productVariantId: string
@@ -92,13 +99,6 @@ export const productLibs = {
 			{
 				name: body?.productVariant?.name
 			}
-		);
-	},
-
-	addProductVariant: async (body: { name: string }, productId: string) => {
-		return axiosPrivate.post(
-			`${ENV.API.PRODUCTS}/add-variant/${productId}`,
-			body
 		);
 	},
 

@@ -1,4 +1,4 @@
-import { productServices } from '@/services/productServices';
+import { productLibs } from '@/libs/api/product';
 import { userServices } from '@/services/userServices';
 import { cityServices } from '@/services/cityServices';
 import { FormInstance } from 'antd';
@@ -44,7 +44,7 @@ export const getProductsData = async ({
 	missingProducts?: boolean;
 }) => {
 	try {
-		const data = await productServices.searchProductVariants({
+		const data = await productLibs.searchProductVariants({
 			stockId,
 			search: newValue,
 			missingProducts

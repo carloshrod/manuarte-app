@@ -3,13 +3,13 @@ import { Form, notification } from 'antd';
 import { useDispatch } from 'react-redux';
 import { AxiosError, AxiosResponse } from 'axios';
 import { productLibs } from '@/libs/api/product';
-import { productServices } from '@/services/productServices';
 import { productCategoryServices } from '@/services/productCategoryServices';
 import { userServices } from '@/services/userServices';
 import {
 	addProduct,
 	addProductVariant,
-	setProductVariants
+	updateProduct,
+	updateProductVariant
 } from '@/reducers/products/productSlice';
 import {
 	addProductCategory,
@@ -109,7 +109,7 @@ const useForm = () => {
 		}
 
 		await handleSubmit({
-			serviceFn: productServices.createProduct,
+			serviceFn: productLibs.createProduct,
 			values,
 			onSuccess: res => dispatch(addProduct(res.data.newProduct))
 		});
@@ -121,26 +121,10 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				productServices.updateProduct(valuesToUpdate, productId),
+				productLibs.updateProduct(valuesToUpdate, productId),
 			values,
 			onSuccess: async () => {
-				const productVariantsData = await productLibs.getAllProductVariants();
-				dispatch(setProductVariants(productVariantsData));
-			}
-		});
-	};
-
-	const submitUpdateProductVariant = async (
-		values: SubmitProductDto,
-		productVariantId: string
-	) => {
-		await handleSubmit({
-			serviceFn: valuesToUpdate =>
-				productServices.updateProductVariant(valuesToUpdate, productVariantId),
-			values,
-			onSuccess: async () => {
-				const productVariantsData = await productLibs.getAllProductVariants();
-				dispatch(setProductVariants(productVariantsData));
+				dispatch(updateProduct({ ...values, id: productId }));
 			}
 		});
 	};
@@ -151,9 +135,23 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: async newVariantValues =>
-				productServices.addProductVariant(newVariantValues, productId),
+				productLibs.addProductVariant(newVariantValues, productId),
 			values,
 			onSuccess: res => dispatch(addProductVariant(res.data.newProductVariant))
+		});
+	};
+
+	const submitUpdateProductVariant = async (
+		values: SubmitProductDto,
+		productVariantId: string
+	) => {
+		await handleSubmit({
+			serviceFn: valuesToUpdate =>
+				productLibs.updateProductVariant(valuesToUpdate, productVariantId),
+			values,
+			onSuccess: async () => {
+				dispatch(updateProductVariant(values.productVariant));
+			}
 		});
 	};
 

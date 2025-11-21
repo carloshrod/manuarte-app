@@ -39,12 +39,8 @@ const TabsTableProducts = ({
 	const { productCategories } = useSelector(
 		(state: RootState) => state.productCategory
 	);
-	const {
-		getProductVariants,
-		getProductCategories,
-
-		isLoading
-	} = useProductServices();
+	const { getProductVariants, getProductCategories, isLoading } =
+		useProductServices();
 	const { updateFilterParams, synchronizeFilters, tableFilters } = useFilters();
 	const { productVariantColumns, productCategoryColumns } = ProductCols({
 		tableFilters

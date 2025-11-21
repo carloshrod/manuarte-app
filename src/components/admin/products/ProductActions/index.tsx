@@ -1,11 +1,11 @@
-import { notification } from 'antd';
 import { useDispatch } from 'react-redux';
-import { productServices } from '@/services/productServices';
-import { removeProduct } from '@/reducers/products/productSlice';
+import { notification } from 'antd';
 import TableActions from '../../common/ui/TableActions';
+import { productLibs } from '@/libs/api/product';
+import { removeProduct } from '@/reducers/products/productSlice';
+import { useModalStore } from '@/stores/modalStore';
 import { AxiosError } from 'axios';
 import { ModalContent } from '@/types/enums';
-import { useModalStore } from '@/stores/modalStore';
 
 const ProductActions = ({ record }: { record: ProductVariant }) => {
 	const { openModal } = useModalStore.getState();
@@ -21,10 +21,7 @@ const ProductActions = ({ record }: { record: ProductVariant }) => {
 
 	const handleDelete = async () => {
 		try {
-			const res = await productServices.deleteProduct(
-				record.productId,
-				record.id
-			);
+			const res = await productLibs.deleteProduct(record.productId, record.id);
 			if (res.status === 200) {
 				dispatch(
 					removeProduct({

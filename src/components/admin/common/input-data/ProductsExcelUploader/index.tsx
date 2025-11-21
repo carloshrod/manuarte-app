@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { notification, Upload, UploadProps, Spin } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
+import { productLibs } from '@/libs/api/product';
 import * as XLSX from 'xlsx';
-import { productServices } from '@/services/productServices';
 import { AxiosError } from 'axios';
 
 const { Dragger } = Upload;
@@ -82,7 +82,7 @@ const ProductsExcelUploader = ({
 				const productCodes = filteredData.map(item => item.productCode.trim());
 
 				try {
-					const resData = await productServices.bulkSearchProductVariants(
+					const resData = await productLibs.bulkSearchProductVariants(
 						productCodes,
 						fromStockId
 					);
