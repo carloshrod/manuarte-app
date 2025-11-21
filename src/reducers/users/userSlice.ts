@@ -99,11 +99,15 @@ export const userSlice = createSlice({
 		},
 
 		addCustomer: (state, action) => {
-			state.customers = [action.payload, ...state.customers];
+			state.customers = [action.payload, ...state.customers].slice(
+				0,
+				state.customersPagination.pageSize
+			);
 		},
 
 		updateCustomer: (state, action) => {
 			const updatedCustomer = action.payload;
+
 			state.customers = state.customers.map(item =>
 				item.id === updatedCustomer.id ? updatedCustomer : item
 			);

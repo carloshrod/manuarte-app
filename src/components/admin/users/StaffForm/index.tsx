@@ -3,16 +3,16 @@ import { Form, Input, Select, Switch } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
-import { userServices } from '@/services/userServices';
+import { userLibs } from '@/libs/api/user';
 import { shopServices } from '@/services/shopServices';
+import { useModalStore } from '@/stores/modalStore';
 import { formatToTitleCase } from '@/utils/formats';
+import { setShops } from '@/reducers/shops/shopSlice';
 import {
 	createStaffSchema,
 	editStaffSchema,
 	validateForm
 } from '@/utils/validators';
-import { useModalStore } from '@/stores/modalStore';
-import { setShops } from '@/reducers/shops/shopSlice';
 
 const StaffForm = () => {
 	const { form, isLoading, submitRegisterStaff, submitUpdateStaff } = useForm();
@@ -24,7 +24,7 @@ const StaffForm = () => {
 	const dispatch = useDispatch();
 
 	const fetchRoles = async () => {
-		const data = await userServices.getStaffRoles();
+		const data = await userLibs.getStaffRoles();
 		if (data.length > 0) {
 			setStaffRoles(data);
 		}

@@ -3,7 +3,7 @@ import CustomerStats from '@/components/admin/users/CustomerStats';
 import GenerateCustomerReportButton from '@/components/admin/users/GenerateCustomerReportButton';
 import RecentActivityItem from '@/components/admin/users/RecentActivityItem';
 import TopProductsTable from '@/components/admin/users/TabsTableCustomers/TopProductsTable';
-import { userServices } from '@/services/userServices';
+import { userLibs } from '@/libs/api/user';
 import { Card, Descriptions, DescriptionsProps, Empty, Timeline } from 'antd';
 import { HiOutlineUser } from 'react-icons/hi';
 
@@ -14,7 +14,7 @@ interface CustomerDetailsPageProps {
 const CustomerDetailsPage = async ({
 	params: { id }
 }: CustomerDetailsPageProps) => {
-	const customer = await userServices.getCustomerStats(id);
+	const customer = await userLibs.getCustomerStats(id);
 	const { info, billings, totalSpent, topProducts, quotes } = customer ?? {};
 	const {
 		dni,

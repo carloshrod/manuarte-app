@@ -4,7 +4,6 @@ import { CheckCircleOutlined, DollarCircleOutlined } from '@ant-design/icons';
 import { TiArrowDown, TiArrowUp } from 'react-icons/ti';
 import { IoInformationCircleOutline } from 'react-icons/io5';
 import { useSession } from 'next-auth/react';
-import StaffActions from '@/components/admin/users/StaffActions';
 import StockItemActions from '@/components/admin/stock/StockItemActions';
 import StockItemsHistoryActions from '@/components/admin/stock/StockItemHistoryActions';
 import TransactionActions from '@/components/admin/transactions/TransactionAction';
@@ -31,60 +30,6 @@ const useTableColumns = () => {
 	const params = useParams();
 	const { data: session } = useSession();
 	const isAdmin = session?.user?.roleName === 'admin';
-
-	const staffColumns: TableColumnsType<Staff> = [
-		{
-			title: 'DOCUMENTO',
-			dataIndex: 'dni',
-			key: 'dni',
-			...getColumnSearchProps('dni'),
-			width: 100
-		},
-		{
-			title: 'NOMBRE',
-			dataIndex: 'fullName',
-			key: 'fullName',
-			...getColumnSearchProps('fullName'),
-			width: 120
-		},
-		{
-			title: 'EMAIL',
-			dataIndex: 'email',
-			key: 'email',
-			...getColumnSearchProps('email'),
-			width: 140
-		},
-		{
-			title: 'ROL',
-			dataIndex: 'roleName',
-			key: 'roleName',
-			filters: [
-				{
-					text: 'Administrador',
-					value: 'admin'
-				},
-				{
-					text: 'Cajero',
-					value: 'cajero'
-				},
-				{
-					text: 'Bodeguero',
-					value: 'bodeguero'
-				}
-			],
-			onFilter: (value, record) =>
-				record.roleName.indexOf(value as string) === 0,
-			render: (value: string) => formatToTitleCase(value),
-			width: 100
-		},
-		{
-			title: 'ACCIONES',
-			key: 'actions',
-			className: 'actions',
-			render: (_, record: Staff) => <StaffActions record={record} />,
-			width: 100
-		}
-	];
 
 	const stockItemsColumns: TableColumnsType<StockItem> = [
 		{
@@ -613,7 +558,6 @@ const useTableColumns = () => {
 	];
 
 	return {
-		staffColumns,
 		stockItemsColumns,
 		stockItemsHistoryColumns,
 		transactionsColumns,

@@ -1,13 +1,13 @@
+import { useRouter } from 'next/navigation';
 import { notification } from 'antd';
 import { useDispatch } from 'react-redux';
-import { AxiosError } from 'axios';
 import TableActions from '../../common/ui/TableActions';
+import { userLibs } from '@/libs/api/user';
 import { removeCustomer } from '@/reducers/users/userSlice';
-import { userServices } from '@/services/userServices';
-import { ModalContent } from '@/types/enums';
 import { useModalStore } from '@/stores/modalStore';
-import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/utils/routes';
+import { ModalContent } from '@/types/enums';
+import { AxiosError } from 'axios';
 
 interface CustomersActionsProps {
 	record: Customer;
@@ -34,7 +34,7 @@ const CustomersActions = ({
 
 	const handleDelete = async () => {
 		try {
-			const res = await userServices.deleteCustomer(record.personId);
+			const res = await userLibs.deleteCustomer(record.personId);
 			if (res.status === 200) {
 				dispatch(removeCustomer(record.personId));
 				notification.success({

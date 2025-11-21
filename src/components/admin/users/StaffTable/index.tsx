@@ -2,11 +2,11 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomTable from '../../common/display-data/Table';
-import useTableColumns from '@/hooks/useTableColumns';
 import { setStaff } from '@/reducers/users/userSlice';
+import StaffCols from './cols';
 
 const StaffTable = ({ staffData }: { staffData: Staff[] }) => {
-	const { staffColumns } = useTableColumns();
+	const { staffColumns } = StaffCols();
 	const { staff } = useSelector((state: RootState) => state.user);
 	const [isLoading, setIsLoading] = useState(true);
 	const dispatch = useDispatch();

@@ -3,11 +3,11 @@ import { Form, Select, Tag } from 'antd';
 import { BiUserCircle } from 'react-icons/bi';
 import FormButtons from '../../common/ui/FormButtons';
 import useForm from '@/hooks/useForm';
-import { userServices } from '@/services/userServices';
+import { userLibs } from '@/libs/api/user';
+import { useModalStore } from '@/stores/modalStore';
 import { generatePermissionOptions } from '@/utils/auth';
 import { formatToTitleCase, formatUserExtraPermissions } from '@/utils/formats';
 import { selectFilterOption } from '../../utils';
-import { useModalStore } from '@/stores/modalStore';
 
 const PermissionsForm = () => {
 	const { form, isLoading, submitEditPermissions } = useForm();
@@ -18,7 +18,7 @@ const PermissionsForm = () => {
 
 	const fetchAssignablePermissions = async () => {
 		if (dataToHandle) {
-			const data = await userServices.getAssignablePermissions(dataToHandle.id);
+			const data = await userLibs.getAssignablePermissions(dataToHandle.id);
 			setAssignablePermissions(data);
 
 			const formattedExtraPermissions = formatUserExtraPermissions(

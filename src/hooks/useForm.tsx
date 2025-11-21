@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { AxiosError, AxiosResponse } from 'axios';
 import { productLibs } from '@/libs/api/product';
 import { productCategoryServices } from '@/services/productCategoryServices';
-import { userServices } from '@/services/userServices';
 import {
 	addProduct,
 	addProductVariant,
@@ -44,6 +43,7 @@ import { validateUniqueProductVariantsName } from './utils';
 import { BillingStatus } from '@/types/enums';
 import { financialFlowServices } from '@/services/financialFlowServices';
 import { setCurrentCashSession } from '@/reducers/financialFlow/financialFlowSlice';
+import { userLibs } from '@/libs/api/user';
 
 notification.config({
 	placement: 'topRight',
@@ -182,7 +182,7 @@ const useForm = () => {
 
 	const submitRegisterStaff = async (values: SubmitStaffDto) => {
 		await handleSubmit({
-			serviceFn: userServices.registerStaff,
+			serviceFn: userLibs.registerStaff,
 			values,
 			onSuccess: res => dispatch(addStaff(res.data.newUser))
 		});
@@ -194,7 +194,7 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				userServices.updateStaff(valuesToUpdate, personId),
+				userLibs.updateStaff(valuesToUpdate, personId),
 			values,
 			onSuccess: res => dispatch(updateStaff(res.data.updatedUser))
 		});
@@ -206,7 +206,7 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				userServices.setPermissions(valuesToUpdate, userId),
+				userLibs.setPermissions(valuesToUpdate, userId),
 			values,
 			onSuccess: () =>
 				dispatch(
@@ -220,7 +220,7 @@ const useForm = () => {
 
 	const submitRegisterCustomer = async (values: SubmitCustomerDto) => {
 		await handleSubmit({
-			serviceFn: userServices.registerCustomer,
+			serviceFn: userLibs.registerCustomer,
 			values,
 			onSuccess: res => dispatch(addCustomer(res.data.newCustomer))
 		});
@@ -232,7 +232,7 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				userServices.updateCustomer(valuesToUpdate, personId),
+				userLibs.updateCustomer(valuesToUpdate, personId),
 			values,
 			onSuccess: res => dispatch(updateCustomer(res.data.updatedCustomer))
 		});
