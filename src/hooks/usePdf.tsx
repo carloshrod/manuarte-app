@@ -1,7 +1,7 @@
 import PDFDoc from '@/components/admin/common/PDF/PDFDoc';
 import { billingServices } from '@/services/billingServices';
 import { messagingServices } from '@/services/messagingServices';
-import { quoteServices } from '@/services/quoteServices';
+import { quoteLibs } from '@/libs/api/quote';
 import { DiscountType } from '@/types/enums';
 import { pdf } from '@react-pdf/renderer';
 import { notification } from 'antd';
@@ -123,7 +123,7 @@ const usePdf = () => {
 		shopSlug: string;
 	}) => {
 		const newQuoteData = isQuote
-			? await quoteServices.getOne({ serialNumber })
+			? await quoteLibs.getOne({ serialNumber })
 			: await billingServices.getOne({ serialNumber });
 
 		await sendPdf({

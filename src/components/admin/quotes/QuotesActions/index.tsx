@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { DrawerContent } from '@/types/enums';
 import { AxiosError } from 'axios';
 import { notification } from 'antd';
-import { quoteServices } from '@/services/quoteServices';
+import { quoteLibs } from '@/libs/api/quote';
 import { removeQuote } from '@/reducers/quotes/quoteSlice';
 import { useDrawerStore } from '@/stores/drawerStore';
 
@@ -18,7 +18,7 @@ const QuotesActions = ({ record }: { record: Quote }) => {
 			: '';
 
 	const handleEdit = async () => {
-		const dataToHandle = await quoteServices.getOne({
+		const dataToHandle = await quoteLibs.getOne({
 			serialNumber: record.serialNumber,
 			server: false
 		});
@@ -33,7 +33,7 @@ const QuotesActions = ({ record }: { record: Quote }) => {
 
 	const handleDelete = async () => {
 		try {
-			const res = await quoteServices.delete(record.id);
+			const res = await quoteLibs.delete(record.id);
 			if (res.status === 200) {
 				dispatch(removeQuote(record.id));
 				notification.success({

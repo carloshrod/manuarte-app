@@ -9,7 +9,7 @@ import {
 	COL_PAYMENT_METHOD_OPTIONS,
 	ECU_PAYMENT_METHOD_OPTIONS
 } from '@/components/admin/consts';
-import { quoteServices } from '@/services/quoteServices';
+import { quoteLibs } from '@/libs/api/quote';
 import { useModalStore } from '@/stores/modalStore';
 import { billingServices } from '@/services/billingServices';
 import { setBillings } from '@/reducers/billings/billingSlice';
@@ -20,6 +20,7 @@ import { v4 as uuidv4 } from 'uuid';
 import PaymentAmounts from '../PaymentAmounts';
 import CalculationInputs from '../CalculationInputs';
 import { updateCalculations } from '@/components/admin/utils';
+
 const { TextArea } = Input;
 
 const BillingModalForm = () => {
@@ -107,7 +108,7 @@ const BillingModalForm = () => {
 
 						if (res?.status === 201) {
 							const quoteId = dataToHandle.id;
-							await quoteServices.delete(quoteId);
+							await quoteLibs.delete(quoteId);
 							push(`${ROUTES.BILLING_SHOPS}/${params?.shopSlug}`);
 						} else {
 							closeModal();

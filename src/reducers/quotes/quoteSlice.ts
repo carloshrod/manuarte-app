@@ -27,7 +27,10 @@ const quoteSlice = createSlice({
 		},
 
 		addQuote: (state, action) => {
-			state.quotes = [action.payload, ...state.quotes];
+			state.quotes = [action.payload, ...state.quotes].slice(
+				0,
+				state.quotesPagination.pageSize
+			);
 		},
 
 		updateQuote: (state, action) => {

@@ -1,6 +1,6 @@
 'use client';
 import { billingServices } from '@/services/billingServices';
-import { quoteServices } from '@/services/quoteServices';
+import { quoteLibs } from '@/libs/api/quote';
 import { useDrawerStore } from '@/stores/drawerStore';
 import { DrawerContent } from '@/types/enums';
 import { formatCurrency, formatDate } from '@/utils/formats';
@@ -17,7 +17,7 @@ const RecentActivityItem = ({ item }: { item: Billing | Quote }) => {
 					serialNumber: item.serialNumber,
 					server: false
 				})
-			: await quoteServices.getOne({
+			: await quoteLibs.getOne({
 					serialNumber: item.serialNumber,
 					server: false
 				});

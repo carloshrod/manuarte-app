@@ -21,7 +21,7 @@ import {
 	updateStaff,
 	updateStaffPermissions
 } from '@/reducers/users/userSlice';
-import { quoteServices } from '@/services/quoteServices';
+import { quoteLibs } from '@/libs/api/quote';
 import { addQuote, updateQuote } from '@/reducers/quotes/quoteSlice';
 import { billingServices } from '@/services/billingServices';
 import { addBilling, updateBilling } from '@/reducers/billings/billingSlice';
@@ -245,7 +245,7 @@ const useForm = () => {
 		}
 
 		await handleSubmit({
-			serviceFn: quoteServices.create,
+			serviceFn: quoteLibs.create,
 			values,
 			onSuccess: async res => {
 				dispatch(addQuote(res?.data?.newQuote));
@@ -268,8 +268,7 @@ const useForm = () => {
 		}
 
 		await handleSubmit({
-			serviceFn: valuesToUpdate =>
-				quoteServices.update(valuesToUpdate, quoteId),
+			serviceFn: valuesToUpdate => quoteLibs.update(valuesToUpdate, quoteId),
 			values,
 			onSuccess: async res => {
 				dispatch(updateQuote(res.data.updatedQuote));

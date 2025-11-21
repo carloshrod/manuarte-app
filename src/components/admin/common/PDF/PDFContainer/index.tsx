@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import PDFActions from '../PDFActions';
 import PDFPreview from '../PDFPreview';
-import { quoteServices } from '@/services/quoteServices';
+import { quoteLibs } from '@/libs/api/quote';
 import { billingServices } from '@/services/billingServices';
 
 interface Props {
@@ -18,7 +18,7 @@ const PDFContainer = ({ shopSlug, serialNumber, isQuote }: Props) => {
 	const fetchData = async () => {
 		if (serialNumber) {
 			const data = isQuote
-				? await quoteServices.getOne({ serialNumber })
+				? await quoteLibs.getOne({ serialNumber })
 				: await billingServices.getOne({ serialNumber });
 
 			setData(data);
