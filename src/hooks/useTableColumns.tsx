@@ -1,14 +1,10 @@
 import { useParams } from 'next/navigation';
 import { Badge, TableColumnsType, Tag, Tooltip } from 'antd';
 import { CheckCircleOutlined, DollarCircleOutlined } from '@ant-design/icons';
-import { TiArrowDown, TiArrowUp } from 'react-icons/ti';
 import { IoInformationCircleOutline } from 'react-icons/io5';
-import { useSession } from 'next-auth/react';
-import StockItemActions from '@/components/admin/stock/StockItemActions';
-import StockItemsHistoryActions from '@/components/admin/stock/StockItemHistoryActions';
 import TransactionActions from '@/components/admin/transactions/TransactionAction';
 import useTable from './useTable';
-import { formatCurrency, formatDate, formatToTitleCase } from '@/utils/formats';
+import { formatCurrency, formatDate } from '@/utils/formats';
 import {
 	CASH_MOVEMENT_CAT_MAP,
 	PAYMENT_METHOD_MAP,
@@ -16,7 +12,6 @@ import {
 	TRANSACTION_TYPES_MAP
 } from '@/utils/mappings';
 import {
-	getStockStatusColor,
 	COL_PAYMENT_METHOD_FILTER,
 	ECU_PAYMENT_METHOD_FILTER,
 	TAG_COLORS,
@@ -28,237 +23,6 @@ import CopyableText from '@/components/admin/common/ui/CopyableText';
 const useTableColumns = () => {
 	const { getColumnSearchProps, getColumnDateFilterProps } = useTable();
 	const params = useParams();
-	const { data: session } = useSession();
-	const isAdmin = session?.user?.roleName === 'admin';
-
-	const stockItemsColumns: TableColumnsType<StockItem> = [
-		{
-			title: 'PRODUCTO',
-			dataIndex: 'productName',
-			key: 'productName',
-			...getColumnSearchProps('productName'),
-			render: value => formatToTitleCase(value),
-			width: 250
-		},
-		{
-			title: 'PRESENTACIÓN',
-			dataIndex: 'productVariantName',
-			key: 'productVariantName',
-			...getColumnSearchProps('productVariantName'),
-			render: value => formatToTitleCase(value),
-			width: 140
-		},
-		{
-			title: 'PRECIO',
-			dataIndex: 'price',
-			key: 'price',
-			render: (value: string) => formatCurrency(value) ?? '--',
-			width: 100,
-			align: 'center'
-		},
-		{
-			title: 'CANTIDAD',
-			dataIndex: 'quantity',
-			key: 'quantity',
-			render: (value, record) => {
-				const statusColor = getStockStatusColor({
-					quantity: value,
-					maxQty: record.maxQty,
-					minQty: record.minQty
-				});
-
-				return <span className={`${statusColor} font-semibold`}>{value}</span>;
-			},
-			width: 110,
-			align: 'center'
-		},
-		{
-			title: 'EN TRANSITO',
-			dataIndex: 'quantityInTransit',
-			key: 'quantityInTransit',
-			render: value => {
-				return (
-					<span className={`${value > 0 && 'text-[#0D6EFD]'} font-semibold`}>
-						{value}
-					</span>
-				);
-			},
-			width: 110,
-			align: 'center'
-		},
-		...(isAdmin
-			? [
-					{
-						title: 'COSTO',
-						dataIndex: 'cost',
-						key: 'cost',
-						render: (value: string) => formatCurrency(value) ?? '--',
-						width: 100,
-						align: 'center' as const
-					},
-					{
-						title: 'COSTO TOTAL',
-						dataIndex: 'totalCost',
-						key: 'totalCost',
-						render: (value: string, record: StockItem) => {
-							if (!value || !record.quantity) return '$0';
-
-							const totalCost = Number(value) * Number(record.quantity);
-
-							return formatCurrency(totalCost);
-						},
-						width: 100,
-						align: 'center' as const
-					},
-					{
-						title: 'CANT. MIN',
-						dataIndex: 'minQty',
-						key: 'minQty',
-						width: 80,
-						align: 'center' as const
-					},
-					{
-						title: 'CANT. MAX',
-						dataIndex: 'maxQty',
-						key: 'maxQty',
-						width: 80,
-						align: 'center' as const
-					}
-				]
-			: []),
-		{
-			title: 'ACCIONES',
-			key: 'actions',
-			className: 'actions',
-			render: (_: any, record: StockItem) => (
-				<StockItemActions record={record} isAdmin={isAdmin} />
-			),
-			width: 100,
-			align: 'center'
-		}
-	];
-
-	const stockItemsHistoryColumns: TableColumnsType<StockItemHistory> = [
-		{
-			title: 'FECHA',
-			dataIndex: 'createdDate',
-			key: 'createdDate',
-			...getColumnDateFilterProps('createdDate', true),
-			render: (value: string) => (
-				<span>{value ? formatDate(value) : '--'}</span>
-			),
-			width: 100
-		},
-		{
-			title: 'TIPO',
-			dataIndex: 'type',
-			key: 'type',
-			filters: [
-				{
-					text: 'Entrada',
-					value: 'ENTER'
-				},
-				{
-					text: 'Salida',
-					value: 'EXIT'
-				},
-				{
-					text: 'Transferencia',
-					value: 'TRANSFER'
-				},
-				{
-					text: 'Factura',
-					value: 'BILLING'
-				}
-			],
-			onFilter: (value, record) => record.type.indexOf(value as string) === 0,
-			render: (value, record) => {
-				const toolTipTitle = `De ${record.fromName} a ${record.toName} `;
-
-				return (
-					<span className='flex items-center'>
-						<Tag color={TAG_COLORS[value]}>
-							{value === 'BILLING' ? 'Factura' : TRANSACTION_TYPES_MAP[value]}
-						</Tag>
-						{record?.fromName && record?.toName ? (
-							<Tooltip title={toolTipTitle}>
-								<span>
-									<IoInformationCircleOutline size={18} />
-								</span>
-							</Tooltip>
-						) : null}
-					</span>
-				);
-			},
-			width: 100
-		},
-		{
-			title: 'IDENTIFICADOR',
-			dataIndex: 'identifier',
-			key: 'identifier',
-			...getColumnSearchProps('identifier'),
-			render: value =>
-				value ? (
-					<CopyableText text={formatToTitleCase(value) as string} />
-				) : (
-					'--'
-				),
-			width: 140
-		},
-		{
-			title: 'STOCK ANTES',
-			dataIndex: 'stockBefore',
-			key: 'stockBefore',
-			render: (value: string) => value ?? '--',
-			width: 80,
-			align: 'center'
-		},
-		{
-			title: 'CANTIDAD',
-			dataIndex: 'quantity',
-			key: 'quantity',
-			render: (value: string) => value ?? '--',
-			width: 80,
-			align: 'center'
-		},
-		{
-			title: 'STOCK DESPUÉS',
-			dataIndex: 'stockAfter',
-			key: 'stockAfter',
-			render: (_, record) => {
-				const stockAfter =
-					record.type === 'ENTER'
-						? Number(record.stockBefore) + Number(record.quantity)
-						: Number(record.stockBefore) - Number(record.quantity);
-
-				const arrow =
-					record.type === 'ENTER' ? (
-						<TiArrowUp size={20} color='#10b981' />
-					) : (
-						<TiArrowDown size={20} color='#E53535' />
-					);
-
-				return (
-					<span className='flex justify-center items-center'>
-						{stockAfter ?? '--'}
-						{arrow}
-					</span>
-				);
-			},
-			width: 80,
-			align: 'center'
-		},
-		{
-			title: 'ACCIONES',
-			key: 'actions',
-			className: 'actions',
-			render: (_: any, record: StockItemHistory) => (
-				<StockItemsHistoryActions record={record} />
-			),
-			width: 60,
-			align: 'center'
-		}
-	];
 
 	const transactionsColumns: TableColumnsType<Transaction> = [
 		{
@@ -558,8 +322,6 @@ const useTableColumns = () => {
 	];
 
 	return {
-		stockItemsColumns,
-		stockItemsHistoryColumns,
 		transactionsColumns,
 		cashMovementsColumns,
 		bankTransferMovementsColumns

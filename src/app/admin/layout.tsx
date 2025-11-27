@@ -124,9 +124,7 @@ const AdminLayout = ({
 							minHeight: 280,
 							background: colorBgContainer,
 							borderRadius: borderRadiusLG,
-							overflow: 'auto',
-							scrollbarWidth: 'thin',
-							scrollbarGutter: 'stable'
+							overflow: 'auto'
 						}}
 					>
 						<CustomDrawer />

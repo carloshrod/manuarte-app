@@ -3,9 +3,9 @@ import { useDispatch } from 'react-redux';
 import { AxiosError } from 'axios';
 import { notification } from 'antd';
 import TableActions from '../../common/ui/TableActions';
+import { stockItemLibs } from '@/libs/api/stock-item';
 import { useModalStore } from '@/stores/modalStore';
 import { removeStockItem } from '@/reducers/stockItems/stockItemSlice';
-import { stockItemServices } from '@/services/stockItemServices';
 import { ModalContent } from '@/types/enums';
 
 const StockItemActions = ({
@@ -30,7 +30,7 @@ const StockItemActions = ({
 
 	const handleDelete = async () => {
 		try {
-			const res = await stockItemServices.delete(record.id);
+			const res = await stockItemLibs.delete(record.id);
 			if (res.status === 200) {
 				dispatch(removeStockItem(record.id));
 				notification.success({

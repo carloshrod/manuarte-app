@@ -37,7 +37,8 @@ const ShopCards = async ({
 								href={{
 									pathname: `${route}/${shop.slug}`,
 									query: {
-										shopId: shop.id,
+										shopId: isShop ? shop.id : undefined,
+										stockId: isShop ? undefined : shop.stockId,
 										main: isShop ? undefined : shop.mainStock
 									}
 								}}

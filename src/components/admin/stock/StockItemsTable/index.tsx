@@ -1,19 +1,38 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomTable from '../../common/display-data/Table';
-import useTableColumns from '@/hooks/useTableColumns';
-import { stockItemServices } from '@/services/stockItemServices';
-import { setStockItems } from '@/reducers/stockItems/stockItemSlice';
 import { shopServices } from '@/services/shopServices';
 import { setShops } from '@/reducers/shops/shopSlice';
+import { StockItemParams } from '@/libs/api/stock-item';
+import useStockItemService from '@/services/stock-item';
+import { TablePaginationConfig } from 'antd';
+import { FilterValue } from 'antd/es/table/interface';
+import useFilters from '@/hooks/useFilters';
+import StockItemCols from './cols';
 
-const StockItemsTable = ({ shopSlug }: { shopSlug: string }) => {
-	const { stockItemsColumns } = useTableColumns();
+const StockItemsTable = ({
+	searchParams
+}: {
+	searchParams: StockItemParams;
+}) => {
 	const { shops } = useSelector((state: RootState) => state.shop);
-	const { stockItems } = useSelector((state: RootState) => state.stock);
-	const [isLoading, setIsLoading] = useState(true);
+	const { stockItems, stockItemsPagination } = useSelector(
+		(state: RootState) => state.stock
+	);
+	const { fetchStockItems, isLoading } = useStockItemService();
+	const { updateFilterParams, synchronizeFilters, tableFilters } = useFilters();
+	const { stockItemsColumns } = StockItemCols({ tableFilters });
 	const dispatch = useDispatch();
+
+	const page = Number(searchParams.page) || 1;
+	const pageSize = Number(searchParams.pageSize) || 30;
+
+	const filters = {
+		stockId: searchParams.stockId,
+		productName: searchParams.productName,
+		productVariantName: searchParams.productVariantName
+	};
 
 	const fetchShops = async () => {
 		if (shops?.length === 0) {
@@ -24,25 +43,35 @@ const StockItemsTable = ({ shopSlug }: { shopSlug: string }) => {
 		}
 	};
 
-	const fetchStockItems = async () => {
-		if (shopSlug && stockItems?.length === 0) {
-			const data = await stockItemServices.getAllByStock(shopSlug);
-			dispatch(setStockItems(data));
-		}
-		setIsLoading(false);
-	};
+	useEffect(() => {
+		synchronizeFilters(filters);
+	}, [searchParams]);
 
 	useEffect(() => {
 		fetchShops();
-		fetchStockItems();
-	}, []);
+		fetchStockItems({ page, pageSize, ...filters });
+	}, [page, pageSize, ...Object.values(filters)]);
+
+	const handleTableChange = (
+		pagination: TablePaginationConfig,
+		filters: Record<string, FilterValue | null>
+	) => {
+		updateFilterParams(pagination, searchParams, filters);
+	};
 
 	return (
 		<CustomTable
 			columns={stockItemsColumns}
-			dataSource={isLoading ? [] : stockItems}
+			dataSource={stockItems}
 			isLoading={isLoading}
 			scrollMinus={335}
+			pagination={{
+				current: stockItemsPagination.page,
+				pageSize: stockItemsPagination.pageSize,
+				total: stockItemsPagination.total,
+				showSizeChanger: true
+			}}
+			onChange={handleTableChange}
 		/>
 	);
 };

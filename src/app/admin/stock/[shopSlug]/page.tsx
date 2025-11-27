@@ -8,16 +8,19 @@ import StockItemsTable from '@/components/admin/stock/StockItemsTable';
 import DropdownMenu from '@/components/admin/common/ui/DropdownMenu';
 import { auth } from '@/auth';
 import { ModalContent } from '@/types/enums';
+import { StockItemParams } from '@/libs/api/stock-item';
 
 interface StockItemsPageProps {
 	params: {
 		shopSlug: string;
 	};
+	searchParams: StockItemParams;
 }
 
 const StockItemsPage = async (props: StockItemsPageProps) => {
 	const {
-		params: { shopSlug }
+		params: { shopSlug },
+		searchParams
 	} = props;
 	const shopName = shopSlug.toUpperCase().replace('-', ' ');
 	const session = await auth();
@@ -30,6 +33,7 @@ const StockItemsPage = async (props: StockItemsPageProps) => {
 				<Space className='px-2'>
 					<GenerateStockReportButton
 						shopSlug={shopSlug}
+						stockId={searchParams?.stockId}
 						variant='text'
 						label='Pedido de Stock'
 					/>
@@ -42,6 +46,7 @@ const StockItemsPage = async (props: StockItemsPageProps) => {
 				<Space className='px-2'>
 					<GenerateStockReportButton
 						shopSlug={shopSlug}
+						stockId={searchParams?.stockId}
 						variant='text'
 						label='Pedido de Moldes'
 						isMoldesReport={true}
@@ -55,6 +60,7 @@ const StockItemsPage = async (props: StockItemsPageProps) => {
 				<Space className='px-2'>
 					<GenerateStockReportButton
 						shopSlug={shopSlug}
+						stockId={searchParams?.stockId}
 						variant='text'
 						label='Valoración de Stock'
 					/>
@@ -94,7 +100,7 @@ const StockItemsPage = async (props: StockItemsPageProps) => {
 					) : null}
 				</div>
 			</div>
-			<StockItemsTable shopSlug={shopSlug} />
+			<StockItemsTable searchParams={searchParams} />
 		</section>
 	);
 };

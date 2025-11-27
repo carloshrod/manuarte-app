@@ -1,7 +1,6 @@
 'use client';
 import { Button } from 'antd';
 import { IoMdDownload } from 'react-icons/io';
-import { useSelector } from 'react-redux';
 import {
 	downloadExcel,
 	generateCostStockData,
@@ -9,9 +8,11 @@ import {
 	generateStockHistoryData
 } from '@/utils/documents';
 import { ButtonVariantType } from 'antd/es/button';
+import { stockItemLibs } from '@/libs/api/stock-item';
 
 interface Props {
 	shopSlug: string;
+	stockId?: string;
 	history?: StockItemHistory[];
 	product?: { productName: string; productVariantName: string };
 	variant?: ButtonVariantType;
@@ -21,19 +22,25 @@ interface Props {
 
 const GenerateStockReportButton = ({
 	shopSlug,
+	stockId,
 	history,
 	product,
 	variant = 'solid',
 	label = 'Generar Reporte',
 	isMoldesReport = false
 }: Props) => {
-	const { stockItems } = useSelector((state: RootState) => state.stock);
-	const data = history ?? stockItems;
 	const isRestockData = label.toLowerCase().includes('pedido');
 
 	const handleDownloadExcel = async () => {
 		try {
 			let excelData;
+
+			const { stockItems } =
+				stockId &&
+				(await stockItemLibs.getAllByStock({
+					stockId,
+					report: true
+				}));
 
 			if (history) {
 				excelData = generateStockHistoryData(history);
@@ -79,7 +86,6 @@ const GenerateStockReportButton = ({
 				/>
 			}
 			onClick={handleDownloadExcel}
-			disabled={data?.length === 0}
 		>
 			{label}
 		</Button>

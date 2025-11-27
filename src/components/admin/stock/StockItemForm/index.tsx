@@ -14,10 +14,10 @@ import { useSelector } from 'react-redux';
 import FormButtons from '../../common/ui/FormButtons';
 import SelectStocks from '../../products/SelectStocks';
 import useForm from '@/hooks/useForm';
-import { stockItemServices } from '@/services/stockItemServices';
 import { useModalStore } from '@/stores/modalStore';
 import { getProductsData } from '../../utils';
 import { formatInputCurrency } from '@/utils/formats';
+import { stockItemLibs } from '@/libs/api/stock-item';
 
 const StockItemForm = () => {
 	const { form, isLoading, submitCreateStockItem, submitUpdateStockItem } =
@@ -43,10 +43,7 @@ const StockItemForm = () => {
 			const stockId = shops.find(sh => sh.currency === 'USD')?.stockId;
 			if (!productVariantId || !stockId) return;
 
-			const data = await stockItemServices.getOneByStock(
-				productVariantId,
-				stockId
-			);
+			const data = await stockItemLibs.getOneByStock(productVariantId, stockId);
 
 			if (data) {
 				form.setFieldsValue({

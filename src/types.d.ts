@@ -505,6 +505,10 @@ interface RootState {
 	};
 	stock: {
 		stockItems: StockItem[];
+		stockItemsPagination: Pagination;
+		stockItem: StockItem;
+		stockItemHistory: StockItemHistory[];
+		stockItemHistoryPagination: Pagination;
 	};
 	transaction: {
 		transactions: Transaction[];

@@ -1,47 +1,57 @@
 'use client';
-import useTableColumns from '@/hooks/useTableColumns';
-import CustomTable from '../../common/display-data/Table';
-import { stockItemServices } from '@/services/stockItemServices';
-import { useEffect, useState } from 'react';
-import { GiCardboardBox } from 'react-icons/gi';
-import { getStockStatusColor } from '@/hooks/utils';
-import GenerateStockReportButton from '../GenerateStockReportButton';
+
+import { ReactNode, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import GoBack from '../../common/ui/GoBack';
-import { MdOutlineWarehouse } from 'react-icons/md';
+import { GiCardboardBox } from 'react-icons/gi';
+import CustomTable from '../../common/display-data/Table';
+import GenerateStockReportButton from '../GenerateStockReportButton';
+import { getStockStatusColor } from '@/hooks/utils';
+import useStockItemService from '@/services/stock-item';
+import { useSelector } from 'react-redux';
+import { StockItemHistoryParams } from '@/libs/api/stock-item';
+import { TablePaginationConfig } from 'antd';
+import { FilterValue } from 'antd/es/table/interface';
+import useFilters from '@/hooks/useFilters';
+import StockItemHistoryCols from './cols';
 
 interface StockItemHistoryProps {
-	shopName: string;
-	stockItemId: string;
+	searchParams: StockItemHistoryParams;
+	children: ReactNode;
 }
 
-const StockItemHistory = ({ shopName, stockItemId }: StockItemHistoryProps) => {
-	const { stockItemsHistoryColumns } = useTableColumns();
-	const [stockItem, setStockItem] = useState<StockItem | null>(null);
-	const [history, setHistory] = useState<StockItemHistory[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
+const StockItemHistory = ({
+	searchParams,
+	children
+}: StockItemHistoryProps) => {
+	const { fetchStockItemHistory, isLoading } = useStockItemService();
+	const { stockItem, stockItemHistory, stockItemHistoryPagination } =
+		useSelector((state: RootState) => state.stock);
 	const { productName, productVariantName, quantity, maxQty, minQty } =
 		stockItem ?? {};
+	const { stockItemsHistoryColumns } = StockItemHistoryCols();
+	const { updateFilterParams } = useFilters();
 	const { shopSlug } = useParams();
 
-	const fetchHistory = async () => {
-		if (stockItemId) {
-			const data = await stockItemServices.getHistory(stockItemId);
-			if (data?.stockItem && data?.history) {
-				setStockItem(data.stockItem);
-				setHistory(data.history);
-			}
-		}
-		setIsLoading(false);
+	const page = Number(searchParams.page) || 1;
+	const pageSize = Number(searchParams.pageSize) || 30;
+
+	const filters = {
+		stockItemId: searchParams.stockItemId,
+		dateStart: searchParams.dateStart,
+		dateEnd: searchParams.dateEnd,
+		type: searchParams.type,
+		identifier: searchParams.identifier
 	};
 
 	useEffect(() => {
-		fetchHistory();
-
-		return () => {
-			setHistory([]);
-		};
-	}, [stockItemId]);
+		if (searchParams?.stockItemId) {
+			fetchStockItemHistory({
+				page,
+				pageSize,
+				...filters
+			});
+		}
+	}, [page, pageSize, ...Object.values(filters)]);
 
 	const statusColor =
 		quantity !== undefined && maxQty !== undefined && minQty !== undefined
@@ -52,20 +62,17 @@ const StockItemHistory = ({ shopName, stockItemId }: StockItemHistoryProps) => {
 				})
 			: '';
 
+	const handleTableChange = (
+		pagination: TablePaginationConfig,
+		filters: Record<string, FilterValue | null>
+	) => {
+		updateFilterParams(pagination, searchParams, filters);
+	};
+
 	return (
 		<section className='flex flex-col gap-6'>
 			<div>
-				<div className='flex'>
-					<GoBack />
-					<div className='flex flex-wrap items-center'>
-						<h2 className='min-[478px]:text-lg min-[796px]:text-2xl font-semibold ps-4'>
-							Historial:
-						</h2>
-						<span className='flex gap-1 items-center ps-4 max-[555px]:mt-2 min-[478px]:text-lg min-[796px]:text-2xl font-semibold'>
-							<MdOutlineWarehouse /> {shopName}
-						</span>
-					</div>
-				</div>
+				{children}
 				<div className='flex justify-between items-center'>
 					{stockItem ? (
 						<div className='ps-4 mt-4'>
@@ -84,7 +91,7 @@ const StockItemHistory = ({ shopName, stockItemId }: StockItemHistoryProps) => {
 						<div className='self-end'>
 							<GenerateStockReportButton
 								shopSlug={shopSlug as string}
-								history={history}
+								history={stockItemHistory}
 								product={{ productName, productVariantName }}
 							/>
 						</div>
@@ -93,9 +100,16 @@ const StockItemHistory = ({ shopName, stockItemId }: StockItemHistoryProps) => {
 			</div>
 			<CustomTable
 				columns={stockItemsHistoryColumns}
-				dataSource={isLoading ? [] : history}
+				dataSource={stockItemHistory}
 				isLoading={isLoading}
 				scrollMinus={395}
+				pagination={{
+					current: stockItemHistoryPagination.page,
+					pageSize: stockItemHistoryPagination.pageSize,
+					total: stockItemHistoryPagination.total,
+					showSizeChanger: true
+				}}
+				onChange={handleTableChange}
 			/>
 		</section>
 	);

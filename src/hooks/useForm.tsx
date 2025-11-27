@@ -14,6 +14,7 @@ import {
 	addProductCategory,
 	updateProductCategory
 } from '@/reducers/productCategories/productCategorySlice';
+import { userLibs } from '@/libs/api/user';
 import {
 	addCustomer,
 	addStaff,
@@ -25,7 +26,7 @@ import { quoteLibs } from '@/libs/api/quote';
 import { addQuote, updateQuote } from '@/reducers/quotes/quoteSlice';
 import { billingLibs } from '@/libs/api/billing';
 import { addBilling, updateBilling } from '@/reducers/billings/billingSlice';
-import { stockItemServices } from '@/services/stockItemServices';
+import { stockItemLibs } from '@/libs/api/stock-item';
 import {
 	addStockItem,
 	updateStockItem
@@ -43,7 +44,6 @@ import { validateUniqueProductVariantsName } from './utils';
 import { BillingStatus } from '@/types/enums';
 import { financialFlowServices } from '@/services/financialFlowServices';
 import { setCurrentCashSession } from '@/reducers/financialFlow/financialFlowSlice';
-import { userLibs } from '@/libs/api/user';
 
 notification.config({
 	placement: 'topRight',
@@ -362,7 +362,7 @@ const useForm = () => {
 
 	const submitCreateStockItem = async (values: SubmitStockItemDto) => {
 		await handleSubmit({
-			serviceFn: stockItemServices.create,
+			serviceFn: stockItemLibs.create,
 			values,
 			onSuccess: res => dispatch(addStockItem(res.data.newStockItem))
 		});
@@ -374,7 +374,7 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				stockItemServices.update(valuesToUpdate, stockItemId),
+				stockItemLibs.update(valuesToUpdate, stockItemId),
 			values,
 			onSuccess: res => dispatch(updateStockItem(res.data.updatedStockItem))
 		});
