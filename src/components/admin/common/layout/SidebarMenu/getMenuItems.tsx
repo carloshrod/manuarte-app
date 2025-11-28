@@ -26,26 +26,30 @@ const getMenuItems = (session: Session) => {
 	const roleName = user?.roleName as string;
 	const shop = user?.shop as string;
 	const shopId = user?.shopId as string;
+	const stockId = user?.stockId as string;
 	const mainStock = user?.mainStock;
 	const extraPermissions = user?.extraPermissions as string[];
 
-	const roleRules = AUTH_RULES(shop, shopId)[roleName] || { allowedPaths: [] };
-
+	const roleRules = AUTH_RULES(shop, shopId)[roleName] || {
+		allowedPaths: []
+	};
 	const permissionToPathMap: Record<string, string> = {
 		'product-read': PRODUCTS,
 		'customer-read': CUSTOMERS
 	};
 
-	const filteredItems = allMenuItems(shop, shopId, mainStock).filter(item => {
-		const hasRoleAccess = roleRules.allowedPaths?.includes(item.path);
+	const filteredItems = allMenuItems(shop, shopId, stockId, mainStock).filter(
+		item => {
+			const hasRoleAccess = roleRules.allowedPaths?.includes(item.path);
 
-		const hasExtraPermissionAccess = Object.entries(permissionToPathMap).some(
-			([permission, path]) =>
-				extraPermissions?.includes(permission) && path === item.path
-		);
+			const hasExtraPermissionAccess = Object.entries(permissionToPathMap).some(
+				([permission, path]) =>
+					extraPermissions?.includes(permission) && path === item.path
+			);
 
-		return hasRoleAccess || hasExtraPermissionAccess;
-	});
+			return hasRoleAccess || hasExtraPermissionAccess;
+		}
+	);
 
 	return [
 		...filteredItems,
@@ -63,6 +67,7 @@ export default getMenuItems;
 export const allMenuItems = (
 	shop?: string,
 	shopId?: string,
+	stockId?: string,
 	mainStock?: boolean
 ) => {
 	const QUOTE_PATH = !shop
@@ -132,7 +137,9 @@ export const allMenuItems = (
 				<Link
 					href={{
 						pathname: STOCK_PATH,
-						query: mainStock ? { main: true } : undefined
+						query: {
+							...(shop ? { stockId } : { main: mainStock })
+						}
 					}}
 				>
 					Stock

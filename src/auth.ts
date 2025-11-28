@@ -64,6 +64,7 @@ export const {
 						roleName: decodedToken.user.roleName,
 						shop: decodedToken.user.shop,
 						shopId: decodedToken.user.shopId,
+						stockId: decodedToken.user.stockId,
 						isoCode: decodedToken.user.isoCode,
 						mainStock: decodedToken.user.mainStock,
 						extraPermissions: decodedToken.user.extraPermissions
