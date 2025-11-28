@@ -69,6 +69,11 @@ export enum TransactionType {
 	EXIT = 'EXIT'
 }
 
+export enum TransactionState {
+	SUCCESS = 'SUCCESS',
+	PROGRESS = 'PROGRESS'
+}
+
 export enum DiscountType {
 	FIXED = 'FIXED',
 	PERCENTAGE = 'PERCENTAGE'

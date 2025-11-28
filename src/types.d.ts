@@ -512,6 +512,7 @@ interface RootState {
 	};
 	transaction: {
 		transactions: Transaction[];
+		transactionsPagination: Pagination;
 	};
 	shop: {
 		shops: Shop[];

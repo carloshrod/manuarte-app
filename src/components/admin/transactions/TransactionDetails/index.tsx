@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Col, Divider, Row } from 'antd';
 import TransactionsItemList from '../TransactionItemsList';
-import { transactionServices } from '@/services/transactionServices';
+import { transactionLibs } from '@/libs/api/transaction';
 import { billingLibs } from '@/libs/api/billing';
 import { useDrawerStore } from '@/stores/drawerStore';
 import {
@@ -28,7 +28,7 @@ const TransactionDetails = () => {
 				? dataToHandle?.id
 				: dataToHandle?.transactionId;
 
-		const data = await transactionServices.getItems(transactionId, stockId);
+		const data = await transactionLibs.getItems(transactionId, stockId);
 
 		if (data) {
 			setItems(data);

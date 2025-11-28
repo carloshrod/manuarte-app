@@ -150,7 +150,16 @@ export const allMenuItems = (
 		{
 			key: '8',
 			icon: <RiExchangeBoxLine style={{ fontSize: 20 }} />,
-			label: <Link href={TRANSACTIONS}>Movimientos Stock</Link>,
+			label: (
+				<Link
+					href={{
+						pathname: TRANSACTIONS,
+						query: stockId ? { stockId } : undefined
+					}}
+				>
+					Movimientos Stock
+				</Link>
+			),
 			path: TRANSACTIONS
 		},
 		{

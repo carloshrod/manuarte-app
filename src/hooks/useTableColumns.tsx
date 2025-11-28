@@ -1,172 +1,21 @@
 import { useParams } from 'next/navigation';
-import { Badge, TableColumnsType, Tag, Tooltip } from 'antd';
-import { CheckCircleOutlined, DollarCircleOutlined } from '@ant-design/icons';
+import { TableColumnsType, Tag, Tooltip } from 'antd';
+import { DollarCircleOutlined } from '@ant-design/icons';
 import { IoInformationCircleOutline } from 'react-icons/io5';
-import TransactionActions from '@/components/admin/transactions/TransactionAction';
 import useTable from './useTable';
-import { formatCurrency, formatDate } from '@/utils/formats';
-import {
-	CASH_MOVEMENT_CAT_MAP,
-	PAYMENT_METHOD_MAP,
-	TRANSACTION_STATES_MAP,
-	TRANSACTION_TYPES_MAP
-} from '@/utils/mappings';
+import { formatCurrency } from '@/utils/formats';
+import { CASH_MOVEMENT_CAT_MAP, PAYMENT_METHOD_MAP } from '@/utils/mappings';
 import {
 	COL_PAYMENT_METHOD_FILTER,
 	ECU_PAYMENT_METHOD_FILTER,
-	TAG_COLORS,
 	CASH_MOVEMENT_CAT_FILTER
 } from './utils';
 import { PaymentMethod } from '@/types/enums';
 import CopyableText from '@/components/admin/common/ui/CopyableText';
 
 const useTableColumns = () => {
-	const { getColumnSearchProps, getColumnDateFilterProps } = useTable();
+	const { getColumnSearchProps } = useTable();
 	const params = useParams();
-
-	const transactionsColumns: TableColumnsType<Transaction> = [
-		{
-			title: 'ESTADO',
-			dataIndex: 'state',
-			key: 'state',
-			filters: [
-				{
-					text: 'Realizado',
-					value: 'SUCCESS'
-				},
-				{
-					text: 'En Progreso',
-					value: 'PROGRESS'
-				}
-			],
-			onFilter: (value, record) => record.state.indexOf(value as string) === 0,
-			render: value => {
-				return (
-					<span className='flex items-center gap-1'>
-						{TRANSACTION_STATES_MAP[value]}
-						<Badge
-							count={
-								<CheckCircleOutlined
-									style={{ color: value === 'SUCCESS' ? '#10b981' : '#808080' }}
-								/>
-							}
-						/>
-					</span>
-				);
-			},
-			width: 120
-		},
-		{
-			title: 'TIPO',
-			dataIndex: 'type',
-			key: 'type',
-			filters: [
-				{
-					text: 'Entrada',
-					value: 'ENTER'
-				},
-				{
-					text: 'Salida',
-					value: 'EXIT'
-				},
-				{
-					text: 'Transferencia',
-					value: 'TRANSFER'
-				}
-			],
-			onFilter: (value, record) => record.type.indexOf(value as string) === 0,
-			render: value => {
-				return (
-					<span className='flex items-center'>
-						<Tag color={TAG_COLORS[value]}>{TRANSACTION_TYPES_MAP[value]}</Tag>
-					</span>
-				);
-			},
-			width: 120
-		},
-		{
-			title: 'ORIGEN',
-			dataIndex: 'fromName',
-			key: 'fromName',
-			filters: [
-				{
-					text: 'Fabrica Cascajal',
-					value: 'Fabrica Cascajal'
-				},
-				{
-					text: 'Barranquilla',
-					value: 'Barranquilla'
-				},
-				{
-					text: 'Cartagena',
-					value: 'Cartagena'
-				},
-				{
-					text: 'Quito',
-					value: 'Quito'
-				}
-			],
-			onFilter: (value, record) =>
-				record?.fromName?.indexOf(value as string) === 0,
-			render: (value: string) => value ?? '--',
-			width: 120
-		},
-		{
-			title: 'DESTINO',
-			dataIndex: 'toName',
-			key: 'toName',
-			filters: [
-				{
-					text: 'Fabrica Cascajal',
-					value: 'Fabrica Cascajal'
-				},
-				{
-					text: 'Barranquilla',
-					value: 'Barranquilla'
-				},
-				{
-					text: 'Cartagena',
-					value: 'Cartagena'
-				},
-				{
-					text: 'Quito',
-					value: 'Quito'
-				}
-			],
-			onFilter: (value, record) =>
-				record?.toName?.indexOf(value as string) === 0,
-			render: (value: string) => value ?? '--',
-			width: 120
-		},
-		{
-			title: 'DESCRIPCIÓN',
-			dataIndex: 'description',
-			key: 'description',
-			render: (value: string) =>
-				value ? `${value.charAt(0).toUpperCase()}${value.slice(1)}` : '--',
-			width: 300
-		},
-		{
-			title: 'FECHA',
-			dataIndex: 'createdDate',
-			key: 'createdDate',
-			...getColumnDateFilterProps('createdDate'),
-			render: (value: string) => (
-				<span>{value ? formatDate(value) : '--'}</span>
-			),
-			width: 140
-		},
-		{
-			title: 'ACCIONES',
-			key: 'actions',
-			className: 'actions',
-			render: (_, record: Transaction) => (
-				<TransactionActions record={record} />
-			),
-			width: 100,
-			align: 'center'
-		}
-	];
 
 	const cashMovementsColumns: TableColumnsType<CashMovement> = [
 		{
@@ -322,7 +171,6 @@ const useTableColumns = () => {
 	];
 
 	return {
-		transactionsColumns,
 		cashMovementsColumns,
 		bankTransferMovementsColumns
 	};

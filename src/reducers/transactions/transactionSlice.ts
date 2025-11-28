@@ -1,7 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-	transactions: [] as Transaction[]
+	transactions: [] as Transaction[],
+	transactionsPagination: {
+		total: 0,
+		page: 1,
+		pageSize: 30,
+		totalPages: 1
+	} as Pagination
 };
 
 const transactionSlice = createSlice({
@@ -9,11 +15,18 @@ const transactionSlice = createSlice({
 	initialState,
 	reducers: {
 		setTransactions: (state, action) => {
-			state.transactions = action.payload;
+			const { transactions, total, page, pageSize, totalPages } =
+				action.payload;
+
+			state.transactions = transactions;
+			state.transactionsPagination = { total, page, pageSize, totalPages };
 		},
 
 		addTransaction: (state, action) => {
-			state.transactions = [action.payload, ...state.transactions];
+			state.transactions = [action.payload, ...state.transactions].slice(
+				0,
+				state.transactionsPagination.pageSize
+			);
 		},
 
 		updateTransactionState: (state, action) => {

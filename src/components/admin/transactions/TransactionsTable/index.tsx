@@ -1,19 +1,43 @@
 'use client';
-import useTableColumns from '@/hooks/useTableColumns';
+
+import { useEffect } from 'react';
 import CustomTable from '../../common/display-data/Table';
-import { transactionServices } from '@/services/transactionServices';
-import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTransactions } from '@/reducers/transactions/transactionSlice';
 import { shopServices } from '@/services/shopServices';
 import { setShops } from '@/reducers/shops/shopSlice';
+import useTransactionService from '@/services/transaction';
+import { TablePaginationConfig } from 'antd';
+import { FilterValue } from 'antd/es/table/interface';
+import { TransactionParams } from '@/libs/api/transaction';
+import useFilters from '@/hooks/useFilters';
+import TransactionCols from './cols';
 
-const TransactionsTable = ({ shop }: { shop: string }) => {
-	const { transactionsColumns } = useTableColumns();
+const TransactionsTable = ({
+	searchParams
+}: {
+	searchParams: TransactionParams;
+}) => {
 	const { shops } = useSelector((state: RootState) => state.shop);
-	const { transactions } = useSelector((state: RootState) => state.transaction);
-	const [isLoading, setIsLoading] = useState(true);
+	const { transactions, transactionsPagination } = useSelector(
+		(state: RootState) => state.transaction
+	);
+	const { transactionsColumns } = TransactionCols();
+	const { fetchTransactions, isLoading } = useTransactionService();
+	const { updateFilterParams } = useFilters();
 	const dispatch = useDispatch();
+
+	const page = Number(searchParams.page) || 1;
+	const pageSize = Number(searchParams.pageSize) || 30;
+
+	const filters = {
+		state: searchParams.state,
+		type: searchParams.type,
+		stockId: searchParams.stockId,
+		fromId: searchParams.fromId,
+		toId: searchParams.toId,
+		dateStart: searchParams.dateStart,
+		dateEnd: searchParams.dateEnd
+	};
 
 	const fetchShops = async () => {
 		if (shops?.length === 0) {
@@ -24,32 +48,31 @@ const TransactionsTable = ({ shop }: { shop: string }) => {
 		}
 	};
 
-	const fetchTransactions = async () => {
-		if (transactions?.length === 0) {
-			let data;
-
-			if (shop) {
-				const stockId = shops?.find(sh => sh?.slug === shop)?.stockId;
-				data = await transactionServices.getAll(undefined, stockId);
-			} else {
-				data = await transactionServices.getAll();
-			}
-			dispatch(setTransactions(data));
-		}
-		setIsLoading(false);
-	};
-
 	useEffect(() => {
 		fetchShops();
-		fetchTransactions();
-	}, []);
+		fetchTransactions({ page, pageSize, ...filters });
+	}, [page, pageSize, ...Object.values(filters)]);
+
+	const handleTableChange = (
+		pagination: TablePaginationConfig,
+		filters: Record<string, FilterValue | null>
+	) => {
+		updateFilterParams(pagination, searchParams, filters);
+	};
 
 	return (
 		<CustomTable
 			columns={transactionsColumns}
-			dataSource={isLoading ? [] : transactions}
+			dataSource={transactions}
 			isLoading={isLoading}
 			scrollMinus={335}
+			pagination={{
+				current: transactionsPagination.page,
+				pageSize: transactionsPagination.pageSize,
+				total: transactionsPagination.total,
+				showSizeChanger: true
+			}}
+			onChange={handleTableChange}
 		/>
 	);
 };

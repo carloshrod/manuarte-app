@@ -5,10 +5,15 @@ import TransactionsTable from '@/components/admin/transactions/TransactionsTable
 import { DrawerContent } from '@/types/enums';
 import { auth } from '@/auth';
 import { MdOutlineWarehouse } from 'react-icons/md';
+import { TransactionParams } from '@/libs/api/transaction';
 
 export const dynamic = 'force-dynamic';
 
-const TransactionsPage = async () => {
+type TransactionsPageProps = {
+	searchParams: TransactionParams;
+};
+
+const TransactionsPage = async ({ searchParams }: TransactionsPageProps) => {
 	const session = await auth();
 	const isAdmin = session?.user?.roleName === 'admin';
 	const shopName =
@@ -66,7 +71,7 @@ const TransactionsPage = async () => {
 					/>
 				</div>
 			</div>
-			<TransactionsTable shop={session?.user?.shop as string} />
+			<TransactionsTable searchParams={searchParams} />
 		</section>
 	);
 };

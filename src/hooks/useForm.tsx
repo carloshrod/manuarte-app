@@ -31,7 +31,7 @@ import {
 	addStockItem,
 	updateStockItem
 } from '@/reducers/stockItems/stockItemSlice';
-import { transactionServices } from '@/services/transactionServices';
+import { transactionLibs } from '@/libs/api/transaction';
 import {
 	addTransaction,
 	updateTransaction,
@@ -385,7 +385,7 @@ const useForm = () => {
 		shops: Shop[]
 	) => {
 		await handleSubmit({
-			serviceFn: transactionServices.create,
+			serviceFn: transactionLibs.create,
 			values,
 			onSuccess: res => {
 				const fromName = shops.find(
@@ -422,7 +422,7 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				transactionServices.update(valuesToUpdate, transactionId),
+				transactionLibs.update(valuesToUpdate, transactionId),
 			values,
 			onSuccess: res => {
 				const fromName = shops.find(

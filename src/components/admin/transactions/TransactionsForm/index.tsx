@@ -3,11 +3,11 @@ import { Button, Col, Divider, Form, Input, Row, Select } from 'antd';
 import { HiChevronDoubleRight } from 'react-icons/hi';
 import TransactionsProductFormList from '../../common/input-data/TransactionsProductFormList';
 import { useSelector } from 'react-redux';
-import { DrawerContent, ModalContent } from '@/types/enums';
+import { DrawerContent, ModalContent, TransactionState } from '@/types/enums';
 import { useWatch } from 'antd/es/form/Form';
 import { useEffect, useState } from 'react';
 import { formatDate, formatToTitleCase } from '@/utils/formats';
-import { transactionServices } from '@/services/transactionServices';
+import { transactionLibs } from '@/libs/api/transaction';
 import { useSession } from 'next-auth/react';
 import useTransactionSubmits from '@/hooks/useTransactionSubmits';
 import { useDrawerStore } from '@/stores/drawerStore';
@@ -35,9 +35,12 @@ const TransactionsForm = () => {
 
 	const fetchTransfers = async (toId: string) => {
 		try {
-			const data = await transactionServices.getAll(toId);
-			if (data) {
-				setTransfers(data);
+			const data = await transactionLibs.getAll({
+				toId,
+				state: TransactionState.PROGRESS
+			});
+			if (data?.transactions) {
+				setTransfers(data?.transactions);
 			}
 		} catch (error) {
 			console.error(error);
@@ -117,7 +120,7 @@ const TransactionsForm = () => {
 			const toId = form.getFieldValue('toId');
 			const fetchItems = async () => {
 				const items: TransactionItem[] =
-					transferId && (await transactionServices.getItems(transferId, toId));
+					transferId && (await transactionLibs.getItems(transferId, toId));
 
 				form.setFieldsValue({
 					items: items?.map(item => {
@@ -151,12 +154,15 @@ const TransactionsForm = () => {
 		opt => opt.value !== fromId
 	);
 
-	const transferOptions = transfers?.map(transf => {
-		return {
-			value: transf?.id,
-			label: formatToTitleCase(transf?.description)
-		};
-	});
+	const transferOptions =
+		transfers?.length > 0
+			? transfers?.map(transf => {
+					return {
+						value: transf?.id,
+						label: formatToTitleCase(transf?.description)
+					};
+				})
+			: [];
 
 	const transactionSubmit = TRANSACTION_SUBMITS[content as string];
 

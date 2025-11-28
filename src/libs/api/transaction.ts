@@ -1,11 +1,24 @@
 import { ENV } from '@/config/env';
 import { axiosPrivate } from './axios';
+import { TransactionState, TransactionType } from '@/types/enums';
 
-export const transactionServices = {
-	getAll: async (toId?: string, stockId?: string) => {
+export type TransactionParams = {
+	page?: number;
+	pageSize?: number;
+	state?: TransactionState;
+	type?: TransactionType;
+	stockId?: string;
+	fromId?: string;
+	toId?: string;
+	dateStart?: string;
+	dateEnd?: string;
+};
+
+export const transactionLibs = {
+	getAll: async (params?: TransactionParams) => {
 		try {
 			const res = await axiosPrivate.get(ENV.API.TRANSACTIONS, {
-				params: { toId, stockId }
+				params
 			});
 
 			return res.data;
