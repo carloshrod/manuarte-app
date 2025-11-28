@@ -17,7 +17,7 @@ const StockItemHistoryCols = () => {
 			title: 'FECHA',
 			dataIndex: 'createdDate',
 			key: 'createdDate',
-			...getColumnDateFilterProps('createdDate', true),
+			...getColumnDateFilterProps('createdDate'),
 			render: (value: string) => (
 				<span>{value ? formatDate(value) : '--'}</span>
 			),
