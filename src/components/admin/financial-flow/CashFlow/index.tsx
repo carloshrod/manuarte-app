@@ -2,7 +2,6 @@ import { Skeleton, Tooltip } from 'antd';
 import { formatCurrency, formatDate } from '@/utils/formats';
 import { useSelector } from 'react-redux';
 import CustomTable from '../../common/display-data/Table';
-import useTableColumns from '@/hooks/useTableColumns';
 import esES from 'antd/es/date-picker/locale/es_ES';
 import moment, { Moment } from 'moment';
 import 'moment/locale/es';
@@ -13,6 +12,7 @@ import AddButton from '../../common/ui/AddButton';
 import { CurrentCashSessionStatus, ModalContent } from '@/types/enums';
 import { BiMoneyWithdraw } from 'react-icons/bi';
 import { IoInformationCircleOutline } from 'react-icons/io5';
+import CashMovementCols from './cols';
 
 const DatePicker = generatePicker<Moment>(momentGenerateConfig);
 moment.locale('es');
@@ -29,7 +29,7 @@ const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
 	);
 	const { status, reason, balance, accumulatedDifference, data } =
 		currentCashSession ?? {};
-	const { cashMovementsColumns } = useTableColumns();
+	const { cashMovementsColumns } = CashMovementCols();
 
 	return (
 		<div className='space-y-4'>

@@ -1,10 +1,9 @@
 import { useSelector } from 'react-redux';
 import CustomTable from '../../common/display-data/Table';
-import useTableColumns from '@/hooks/useTableColumns';
 import esES from 'antd/es/date-picker/locale/es_ES';
 import moment, { Moment } from 'moment';
 import 'moment/locale/es';
-
+import BankTransfersCols from './cols';
 import generatePicker from 'antd/es/date-picker/generatePicker';
 import momentGenerateConfig from 'rc-picker/lib/generate/moment';
 
@@ -20,7 +19,7 @@ const BankTransfers = ({ isLoading, onChangeDate }: Props) => {
 	const { bankTransferMovements } = useSelector(
 		(state: RootState) => state.financialFlow
 	);
-	const { bankTransferMovementsColumns } = useTableColumns();
+	const { bankTransferMovementsColumns } = BankTransfersCols();
 
 	return (
 		<div className='space-y-4'>
