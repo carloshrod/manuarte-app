@@ -57,7 +57,7 @@ const useTable = () => {
 				<div style={{ padding: 8 }} onKeyDown={e => e.stopPropagation()}>
 					<Input
 						ref={searchInput}
-						placeholder={`Buscar por ${String(dataIndex)}`}
+						placeholder={`Buscar...`}
 						value={selectedKeys[0]}
 						onChange={e =>
 							setSelectedKeys(e.target.value ? [e.target.value] : [])
