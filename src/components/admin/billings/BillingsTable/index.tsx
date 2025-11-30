@@ -104,7 +104,7 @@ const BillingsTable = ({ searchParams, shopSlug }: Props) => {
 			columns={billingColumns}
 			dataSource={billings}
 			isLoading={isLoading}
-			scrollMinus={335}
+			scrollMinus={310}
 			pagination={{
 				current: billingsPagination.page,
 				pageSize: billingsPagination.pageSize,

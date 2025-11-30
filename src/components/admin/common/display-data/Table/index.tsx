@@ -52,10 +52,14 @@ const CustomTable = ({
 					...defaultPagination,
 					...(pagination ?? {})
 				}}
-				style={{ minHeight: isLoading ? 'calc(100vh - 300px)' : undefined }}
+				style={{
+					minHeight: isLoading
+						? `calc(100vh - ${scrollMinus - 140}px)`
+						: undefined
+				}}
 				loading={{
 					spinning: isLoading,
-					style: { minHeight: 'calc(100vh - 300px)' }
+					style: { minHeight: `calc(100vh - ${scrollMinus - 140}px)` }
 				}}
 				locale={{
 					emptyText: !isLoading ? (
@@ -66,7 +70,7 @@ const CustomTable = ({
 								display: 'flex',
 								flexDirection: 'column',
 								justifyContent: 'center',
-								height: 'calc(100vh - 380px)'
+								height: `calc(100vh - ${scrollMinus - 30}px)`
 							}}
 						/>
 					) : null,

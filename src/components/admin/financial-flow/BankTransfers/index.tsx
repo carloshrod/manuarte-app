@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 import CustomTable from '../../common/display-data/Table';
-import esES from 'antd/es/date-picker/locale/es_ES';
-import moment, { Moment } from 'moment';
-import 'moment/locale/es';
 import BankTransfersCols from './cols';
 import generatePicker from 'antd/es/date-picker/generatePicker';
 import momentGenerateConfig from 'rc-picker/lib/generate/moment';
+import esES from 'antd/es/date-picker/locale/es_ES';
+import moment, { Moment } from 'moment';
+import 'moment/locale/es';
 
 const DatePicker = generatePicker<Moment>(momentGenerateConfig);
 moment.locale('es');

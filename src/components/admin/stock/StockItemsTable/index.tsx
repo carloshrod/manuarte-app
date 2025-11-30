@@ -64,7 +64,7 @@ const StockItemsTable = ({
 			columns={stockItemsColumns}
 			dataSource={stockItems}
 			isLoading={isLoading}
-			scrollMinus={335}
+			scrollMinus={320}
 			pagination={{
 				current: stockItemsPagination.page,
 				pageSize: stockItemsPagination.pageSize,

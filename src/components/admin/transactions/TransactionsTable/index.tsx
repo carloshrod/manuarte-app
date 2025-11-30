@@ -65,7 +65,7 @@ const TransactionsTable = ({
 			columns={transactionsColumns}
 			dataSource={transactions}
 			isLoading={isLoading}
-			scrollMinus={335}
+			scrollMinus={300}
 			pagination={{
 				current: transactionsPagination.page,
 				pageSize: transactionsPagination.pageSize,

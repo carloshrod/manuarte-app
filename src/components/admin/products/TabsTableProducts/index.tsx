@@ -86,6 +86,7 @@ const TabsTableProducts = ({
 					columns={productVariantColumns}
 					dataSource={productVariants}
 					isLoading={isLoading}
+					scrollMinus={340}
 					pagination={{
 						current: productVariantsPagination.page,
 						pageSize: productVariantsPagination.pageSize,
@@ -104,6 +105,7 @@ const TabsTableProducts = ({
 					columns={productCategoryColumns}
 					dataSource={isLoading ? [] : productCategories}
 					isLoading={isLoading}
+					scrollMinus={340}
 				/>
 			)
 		}

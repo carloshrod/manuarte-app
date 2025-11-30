@@ -102,7 +102,7 @@ const StockItemHistory = ({
 				columns={stockItemsHistoryColumns}
 				dataSource={stockItemHistory}
 				isLoading={isLoading}
-				scrollMinus={395}
+				scrollMinus={400}
 				pagination={{
 					current: stockItemHistoryPagination.page,
 					pageSize: stockItemHistoryPagination.pageSize,

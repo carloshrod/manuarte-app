@@ -1,18 +1,17 @@
 import { Skeleton, Tooltip } from 'antd';
 import { formatCurrency, formatDate } from '@/utils/formats';
 import { useSelector } from 'react-redux';
-import CustomTable from '../../common/display-data/Table';
-import esES from 'antd/es/date-picker/locale/es_ES';
-import moment, { Moment } from 'moment';
-import 'moment/locale/es';
-
+import { BiMoneyWithdraw } from 'react-icons/bi';
 import generatePicker from 'antd/es/date-picker/generatePicker';
-import momentGenerateConfig from 'rc-picker/lib/generate/moment';
+import { IoInformationCircleOutline } from 'react-icons/io5';
+import CustomTable from '../../common/display-data/Table';
 import AddButton from '../../common/ui/AddButton';
 import { CurrentCashSessionStatus, ModalContent } from '@/types/enums';
-import { BiMoneyWithdraw } from 'react-icons/bi';
-import { IoInformationCircleOutline } from 'react-icons/io5';
 import CashMovementCols from './cols';
+import esES from 'antd/es/date-picker/locale/es_ES';
+import momentGenerateConfig from 'rc-picker/lib/generate/moment';
+import moment, { Moment } from 'moment';
+import 'moment/locale/es';
 
 const DatePicker = generatePicker<Moment>(momentGenerateConfig);
 moment.locale('es');

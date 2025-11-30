@@ -9,6 +9,7 @@ import {
 	ECU_PAYMENT_METHOD_FILTER
 } from '@/hooks/utils';
 import { PAYMENT_METHOD_MAP } from '@/utils/mappings';
+import { PaymentMethod } from '@/types/enums';
 
 const BankTransfersCols = () => {
 	const { getColumnSearchProps } = useTable();

@@ -67,7 +67,7 @@ const QuotesTable = ({ searchParams }: Props) => {
 			columns={quoteColumns}
 			dataSource={quotes}
 			isLoading={isLoading}
-			scrollMinus={335}
+			scrollMinus={300}
 			pagination={{
 				current: quotesPagination.page,
 				pageSize: quotesPagination.pageSize,

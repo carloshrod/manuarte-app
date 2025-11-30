@@ -129,7 +129,7 @@ const StockItemHistoryCols = () => {
 			render: (_: any, record: StockItemHistory) => (
 				<StockItemsHistoryActions record={record} />
 			),
-			width: 60,
+			width: 70,
 			align: 'center'
 		}
 	];
