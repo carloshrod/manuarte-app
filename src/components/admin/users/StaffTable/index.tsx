@@ -21,6 +21,7 @@ const StaffTable = ({ staffData }: { staffData: Staff[] }) => {
 			columns={staffColumns}
 			dataSource={isLoading ? [] : staff}
 			isLoading={isLoading}
+			scrollMinus={290}
 		/>
 	);
 };

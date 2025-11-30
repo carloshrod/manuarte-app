@@ -206,6 +206,7 @@ const TabsTableCustomers = ({
 					columns={customerColumns}
 					dataSource={customers}
 					isLoading={isLoading}
+					scrollMinus={340}
 					pagination={{
 						current: customersPagination.page,
 						pageSize: customersPagination.pageSize,
@@ -224,6 +225,7 @@ const TabsTableCustomers = ({
 					columns={topCustomerColumns}
 					dataSource={topCustomersCO}
 					isLoading={isLoading}
+					scrollMinus={340}
 					pagination={{
 						current: topCustomersCoPagination.page,
 						pageSize: topCustomersCoPagination.pageSize,
@@ -242,6 +244,7 @@ const TabsTableCustomers = ({
 					columns={topCustomerColumns}
 					dataSource={topCustomersEC}
 					isLoading={isLoading}
+					scrollMinus={340}
 					pagination={{
 						current: topCustomersEcPagination.page,
 						pageSize: topCustomersEcPagination.pageSize,
