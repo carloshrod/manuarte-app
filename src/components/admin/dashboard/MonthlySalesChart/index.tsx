@@ -19,12 +19,12 @@ type Sales = {
 	USD?: string;
 };
 
-interface MonthlySalesChartProps {
-	data: Sales[];
+interface SalesChartProps {
+	data: { monthlyTotals: Sales[]; yearlyTotals: { COP: number; USD: number } };
 	country: string;
 }
 
-const MonthlySalesChart = ({ data = [], country }: MonthlySalesChartProps) => {
+const SalesChart = ({ data, country }: SalesChartProps) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const isCol = country === 'col';
 	const dataKey = isCol ? 'COP' : 'USD';
@@ -53,6 +53,8 @@ const MonthlySalesChart = ({ data = [], country }: MonthlySalesChartProps) => {
 		return value.toString();
 	};
 
+	const currentYear = new Date().getFullYear();
+
 	return (
 		<div className='w-full lg:w-1/2 shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-6 rounded-lg'>
 			<div className='flex gap-2 items-center justify-center'>
@@ -60,19 +62,30 @@ const MonthlySalesChart = ({ data = [], country }: MonthlySalesChartProps) => {
 				{flag}
 			</div>
 			{!isLoading ? (
-				data?.length > 0 ? (
-					<ResponsiveContainer width='100%' height={320} className='p-4'>
-						<BarChart width={730} height={250} data={data}>
-							<XAxis
-								dataKey='month'
-								tickFormatter={(month: string) => month.slice(0, 3)}
-							/>
-							<YAxis tickFormatter={formatYAxisValue} />
-							<Tooltip formatter={(value: number) => formatCurrency(value)} />
-							<Legend />
-							<Bar dataKey={dataKey} fill={fill} />
-						</BarChart>
-					</ResponsiveContainer>
+				data?.monthlyTotals?.length > 0 ? (
+					<div>
+						<ResponsiveContainer width='100%' height={320} className='p-4'>
+							<BarChart width={730} height={250} data={data?.monthlyTotals}>
+								<XAxis
+									dataKey='month'
+									tickFormatter={(month: string) => month.slice(0, 3)}
+								/>
+								<YAxis tickFormatter={formatYAxisValue} />
+								<Tooltip formatter={(value: number) => formatCurrency(value)} />
+								<Legend />
+								<Bar dataKey={dataKey} fill={fill} />
+							</BarChart>
+						</ResponsiveContainer>
+
+						<span className='font-bold'>
+							Total {currentYear}:{' '}
+							<span
+								className={`font-semibold ${isCol ? 'text-[#059669]' : 'text-[#22c55e]'}`}
+							>
+								{formatCurrency(data?.yearlyTotals[dataKey])}
+							</span>
+						</span>
+					</div>
 				) : (
 					<Empty
 						image={Empty.PRESENTED_IMAGE_DEFAULT}
@@ -97,4 +110,4 @@ const MonthlySalesChart = ({ data = [], country }: MonthlySalesChartProps) => {
 	);
 };
 
-export default MonthlySalesChart;
+export default SalesChart;

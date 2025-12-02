@@ -1,4 +1,4 @@
-import MonthlySalesChart from '@/components/admin/dashboard/MonthlySalesChart';
+import SalesChart from '@/components/admin/dashboard/MonthlySalesChart';
 import StatsWidgets from '@/components/admin/dashboard/StatsWidgets';
 import TopSalesCharts from '@/components/admin/dashboard/TopSalesChart';
 import { dashboardServices } from '@/services/dashboardServices';
@@ -28,8 +28,8 @@ const DashboardPage = async () => {
 			<div className='flex flex-wrap justify-center text-center'>
 				<StatsWidgets counts={stats?.counts} />
 				<div className='p-4 w-full flex max-lg:flex-wrap gap-8'>
-					<MonthlySalesChart data={stats?.sales} country='col' />
-					<MonthlySalesChart data={stats?.sales} country='ecu' />
+					<SalesChart data={stats?.sales} country='col' />
+					<SalesChart data={stats?.sales} country='ecu' />
 				</div>
 				<div className='p-4 w-full flex flex-col gap-8'>
 					<div className='p-4 w-full min-h-[380px] shadow-[6px_6px_24px_rgba(0,0,0,0.25)] ps-6 py-6 rounded-lg'>
