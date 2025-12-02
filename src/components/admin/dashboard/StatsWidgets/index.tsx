@@ -20,7 +20,7 @@ const StatsWidgets = ({ counts }: StatsWidgetsProps) => {
 	}, []);
 
 	return STATS_WIDGETS_PROPS.map(({ icon, label, data }) => (
-		<div key={label} className='p-4 lg:w-1/3 sm:w-1/2 w-full'>
+		<div key={data} className='p-4 lg:w-1/3 sm:w-1/2 w-full'>
 			<div className='shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-6 rounded-lg transform transition duration-300 hover:scale-105'>
 				{counts ? (
 					<>
