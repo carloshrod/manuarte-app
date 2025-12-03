@@ -52,8 +52,7 @@ const GenerateTopSalesReportButton = ({
 				downloadExcel({
 					data: excelData,
 					fileName,
-					title,
-					date: selectedMonth.format('MMMM-YYYY')
+					title
 				});
 			}
 		} catch (error) {

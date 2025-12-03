@@ -15,6 +15,7 @@ export interface ExcelRestockData {
 	'Cantidad máxima': number;
 	'Cantidad actual': number;
 	'Cantidad en tránsito': number;
+	'Cantidad en Cascajal'?: number;
 	'Cantidad requerida': number;
 }
 
@@ -95,6 +96,10 @@ export const generateRestockData = (
 					item => item.productCategoryGroupName.toLowerCase() !== 'moldes'
 				);
 
+		const hasMainStockQuantity = filteredStockItems.some(
+			item => !!item.mainStockQuantity
+		);
+
 		if (filteredStockItems?.length > 0) {
 			excelData = filteredStockItems.reduce((acc, item) => {
 				const requiredQty =
@@ -103,7 +108,7 @@ export const generateRestockData = (
 					Number(item.quantityInTransit);
 
 				if (item.maxQty > 0 && item.minQty > 0 && requiredQty > 0) {
-					acc.push({
+					const row: ExcelRestockData = {
 						'#': acc.length + 1,
 						Código: item.vId,
 						Producto: `${item.productName} - ${item.productVariantName}`,
@@ -112,7 +117,13 @@ export const generateRestockData = (
 						'Cantidad actual': item.quantity,
 						'Cantidad en tránsito': item.quantityInTransit,
 						'Cantidad requerida': requiredQty
-					});
+					};
+
+					if (hasMainStockQuantity) {
+						row['Cantidad en Cascajal'] = item.mainStockQuantity || 0;
+					}
+
+					acc.push(row);
 				}
 
 				return acc;

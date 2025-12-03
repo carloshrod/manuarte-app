@@ -290,6 +290,7 @@ interface StockItem {
 	stockId: string;
 	qtyInTransit: number;
 	productCategoryGroupName: string;
+	mainStockQuantity?: number;
 }
 
 interface StockItemHistory extends StockItem {

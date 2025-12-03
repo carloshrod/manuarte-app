@@ -67,11 +67,11 @@ const TopSales = () => {
 					<div className='flex gap-2 items-center my-6'>
 						<span className='font-semibold'>Seleccionar período:</span>
 						<DatePicker
-							value={selectedDate}
+							value={selectedDate && dayjs(selectedDate)}
 							onChange={handleDateChange}
 							picker='month'
 							format={value =>
-								formatToTitleCase(value.format('MMMM YYYY')) as string
+								formatToTitleCase(dayjs(value).format('MMMM YYYY')) as string
 							}
 							locale={esES}
 							allowClear={false}
