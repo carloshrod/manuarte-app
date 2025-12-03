@@ -458,6 +458,37 @@ interface SubmitCashMovementDto {
 	comments?: string;
 }
 
+interface SalesReport {
+	period: {
+		start: string;
+		end: string;
+		currency: 'COP' | 'USD';
+	};
+	topGroupsWithProducts: {
+		groupId: string;
+		groupName: string;
+		totalQuantity: number;
+		totalRevenue: number;
+		topProducts: BillingItem[];
+	}[];
+	comparison: {
+		current: {
+			revenue: number;
+			quantity: number;
+			orders: number;
+		};
+		previous: {
+			revenue: number;
+			quantity: number;
+			orders: number;
+		};
+		growth: {
+			revenue: number;
+			quantity: number;
+		};
+	};
+}
+
 type DataTable =
 	| ProductVariant
 	| ProductCategory

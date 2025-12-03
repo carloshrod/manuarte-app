@@ -1,5 +1,14 @@
-const FlagEcu = () => (
-	<svg xmlns='http://www.w3.org/2000/svg' width={32} height={32}>
+interface FlagColProps {
+	size?: number;
+}
+
+const FlagEcu = ({ size = 32 }: FlagColProps) => (
+	<svg
+		xmlns='http://www.w3.org/2000/svg'
+		width={size}
+		height={size}
+		viewBox='0 0 32 32'
+	>
 		<path fill='#da352e' d='M1 24a4 4 0 0 0 4 4h22a4 4 0 0 0 4-4v-3H1v3Z' />
 		<path fill='#1f4c9e' d='M1 15h30v7H1z' />
 		<path fill='#fadf4b' d='M27 4H5a4 4 0 0 0-4 4v8h30V8a4 4 0 0 0-4-4Z' />

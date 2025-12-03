@@ -70,6 +70,16 @@ export interface ExcelTopCustomersData {
 	Facturado: number;
 }
 
+export interface ExcelTopSalesData {
+	'#': number;
+	'Grupo de Categoría': string;
+	Categoría: string;
+	Producto: string;
+	Cantidad: number;
+	Precio: number;
+	'Total Ventas': number;
+}
+
 export const generateRestockData = (
 	stockItems: StockItem[],
 	isMoldesReport: boolean
@@ -259,6 +269,35 @@ export const generateTopCustomersData = (data: Customer[]) => {
 	}
 };
 
+export const generateTopSalesData = (topGroups: any[]) => {
+	try {
+		const excelData: ExcelTopSalesData[] = [];
+		let index = 1;
+
+		if (topGroups?.length > 0) {
+			for (const group of topGroups) {
+				if (group.topProducts?.length > 0) {
+					for (const product of group.topProducts) {
+						excelData.push({
+							'#': index++,
+							'Grupo de Categoría': group.groupName,
+							Categoría: product.categoryName,
+							Producto: `${product.baseProductName} - ${product.productName}`,
+							Cantidad: Number(product.totalQuantity),
+							Precio: Number(product.avgUnitPrice),
+							'Total Ventas': Number(product.totalRevenue)
+						});
+					}
+				}
+			}
+		}
+
+		return excelData;
+	} catch (error) {
+		console.error(error);
+	}
+};
+
 export const generateFinancialData = (
 	cashMovements: CashMovement[],
 	bankTransferMovements: BankTransferMovement[]
@@ -336,6 +375,7 @@ export const downloadExcel = async ({
 		| ExcelBillingData[]
 		| ExcelCustomerActivityData[]
 		| ExcelTopCustomersData[]
+		| ExcelTopSalesData[]
 		| ExcelCostStockData[];
 	fileName: string;
 	title: string;
@@ -608,7 +648,9 @@ export const downloadExcel = async ({
 						headers[colNumber - 1] === 'Total Precio Venta' ||
 						headers[colNumber - 1] === 'Precio Costo' ||
 						headers[colNumber - 1] === 'Costo Total' ||
-						headers[colNumber - 1] === 'Ganancia Unitaria'
+						headers[colNumber - 1] === 'Ganancia Unitaria' ||
+						headers[colNumber - 1] === 'Precio' ||
+						headers[colNumber - 1] === 'Total Ventas'
 					) {
 						cell.numFmt =
 							isUsd || info?.countryIsoCode === 'EC'
@@ -625,7 +667,9 @@ export const downloadExcel = async ({
 					if (
 						headers[colNumber - 1] === 'Producto' ||
 						headers[colNumber - 1] === 'Cliente' ||
-						headers[colNumber - 1] === 'Métodos de Pago'
+						headers[colNumber - 1] === 'Métodos de Pago' ||
+						headers[colNumber - 1] === 'Categoría' ||
+						headers[colNumber - 1] === 'Grupo de Categoría'
 					) {
 						cell.alignment = { vertical: 'middle', horizontal: 'left' };
 					}
@@ -685,7 +729,8 @@ export const downloadExcel = async ({
 			const COL_WIDTHS: Record<string, number> = {
 				'#': 5,
 				Producto: 70,
-				Cliente: 30
+				Cliente: 30,
+				Categoría: 50
 			};
 
 			worksheet.columns = headers.map(header => ({
