@@ -11,7 +11,8 @@ export const formatProductVariantState = (
 				name: productVariant.name,
 				productDescription: product.description,
 				productCategoryId: product.productCategoryId,
-				productCategoryName: product.productCategoryName
+				productCategoryName: product.productCategoryName,
+				active: productVariant.active
 			}));
 		}
 

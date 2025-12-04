@@ -7,6 +7,7 @@ import { productCategoryServices } from '@/services/productCategoryServices';
 import {
 	addProduct,
 	addProductVariant,
+	removeProduct,
 	updateProduct,
 	updateProductVariant
 } from '@/reducers/products/productSlice';
@@ -143,13 +144,19 @@ const useForm = () => {
 
 	const submitUpdateProductVariant = async (
 		values: SubmitProductDto,
-		productVariantId: string
+		productVariantId: string,
+		activeProducts?: boolean
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
 				productLibs.updateProductVariant(valuesToUpdate, productVariantId),
 			values,
 			onSuccess: async () => {
+				if (activeProducts !== values?.productVariant?.active) {
+					dispatch(removeProduct({ productVariantId }));
+					return;
+				}
+
 				dispatch(updateProductVariant(values.productVariant));
 			}
 		});

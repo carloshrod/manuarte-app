@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { TablePaginationConfig, Tabs, TabsProps } from 'antd';
+import { Switch, TablePaginationConfig, Tabs, TabsProps } from 'antd';
 import { useSelector } from 'react-redux';
 import { AiOutlineAppstore } from 'react-icons/ai';
 import { BiPackage } from 'react-icons/bi';
@@ -12,19 +12,10 @@ import useProductServices from '@/services/product';
 import { FilterValue } from 'antd/es/table/interface';
 import ProductCols from './cols';
 import useFilters from '@/hooks/useFilters';
-
-interface SearchParams {
-	page?: string;
-	pageSize?: string;
-	vId?: string;
-	productName?: string;
-	name?: string;
-	productDescription?: string;
-	productCategoryName?: string;
-}
+import { ProductVariantParams } from '@/libs/api/product';
 
 type TabsTableProductsProps = {
-	searchParams: SearchParams;
+	searchParams: ProductVariantParams;
 	productCategoriesData: ProductCategory[];
 };
 
@@ -33,6 +24,9 @@ const TabsTableProducts = ({
 	productCategoriesData
 }: TabsTableProductsProps) => {
 	const [isProducts, setIsProducts] = useState(true);
+	const [showActiveOnly, setShowActiveOnly] = useState(
+		searchParams.showActiveOnly === 'true'
+	);
 	const { productVariants, productVariantsPagination } = useSelector(
 		(state: RootState) => state.product
 	);
@@ -54,7 +48,8 @@ const TabsTableProducts = ({
 		productName: searchParams.productName,
 		name: searchParams.name,
 		productDescription: searchParams.productDescription,
-		productCategoryName: searchParams.productCategoryName
+		productCategoryName: searchParams.productCategoryName,
+		showActiveOnly: searchParams.showActiveOnly
 	};
 
 	useEffect(() => {
@@ -113,6 +108,29 @@ const TabsTableProducts = ({
 
 	const operations = isProducts ? (
 		<div className='flex gap-2 max-[460px]:flex-col'>
+			<div className='flex-1 flex items-center gap-2 me-4'>
+				<label htmlFor='showActiveOnly' className='cursor-pointer'>
+					Productos
+					{showActiveOnly ? ' activos' : ' inactivos'}
+				</label>
+				<Switch
+					defaultChecked={showActiveOnly}
+					onChange={checked => {
+						setShowActiveOnly(checked);
+						updateFilterParams(
+							{ current: page, pageSize },
+							{ ...searchParams, showActiveOnly: checked ? 'true' : 'false' },
+							{
+								...tableFilters,
+								showActiveOnly: checked ? ['true'] : ['false']
+							}
+						);
+					}}
+					id='showActiveOnly'
+					style={showActiveOnly ? { backgroundColor: '#10b981' } : {}}
+					checked={showActiveOnly}
+				/>
+			</div>
 			<AddButton
 				title='Agregar Presentación de Producto'
 				modalContent={ModalContent.productVariants}

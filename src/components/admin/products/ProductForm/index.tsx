@@ -7,6 +7,7 @@ import useForm from '@/hooks/useForm';
 import SelectStocks from '../SelectStocks';
 import { selectFilterOption } from '../../utils';
 import { useModalStore } from '@/stores/modalStore';
+import { useSearchParams } from 'next/navigation';
 
 const ProductForm = () => {
 	const {
@@ -23,7 +24,10 @@ const ProductForm = () => {
 	const { dataToHandle } = useModalStore.getState();
 	const isUpdating = Boolean(dataToHandle);
 	const [editGeneralProduct, setEditGeneralProduct] = useState(false);
+	const [active, setActive] = useState(dataToHandle?.active ?? false);
 	const [isQuitoSelected, setIsQuitoSelected] = useState(true);
+	const searchParams = useSearchParams();
+	const activeProducts = searchParams.get('showActiveOnly') === 'true';
 
 	useEffect(() => {
 		if (dataToHandle) {
@@ -66,13 +70,18 @@ const ProductForm = () => {
 				...rest,
 				productVariant: {
 					id: dataToHandle.id,
-					name: productVariantName
+					name: productVariantName,
+					active
 				}
 			};
 			if (editGeneralProduct) {
 				submitUpdateProduct(valuesToUpdate, dataToHandle.productId);
 			} else {
-				submitUpdateProductVariant(valuesToUpdate, dataToHandle.id);
+				submitUpdateProductVariant(
+					valuesToUpdate,
+					dataToHandle.id,
+					activeProducts
+				);
 			}
 		}
 	};
@@ -163,15 +172,29 @@ const ProductForm = () => {
 			)}
 
 			{isUpdating ? (
-				<Form.Item
-					name='productVariantName'
-					label='Presentación'
-					rules={[
-						{ required: true, message: 'El nombre del producto es requerido' }
-					]}
-				>
-					<Input placeholder='Ingresa el nombre del producto' />
-				</Form.Item>
+				<div className='flex items-center gap-4'>
+					<Form.Item
+						name='productVariantName'
+						label='Presentación'
+						rules={[
+							{ required: true, message: 'El nombre del producto es requerido' }
+						]}
+						className='flex-1'
+					>
+						<Input placeholder='Ingresa el nombre del producto' />
+					</Form.Item>
+
+					<div className='flex-1 flex items-center gap-2 my-6 px-2'>
+						<Switch
+							defaultChecked={false}
+							onChange={checked => setActive(checked)}
+							id='active'
+							style={active ? { backgroundColor: '#10b981' } : {}}
+							checked={active}
+						/>
+						<label htmlFor='active'>{active ? 'Activo' : 'Inactivo'}</label>
+					</div>
+				</div>
 			) : (
 				<Form.Item
 					name='productVariants'

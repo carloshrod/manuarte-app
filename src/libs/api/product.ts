@@ -17,6 +17,7 @@ export type ProductVariantParams = {
 	name?: string;
 	productDescription?: string;
 	productCategoryName?: string;
+	showActiveOnly?: string;
 };
 
 export const productLibs = {
@@ -97,7 +98,8 @@ export const productLibs = {
 		return await axiosPrivate.put(
 			`${ENV.API.PRODUCT_VARIANTS}/${productVariantId}`,
 			{
-				name: body?.productVariant?.name
+				name: body?.productVariant?.name,
+				active: body?.productVariant?.active
 			}
 		);
 	},

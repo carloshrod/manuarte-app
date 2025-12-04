@@ -10,6 +10,7 @@ interface ProductVariant {
 	name: string;
 	productId: string;
 	vId: string;
+	active: boolean;
 	createdBy?: string;
 	updatedBy?: string;
 	createdDate?: string;
@@ -57,6 +58,7 @@ interface SubmitProductDto {
 	productVariant?: {
 		id: string;
 		name?: string;
+		active?: boolean;
 	};
 	stockIds?: string[];
 	stocks?: { id: string; currency: string }[];

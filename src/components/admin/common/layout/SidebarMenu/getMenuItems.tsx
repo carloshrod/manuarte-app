@@ -98,7 +98,7 @@ export const allMenuItems = (
 				<Link
 					href={{
 						pathname: PRODUCTS,
-						query: { page: 1, pageSize: 30 }
+						query: { page: 1, pageSize: 30, showActiveOnly: 'true' }
 					}}
 				>
 					Productos
@@ -138,7 +138,7 @@ export const allMenuItems = (
 					href={{
 						pathname: STOCK_PATH,
 						query: {
-							...(shop ? { stockId } : { main: mainStock })
+							...(shop ? { stockId } : undefined)
 						}
 					}}
 				>

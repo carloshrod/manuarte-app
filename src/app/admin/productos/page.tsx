@@ -1,18 +1,11 @@
 import TabsTableProducts from '@/components/admin/products/TabsTableProducts';
+import { ProductVariantParams } from '@/libs/api/product';
 import { productCategoryServices } from '@/services/productCategoryServices';
 
 export const dynamic = 'force-dynamic';
 
 interface Props {
-	searchParams: {
-		page?: string;
-		pageSize?: string;
-		vId?: string;
-		productName?: string;
-		name?: string;
-		productDescription?: string;
-		productCategoryName?: string;
-	};
+	searchParams: ProductVariantParams;
 }
 
 const ProducstPage = async ({ searchParams }: Props) => {
