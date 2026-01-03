@@ -9,11 +9,11 @@ import AddButton from '../../common/ui/AddButton';
 import GenerateTopCustomersReportButton from '../GenerateTopCustomersReportButton';
 import { ModalContent } from '@/types/enums';
 import CustomerCols from './cols';
-import useUserService from '@/services/user';
+import useCustomerService from '@/services/customer';
 import useFilters from '@/hooks/useFilters';
 import { FilterValue } from 'antd/es/table/interface';
-import { CustomerParams } from '@/libs/api/user';
 import { Session } from 'next-auth';
+import { CustomerParams } from '@/libs/api/customer';
 
 interface TabsTableCustomersProps {
 	session: Session | null;
@@ -37,9 +37,9 @@ const TabsTableCustomers = ({
 		topCustomersCoPagination,
 		topCustomersEC,
 		topCustomersEcPagination
-	} = useSelector((state: RootState) => state.user);
+	} = useSelector((state: RootState) => state.customer);
 	const { getAllCustomers, getTopCustomersCO, getTopCustomersEC, isLoading } =
-		useUserService();
+		useCustomerService();
 	const { updateFilterParams, synchronizeFilters, tableFilters } = useFilters();
 	const { customerColumns, topCustomerColumns } = CustomerCols({
 		isAdmin,

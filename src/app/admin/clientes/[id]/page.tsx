@@ -3,8 +3,11 @@ import CustomerStats from '@/components/admin/users/CustomerStats';
 import GenerateCustomerReportButton from '@/components/admin/users/GenerateCustomerReportButton';
 import RecentActivityItem from '@/components/admin/users/RecentActivityItem';
 import TopProductsTable from '@/components/admin/users/TabsTableCustomers/TopProductsTable';
-import { userLibs } from '@/libs/api/user';
+import { customerLibs } from '@/libs/api/customer';
+import { ROUTES } from '@/utils/routes';
 import { Card, Descriptions, DescriptionsProps, Empty, Timeline } from 'antd';
+import Link from 'next/link';
+import { BiDollar } from 'react-icons/bi';
 import { HiOutlineUser } from 'react-icons/hi';
 
 interface CustomerDetailsPageProps {
@@ -14,7 +17,7 @@ interface CustomerDetailsPageProps {
 const CustomerDetailsPage = async ({
 	params: { id }
 }: CustomerDetailsPageProps) => {
-	const customer = await userLibs.getCustomerStats(id);
+	const customer = await customerLibs.getCustomerStats(id);
 	const { info, billings, totalSpent, topProducts, quotes } = customer ?? {};
 	const {
 		dni,
@@ -24,7 +27,8 @@ const CustomerDetailsPage = async ({
 		location,
 		cityName,
 		regionName,
-		countryIsoCode
+		countryIsoCode,
+		currency
 	} = info ?? {};
 
 	const cityValue = cityName
@@ -69,10 +73,19 @@ const CustomerDetailsPage = async ({
 			<div className='flex pt-4'>
 				<GoBack />
 				<div className='w-full flex flex-wrap items-center justify-between'>
-					<h2 className='min-[478px]:text-lg min-[796px]:text-2xl font-semibold ps-2 flex items-center'>
-						{customer?.info?.fullName}
-						<HiOutlineUser size={22} />
-					</h2>
+					<div className='flex items-center gap-6'>
+						<h2 className='min-[478px]:text-lg min-[796px]:text-2xl font-semibold ps-2 flex items-center'>
+							{customer?.info?.fullName}
+							<HiOutlineUser size={22} />
+						</h2>
+
+						<Link
+							href={`${ROUTES.CUSTOMERS}/${id}/balance?currency=${currency}`}
+							className='flex items-center gap-1 h-8 px-4 text-white bg-[#10b981] rounded-md hover:text-white hover:bg-[#0e9e6c] transition-colors'
+						>
+							Balance <BiDollar size={20} />
+						</Link>
+					</div>
 
 					<GenerateCustomerReportButton
 						info={{ ...info, billingsCount: billings?.count, totalSpent }}

@@ -1,5 +1,5 @@
+import { customerLibs } from '@/libs/api/customer';
 import { productLibs } from '@/libs/api/product';
-import { userLibs } from '@/libs/api/user';
 import { cityServices } from '@/services/cityServices';
 import { FormInstance } from 'antd';
 
@@ -78,7 +78,7 @@ export const getCustomersData = async ({
 	isoCode: string;
 }) => {
 	try {
-		const data = await userLibs.searchCustomer(newValue, isoCode);
+		const data = await customerLibs.searchCustomer(newValue, isoCode);
 
 		let formattedData;
 		if (currentValue === newValue) {

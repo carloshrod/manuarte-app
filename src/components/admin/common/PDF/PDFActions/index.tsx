@@ -9,6 +9,8 @@ import { useModalStore } from '@/stores/modalStore';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { BillingStatus, ModalContent } from '@/types/enums';
 import usePdf from '@/hooks/usePdf';
+import AddButton from '../../ui/AddButton';
+import { BiDollar } from 'react-icons/bi';
 
 type Props = {
 	isQuote: boolean;
@@ -18,7 +20,8 @@ type Props = {
 
 const PDFActions = ({ isQuote, data, shopSlug }: Props) => {
 	const { openModal, closeModal } = useModalStore.getState();
-	const { sendPdf } = usePdf();
+	const { sendPdf, calculateTotals } = usePdf();
+	const { total } = calculateTotals(data);
 
 	const city = data?.cityName?.toUpperCase() ?? 'NA';
 	const customerName = data?.fullName?.toUpperCase() ?? 'CONSUMIDOR FINAL';
@@ -143,7 +146,27 @@ const PDFActions = ({ isQuote, data, shopSlug }: Props) => {
 				</Button>
 			</div>
 
-			{isQuote ? <DropdownMenu items={dropDownItems} label='Factura' /> : null}
+			{isQuote ? (
+				<div className='flex gap-4 items-center'>
+					{data?.customerId && (
+						<AddButton
+							title='Gestionar Abono'
+							modalContent={ModalContent.balance}
+							buttonLabel='Abono'
+							addIcon={false}
+							appendIcon={<BiDollar size={18} />}
+							dataToHandle={{
+								id: data?.customerId,
+								currency: data?.currency,
+								quoteId: data?.id,
+								shopId: data?.shopId,
+								total
+							}}
+						/>
+					)}
+					<DropdownMenu items={dropDownItems} label='Factura' />
+				</div>
+			) : null}
 		</div>
 	);
 };

@@ -1,9 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-	staff: [] as Staff[],
 	customers: [] as Customer[],
 	customersPagination: {
+		total: 0,
+		page: 1,
+		pageSize: 10,
+		totalPages: 1
+	} as Pagination,
+	customerBalanceMovements: [] as CustomerBalanceMovement[],
+	customerBalanceMovementsPagination: {
 		total: 0,
 		page: 1,
 		pageSize: 10,
@@ -22,52 +28,14 @@ const initialState = {
 		page: 1,
 		pageSize: 10,
 		totalPages: 1
-	} as Pagination
+	} as Pagination,
+	balance: 0 as number
 };
 
-export const userSlice = createSlice({
-	name: 'users',
+export const customerSlice = createSlice({
+	name: 'customers',
 	initialState,
 	reducers: {
-		setStaff: (state, action) => {
-			state.staff = action.payload;
-		},
-
-		addStaff: (state, action) => {
-			state.staff = [action.payload, ...state.staff];
-		},
-
-		updateStaff: (state, action) => {
-			const updatedStaff = action.payload;
-			state.staff = state.staff.map(item =>
-				item.id === updatedStaff.id ? updatedStaff : item
-			);
-		},
-
-		removeStaff: (state, action) => {
-			state.staff = state.staff.filter(
-				item => item.personId !== action.payload
-			);
-		},
-
-		updateStaffPermissions: (state, action) => {
-			const { extraPermissions, userId } = action.payload;
-
-			const updatedExtraPermissions = extraPermissions.map(
-				(permissionId: string) => {
-					return {
-						id: permissionId
-					};
-				}
-			);
-
-			state.staff = state.staff.map(item =>
-				item.id === userId
-					? { ...item, extraPermissions: updatedExtraPermissions }
-					: item
-			);
-		},
-
 		setCustomers: (state, action) => {
 			state.customers = action.payload.customers;
 			state.customersPagination = {
@@ -75,6 +43,18 @@ export const userSlice = createSlice({
 				page: action.payload.page,
 				pageSize: action.payload.pageSize,
 				totalPages: action.payload.totalPages
+			};
+		},
+
+		setCustomerBalanceMovements: (state, action) => {
+			const { movements, total, page, pageSize, totalPages } = action.payload;
+
+			state.customerBalanceMovements = movements;
+			state.customerBalanceMovementsPagination = {
+				total,
+				page,
+				pageSize,
+				totalPages
 			};
 		},
 
@@ -117,21 +97,30 @@ export const userSlice = createSlice({
 			state.customers = state.customers.filter(
 				item => item.personId !== action.payload
 			);
+		},
+
+		addCustomerBalanceMovement: (state, action) => {
+			state.customerBalanceMovements = [
+				action.payload,
+				...state.customerBalanceMovements
+			].slice(0, state.customerBalanceMovementsPagination.pageSize);
+		},
+
+		setBalance: (state, action) => {
+			state.balance = action.payload;
 		}
 	}
 });
 
 export const {
-	setStaff,
-	addStaff,
-	updateStaff,
-	removeStaff,
-	updateStaffPermissions,
 	setCustomers,
+	setCustomerBalanceMovements,
 	setTopCustomersCO,
 	setTopCustomersEC,
 	addCustomer,
 	updateCustomer,
-	removeCustomer
-} = userSlice.actions;
-export default userSlice.reducer;
+	removeCustomer,
+	addCustomerBalanceMovement,
+	setBalance
+} = customerSlice.actions;
+export default customerSlice.reducer;

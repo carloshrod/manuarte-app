@@ -48,18 +48,27 @@ export const TRANSACTION_STATES_MAP: Record<string, string> = {
 };
 
 export const TRANSACTION_TYPES_MAP: Record<string, string> = {
-	ENTER: 'Entrada',
-	EXIT: 'Salida',
-	TRANSFER: 'Transferencia'
+	ENTER: 'ENTRADA',
+	EXIT: 'SALIDA',
+	TRANSFER: 'TRANSFERENCIA'
 };
 
 export const CASH_MOVEMENT_CAT_MAP: Record<string, string> = {
 	SALE: 'VENTA',
+	ADVANCE_PAYMENT: 'ABONO',
 	DELIVERY: 'DOMICILIO',
 	INBOUND_SHIPPING: 'PAGO DE FLETE',
 	PURCHASE: 'COMPRA',
 	CHANGE: 'CAMBIO',
 	PIGGY_BANK: 'ALCANCÍA',
 	SHORTAGE_COVER: 'COB. DE FALTANTE',
+	OTHER: 'OTRO'
+};
+
+export const BALANCE_MOVEMENT_CATEGORY_MAP: Record<string, string> = {
+	ADVANCE_PAYMENT: 'ABONO',
+	REFUND: 'REEMBOLSO',
+	PAYMENT_APPLIED: 'PAGO APLICADO',
+	ADJUSTMENT: 'AJUSTE',
 	OTHER: 'OTRO'
 };

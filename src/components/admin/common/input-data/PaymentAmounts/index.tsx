@@ -2,6 +2,7 @@ import { calculateTotalPayment } from '@/components/admin/utils';
 import { useModalStore } from '@/stores/modalStore';
 import { BillingStatus } from '@/types/enums';
 import {
+	formatCurrency,
 	formatDate,
 	formatInputCurrency,
 	normalizeAmount
@@ -9,6 +10,7 @@ import {
 import { Form, FormInstance, InputNumber, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import { IoInformationCircleOutline } from 'react-icons/io5';
+import { useSelector } from 'react-redux';
 
 interface PaymentAmountsProps {
 	form: FormInstance;
@@ -17,14 +19,17 @@ interface PaymentAmountsProps {
 		label: string;
 	}[];
 	isPreOrder?: boolean;
+	isPaid?: boolean;
 }
 
 const PaymentAmounts = ({
 	form,
 	paymentMethodOptions,
-	isPreOrder = false
+	isPreOrder = false,
+	isPaid = false
 }: PaymentAmountsProps) => {
 	const { dataToHandle } = useModalStore.getState();
+	const { balance } = useSelector((state: RootState) => state.customer);
 	const [difference, setDifference] = useState<number | null>(null);
 
 	const selectedMethods = Form.useWatch('selectedMethods', form);
@@ -51,7 +56,7 @@ const PaymentAmounts = ({
 
 	useEffect(() => {
 		handleAmountChange();
-	}, [total]);
+	}, [total, balance, paymentList?.length, existingPayments.length]);
 
 	const handleAmountChange = () => {
 		const payments = form.getFieldValue('payments') || [];
@@ -60,8 +65,20 @@ const PaymentAmounts = ({
 			...existingPayments
 		]);
 
-		const newDifference =
-			normalizeAmount(total) - normalizeAmount(totalPayment);
+		// Usar automáticamente el saldo disponible siempre que haya
+		const balanceToUse = Math.min(
+			normalizeAmount(total),
+			normalizeAmount(balance)
+		);
+
+		// Actualizar el campo balanceToUse en el formulario
+		form.setFieldsValue({ balanceToUse });
+
+		// Calcular cuánto queda por pagar después de aplicar el balance
+		const remainingAfterBalance = normalizeAmount(total) - balanceToUse;
+
+		// Calcular diferencia final (lo que falta o excede después de los pagos)
+		const newDifference = remainingAfterBalance - normalizeAmount(totalPayment);
 		setDifference(newDifference);
 
 		if (status === BillingStatus.PAID) return;
@@ -100,7 +117,15 @@ const PaymentAmounts = ({
 
 	return (
 		<>
-			{difference !== null && total > 0 && (
+			{!isPaid && balance > 0 && (
+				<div className='text-end text-[14px] font-medium pe-3 pb-2'>
+					<span className='text-[#10b981]'>
+						Saldo a favor {formatCurrency(balance)}
+					</span>
+				</div>
+			)}
+
+			{!isPaid && difference !== null && total > 0 && (
 				<div
 					className={`text-end text-[14px] font-medium pe-3 pb-4 ${
 						difference === 0
@@ -114,6 +139,10 @@ const PaymentAmounts = ({
 				</div>
 			)}
 
+			<Form.Item name='balanceToUse' hidden initialValue={0}>
+				<InputNumber />
+			</Form.Item>
+
 			{selectedMethods?.length ? (
 				<Form.Item
 					name='payments'
@@ -122,6 +151,7 @@ const PaymentAmounts = ({
 						{
 							validator: async (_, value) => {
 								const total = form.getFieldValue('total') || 0;
+								const balanceToUse = form.getFieldValue('balanceToUse') || 0;
 								const totalPayment = calculateTotalPayment([
 									...value,
 									...existingPayments
@@ -129,7 +159,6 @@ const PaymentAmounts = ({
 								const allAmountsGreaterThanZero = value.every(
 									(item: any) => item.amount > 0
 								);
-
 								if (!allAmountsGreaterThanZero) {
 									throw new Error(
 										'Todos los montos deben tener un valor mayor a cero, de lo contrario elimine el método de pago'
@@ -140,9 +169,11 @@ const PaymentAmounts = ({
 									return Promise.resolve();
 								}
 
-								if (normalizeAmount(totalPayment) !== normalizeAmount(total)) {
+								const totalWithBalance =
+									normalizeAmount(totalPayment) + normalizeAmount(balanceToUse);
+								if (totalWithBalance !== normalizeAmount(total)) {
 									throw new Error(
-										`La suma de los montos ($${totalPayment.toLocaleString()}) debe ser igual al total ($${total.toLocaleString()})`
+										`La suma de los montos y balance ($${totalWithBalance.toLocaleString()}) debe ser igual al total ($${total.toLocaleString()})`
 									);
 								}
 							}

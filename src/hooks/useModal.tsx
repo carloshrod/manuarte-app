@@ -15,6 +15,7 @@ import { ReactNode } from 'react';
 import { ModalContent } from '@/types/enums';
 import CashSessionForm from '@/components/admin/financial-flow/CashSessionForm';
 import PiggyBankWithdrawForm from '@/components/admin/financial-flow/PiggyBankWithdrawForm';
+import BalanceForm from '@/components/admin/users/BalanceForm';
 
 const useModal = () => {
 	const { componentProps } = useModalStore();
@@ -46,7 +47,8 @@ const useModal = () => {
 		),
 		[ModalContent.confirm]: componentProps ? (
 			<ConfirmOperation {...(componentProps as ConfirmOperationProps)} />
-		) : null
+		) : null,
+		[ModalContent.balance]: <BalanceForm />
 	};
 
 	return { MODAL_CONTENT };

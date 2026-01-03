@@ -14,7 +14,8 @@ export enum ModalContent {
 	cashIncome = 'cashIncome',
 	cashExpense = 'cashExpense',
 	piggyBankWithdraw = 'piggyBankWithdraw',
-	confirm = 'confirm'
+	confirm = 'confirm',
+	balance = 'balance'
 }
 
 export enum DrawerContent {
@@ -90,11 +91,20 @@ export enum CurrentCashSessionStatus {
 
 export enum CashMovementCategory {
 	SALE = 'SALE',
+	ADVANCE_PAYMENT = 'ADVANCE_PAYMENT',
 	DELIVERY = 'DELIVERY',
 	INBOUND_SHIPPING = 'INBOUND_SHIPPING',
 	PURCHASE = 'PURCHASE',
 	CHANGE = 'CHANGE',
 	PIGGY_BANK = 'PIGGY_BANK',
 	SHORTAGE_COVER = 'SHORTAGE_COVER',
+	OTHER = 'OTHER'
+}
+
+export enum CustomerBalanceMovementCategory {
+	ADVANCE_PAYMENT = 'ADVANCE_PAYMENT',
+	REFUND = 'REFUND',
+	PAYMENT_APPLIED = 'PAYMENT_APPLIED',
+	ADJUSTMENT = 'ADJUSTMENT',
 	OTHER = 'OTHER'
 }

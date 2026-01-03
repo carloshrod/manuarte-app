@@ -21,6 +21,7 @@ export const ECU_PAYMENT_METHOD_FILTER = [
 
 export const CASH_MOVEMENT_CAT_FILTER = [
 	{ text: 'VENTA', value: CashMovementCategory.SALE },
+	{ text: 'ABONO', value: CashMovementCategory.ADVANCE_PAYMENT },
 	{ text: 'DOMICILIO', value: CashMovementCategory.DELIVERY },
 	{ text: 'PAGO DE FLETE', value: CashMovementCategory.INBOUND_SHIPPING },
 	{ text: 'COMPRA', value: CashMovementCategory.PURCHASE },

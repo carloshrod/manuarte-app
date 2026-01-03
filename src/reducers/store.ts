@@ -1,7 +1,8 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import productsReducer from './products/productSlice';
 import productCategoriesReducer from './productCategories/productCategorySlice';
-import usersReducer from './users/userSlice';
+import staffReducer from './staff/staffSlice';
+import customerReducer from './customer/customerSlice';
 import quotesReducer from './quotes/quoteSlice';
 import billingsReducer from './billings/billingSlice';
 import stocksReducer from './stockItems/stockItemSlice';
@@ -12,7 +13,8 @@ import financialFlowReducer from './financialFlow/financialFlowSlice';
 const appReducer = combineReducers({
 	product: productsReducer,
 	productCategory: productCategoriesReducer,
-	user: usersReducer,
+	staff: staffReducer,
+	customer: customerReducer,
 	quote: quotesReducer,
 	billing: billingsReducer,
 	stock: stocksReducer,

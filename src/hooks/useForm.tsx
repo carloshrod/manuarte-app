@@ -15,14 +15,14 @@ import {
 	addProductCategory,
 	updateProductCategory
 } from '@/reducers/productCategories/productCategorySlice';
-import { userLibs } from '@/libs/api/user';
+import { staffLibs } from '@/libs/api/staff';
+import { customerLibs } from '@/libs/api/customer';
 import {
-	addCustomer,
 	addStaff,
-	updateCustomer,
 	updateStaff,
 	updateStaffPermissions
-} from '@/reducers/users/userSlice';
+} from '@/reducers/staff/staffSlice';
+import { addCustomer, updateCustomer } from '@/reducers/customer/customerSlice';
 import { quoteLibs } from '@/libs/api/quote';
 import { addQuote, updateQuote } from '@/reducers/quotes/quoteSlice';
 import { billingLibs } from '@/libs/api/billing';
@@ -189,7 +189,7 @@ const useForm = () => {
 
 	const submitRegisterStaff = async (values: SubmitStaffDto) => {
 		await handleSubmit({
-			serviceFn: userLibs.registerStaff,
+			serviceFn: staffLibs.registerStaff,
 			values,
 			onSuccess: res => dispatch(addStaff(res.data.newUser))
 		});
@@ -201,7 +201,7 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				userLibs.updateStaff(valuesToUpdate, personId),
+				staffLibs.updateStaff(valuesToUpdate, personId),
 			values,
 			onSuccess: res => dispatch(updateStaff(res.data.updatedUser))
 		});
@@ -213,7 +213,7 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				userLibs.setPermissions(valuesToUpdate, userId),
+				staffLibs.setPermissions(valuesToUpdate, userId),
 			values,
 			onSuccess: () =>
 				dispatch(
@@ -227,7 +227,7 @@ const useForm = () => {
 
 	const submitRegisterCustomer = async (values: SubmitCustomerDto) => {
 		await handleSubmit({
-			serviceFn: userLibs.registerCustomer,
+			serviceFn: customerLibs.registerCustomer,
 			values,
 			onSuccess: res => dispatch(addCustomer(res.data.newCustomer))
 		});
@@ -239,7 +239,7 @@ const useForm = () => {
 	) => {
 		await handleSubmit({
 			serviceFn: valuesToUpdate =>
-				userLibs.updateCustomer(valuesToUpdate, personId),
+				customerLibs.updateCustomer(valuesToUpdate, personId),
 			values,
 			onSuccess: res => dispatch(updateCustomer(res.data.updatedCustomer))
 		});
@@ -505,6 +505,7 @@ const useForm = () => {
 		form,
 		isLoading,
 		itemsError,
+		handleSubmit,
 		setItemsError,
 		submitCreateProduct,
 		submitUpdateProduct,

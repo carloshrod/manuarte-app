@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Form, Select, Input } from 'antd';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import FormButtons from '../../ui/FormButtons';
 import useForm from '@/hooks/useForm';
 import {
@@ -11,9 +11,8 @@ import {
 } from '@/components/admin/consts';
 import { quoteLibs } from '@/libs/api/quote';
 import { useModalStore } from '@/stores/modalStore';
-
 import { setBillings } from '@/reducers/billings/billingSlice';
-import { formatToTitleCase } from '@/utils/formats';
+import { formatToTitleCase, normalizeAmount } from '@/utils/formats';
 import { ROUTES } from '@/utils/routes';
 import { BillingStatus, DiscountType, ModalContent } from '@/types/enums';
 import { v4 as uuidv4 } from 'uuid';
@@ -21,6 +20,7 @@ import PaymentAmounts from '../PaymentAmounts';
 import CalculationInputs from '../CalculationInputs';
 import { updateCalculations } from '@/components/admin/utils';
 import { billingLibs } from '@/libs/api/billing';
+import useCustomerService from '@/services/customer';
 
 const { TextArea } = Input;
 
@@ -29,6 +29,8 @@ const BillingModalForm = () => {
 		useForm();
 	const { content, dataToHandle, openModal, closeModal } =
 		useModalStore.getState();
+	const { fetchBalance } = useCustomerService();
+	const { balance } = useSelector((state: RootState) => state.customer);
 	const params = useParams();
 	const { push } = useRouter();
 	const dispatch = useDispatch();
@@ -63,6 +65,12 @@ const BillingModalForm = () => {
 		const discountByPercent =
 			dataToHandle?.discountType === DiscountType.PERCENTAGE;
 		updateCalculations(form, discountByPercent, dataToHandle?.subtotal);
+
+		const currency =
+			dataToHandle?.currency || dataToHandle.countryIsoCode === 'CO'
+				? 'COP'
+				: 'USD';
+		fetchBalance(dataToHandle?.customerId, currency);
 	}, []);
 
 	const subtotal = dataToHandle?.items?.reduce(
@@ -193,7 +201,27 @@ const BillingModalForm = () => {
 					label='Métodos de Pago'
 					rules={[
 						{
-							required: !isPaid && !isPendingDelivery,
+							validator: (_, value) => {
+								if (isPaid || isPendingDelivery) {
+									return Promise.resolve();
+								}
+
+								const total = form.getFieldValue('total') || 0;
+								const balanceCoversFull =
+									normalizeAmount(balance) >= normalizeAmount(total);
+
+								if (balanceCoversFull && total > 0) {
+									return Promise.resolve();
+								}
+
+								if (!value || value.length === 0) {
+									return Promise.reject(
+										new Error('Al menos un método de pago es requerido')
+									);
+								}
+
+								return Promise.resolve();
+							},
 							message: 'Al menos un método de pago es requerido'
 						}
 					]}
@@ -230,6 +258,7 @@ const BillingModalForm = () => {
 						form={form}
 						paymentMethodOptions={paymentMethodOptions}
 						isPreOrder={isPreOrder}
+						isPaid={isPaid}
 					/>
 				</div>
 

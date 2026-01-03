@@ -1,9 +1,9 @@
 import { useDispatch } from 'react-redux';
 import { notification } from 'antd';
 import TableActions from '../../common/ui/TableActions';
-import { userLibs } from '@/libs/api/user';
+import { staffLibs } from '@/libs/api/staff';
 import { useModalStore } from '@/stores/modalStore';
-import { removeStaff } from '@/reducers/users/userSlice';
+import { removeStaff } from '@/reducers/staff/staffSlice';
 import { AxiosError } from 'axios';
 import { ModalContent } from '@/types/enums';
 
@@ -29,7 +29,7 @@ const StaffActions = ({ record }: { record: Staff }) => {
 
 	const handleDelete = async () => {
 		try {
-			const res = await userLibs.deleteStaff(record.personId);
+			const res = await staffLibs.deleteStaff(record.personId);
 			if (res.status === 200) {
 				dispatch(removeStaff(record.personId));
 				notification.success({

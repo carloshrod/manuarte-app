@@ -1,8 +1,8 @@
-import { CustomerParams, userLibs } from '@/libs/api/user';
-import { downloadExcel, generateTopCustomersData } from '@/utils/documents';
-import { Button } from 'antd';
 import { useState } from 'react';
+import { Button } from 'antd';
 import { IoMdDownload } from 'react-icons/io';
+import { customerLibs, CustomerParams } from '@/libs/api/customer';
+import { downloadExcel, generateTopCustomersData } from '@/utils/documents';
 
 const GenerateTopCustomersReportButton = ({
 	reportParams
@@ -15,7 +15,7 @@ const GenerateTopCustomersReportButton = ({
 	const handleDownloadExcel = async () => {
 		try {
 			setLoading(true);
-			const { topCustomers } = await userLibs.getTopCustomers(reportParams);
+			const { topCustomers } = await customerLibs.getTopCustomers(reportParams);
 			setReportData(topCustomers);
 			const excelData = generateTopCustomersData(topCustomers);
 			if (excelData) {

@@ -119,6 +119,8 @@ interface Customer {
 	dni: string;
 	totalSpent: number;
 	billingCount: number;
+	currency: string;
+	balance?: number;
 }
 
 interface ExistingCustomer extends Customer {
@@ -142,7 +144,6 @@ interface SubmitCustomerDto {
 	location: string;
 	city: string;
 	cityId: string;
-
 	personId: string?;
 	customerId: string?;
 }
@@ -250,6 +251,36 @@ interface Payment {
 	createdDate: string;
 }
 
+enum CustomerBalanceMovementCategory {
+	ADVANCE_PAYMENT = 'ADVANCE_PAYMENT',
+	REFUND = 'REFUND',
+	PAYMENT_APPLIED = 'PAYMENT_APPLIED',
+	ADJUSTMENT = 'ADJUSTMENT',
+	OTHER = 'OTHER'
+}
+
+interface CustomerBalanceDto {
+	currency: 'COP' | 'USD';
+	amount: number;
+	category: CustomerBalanceMovementCategory;
+	quoteId?: string;
+	billingId?: string;
+	comments?: string;
+}
+
+interface CustomerBalanceMovement {
+	type: 'CREDIT' | 'DEBIT';
+	category: CustomerBalanceMovementCategory;
+	paymentMethod: PaymentMethod;
+	amount: number;
+	balanceBefore: number;
+	balanceAfter: number;
+	createdDate: string;
+	billingId?: string;
+	quoteId?: string;
+	comments?: string;
+}
+
 interface BillingItem extends QuoteItem {}
 interface Billing extends Omit<Quote, 'status'> {
 	status: BillingStatus;
@@ -272,6 +303,7 @@ interface SubmitBillingDto extends SubmitCustomerDto {
 	currency: string;
 	clientRequestId: string;
 	comments: string;
+	balanceToUse?: number;
 }
 
 interface StockItem {
@@ -502,7 +534,8 @@ type DataTable =
 	| StockItem
 	| Transaction
 	| CashMovement
-	| BankTransferMovement;
+	| BankTransferMovement
+	| CustomerBalanceMovement;
 
 type Pagination = {
 	total: number;
@@ -520,14 +553,19 @@ interface RootState {
 	productCategory: {
 		productCategories: ProductCategory[];
 	};
-	user: {
+	staff: {
 		staff: Staff[];
+	};
+	customer: {
 		customers: Customer[];
 		customersPagination: Pagination;
+		customerBalanceMovements: CustomerBalanceMovement[];
+		customerBalanceMovementsPagination: Pagination;
 		topCustomersCO: Customer[];
 		topCustomersCoPagination: Pagination;
 		topCustomersEC: Customer[];
 		topCustomersEcPagination: Pagination;
+		balance: number;
 	};
 	quote: {
 		quotes: Quote[];

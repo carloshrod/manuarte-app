@@ -10,6 +10,7 @@ import { HiOutlineDocumentAdd } from 'react-icons/hi';
 import DropdownMenu from '../DropdownMenu';
 import { ModalContent } from '@/types/enums';
 import { PiInvoice } from 'react-icons/pi';
+import { BiDollar } from 'react-icons/bi';
 
 interface TableActionsProps {
 	record?: Record<string, any>;
@@ -26,6 +27,7 @@ interface TableActionsProps {
 	onTracking?: () => void;
 	onDelete?: () => void;
 	onCancel?: () => void;
+	onBalance?: () => void;
 	popTitle?: string;
 	popDescription?: string;
 	isEditable?: boolean;
@@ -41,6 +43,7 @@ const TableActions = ({
 	onTracking,
 	onDelete,
 	onCancel,
+	onBalance,
 	popTitle,
 	popDescription = '¿Estás seguro de que quieres borrar este elemento?',
 	isEditable = true,
@@ -103,6 +106,16 @@ const TableActions = ({
 						}
 						onClick={onEdit}
 						disabled={!isEditable}
+					/>
+				</Tooltip>
+			) : null}
+
+			{onBalance ? (
+				<Tooltip title='Balance'>
+					<Button
+						type='text'
+						icon={<BiDollar size={20} color='#10b981' />}
+						onClick={onBalance}
 					/>
 				</Tooltip>
 			) : null}

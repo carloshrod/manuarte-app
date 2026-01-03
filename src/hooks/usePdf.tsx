@@ -12,7 +12,7 @@ const usePdf = () => {
 		const discountType = data?.discountType;
 		const discount = data?.discount;
 		const shipping = data?.shipping;
-		const subtotal = items.reduce(
+		const subtotal = items?.reduce(
 			(acc, item) => acc + Number(item.totalPrice),
 			0
 		);

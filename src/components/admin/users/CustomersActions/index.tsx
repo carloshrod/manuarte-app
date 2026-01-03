@@ -2,8 +2,8 @@ import { useRouter } from 'next/navigation';
 import { notification } from 'antd';
 import { useDispatch } from 'react-redux';
 import TableActions from '../../common/ui/TableActions';
-import { userLibs } from '@/libs/api/user';
-import { removeCustomer } from '@/reducers/users/userSlice';
+import { customerLibs } from '@/libs/api/customer';
+import { removeCustomer } from '@/reducers/customer/customerSlice';
 import { useModalStore } from '@/stores/modalStore';
 import { ROUTES } from '@/utils/routes';
 import { ModalContent } from '@/types/enums';
@@ -34,7 +34,7 @@ const CustomersActions = ({
 
 	const handleDelete = async () => {
 		try {
-			const res = await userLibs.deleteCustomer(record.personId);
+			const res = await customerLibs.deleteCustomer(record.personId);
 			if (res.status === 200) {
 				dispatch(removeCustomer(record.personId));
 				notification.success({
@@ -54,6 +54,11 @@ const CustomersActions = ({
 	return (
 		<TableActions
 			onEdit={!isTop ? handleEdit : undefined}
+			onBalance={() =>
+				router.push(
+					`${ROUTES.CUSTOMERS}/${record.id}/balance?currency=${record.currency}`
+				)
+			}
 			onShowDetails={
 				isAdmin
 					? () => router.push(`${ROUTES.CUSTOMERS}/${record.id}`)

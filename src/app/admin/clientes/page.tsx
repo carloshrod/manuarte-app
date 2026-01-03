@@ -1,10 +1,10 @@
 import { auth } from '@/auth';
+import { IoStorefrontOutline } from 'react-icons/io5';
+import { HiOutlineUser } from 'react-icons/hi';
 import AddButton from '@/components/admin/common/ui/AddButton';
 import TabsTableCustomers from '@/components/admin/users/TabsTableCustomers';
-import { CustomerParams } from '@/libs/api/user';
+import { CustomerParams } from '@/libs/api/customer';
 import { ModalContent } from '@/types/enums';
-import { HiOutlineUser } from 'react-icons/hi';
-import { IoStorefrontOutline } from 'react-icons/io5';
 
 export const dynamic = 'force-dynamic';
 

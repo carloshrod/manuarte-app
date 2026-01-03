@@ -13,6 +13,7 @@ interface AddButtonProps {
 	buttonLabel: string;
 	addIcon?: boolean;
 	appendIcon: ReactNode;
+	dataToHandle?: any;
 }
 
 const AddButton = ({
@@ -21,7 +22,8 @@ const AddButton = ({
 	componentProps,
 	buttonLabel,
 	addIcon = true,
-	appendIcon
+	appendIcon,
+	dataToHandle
 }: AddButtonProps) => {
 	const { openModal } = useModalStore.getState();
 
@@ -38,7 +40,12 @@ const AddButton = ({
 				)
 			}
 			onClick={() =>
-				openModal({ title, content: modalContent, componentProps })
+				openModal({
+					title,
+					content: modalContent,
+					dataToHandle,
+					componentProps
+				})
 			}
 		>
 			<p className='max-sm:hidden'>{buttonLabel}</p> {appendIcon}

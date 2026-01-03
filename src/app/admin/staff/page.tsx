@@ -1,13 +1,13 @@
 import { RiUserSettingsLine } from 'react-icons/ri';
 import AddButton from '@/components/admin/common/ui/AddButton';
 import StaffTable from '@/components/admin/users/StaffTable';
-import { userLibs } from '@/libs/api/user';
+import { staffLibs } from '@/libs/api/staff';
 import { ModalContent } from '@/types/enums';
 
 export const dynamic = 'force-dynamic';
 
 const UsersPage = async () => {
-	const staffData = await userLibs.getAllStaff();
+	const staffData = await staffLibs.getAllStaff();
 
 	return (
 		<section className='flex flex-col gap-6'>
