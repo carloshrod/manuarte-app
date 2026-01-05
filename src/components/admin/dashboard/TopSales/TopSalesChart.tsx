@@ -1,6 +1,6 @@
 'use client';
 import { Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
-import { Empty } from 'antd';
+import { Empty, Skeleton } from 'antd';
 import FlagCol from '../Flags/FlagCol';
 import FlagEcu from '../Flags/FlagEcu';
 
@@ -18,9 +18,31 @@ type TopSales = {
 
 interface TopSalesChartProps {
 	data: TopSales;
+	loading?: boolean;
 }
 
-const TopSalesCharts = ({ data }: TopSalesChartProps) => {
+const TopSalesCharts = ({ data, loading = false }: TopSalesChartProps) => {
+	if (loading) {
+		return (
+			<div className='flex max-lg:flex-wrap gap-8 p-24'>
+				<div className='w-full flex justify-center items-center gap-64'>
+					<Skeleton.Node
+						active
+						style={{ width: 200, height: 200, borderRadius: '50%' }}
+					>
+						<div />
+					</Skeleton.Node>
+					<Skeleton.Node
+						active
+						style={{ width: 200, height: 200, borderRadius: '50%' }}
+					>
+						<div />
+					</Skeleton.Node>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className='flex max-lg:flex-wrap gap-8 p-8'>
 			{data?.topCOP?.length > 0 || data?.topUSD?.length > 0 ? (

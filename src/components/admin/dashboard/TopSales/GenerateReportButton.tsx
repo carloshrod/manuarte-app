@@ -13,12 +13,14 @@ interface GenerateTopSalesReportButtonProps {
 	currency: string;
 	year: string;
 	selectedMonth: Dayjs;
+	disabled?: boolean;
 }
 
 const GenerateTopSalesReportButton = ({
 	currency,
 	year,
-	selectedMonth
+	selectedMonth,
+	disabled
 }: GenerateTopSalesReportButtonProps) => {
 	const [loading, setLoading] = useState(false);
 
@@ -79,7 +81,7 @@ const GenerateTopSalesReportButton = ({
 					/>
 				}
 				onClick={handleDownloadExcel}
-				disabled={loading}
+				disabled={disabled || loading}
 				loading={loading}
 			>
 				Generar Reporte {FLAGS[currency as keyof typeof FLAGS]}

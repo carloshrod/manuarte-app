@@ -1,5 +1,3 @@
-'use client';
-import { useEffect, useState } from 'react';
 import {
 	Bar,
 	BarChart,
@@ -22,18 +20,15 @@ type Sales = {
 interface SalesChartProps {
 	data: { monthlyTotals: Sales[]; yearlyTotals: { COP: number; USD: number } };
 	country: string;
+	isLoading: boolean;
+	year?: string;
 }
 
-const SalesChart = ({ data, country }: SalesChartProps) => {
-	const [isLoading, setIsLoading] = useState(true);
+const SalesChart = ({ data, country, year, isLoading }: SalesChartProps) => {
 	const isCol = country === 'col';
 	const dataKey = isCol ? 'COP' : 'USD';
 	const fill = isCol ? '#059669' : '#22c55e';
 	const flag = isCol ? <FlagCol /> : <FlagEcu />;
-
-	useEffect(() => {
-		setIsLoading(false);
-	}, []);
 
 	const formatCurrency = (value: number) => {
 		const formatter = new Intl.NumberFormat('es-CO', {
@@ -52,8 +47,6 @@ const SalesChart = ({ data, country }: SalesChartProps) => {
 		}
 		return value.toString();
 	};
-
-	const currentYear = new Date().getFullYear();
 
 	return (
 		<div className='w-full lg:w-1/2 shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-6 rounded-lg'>
@@ -78,7 +71,7 @@ const SalesChart = ({ data, country }: SalesChartProps) => {
 						</ResponsiveContainer>
 
 						<span className='font-bold'>
-							Total {currentYear}:{' '}
+							Total {year}:{' '}
 							<span
 								className={`font-semibold ${isCol ? 'text-[#059669]' : 'text-[#22c55e]'}`}
 							>

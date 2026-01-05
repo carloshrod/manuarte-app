@@ -17,13 +17,17 @@ const TopSales = () => {
 	const [stats, setStats] = useState<any>(null);
 	const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
 	const [activeKey, setActiveKey] = useState<string>('2');
+	const [isLoading, setIsLoading] = useState<boolean>(true);
 
 	const fetchStats = async (year?: number, month?: number) => {
+		setIsLoading(true);
 		try {
 			const data = await dashboardServices.getTopSales(year, month);
 			setStats(data);
 		} catch (error) {
 			console.error(error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -48,14 +52,22 @@ const TopSales = () => {
 		{
 			key: '1',
 			label: `Mes anterior - ${formatToTitleCase(lastMonthLabel)}`,
-			children: <TopSalesCharts data={stats?.topSalesLastMonth} />
+			children: (
+				<TopSalesCharts data={stats?.topSalesLastMonth} loading={isLoading} />
+			)
 		},
 		{
 			key: '2',
 			label: formatToTitleCase(currentMonthLabel),
-			children: <TopSalesCharts data={stats?.topSalesCurrentMonth} />
+			children: (
+				<TopSalesCharts
+					data={stats?.topSalesCurrentMonth}
+					loading={isLoading}
+				/>
+			)
 		}
 	];
+
 	return (
 		<div className='p-4 w-full flex flex-col gap-8'>
 			<div className='p-4 w-full min-h-[380px] shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-6 rounded-lg'>
@@ -83,11 +95,13 @@ const TopSales = () => {
 							currency='COP'
 							year={selectedDate.year().toString()}
 							selectedMonth={selectedDate}
+							disabled={isLoading}
 						/>
 						<GenerateTopSalesReportButton
 							currency='USD'
 							year={selectedDate.year().toString()}
 							selectedMonth={selectedDate}
+							disabled={isLoading}
 						/>
 					</div>
 				</div>
