@@ -177,11 +177,14 @@ const ProductForm = () => {
 						name='productVariantName'
 						label='Presentación'
 						rules={[
-							{ required: true, message: 'El nombre del producto es requerido' }
+							{
+								required: true,
+								message: 'El nombre de la presentación es requerido'
+							}
 						]}
 						className='flex-1'
 					>
-						<Input placeholder='Ingresa el nombre del producto' />
+						<Input placeholder='Ingresa el nombre de la presentación' />
 					</Form.Item>
 
 					<div className='flex-1 flex items-center gap-2 my-6 px-2'>

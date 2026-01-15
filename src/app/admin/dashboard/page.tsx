@@ -47,34 +47,36 @@ const DashboardPage = () => {
 			<div className='flex flex-wrap justify-center text-center'>
 				<StatsWidgets counts={stats?.counts} />
 
-				<div className='w-full flex gap-2 items-center justify-start px-4 pt-4'>
-					<span className='font-semibold'>
-						Seleccionar año de reporte de ventas:
-					</span>
-					<DatePicker
-						value={dayjs().year(selectedYear)}
-						onChange={handleYearChange}
-						picker='year'
-						disabledDate={disabledDate}
-						style={{ width: 120 }}
-						disabled={isLoading}
-						placeholder='Seleccionar año'
-					/>
-				</div>
+				<div className='p-4 w-full flex flex-col max-lg:flex-wrap gap-8'>
+					<div className='shadow-[6px_6px_24px_rgba(0,0,0,0.25)] rounded-lg'>
+						<div className='w-full flex gap-2 items-center justify-start px-6 pt-6'>
+							<span className='font-semibold'>Seleccionar año:</span>
+							<DatePicker
+								value={dayjs().year(selectedYear)}
+								onChange={handleYearChange}
+								picker='year'
+								disabledDate={disabledDate}
+								style={{ width: 120 }}
+								disabled={isLoading}
+								placeholder='Seleccionar año'
+							/>
+						</div>
 
-				<div className='p-4 w-full flex max-lg:flex-wrap gap-8'>
-					<SalesChart
-						data={stats?.sales}
-						country='col'
-						isLoading={isLoading}
-						year={selectedYear.toString()}
-					/>
-					<SalesChart
-						data={stats?.sales}
-						country='ecu'
-						isLoading={isLoading}
-						year={selectedYear.toString()}
-					/>
+						<div className='flex flex-wrap gap-y-8'>
+							<SalesChart
+								data={stats?.sales}
+								country='col'
+								isLoading={isLoading}
+								year={selectedYear.toString()}
+							/>
+							<SalesChart
+								data={stats?.sales}
+								country='ecu'
+								isLoading={isLoading}
+								year={selectedYear.toString()}
+							/>
+						</div>
+					</div>
 				</div>
 				<TopSales />
 			</div>

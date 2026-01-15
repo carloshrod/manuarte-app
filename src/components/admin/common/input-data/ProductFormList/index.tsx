@@ -6,6 +6,7 @@ import {
 	Input,
 	InputNumber,
 	notification,
+	Switch,
 	Tooltip
 } from 'antd';
 import { AiOutlineDelete } from 'react-icons/ai';
@@ -23,6 +24,8 @@ interface ProductFormListProps {
 	setItemsError: Dispatch<SetStateAction<boolean>>;
 	isQuote: boolean;
 	isPreOrder?: boolean;
+	priceType?: 'PVP' | 'DIS';
+	setPriceType?: Dispatch<SetStateAction<'PVP' | 'DIS'>>;
 }
 
 type AddItemFormListFn = (
@@ -35,7 +38,9 @@ const ProductFormList = ({
 	itemsError,
 	setItemsError,
 	isQuote,
-	isPreOrder = false
+	isPreOrder = false,
+	priceType,
+	setPriceType
 }: ProductFormListProps) => {
 	const [selectedProduct, setSelectedProduct] =
 		useState<ProductVariantWithStock | null>(null);
@@ -60,6 +65,24 @@ const ProductFormList = ({
 
 		updateCalculations(form);
 	};
+
+	const updateAllPrices = (useDistributorPrice: boolean) => {
+		const items: ProductVariantWithStock[] = form.getFieldValue('items') || [];
+		const updatedItems = items.map(item => {
+			const newPrice =
+				(useDistributorPrice ? item.priceDis : item.pricePvp) ?? item.pricePvp;
+
+			return {
+				...item,
+				price: newPrice,
+				totalPrice: item.quantity * newPrice
+			};
+		});
+
+		form.setFieldsValue({ items: updatedItems });
+		updateCalculations(form);
+	};
+	// TODO: Mostrar los precios según el tipo, en el formulario de editar cotizaciones, en el formulario de editar factura, en la vista del PDF de facturas y cotizaciones
 
 	const handleValueChange = (
 		name: number,
@@ -97,6 +120,11 @@ const ProductFormList = ({
 
 			setItemsError(false);
 
+			const priceToUse =
+				priceType === 'DIS'
+					? selectedProduct.priceDis
+					: selectedProduct.pricePvp;
+
 			add({
 				productVariantId: selectedProduct.id,
 				stockItemId: selectedProduct.stockItemId,
@@ -104,8 +132,10 @@ const ProductFormList = ({
 				iva: 'NO',
 				quantity: 1,
 				currency: selectedProduct.currency,
-				price: selectedProduct.price,
-				totalPrice: selectedProduct.price
+				price: priceToUse ?? selectedProduct.pricePvp,
+				pricePvp: selectedProduct.pricePvp,
+				priceDis: selectedProduct.priceDis,
+				totalPrice: priceToUse ?? selectedProduct.pricePvp
 			});
 			updateCalculations(form);
 		}
@@ -122,6 +152,18 @@ const ProductFormList = ({
 							setSelectedProduct={setSelectedProduct}
 							stockId={stockId}
 						/>
+
+						<div className='flex gap-2 mb-4 px-2 text-gray-500'>
+							<Switch
+								checked={priceType === 'DIS'}
+								onChange={checked => {
+									setPriceType?.(checked ? 'DIS' : 'PVP');
+									updateAllPrices(checked);
+								}}
+								id='switch'
+							/>
+							<label htmlFor='switch'>Precios para distribuidores</label>
+						</div>
 
 						<div className='overflow-x-auto custom-scrollbar'>
 							{fields.reverse().map(({ key, name, ...restField }) => {

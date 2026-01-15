@@ -162,21 +162,23 @@ const BalanceForm = () => {
 					</Form.Item>
 				</div>
 
-				<Form.Item
-					name='paymentMethod'
-					label='Métodos de Pago:'
-					rules={[
-						{
-							required: true,
-							message: 'Al menos un método de pago es requerido'
-						}
-					]}
-				>
-					<Select
-						options={paymentMethodOptions}
-						placeholder='Seleccionar método de pago...'
-					/>
-				</Form.Item>
+				{actionType === 'credit' && (
+					<Form.Item
+						name='paymentMethod'
+						label='Métodos de Pago:'
+						rules={[
+							{
+								required: true,
+								message: 'Al menos un método de pago es requerido'
+							}
+						]}
+					>
+						<Select
+							options={paymentMethodOptions}
+							placeholder='Seleccionar método de pago...'
+						/>
+					</Form.Item>
+				)}
 
 				<Form.Item
 					label='Comentarios'

@@ -66,11 +66,13 @@ const BillingModalForm = () => {
 			dataToHandle?.discountType === DiscountType.PERCENTAGE;
 		updateCalculations(form, discountByPercent, dataToHandle?.subtotal);
 
-		const currency =
-			dataToHandle?.currency || dataToHandle.countryIsoCode === 'CO'
-				? 'COP'
-				: 'USD';
-		fetchBalance(dataToHandle?.customerId, currency);
+		if (dataToHandle?.customerId) {
+			const currency =
+				dataToHandle?.currency || dataToHandle.countryIsoCode === 'CO'
+					? 'COP'
+					: 'USD';
+			fetchBalance(dataToHandle?.customerId, currency);
+		}
 	}, []);
 
 	const subtotal = dataToHandle?.items?.reduce(
@@ -103,8 +105,8 @@ const BillingModalForm = () => {
 							values: {
 								...dataToHandle,
 								...values,
+								priceType: dataToHandle?.priceTypeCode,
 								subtotal,
-								shopSlug: params?.shopSlug,
 								clientRequestId: uuidv4()
 							},
 							fetchBillings: async () => {

@@ -45,6 +45,28 @@ const ProductVariantForm = () => {
 		};
 	});
 
+	const getFilteredInputs = () => {
+		if (isQuitoSelected) {
+			return PRODUCT_VARIANT_PROPS;
+		}
+		// Si no es Quito, filtrar campos USD
+		return PRODUCT_VARIANT_PROPS.filter(
+			input => !input.name.toLowerCase().includes('usd')
+		);
+	};
+
+	const filteredInputs = getFilteredInputs();
+
+	// Agrupar inputs por tipo
+	const basicInputs = filteredInputs.filter(
+		input => input.type === 'text' || input.name.includes('Qty')
+	);
+	const pvpInputs = filteredInputs.filter(input => input.priceType === 'pvp');
+	const disInputs = filteredInputs.filter(input => input.priceType === 'dis');
+	const costInputs = filteredInputs.filter(input =>
+		input.name.includes('cost')
+	);
+
 	return (
 		<Form
 			layout='vertical'
@@ -78,10 +100,10 @@ const ProductVariantForm = () => {
 			<Divider orientation='left' style={{ borderColor: '#00000032' }}>
 				Presentacion
 			</Divider>
-			<div className='flex flex-wrap items-center gap-x-2'>
-				{PRODUCT_VARIANT_PROPS.map((input, index) => {
-					return input.name.toLowerCase().includes('usd') &&
-						!isQuitoSelected ? null : (
+			<div className='flex flex-col'>
+				{/* Nombre y cantidades */}
+				<div className='flex flex-wrap items-center gap-x-4'>
+					{basicInputs.map((input, index) => (
 						<Form.Item
 							key={`${input.name}-${index}`}
 							name={input.name}
@@ -93,9 +115,7 @@ const ProductVariantForm = () => {
 									message: 'Requerido'
 								}
 							]}
-							style={{
-								width: input.width
-							}}
+							style={{ width: input.width }}
 						>
 							{input.type === 'text' ? (
 								<Input placeholder={input.placeholder} />
@@ -104,16 +124,101 @@ const ProductVariantForm = () => {
 									min={0}
 									controls={false}
 									placeholder={input.placeholder}
-									formatter={
-										index > 2 ? value => formatInputCurrency(value) : undefined
-									}
 									className='textRight'
 									style={{ width: '100%' }}
 								/>
 							)}
 						</Form.Item>
-					);
-				})}
+					))}
+				</div>
+
+				<div className='flex gap-4'>
+					{/* Precios PVP */}
+					{pvpInputs.length > 0 && (
+						<div className='flex flex-wrap items-center gap-x-4 border-b-2 border-gray-200 mb-4'>
+							<span className='font-semibold'>Precio de venta al público</span>
+							{pvpInputs.map((input, index) => (
+								<Form.Item
+									key={`${input.name}-${index}`}
+									name={input.name}
+									label={input.label}
+									validateTrigger={['onChange', 'onBlur']}
+									rules={[
+										{
+											required: true,
+											message: 'Requerido'
+										}
+									]}
+									style={{ width: input.width }}
+								>
+									<InputNumber
+										min={0}
+										controls={false}
+										placeholder={input.placeholder}
+										formatter={value => formatInputCurrency(value)}
+										className='textRight'
+										style={{ width: '100%' }}
+									/>
+								</Form.Item>
+							))}
+						</div>
+					)}
+
+					{/* Precios DIS */}
+					{disInputs.length > 0 && (
+						<div className='flex flex-wrap items-center gap-x-4 border-b-2 border-gray-200 mb-4'>
+							<span className='font-semibold'>Precio para distribuidores</span>
+							{disInputs.map((input, index) => (
+								<Form.Item
+									key={`${input.name}-${index}`}
+									name={input.name}
+									label={input.label}
+									validateTrigger={['onChange', 'onBlur']}
+									style={{ width: input.width }}
+								>
+									<InputNumber
+										min={0}
+										controls={false}
+										placeholder={input.placeholder}
+										formatter={value => formatInputCurrency(value)}
+										className='textRight'
+										style={{ width: '100%' }}
+									/>
+								</Form.Item>
+							))}
+						</div>
+					)}
+				</div>
+
+				{/* Costos */}
+				{costInputs.length > 0 && (
+					<div className='flex flex-wrap items-center gap-x-4'>
+						{costInputs.map((input, index) => (
+							<Form.Item
+								key={`${input.name}-${index}`}
+								name={input.name}
+								label={input.label}
+								validateTrigger={['onChange', 'onBlur']}
+								rules={[
+									{
+										required: true,
+										message: 'Requerido'
+									}
+								]}
+								style={{ width: input.width }}
+							>
+								<InputNumber
+									min={0}
+									controls={false}
+									placeholder={input.placeholder}
+									formatter={value => formatInputCurrency(value)}
+									className='textRight'
+									style={{ width: '100%' }}
+								/>
+							</Form.Item>
+						))}
+					</div>
+				)}
 			</div>
 
 			<FormButtons isLoading={isLoading} />

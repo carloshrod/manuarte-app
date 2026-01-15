@@ -49,7 +49,7 @@ const SalesChart = ({ data, country, year, isLoading }: SalesChartProps) => {
 	};
 
 	return (
-		<div className='w-full lg:w-1/2 shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-6 rounded-lg'>
+		<div className='w-full lg:w-1/2 py-6'>
 			<div className='flex gap-2 items-center justify-center'>
 				<h4 className='text-xl font-bold'>Ventas Mensuales</h4>
 				{flag}

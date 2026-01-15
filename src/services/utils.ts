@@ -4,6 +4,7 @@ export const mapQuoteBody = (body: SubmitQuoteDto) => {
 		customerId,
 		shopSlug,
 		shopId,
+		stockId,
 		items,
 		status,
 		discountType,
@@ -14,18 +15,23 @@ export const mapQuoteBody = (body: SubmitQuoteDto) => {
 		email,
 		phoneNumber,
 		location,
-		cityId
+		cityId,
+		currency,
+		priceType
 	} = body;
 
 	return {
 		quoteData: {
 			shopSlug,
 			shopId,
+			stockId,
 			items,
 			status,
 			discountType,
 			discount,
-			shipping
+			shipping,
+			currency,
+			priceType
 		},
 		customerData: {
 			personId,
@@ -46,6 +52,7 @@ export const mapBillingBody = (body: SubmitBillingDto) => {
 		customerId,
 		shopSlug,
 		shopId,
+		stockId,
 		items,
 		status,
 		payments,
@@ -62,13 +69,15 @@ export const mapBillingBody = (body: SubmitBillingDto) => {
 		cityId,
 		clientRequestId,
 		comments,
-		balanceToUse
+		balanceToUse,
+		priceType
 	} = body;
 
 	return {
 		billingData: {
 			shopSlug,
 			shopId,
+			stockId,
 			items,
 			status,
 			payments,
@@ -79,7 +88,8 @@ export const mapBillingBody = (body: SubmitBillingDto) => {
 			currency,
 			clientRequestId,
 			comments,
-			balanceToUse
+			balanceToUse,
+			priceType
 		},
 		customerData: {
 			personId,

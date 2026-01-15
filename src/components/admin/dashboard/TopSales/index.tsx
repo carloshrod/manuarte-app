@@ -70,12 +70,12 @@ const TopSales = () => {
 
 	return (
 		<div className='p-4 w-full flex flex-col gap-8'>
-			<div className='p-4 w-full min-h-[380px] shadow-[6px_6px_24px_rgba(0,0,0,0.25)] py-6 rounded-lg'>
+			<div className='w-full min-h-[380px] px-4 py-8 space-y-3 shadow-[6px_6px_24px_rgba(0,0,0,0.25)] rounded-lg'>
 				<h4 className='text-xl font-bold'>
 					Top Ventas - Grupos de Categorías de Productos
 				</h4>
 
-				<div className='flex justify-between items-center px-2'>
+				<div className='flex flex-wrap justify-between items-center px-2 max-sm:mb-4'>
 					<div className='flex gap-2 items-center my-6'>
 						<span className='font-semibold'>Seleccionar período:</span>
 						<DatePicker

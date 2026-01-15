@@ -129,49 +129,73 @@ export const PRODUCT_VARIANT_PROPS = [
 		label: 'Nombre',
 		placeholder: 'Unidad',
 		type: 'text',
-		width: '50%'
+		width: '48%'
 	},
 	{
 		name: 'minQty',
-		label: 'Cant. Min.',
+		label: 'Cant. Mínima',
 		placeholder: '9',
 		type: 'number',
 		width: '23%'
 	},
 	{
 		name: 'maxQty',
-		label: 'Cant. Max.',
+		label: 'Cant. Máxima',
 		placeholder: '9',
 		type: 'number',
 		width: '23%'
 	},
 	{
-		name: 'priceCop',
-		label: 'Precio COP',
+		name: 'pvpCop',
+		label: 'PVP - COP',
 		placeholder: '$10.000',
 		type: 'number',
-		width: '23.5%'
+		width: '47%',
+		priceType: 'pvp',
+		currency: 'cop'
+	},
+	{
+		name: 'pvpUsd',
+		label: 'PVP - USD',
+		placeholder: '$10',
+		type: 'number',
+		width: '47%',
+		priceType: 'pvp',
+		currency: 'usd'
+	},
+	{
+		name: 'disCop',
+		label: 'DIS - COP',
+		placeholder: '$8.000',
+		type: 'number',
+		width: '47%',
+		priceType: 'dis',
+		currency: 'cop'
+	},
+	{
+		name: 'disUsd',
+		label: 'DIS - USD',
+		placeholder: '$8',
+		type: 'number',
+		width: '47%',
+		priceType: 'dis',
+		currency: 'usd'
 	},
 	{
 		name: 'costCop',
 		label: 'Costo COP',
 		placeholder: '$5.000',
 		type: 'number',
-		width: '23.5%'
-	},
-	{
-		name: 'priceUsd',
-		label: 'Precio USD',
-		placeholder: '$4',
-		type: 'number',
-		width: '23.5%'
+		width: '23%',
+		currency: 'cop'
 	},
 	{
 		name: 'costUsd',
 		label: 'Costo USD',
-		placeholder: '$2',
+		placeholder: '$5',
 		type: 'number',
-		width: '23.5%'
+		width: '23%',
+		currency: 'usd'
 	}
 ];
 

@@ -35,9 +35,17 @@ const StockItemCols = ({
 			width: 140
 		},
 		{
-			title: 'PRECIO',
-			dataIndex: 'price',
-			key: 'price',
+			title: 'PRECIO PVP',
+			dataIndex: 'pricePvp',
+			key: 'pricePvp',
+			render: (value: string) => formatCurrency(value) ?? '--',
+			width: 100,
+			align: 'center'
+		},
+		{
+			title: 'PRECIO DIS',
+			dataIndex: 'priceDis',
+			key: 'priceDis',
 			render: (value: string) => formatCurrency(value) ?? '--',
 			width: 100,
 			align: 'center'
@@ -65,7 +73,7 @@ const StockItemCols = ({
 			render: value => {
 				return (
 					<span className={`${value > 0 && 'text-[#0D6EFD]'} font-semibold`}>
-						{value}
+						{value ?? 0}
 					</span>
 				);
 			},
@@ -86,10 +94,10 @@ const StockItemCols = ({
 						title: 'COSTO TOTAL',
 						dataIndex: 'totalCost',
 						key: 'totalCost',
-						render: (value: string, record: StockItem) => {
-							if (!value || !record.quantity) return '$0';
+						render: (_value: string, record: StockItem) => {
+							if (!record.cost || !record.quantity) return '$0';
 
-							const totalCost = Number(value) * Number(record.quantity);
+							const totalCost = Number(record.cost) * Number(record.quantity);
 
 							return formatCurrency(totalCost);
 						},

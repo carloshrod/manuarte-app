@@ -24,6 +24,8 @@ interface ProductVariantWithStock extends ProductVariant {
 	quantity: number;
 	currency: string;
 	price: number;
+	pricePvp: number;
+	priceDis: number;
 	totalPrice: number;
 	stockItemId: string;
 	stocks: string[];
@@ -211,6 +213,7 @@ interface Quote {
 interface SubmitQuoteDto extends SubmitCustomerDto {
 	shopSlug?: string;
 	shopId?: string;
+	stockId?: string;
 	items: ProductVariantWithStock[];
 	status: QuoteStatus;
 	discountType: string;
@@ -218,6 +221,8 @@ interface SubmitQuoteDto extends SubmitCustomerDto {
 	shipping: number;
 	subtotal?: number;
 	total?: number;
+	currency: 'COP' | 'USD';
+	priceType: 'PVP' | 'DIS';
 }
 
 enum BillingStatus {
@@ -292,6 +297,7 @@ interface Billing extends Omit<Quote, 'status'> {
 interface SubmitBillingDto extends SubmitCustomerDto {
 	shopSlug?: string;
 	shopId?: string;
+	stockId?: string;
 	items: ProductVariantWithStock[];
 	status: BillingStatus;
 	payments: Payment[];
@@ -304,6 +310,7 @@ interface SubmitBillingDto extends SubmitCustomerDto {
 	clientRequestId: string;
 	comments: string;
 	balanceToUse?: number;
+	priceType: 'PVP' | 'DIS';
 }
 
 interface StockItem {
@@ -314,6 +321,8 @@ interface StockItem {
 	productVariantName: string;
 	currency: string;
 	price: number;
+	pricePvp: number;
+	priceDis: number;
 	quantity: number;
 	quantityInTransit: number;
 	cost: number;

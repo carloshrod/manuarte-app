@@ -6,7 +6,7 @@ import DrawerFormFooter from '../../common/input-data/DrawerFormFooter';
 import CalculationInputs from '../../common/input-data/CalculationInputs';
 import { useEffect, useState } from 'react';
 import { updateCalculations } from '../../utils';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { customerSchema, validateForm } from '@/utils/validators';
 import { useModalStore } from '@/stores/modalStore';
 import {
@@ -17,6 +17,7 @@ import {
 } from '@/types/enums';
 import { useDrawerStore } from '@/stores/drawerStore';
 import { v4 as uuidv4 } from 'uuid';
+import { useSelector } from 'react-redux';
 const { TextArea } = Input;
 
 const BillingForm = () => {
@@ -30,6 +31,11 @@ const BillingForm = () => {
 	const params = useParams() ?? {};
 	const { openModal } = useModalStore.getState();
 	const [clientRequestId, setClientRequestId] = useState<string>('');
+	const [priceType, setPriceType] = useState<'PVP' | 'DIS'>('PVP');
+	const searchParams = useSearchParams();
+	const shopId = searchParams.get('shopId') ?? '';
+	const { shops } = useSelector((state: RootState) => state.shop);
+	const shop = shops.find(sh => sh.id === shopId);
 
 	const isPreOrder = content === DrawerContent.preOrder;
 
@@ -94,7 +100,10 @@ const BillingForm = () => {
 					await submitCreateBilling({
 						values: {
 							...values,
-							shopSlug: params?.shopSlug as string,
+							shopId,
+							stockId: shop?.stockId || '',
+							currency: shop?.currency as 'COP' | 'USD',
+							priceType,
 							personId: existingCustomer?.personId || dataToHandle?.personId,
 							customerId: existingCustomer?.customerId as string,
 							clientRequestId: uniqueId
@@ -129,6 +138,8 @@ const BillingForm = () => {
 				setItemsError={setItemsError}
 				isQuote={false}
 				isPreOrder={isPreOrder}
+				priceType={priceType}
+				setPriceType={setPriceType}
 			/>
 
 			<DrawerFormFooter

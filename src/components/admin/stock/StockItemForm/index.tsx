@@ -32,22 +32,43 @@ const StockItemForm = () => {
 	const [hasSearched, setHasSearched] = useState(false);
 	const [isQuitoSelected, setIsQuitoSelected] = useState(true);
 	const [isUsdSet, setIsUsdSet] = useState(false);
+	const [stocks, setStocks] = useState<string[]>([]);
 	const params = useParams() ?? {};
 	const searchParams = useSearchParams();
 	const isUsd = params?.shopSlug.includes('quito');
 	const isMainStock = searchParams.get('main') === 'true';
+	const isInQuito = stocks.includes(
+		shops.find(sh => sh.currency === 'USD')?.stockId as string
+	);
 
-	const getStockItemInfo = async () => {
-		if (shops?.length > 0 && isMainStock && dataToHandle) {
-			const { productVariantId } = dataToHandle ?? {};
-			const stockId = shops.find(sh => sh.currency === 'USD')?.stockId;
+	const getStockIds = async () => {
+		if (isMainStock && dataToHandle) {
+			const { productVariantId, stockId } = dataToHandle ?? {};
+
 			if (!productVariantId || !stockId) return;
 
 			const data = await stockItemLibs.getOneByStock(productVariantId, stockId);
 
 			if (data) {
+				setStocks(data?.stocks || []);
+			}
+		}
+	};
+
+	const getStockItemInfo = async () => {
+		if (shops?.length > 0 && isMainStock && dataToHandle && isQuitoSelected) {
+			const { productVariantId } = dataToHandle ?? {};
+
+			// Obtener info del stockId de USD
+			const stockId = shops.find(sh => sh.currency === 'USD')?.stockId;
+			if (!productVariantId || !stockId) return;
+
+			const data = await stockItemLibs.getOneByStock(productVariantId, stockId);
+
+			if (data && data?.currency === 'USD') {
 				form.setFieldsValue({
-					priceUsd: data?.price,
+					pvpUsd: data?.pricePvp,
+					disUsd: data?.priceDis,
 					costUsd: data?.cost
 				});
 
@@ -58,13 +79,27 @@ const StockItemForm = () => {
 
 	useEffect(() => {
 		if (dataToHandle) {
+			getStockIds();
+
 			form.setFieldsValue({
 				product: `${dataToHandle?.productName} - ${dataToHandle?.productVariantName}`,
-				price: dataToHandle?.price,
-				cost: dataToHandle?.cost,
 				minQty: dataToHandle?.minQty,
 				maxQty: dataToHandle?.maxQty
 			});
+
+			if (dataToHandle?.currency === 'USD') {
+				form.setFieldsValue({
+					pvpUsd: dataToHandle?.pricePvp,
+					disUsd: dataToHandle?.priceDis,
+					costUsd: dataToHandle?.cost
+				});
+			} else {
+				form.setFieldsValue({
+					pvpCop: dataToHandle?.pricePvp,
+					disCop: dataToHandle?.priceDis,
+					costCop: dataToHandle?.cost
+				});
+			}
 		}
 	}, []);
 
@@ -88,7 +123,8 @@ const StockItemForm = () => {
 			await submitUpdateStockItem(
 				{
 					...values,
-					productVariantId: dataToHandle.productVariantId
+					productVariantId: dataToHandle.productVariantId,
+					currency: dataToHandle.currency
 				},
 				dataToHandle.id
 			);
@@ -158,6 +194,8 @@ const StockItemForm = () => {
 		)
 	);
 
+	const showUsd = dataToHandle && isMainStock && isQuitoSelected && isInQuito;
+
 	return (
 		<Form layout='vertical' form={form} onFinish={values => onSubmit(values)}>
 			{!dataToHandle ? (
@@ -198,93 +236,23 @@ const StockItemForm = () => {
 					/>
 				</Form.Item>
 			)}
-			<div className='flex gap-4 justify-between'>
-				<Form.Item
-					name='price'
-					label={`Precio ${isUsd ? 'USD' : 'COP'}`}
-					rules={[
-						{
-							required: true,
-							message: 'Campo requerido'
-						}
-					]}
-				>
-					<InputNumber
-						min={0}
-						controls={false}
-						className='textRight'
-						style={{ width: '100%' }}
-						formatter={value => formatInputCurrency(value)}
-					/>
-				</Form.Item>
-				<Form.Item
-					name='cost'
-					label={`Costo ${isUsd ? 'USD' : 'COP'}`}
-					rules={[
-						{
-							required: true,
-							message: 'Campo requerido'
-						}
-					]}
-				>
-					<InputNumber
-						min={0}
-						controls={false}
-						className='textRight'
-						style={{ width: '100%' }}
-						formatter={value => formatInputCurrency(value)}
-					/>
-				</Form.Item>
-				<Form.Item
-					name='minQty'
-					label='Cantidad Mín.'
-					rules={[
-						{
-							required: true,
-							message: 'Campo requerido'
-						}
-					]}
-				>
-					<InputNumber
-						min={0}
-						controls={false}
-						className='textRight'
-						style={{ width: '100%' }}
-					/>
-				</Form.Item>
-				<Form.Item
-					name='maxQty'
-					label='Cantidad Máx.'
-					rules={[
-						{
-							required: true,
-							message: 'Campo requerido'
-						}
-					]}
-				>
-					<InputNumber
-						min={0}
-						controls={false}
-						className='textRight'
-						style={{ width: '100%' }}
-					/>
-				</Form.Item>
-			</div>
 
-			{dataToHandle && isMainStock ? (
+			{search || dataToHandle ? (
 				<>
-					{isQuitoSelected ? (
-						<div className='flex gap-4 justify-start'>
+					<div className='flex gap-4'>
+						{/* Precios PVP */}
+						<div className='flex-1 flex flex-wrap gap-x-4 border-b-2 border-gray-200 mb-4'>
+							<span className='font-semibold'>Precio de venta al público</span>
 							<Form.Item
-								name='priceUsd'
-								label='Precio USD'
+								name={isUsd ? 'pvpUsd' : 'pvpCop'}
+								label={`PVP ${isUsd ? 'USD' : 'COP'}`}
 								rules={[
 									{
 										required: true,
 										message: 'Campo requerido'
 									}
 								]}
-								style={{ width: '23%' }}
+								style={{ width: '47%' }}
 							>
 								<InputNumber
 									min={0}
@@ -294,16 +262,39 @@ const StockItemForm = () => {
 									formatter={value => formatInputCurrency(value)}
 								/>
 							</Form.Item>
+
+							{showUsd && (
+								<Form.Item
+									name='pvpUsd'
+									label='PVP USD'
+									rules={[
+										{
+											required: true,
+											message: 'Campo requerido'
+										}
+									]}
+									style={{
+										width: '47%'
+									}}
+								>
+									<InputNumber
+										min={0}
+										controls={false}
+										className='textRight'
+										style={{ width: '100%' }}
+										formatter={value => formatInputCurrency(value)}
+									/>
+								</Form.Item>
+							)}
+						</div>
+
+						{/* Precios DIS */}
+						<div className='flex-1 flex flex-wrap gap-x-4 border-b-2 border-gray-200 mb-4'>
+							<span className='font-semibold'>Precio para distribuidores</span>
 							<Form.Item
-								name='costUsd'
-								label='Costo USD'
-								rules={[
-									{
-										required: true,
-										message: 'Campo requerido'
-									}
-								]}
-								style={{ width: '23%' }}
+								name={isUsd ? 'disUsd' : 'disCop'}
+								label={`DIS ${isUsd ? 'USD' : 'COP'}`}
+								style={{ width: '47%' }}
 							>
 								<InputNumber
 									min={0}
@@ -311,21 +302,134 @@ const StockItemForm = () => {
 									className='textRight'
 									style={{ width: '100%' }}
 									formatter={value => formatInputCurrency(value)}
+								/>
+							</Form.Item>
+
+							{showUsd && (
+								<Form.Item
+									name='disUsd'
+									label='DIS USD'
+									style={{ width: '47%' }}
+								>
+									<InputNumber
+										min={0}
+										controls={false}
+										className='textRight'
+										style={{ width: '100%' }}
+										formatter={value => formatInputCurrency(value)}
+									/>
+								</Form.Item>
+							)}
+						</div>
+					</div>
+
+					<div className='flex gap-4'>
+						{/* Costos */}
+						<div className='flex-1 flex gap-x-4'>
+							<Form.Item
+								name={isUsd ? 'costUsd' : 'costCop'}
+								label={`Costo ${isUsd ? 'USD' : 'COP'}`}
+								rules={[
+									{
+										required: true,
+										message: 'Campo requerido'
+									}
+								]}
+								style={{
+									width: '47%'
+								}}
+							>
+								<InputNumber
+									min={0}
+									controls={false}
+									className='textRight'
+									style={{ width: '100%' }}
+									formatter={value => formatInputCurrency(value)}
+								/>
+							</Form.Item>
+
+							{showUsd ? (
+								<Form.Item
+									name='costUsd'
+									label='Costo USD'
+									rules={[
+										{
+											required: true,
+											message: 'Campo requerido'
+										}
+									]}
+									style={{ width: '47%' }}
+								>
+									<InputNumber
+										min={0}
+										controls={false}
+										className='textRight'
+										style={{ width: '100%' }}
+										formatter={value => formatInputCurrency(value)}
+									/>
+								</Form.Item>
+							) : null}
+						</div>
+
+						{/* Cantidades */}
+						<div className='flex-1 flex gap-4'>
+							<Form.Item
+								name='minQty'
+								label='Cantidad Mín.'
+								rules={[
+									{
+										required: true,
+										message: 'Campo requerido'
+									}
+								]}
+								style={{
+									width: '47%'
+								}}
+							>
+								<InputNumber
+									min={0}
+									controls={false}
+									className='textRight'
+									style={{ width: '100%' }}
+								/>
+							</Form.Item>
+
+							<Form.Item
+								name='maxQty'
+								label='Cantidad Máx.'
+								rules={[
+									{
+										required: true,
+										message: 'Campo requerido'
+									}
+								]}
+								style={{
+									width: '47%'
+								}}
+							>
+								<InputNumber
+									min={0}
+									controls={false}
+									className='textRight'
+									style={{ width: '100%' }}
 								/>
 							</Form.Item>
 						</div>
-					) : null}
-
-					<Form.Item>
-						<SelectStocks
-							form={form}
-							setIsQuitoSelected={setIsQuitoSelected}
-							label='Editar también en:'
-							updatingStockItem={true}
-						/>
-					</Form.Item>
+					</div>
 				</>
 			) : null}
+
+			{dataToHandle && isMainStock && stocks?.length > 1 && (
+				<Form.Item>
+					<SelectStocks
+						form={form}
+						setIsQuitoSelected={setIsQuitoSelected}
+						label='Aplicar cambios en:'
+						updatingStockItem={true}
+						stocks={stocks}
+					/>
+				</Form.Item>
+			)}
 
 			<FormButtons
 				label={dataToHandle ? 'Editar' : undefined}

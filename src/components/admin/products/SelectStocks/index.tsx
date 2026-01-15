@@ -7,17 +7,21 @@ import { setShops } from '@/reducers/shops/shopSlice';
 import { formatToTitleCase } from '@/utils/formats';
 import { selectFilterOption } from '../../utils';
 
-const SelectStocks = ({
-	form,
-	setIsQuitoSelected,
-	label = 'Crear stock en:',
-	updatingStockItem
-}: {
+interface Props {
 	form: FormInstance;
 	setIsQuitoSelected: Dispatch<SetStateAction<boolean>>;
 	label?: string;
 	updatingStockItem?: boolean;
-}) => {
+	stocks?: string[];
+}
+
+const SelectStocks = ({
+	form,
+	setIsQuitoSelected,
+	label = 'Crear stock en:',
+	updatingStockItem,
+	stocks
+}: Props) => {
 	const { shops } = useSelector((state: RootState) => state.shop);
 	const [stockOptions, setStockOptions] = useState<
 		{ value: string; label: string | null }[] | undefined
@@ -35,9 +39,16 @@ const SelectStocks = ({
 	};
 
 	const setDefaultStocks = (data: Shop[]) => {
-		const filteredData = updatingStockItem
+		let filteredData = updatingStockItem
 			? data.filter(item => !item.mainStock)
 			: data;
+
+		// Si se pasa el array stocks, filtrar solo esos stocks
+		if (stocks && stocks.length > 0) {
+			filteredData = filteredData.filter(shop =>
+				stocks.includes(shop?.stockId)
+			);
+		}
 
 		const options = filteredData?.map((shop: Shop) => {
 			return {
@@ -55,7 +66,7 @@ const SelectStocks = ({
 	useEffect(() => {
 		fetchShops();
 		setDefaultStocks(shops);
-	}, []);
+	}, [stocks]);
 
 	const mainStockId = shops.find(sh => sh.mainStock)?.stockId;
 	const quitoStockId = shops.find(sh => sh.slug === 'manuarte-quito')?.stockId;

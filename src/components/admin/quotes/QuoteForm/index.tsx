@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Button, Divider, Form } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import CustomerInfoInputs from '../../common/input-data/CustomerInfoInputs';
@@ -11,6 +11,7 @@ import { DiscountType, QuoteStatus } from '@/types/enums';
 import { customerSchema, validateForm } from '@/utils/validators';
 import { useDrawerStore } from '@/stores/drawerStore';
 import { updateCalculations } from '../../utils';
+import { useSelector } from 'react-redux';
 
 const QuoteForm = () => {
 	const {
@@ -27,8 +28,12 @@ const QuoteForm = () => {
 		noCustomer,
 		updateDrawer
 	} = useDrawerStore.getState();
-	const params = useParams() ?? {};
 	const [isCleanCustomer, setIsCleanCustomer] = useState(false);
+	const [priceType, setPriceType] = useState<'PVP' | 'DIS'>('PVP');
+	const searchParams = useSearchParams();
+	const shopId = searchParams.get('shopId');
+	const { shops } = useSelector((state: RootState) => state.shop);
+	const shop = shops.find(sh => sh.id === shopId);
 
 	useEffect(() => {
 		if (dataToHandle) {
@@ -56,6 +61,11 @@ const QuoteForm = () => {
 			const discountByPercent =
 				dataToHandle?.discountType === DiscountType.PERCENTAGE;
 			updateCalculations(form, discountByPercent);
+
+			// Setear el priceType desde dataToHandle
+			if (dataToHandle?.priceTypeCode) {
+				setPriceType(dataToHandle.priceTypeCode);
+			}
 		} else {
 			if (searchedCustomer?.personId) {
 				form.setFieldsValue({
@@ -76,10 +86,14 @@ const QuoteForm = () => {
 
 		const { subtotal, total, ...restValues } = values;
 
+		if (!shopId) return;
+
 		if (!dataToHandle) {
 			await submitCreateQuote({
 				...restValues,
-				shopSlug: params?.shopSlug as string,
+				priceType,
+				shopId,
+				currency: shop?.currency as 'COP' | 'USD',
 				personId: (searchedCustomer as ExistingCustomer)?.personId ?? null,
 				customerId: (searchedCustomer?.customerId as string) ?? null
 			});
@@ -87,7 +101,8 @@ const QuoteForm = () => {
 			submitUpdateQuote(
 				{
 					...restValues,
-					shopSlug: params?.shopSlug as string,
+					priceType,
+					stockId: shop?.stockId,
 					personId:
 						noCustomer || isCleanCustomer
 							? null
@@ -176,6 +191,8 @@ const QuoteForm = () => {
 				itemsError={itemsError}
 				setItemsError={setItemsError}
 				isQuote={true}
+				priceType={priceType}
+				setPriceType={setPriceType}
 			/>
 
 			<DrawerFormFooter isQuote={true}>
