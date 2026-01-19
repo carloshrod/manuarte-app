@@ -4,12 +4,12 @@ import { TableColumnsType, Tag } from 'antd';
 import { formatCurrency } from '@/utils/formats';
 import CopyableText from '../../common/ui/CopyableText';
 import { useParams } from 'next/navigation';
+import { PAYMENT_METHOD_MAP } from '@/utils/mappings';
+import { PaymentMethod } from '@/types/enums';
 import {
 	COL_PAYMENT_METHOD_FILTER,
 	ECU_PAYMENT_METHOD_FILTER
-} from '@/hooks/utils';
-import { PAYMENT_METHOD_MAP } from '@/utils/mappings';
-import { PaymentMethod } from '@/types/enums';
+} from '../../consts';
 
 const BankTransfersCols = () => {
 	const { getColumnSearchProps } = useTable();
@@ -72,10 +72,14 @@ const BankTransfersCols = () => {
 			key: 'paymentMethod',
 			filters: !params?.shopSlug?.includes('quito')
 				? COL_PAYMENT_METHOD_FILTER.filter(
-						pm => pm.value !== PaymentMethod.CASH
+						pm =>
+							pm.value !== PaymentMethod.CASH &&
+							pm.value !== PaymentMethod.BALANCE
 					)
 				: ECU_PAYMENT_METHOD_FILTER.filter(
-						pm => pm.value !== PaymentMethod.CASH
+						pm =>
+							pm.value !== PaymentMethod.CASH &&
+							pm.value !== PaymentMethod.BALANCE
 					),
 			onFilter: (value, record) =>
 				record.paymentMethod.indexOf(value as string) === 0,

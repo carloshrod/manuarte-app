@@ -1,6 +1,6 @@
 import { calculateTotalPayment } from '@/components/admin/utils';
 import { useModalStore } from '@/stores/modalStore';
-import { BillingStatus } from '@/types/enums';
+import { BillingStatus, PaymentMethod } from '@/types/enums';
 import {
 	formatCurrency,
 	formatDate,
@@ -243,9 +243,10 @@ const PaymentAmounts = ({
 			{existingPayments?.length > 0 ? (
 				<div className='flex flex-col'>
 					{existingPayments?.map((payment: Payment, index: number) => {
-						const methodOption = paymentMethodOptions.find(
-							item => item.value === payment.paymentMethod
-						);
+						const methodOption = [
+							...paymentMethodOptions,
+							{ value: PaymentMethod.BALANCE, label: 'Saldo a favor' }
+						].find(item => item.value === payment.paymentMethod);
 
 						return (
 							<div key={payment.paymentMethod + index} className='relative'>

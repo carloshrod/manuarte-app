@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 const FinancialFlowShopsPage = () => {
 	return (
-		<section className='flex flex-col gap-6'>
+		<section className='flex flex-col gap-4'>
 			<h2 className='min-[478px]:text-lg min-[796px]:text-2xl font-semibold ps-4'>
 				Flujo Financiero
 			</h2>

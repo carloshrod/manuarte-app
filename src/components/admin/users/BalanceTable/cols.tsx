@@ -1,14 +1,14 @@
+import { TableColumnsType, Tag } from 'antd';
 import useTable from '@/hooks/useTable';
-import {
-	COL_PAYMENT_METHOD_FILTER,
-	ECU_PAYMENT_METHOD_FILTER
-} from '@/hooks/utils';
 import { formatCurrency, formatDate } from '@/utils/formats';
 import {
 	BALANCE_MOVEMENT_CATEGORY_MAP,
 	PAYMENT_METHOD_MAP
 } from '@/utils/mappings';
-import { TableColumnsType, Tag } from 'antd';
+import {
+	COL_PAYMENT_METHOD_FILTER,
+	ECU_PAYMENT_METHOD_FILTER
+} from '../../consts';
 
 const BalanceCols = ({ currency }: { currency: string }) => {
 	const { getColumnDateFilterProps } = useTable();

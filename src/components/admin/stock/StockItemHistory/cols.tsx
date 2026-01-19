@@ -1,13 +1,12 @@
+import { TableColumnsType, Tag, Tooltip } from 'antd';
+import { IoInformationCircleOutline } from 'react-icons/io5';
+import { TiArrowDown, TiArrowUp } from 'react-icons/ti';
+import CopyableText from '../../common/ui/CopyableText';
+import StockItemsHistoryActions from '../StockItemHistoryActions';
 import useTable from '@/hooks/useTable';
-import { TAG_COLORS } from '@/hooks/utils';
 import { formatDate, formatToTitleCase } from '@/utils/formats';
 import { TRANSACTION_TYPES_MAP } from '@/utils/mappings';
-import { TableColumnsType, Tag, Tooltip } from 'antd';
-import React from 'react';
-import { IoInformationCircleOutline } from 'react-icons/io5';
-import CopyableText from '../../common/ui/CopyableText';
-import { TiArrowDown, TiArrowUp } from 'react-icons/ti';
-import StockItemsHistoryActions from '../StockItemHistoryActions';
+import { TAG_COLORS } from '../../consts';
 
 const StockItemHistoryCols = () => {
 	const { getColumnDateFilterProps, getColumnSearchProps } = useTable();

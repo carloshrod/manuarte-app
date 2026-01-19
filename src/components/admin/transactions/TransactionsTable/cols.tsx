@@ -1,13 +1,13 @@
-import useTable from '@/hooks/useTable';
 import { Badge, TableColumnsType, Tag } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
+import TransactionActions from '../TransactionAction';
+import useTable from '@/hooks/useTable';
+import { formatDate } from '@/utils/formats';
+import { TAG_COLORS } from '../../consts';
 import {
 	TRANSACTION_STATES_MAP,
 	TRANSACTION_TYPES_MAP
 } from '@/utils/mappings';
-import { TAG_COLORS } from '@/hooks/utils';
-import { formatDate } from '@/utils/formats';
-import TransactionActions from '../TransactionAction';
 
 const TransactionCols = () => {
 	const { getColumnDateFilterProps } = useTable();

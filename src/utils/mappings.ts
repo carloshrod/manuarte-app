@@ -27,6 +27,7 @@ export const PAYMENT_METHOD_MAP: Record<string, string> = {
 	PAYPHONE: 'PAYPHONE',
 	PAYPAL: 'PAYPAL',
 	BANK_DEPOSIT: 'DEPÓSITO',
+	BALANCE: 'SALDO A FAVOR',
 	OTHER: 'OTRO'
 };
 

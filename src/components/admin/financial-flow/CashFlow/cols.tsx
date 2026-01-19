@@ -1,11 +1,11 @@
 import { TableColumnsType, Tag, Tooltip } from 'antd';
 import { DollarCircleOutlined } from '@ant-design/icons';
-import useTable from '@/hooks/useTable';
-import { CASH_MOVEMENT_CAT_FILTER } from '@/hooks/utils';
-import { CASH_MOVEMENT_CAT_MAP } from '@/utils/mappings';
 import { IoInformationCircleOutline } from 'react-icons/io5';
-import { formatCurrency } from '@/utils/formats';
 import CopyableText from '../../common/ui/CopyableText';
+import useTable from '@/hooks/useTable';
+import { CASH_MOVEMENT_CAT_FILTER } from '../../consts';
+import { CASH_MOVEMENT_CAT_MAP } from '@/utils/mappings';
+import { formatCurrency } from '@/utils/formats';
 
 const CashMovementCols = () => {
 	const { getColumnSearchProps } = useTable();
