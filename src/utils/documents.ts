@@ -5,7 +5,7 @@ import {
 	TRANSACTION_TYPES_MAP
 } from './mappings';
 import { formatDate, formatToTitleCase } from './formats';
-import { DiscountType } from '@/types/enums';
+import { BillingStatus, DiscountType } from '@/types/enums';
 
 export interface ExcelRestockData {
 	'#': number;
@@ -201,8 +201,13 @@ export const generateStockHistoryData = (history: StockItemHistory[]) => {
 export const generateBillingsData = (billings: Billing[]) => {
 	try {
 		let excelData: ExcelBillingData[] = [];
-		if (billings?.length > 0) {
-			excelData = billings?.map((item, i) => {
+
+		const filteredBillings = billings.filter(
+			b => b.status === BillingStatus.PAID
+		);
+
+		if (filteredBillings?.length > 0) {
+			excelData = filteredBillings?.map((item, i) => {
 				const discount =
 					(item?.discountType === DiscountType.PERCENTAGE
 						? Number(item.subtotal) * (Number(item.discount) / 100)
@@ -344,8 +349,12 @@ export const generateFinancialData = (
 		>();
 
 		for (const item of bankTransferMovements) {
-			const key = `${item.paymentMethod}|${item.reference}`;
-			const paymentMethod = PAYMENT_METHOD_MAP[item.paymentMethod];
+			const key = `${item.reference}`;
+
+			const paymentMethod = item.paymentMethod
+				? PAYMENT_METHOD_MAP[item.paymentMethod]
+				: grouped.get(key)?.paymentMethod || '--';
+
 			const customer = item.customerName ?? '--';
 			const reference = item.reference ?? '--';
 			const amount = Number(item.amount);
@@ -353,7 +362,9 @@ export const generateFinancialData = (
 			if (!grouped.has(key)) {
 				grouped.set(key, { paymentMethod, customer, reference, amount: 0 });
 			}
+
 			const entry = grouped.get(key)!;
+
 			if (item.type === 'INCOME') {
 				entry.amount += amount;
 			} else if (item.type === 'EXPENSE') {

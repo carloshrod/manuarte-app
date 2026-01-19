@@ -68,9 +68,9 @@ const BillingModalForm = () => {
 
 		if (dataToHandle?.customerId) {
 			const currency =
-				dataToHandle?.currency || dataToHandle.countryIsoCode === 'CO'
-					? 'COP'
-					: 'USD';
+				dataToHandle?.currency ||
+				(dataToHandle.countryIsoCode === 'CO' ? 'COP' : 'USD');
+
 			fetchBalance(dataToHandle?.customerId, currency);
 		}
 	}, []);

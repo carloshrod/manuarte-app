@@ -1,10 +1,10 @@
 'use client';
-import { BillingParams } from '@/libs/api/billing';
+import { billingLibs, BillingParams } from '@/libs/api/billing';
 import { downloadExcel, generateBillingsData } from '@/utils/documents';
 import { Button, Tooltip } from 'antd';
 import moment from 'moment';
+import { useState } from 'react';
 import { IoMdDownload } from 'react-icons/io';
-import { useSelector } from 'react-redux';
 
 interface Props {
 	shopSlug: string;
@@ -12,12 +12,32 @@ interface Props {
 }
 
 const GenerateBillingReportButton = ({ shopSlug, searchParams }: Props) => {
-	const { billings } = useSelector((state: RootState) => state.billing);
+	const [isLoading, setIsLoading] = useState(false);
 	const hasDateFilters = searchParams?.dateStart && searchParams?.dateEnd;
+
+	const filters = {
+		shopId: searchParams?.shopId as string,
+		serialNumber: searchParams?.serialNumber,
+		status: searchParams?.status,
+		paymentMethods: searchParams?.paymentMethods,
+		customerName: searchParams?.customerName,
+		dateStart: searchParams?.dateStart,
+		dateEnd: searchParams?.dateEnd
+	};
 
 	const handleDownloadExcel = async () => {
 		try {
-			const excelData = generateBillingsData(billings);
+			setIsLoading(true);
+
+			const res = await billingLibs.getAll({
+				page: 1,
+				pageSize: 9999,
+				...filters
+			});
+
+			if (res?.billings?.length === 0) return;
+
+			const excelData = generateBillingsData(res?.billings);
 			const date = searchParams?.dateStart;
 
 			if (excelData) {
@@ -33,6 +53,8 @@ const GenerateBillingReportButton = ({ shopSlug, searchParams }: Props) => {
 			}
 		} catch (error) {
 			console.error(error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -48,7 +70,7 @@ const GenerateBillingReportButton = ({ shopSlug, searchParams }: Props) => {
 					/>
 				}
 				onClick={handleDownloadExcel}
-				disabled={!hasDateFilters}
+				disabled={!hasDateFilters || isLoading}
 			>
 				Generar Reporte
 			</Button>
