@@ -31,8 +31,11 @@ export const productSlice = createSlice({
 		},
 
 		addProduct: (state, action) => {
-			const newProduct = action.payload;
-			const newProductVariants = formatProductVariantState(newProduct);
+			const { newProduct, stockIds } = action.payload;
+			const newProductVariants = formatProductVariantState(
+				newProduct,
+				stockIds
+			);
 
 			state.products =
 				state.products.length > 0 ? [newProduct, ...state.products] : [];
@@ -44,7 +47,7 @@ export const productSlice = createSlice({
 		},
 
 		updateProduct: (state, action) => {
-			const { productVariant, ...product } = action.payload;
+			const { productVariant, stockIds, ...product } = action.payload;
 
 			const newProductData =
 				state.products.length > 0
@@ -59,7 +62,8 @@ export const productSlice = createSlice({
 							...pv,
 							name: pv.id === productVariant.id ? productVariant.name : pv.name,
 							productName: product.name,
-							productDescription: product.description
+							productDescription: product.description,
+							stockIds
 						}
 					: pv
 			);
@@ -80,7 +84,13 @@ export const productSlice = createSlice({
 			const productVariant = action.payload;
 
 			const newData = state.productVariants.map(pv =>
-				pv.id === productVariant.id ? { ...pv, name: productVariant.name } : pv
+				pv.id === productVariant.id
+					? {
+							...pv,
+							name: productVariant.name,
+							stockIds: productVariant.stockIds
+						}
+					: pv
 			);
 
 			state.productVariants = newData;

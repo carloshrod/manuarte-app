@@ -8,6 +8,7 @@ import SelectStocks from '../SelectStocks';
 import { selectFilterOption } from '../../utils';
 import { useModalStore } from '@/stores/modalStore';
 import { useSearchParams } from 'next/navigation';
+import { useWatch } from 'antd/es/form/Form';
 
 const ProductForm = () => {
 	const {
@@ -28,6 +29,7 @@ const ProductForm = () => {
 	const [isQuitoSelected, setIsQuitoSelected] = useState(true);
 	const searchParams = useSearchParams();
 	const activeProducts = searchParams.get('showActiveOnly') === 'true';
+	const stockIdsValues = useWatch('stockIds', form);
 
 	useEffect(() => {
 		if (dataToHandle) {
@@ -36,7 +38,8 @@ const ProductForm = () => {
 				description: dataToHandle.productDescription,
 				productCategoryId: dataToHandle.productCategoryId,
 				productVariants: [dataToHandle.name],
-				productVariantName: dataToHandle.name
+				productVariantName: dataToHandle.name,
+				stockIds: dataToHandle.stockIds || []
 			};
 			form.setFieldsValue(preparedFields);
 		}
@@ -63,22 +66,24 @@ const ProductForm = () => {
 					return { id: filtShop.stockId, currency: filtShop.currency };
 				});
 
-			submitCreateProduct({ ...cleanedValues, stocks });
+			submitCreateProduct({ ...cleanedValues, stocks }, stockIds);
 		} else {
-			const { productVariantName, productCategoryId, ...rest } = values ?? {};
+			const { productVariantName, productCategoryId, stockIds, ...rest } =
+				values ?? {};
 			const valuesToUpdate = {
 				...rest,
 				productVariant: {
 					id: dataToHandle.id,
 					name: productVariantName,
 					active
-				}
+				},
+				stockIds: stockIds || []
 			};
 			if (editGeneralProduct) {
 				submitUpdateProduct(valuesToUpdate, dataToHandle.productId);
 			} else {
 				submitUpdateProductVariant(
-					valuesToUpdate,
+					{ ...valuesToUpdate, stockIds: stockIds || [] },
 					dataToHandle.id,
 					activeProducts
 				);
@@ -172,32 +177,47 @@ const ProductForm = () => {
 			)}
 
 			{isUpdating ? (
-				<div className='flex items-center gap-4'>
-					<Form.Item
-						name='productVariantName'
-						label='Presentación'
-						rules={[
-							{
-								required: true,
-								message: 'El nombre de la presentación es requerido'
-							}
-						]}
-						className='flex-1'
-					>
-						<Input placeholder='Ingresa el nombre de la presentación' />
-					</Form.Item>
+				<>
+					<div className='flex items-center gap-4'>
+						<Form.Item
+							name='productVariantName'
+							label='Presentación'
+							rules={[
+								{
+									required: true,
+									message: 'El nombre de la presentación es requerido'
+								}
+							]}
+							className='flex-1'
+						>
+							<Input placeholder='Ingresa el nombre de la presentación' />
+						</Form.Item>
 
-					<div className='flex-1 flex items-center gap-2 my-6 px-2'>
-						<Switch
-							defaultChecked={false}
-							onChange={checked => setActive(checked)}
-							id='active'
-							style={active ? { backgroundColor: '#10b981' } : {}}
-							checked={active}
-						/>
-						<label htmlFor='active'>{active ? 'Activo' : 'Inactivo'}</label>
+						<div className='flex-1 flex items-center gap-2 my-6 px-2'>
+							<Switch
+								defaultChecked={false}
+								onChange={checked => setActive(checked)}
+								id='active'
+								style={active ? { backgroundColor: '#10b981' } : {}}
+								checked={active}
+							/>
+							<label htmlFor='active'>{active ? 'Activo' : 'Inactivo'}</label>
+						</div>
 					</div>
-				</div>
+
+					<SelectStocks
+						form={form}
+						setIsQuitoSelected={setIsQuitoSelected}
+						label='Activo en los siguientes stocks:'
+						canRemoveMainStock={true}
+						stocks={dataToHandle?.stockIds}
+						helpText={
+							stockIdsValues?.length === 0
+								? 'El producto no se mostrará en ningún stock'
+								: undefined
+						}
+					/>
+				</>
 			) : (
 				<Form.Item
 					name='productVariants'

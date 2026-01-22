@@ -97,7 +97,10 @@ const useForm = () => {
 		}
 	};
 
-	const submitCreateProduct = async (values: SubmitProductDto) => {
+	const submitCreateProduct = async (
+		values: SubmitProductDto,
+		stockIds?: string[]
+	) => {
 		const pVariantsAreUnique =
 			values.productVariants &&
 			validateUniqueProductVariantsName(values.productVariants);
@@ -112,7 +115,8 @@ const useForm = () => {
 		await handleSubmit({
 			serviceFn: productLibs.createProduct,
 			values,
-			onSuccess: res => dispatch(addProduct(res.data.newProduct))
+			onSuccess: res =>
+				dispatch(addProduct({ newProduct: res.data.newProduct, stockIds }))
 		});
 	};
 
@@ -132,13 +136,15 @@ const useForm = () => {
 
 	const submitAddProductVariant = async (
 		values: Omit<SubmitProductVariantDto, 'productId'>,
-		productId: string
+		productId: string,
+		stockIds?: string[]
 	) => {
 		await handleSubmit({
 			serviceFn: async newVariantValues =>
 				productLibs.addProductVariant(newVariantValues, productId),
 			values,
-			onSuccess: res => dispatch(addProductVariant(res.data.newProductVariant))
+			onSuccess: res =>
+				dispatch(addProductVariant({ ...res.data.newProductVariant, stockIds }))
 		});
 	};
 
@@ -157,7 +163,12 @@ const useForm = () => {
 					return;
 				}
 
-				dispatch(updateProductVariant(values.productVariant));
+				dispatch(
+					updateProductVariant({
+						...values.productVariant,
+						stockIds: values.stockIds
+					})
+				);
 			}
 		});
 	};

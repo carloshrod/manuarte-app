@@ -13,6 +13,8 @@ interface Props {
 	label?: string;
 	updatingStockItem?: boolean;
 	stocks?: string[];
+	canRemoveMainStock?: boolean;
+	helpText?: string;
 }
 
 const SelectStocks = ({
@@ -20,7 +22,9 @@ const SelectStocks = ({
 	setIsQuitoSelected,
 	label = 'Crear stock en:',
 	updatingStockItem,
-	stocks
+	stocks,
+	canRemoveMainStock,
+	helpText
 }: Props) => {
 	const { shops } = useSelector((state: RootState) => state.shop);
 	const [stockOptions, setStockOptions] = useState<
@@ -33,22 +37,15 @@ const SelectStocks = ({
 			const data = await shopServices.getAll(false);
 			if (data) {
 				dispatch(setShops(data));
-				setDefaultStocks(data);
+				initializeStockOptions(data);
 			}
 		}
 	};
 
-	const setDefaultStocks = (data: Shop[]) => {
-		let filteredData = updatingStockItem
+	const initializeStockOptions = (data: Shop[]) => {
+		const filteredData = updatingStockItem
 			? data.filter(item => !item.mainStock)
 			: data;
-
-		// Si se pasa el array stocks, filtrar solo esos stocks
-		if (stocks && stocks.length > 0) {
-			filteredData = filteredData.filter(shop =>
-				stocks.includes(shop?.stockId)
-			);
-		}
 
 		const options = filteredData?.map((shop: Shop) => {
 			return {
@@ -58,14 +55,32 @@ const SelectStocks = ({
 		});
 		setStockOptions(options);
 
+		// Valores por defecto
+		let defaultValues: string[];
+
+		if (stocks) {
+			if (updatingStockItem) {
+				// Remover mainStock de los valores por defecto
+				const mainStockId = data.find(sh => sh.mainStock)?.stockId;
+
+				defaultValues = mainStockId
+					? stocks.filter(stockId => stockId !== mainStockId)
+					: stocks;
+			} else {
+				defaultValues = stocks;
+			}
+		} else {
+			defaultValues = options.map(opt => opt.value);
+		}
+
 		form.setFieldsValue({
-			stockIds: options.map(opt => opt.value)
+			stockIds: defaultValues
 		});
 	};
 
 	useEffect(() => {
 		fetchShops();
-		setDefaultStocks(shops);
+		initializeStockOptions(shops);
 	}, [stocks]);
 
 	const mainStockId = shops.find(sh => sh.mainStock)?.stockId;
@@ -77,10 +92,13 @@ const SelectStocks = ({
 			label={label}
 			rules={[
 				{
-					required: !updatingStockItem,
+					required: !updatingStockItem && !canRemoveMainStock,
 					message: 'Debe seleccionar al menos 1 bodega (Fabrica Cascajal)'
 				}
 			]}
+			help={
+				helpText ? <span className='text-blue-400'>{helpText}</span> : undefined
+			}
 		>
 			<Select
 				placeholder='Seleccione las bodegas'
@@ -88,7 +106,7 @@ const SelectStocks = ({
 				showSearch
 				mode='multiple'
 				tagRender={({ label, value, closable, onClose }) => {
-					const isFixed = value === mainStockId;
+					const isFixed = value === mainStockId && !canRemoveMainStock;
 
 					return (
 						<CustomTag label={label} isFixed={isFixed} onClose={onClose} />
@@ -98,7 +116,9 @@ const SelectStocks = ({
 				options={stockOptions}
 				onChange={values => {
 					const newValues =
-						values.includes(mainStockId) || updatingStockItem
+						values.includes(mainStockId) ||
+						updatingStockItem ||
+						canRemoveMainStock
 							? values
 							: [mainStockId, ...values];
 

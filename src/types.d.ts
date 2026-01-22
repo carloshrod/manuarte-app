@@ -17,6 +17,7 @@ interface ProductVariant {
 	updatedDate?: string;
 	deletedDate?: string;
 	productName?: string;
+	stockIds?: string[];
 }
 
 interface ProductVariantWithStock extends ProductVariant {

@@ -1,5 +1,6 @@
 export const formatProductVariantState = (
-	product: Product
+	product: Product,
+	stockIds: string[] = []
 ): ProductVariant[] => {
 	try {
 		if (product?.productVariants?.length > 0) {
@@ -12,7 +13,8 @@ export const formatProductVariantState = (
 				productDescription: product.description,
 				productCategoryId: product.productCategoryId,
 				productCategoryName: product.productCategoryName,
-				active: productVariant.active
+				active: productVariant.active,
+				stockIds
 			}));
 		}
 

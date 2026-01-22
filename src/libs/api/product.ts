@@ -99,7 +99,8 @@ export const productLibs = {
 			`${ENV.API.PRODUCT_VARIANTS}/${productVariantId}`,
 			{
 				name: body?.productVariant?.name,
-				active: body?.productVariant?.active
+				active: body?.productVariant?.active,
+				stockIds: body?.stockIds
 			}
 		);
 	},

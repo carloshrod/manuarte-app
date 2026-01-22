@@ -35,7 +35,7 @@ const ProductVariantForm = () => {
 				return { id: filtShop.stockId, currency: filtShop.currency };
 			});
 
-		submitAddProductVariant({ ...cleanedValues, stocks }, productId);
+		submitAddProductVariant({ ...cleanedValues, stocks }, productId, stockIds);
 	};
 
 	const productOptions = products?.map(p => {
