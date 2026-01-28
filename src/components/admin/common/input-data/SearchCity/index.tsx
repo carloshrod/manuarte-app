@@ -74,7 +74,16 @@ const SearchCity = ({ initialValue }: SearchCityProps) => {
 	);
 
 	return (
-		<Form.Item name='cityId' label='Ciudad'>
+		<Form.Item
+			name='cityId'
+			label='Ciudad'
+			rules={[
+				{
+					required: true,
+					message: 'La ciudad es requerida'
+				}
+			]}
+		>
 			<Select
 				allowClear
 				showSearch
