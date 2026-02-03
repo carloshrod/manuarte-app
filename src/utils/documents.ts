@@ -5,7 +5,7 @@ import {
 	TRANSACTION_TYPES_MAP
 } from './mappings';
 import { formatDate, formatToTitleCase } from './formats';
-import { BillingStatus, DiscountType } from '@/types/enums';
+import { DiscountType } from '@/types/enums';
 
 export interface ExcelRestockData {
 	'#': number;
@@ -202,12 +202,8 @@ export const generateBillingsData = (billings: Billing[]) => {
 	try {
 		let excelData: ExcelBillingData[] = [];
 
-		const filteredBillings = billings.filter(
-			b => b.status === BillingStatus.PAID
-		);
-
-		if (filteredBillings?.length > 0) {
-			excelData = filteredBillings?.map((item, i) => {
+		if (billings?.length > 0) {
+			excelData = billings?.map((item, i) => {
 				const discount =
 					(item?.discountType === DiscountType.PERCENTAGE
 						? Number(item.subtotal) * (Number(item.discount) / 100)
@@ -216,6 +212,7 @@ export const generateBillingsData = (billings: Billing[]) => {
 				return {
 					'#': i + 1,
 					'Número de Serial': item.serialNumber,
+					Fecha: formatDate(item.createdDate) ?? '--',
 					Cliente: formatToTitleCase(item.customerName) ?? 'Consumidor Final',
 					'Métodos de Pago': item?.paymentMethods
 						?.map(p => PAYMENT_METHOD_MAP[p])

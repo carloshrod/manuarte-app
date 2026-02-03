@@ -20,9 +20,10 @@ interface Props {
 	shopId: string;
 	isLoading: boolean;
 	onChangeDate: (date: Moment) => void;
+	selectedDate: Moment | null;
 }
 
-const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
+const CashFlow = ({ shopId, isLoading, onChangeDate, selectedDate }: Props) => {
 	const { currentCashSession } = useSelector(
 		(state: RootState) => state.financialFlow
 	);
@@ -34,7 +35,7 @@ const CashFlow = ({ shopId, isLoading, onChangeDate }: Props) => {
 		<div className='space-y-4'>
 			<div className='flex justify-between'>
 				<DatePicker
-					defaultValue={moment(data?.openedAt)}
+					value={selectedDate || moment(data?.openedAt)}
 					format={value => value.format('DD-MMM-YYYY').toUpperCase()}
 					locale={esES}
 					disabledDate={current => {

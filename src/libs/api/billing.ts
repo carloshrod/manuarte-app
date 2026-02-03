@@ -1,14 +1,14 @@
 import { ENV } from '@/config/env';
 import { axiosPrivate } from './axios';
 import { mapBillingBody } from '@/services/utils';
-import { PaymentMethod } from '@/types/enums';
+import { BillingStatus, PaymentMethod } from '@/types/enums';
 
 export type BillingParams = {
 	page?: number;
 	pageSize?: number;
 	shopId: string;
 	serialNumber?: string;
-	status?: QuoteStatus;
+	status?: BillingStatus;
 	paymentMethods?: PaymentMethod;
 	customerName?: string;
 	dateStart?: string;

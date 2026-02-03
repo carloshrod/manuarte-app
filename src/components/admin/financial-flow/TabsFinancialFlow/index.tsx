@@ -21,6 +21,7 @@ const TabsFinancialFlow = ({ shopId }: { shopId: string | undefined }) => {
 	);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isCash, setIsCash] = useState(true);
+	const [selectedDate, setSelectedDate] = useState<Moment | null>(null);
 	const dispatch = useDispatch();
 	const { status, canOpen, data } = currentCashSession;
 
@@ -51,6 +52,7 @@ const TabsFinancialFlow = ({ shopId }: { shopId: string | undefined }) => {
 
 	const onChangeDate = async (date: Moment) => {
 		const formattedDate = date?.toDate().toISOString();
+		setSelectedDate(date);
 
 		if (shopId && formattedDate) {
 			setIsLoading(true);
@@ -99,6 +101,7 @@ const TabsFinancialFlow = ({ shopId }: { shopId: string | undefined }) => {
 					shopId={shopId as string}
 					isLoading={isLoading}
 					onChangeDate={onChangeDate}
+					selectedDate={selectedDate}
 				/>
 			)
 		},
@@ -106,7 +109,11 @@ const TabsFinancialFlow = ({ shopId }: { shopId: string | undefined }) => {
 			key: '2',
 			label: 'Transferencias Bancarias',
 			children: (
-				<BankTransfers isLoading={isLoading} onChangeDate={onChangeDate} />
+				<BankTransfers
+					isLoading={isLoading}
+					onChangeDate={onChangeDate}
+					selectedDate={selectedDate}
+				/>
 			)
 		}
 	];

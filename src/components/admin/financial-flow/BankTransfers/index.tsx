@@ -13,9 +13,10 @@ moment.locale('es');
 interface Props {
 	isLoading: boolean;
 	onChangeDate: (date: Moment) => void;
+	selectedDate: Moment | null;
 }
 
-const BankTransfers = ({ isLoading, onChangeDate }: Props) => {
+const BankTransfers = ({ isLoading, onChangeDate, selectedDate }: Props) => {
 	const { bankTransferMovements } = useSelector(
 		(state: RootState) => state.financialFlow
 	);
@@ -25,7 +26,7 @@ const BankTransfers = ({ isLoading, onChangeDate }: Props) => {
 		<div className='space-y-4'>
 			<div className='flex items-center gap-4 ps-3'>
 				<DatePicker
-					defaultValue={moment()}
+					value={selectedDate || moment()}
 					format={value => value.format('DD-MMM-YYYY').toUpperCase()}
 					locale={esES}
 					disabledDate={current => {

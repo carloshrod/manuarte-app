@@ -1,5 +1,6 @@
 'use client';
 import { billingLibs, BillingParams } from '@/libs/api/billing';
+import { BillingStatus } from '@/types/enums';
 import { downloadExcel, generateBillingsData } from '@/utils/documents';
 import { Button, Tooltip } from 'antd';
 import moment from 'moment';
@@ -30,9 +31,10 @@ const GenerateBillingReportButton = ({ shopSlug, searchParams }: Props) => {
 			setIsLoading(true);
 
 			const res = await billingLibs.getAll({
+				...filters,
 				page: 1,
 				pageSize: 9999,
-				...filters
+				status: BillingStatus.PAID
 			});
 
 			if (res?.billings?.length === 0) return;
