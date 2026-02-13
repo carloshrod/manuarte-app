@@ -26,6 +26,8 @@ export interface ExcelCostStockData {
 	Cantidad: number;
 	'Precio Venta': number;
 	'Total Precio Venta': number;
+	'Precio Dist': number;
+	'Total Precio Dist': number;
 	'Precio Costo': number;
 	'Costo Total': number;
 	'Ganancia Unitaria': number;
@@ -150,6 +152,8 @@ export const generateCostStockData = (stockItems: StockItem[]) => {
 						Cantidad: item.quantity,
 						'Precio Venta': item.price,
 						'Total Precio Venta': Number(item.quantity) * Number(item.price),
+						'Precio Dist': item.priceDis ?? 0,
+						'Total Precio Dist': Number(item.quantity) * Number(item.priceDis),
 						'Precio Costo': item.cost,
 						'Costo Total': Number(item.quantity) * Number(item.cost),
 						'Ganancia Unitaria': Number(item.price) - Number(item.cost),
@@ -665,6 +669,8 @@ export const downloadExcel = async ({
 						headers[colNumber - 1] === 'Facturado' ||
 						headers[colNumber - 1] === 'Precio Venta' ||
 						headers[colNumber - 1] === 'Total Precio Venta' ||
+						headers[colNumber - 1] === 'Precio Dist' ||
+						headers[colNumber - 1] === 'Total Precio Dist' ||
 						headers[colNumber - 1] === 'Precio Costo' ||
 						headers[colNumber - 1] === 'Costo Total' ||
 						headers[colNumber - 1] === 'Ganancia Unitaria' ||
