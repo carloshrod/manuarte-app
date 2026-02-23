@@ -43,7 +43,7 @@ const PDFActions = ({ isQuote, data, shopSlug }: Props) => {
 				confirmText: `Se enviará al número de WhatsApp (+${data?.callingCode}) ${data?.phoneNumber}`,
 				onConfirm: async () => {
 					try {
-						await sendPdf({ isQuote, data, shopSlug });
+						await sendPdf({ isQuote, data });
 					} finally {
 						closeModal();
 					}
@@ -111,9 +111,7 @@ const PDFActions = ({ isQuote, data, shopSlug }: Props) => {
 		<div className='flex items-center justify-between ps-4'>
 			<div className='flex gap-2'>
 				<PDFDownloadLink
-					document={
-						<PDFDoc isQuote={isQuote} data={data} shopSlug={shopSlug} />
-					}
+					document={<PDFDoc isQuote={isQuote} data={data} />}
 					fileName={`${city} - ${customerName}`}
 					style={{
 						display: 'flex',
