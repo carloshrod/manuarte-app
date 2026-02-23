@@ -12,10 +12,7 @@ export default axios.create({
 });
 
 export const axiosPrivate = axios.create({
-	baseURL: BASE_URL,
-	headers: {
-		'Content-Type': 'application/json'
-	}
+	baseURL: BASE_URL
 });
 
 axiosPrivate.interceptors.request.use(

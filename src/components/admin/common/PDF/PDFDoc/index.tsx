@@ -74,12 +74,11 @@ const styles = StyleSheet.create({
 type Props = {
 	isQuote: boolean;
 	data: Quote | Billing;
-	shopSlug: string;
 };
 
-const PDFDoc = ({ isQuote, data, shopSlug }: Props) => {
+const PDFDoc = ({ isQuote, data }: Props) => {
 	const isNotPaid = !isQuote && data?.status !== BillingStatus.PAID;
-	const city = shopSlug?.split('-')[1];
+	const city = data?.cityName || data?.city;
 
 	return (
 		<Document>

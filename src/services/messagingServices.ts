@@ -1,5 +1,5 @@
+import { whatsAppLibs } from '@/libs/api/whatsapp';
 import { ENV } from '@/config/env';
-import axios from './axios';
 import { formatCurrency } from '@/utils/formats';
 
 const token = process.env.NEXT_PUBLIC_WA_TOKEN;
@@ -24,7 +24,11 @@ export const messagingServices = {
 		params: templateParams;
 	}) => {
 		try {
-			const body = {
+			if (!token) {
+				throw new Error('WhatsApp access token no disponible');
+			}
+
+			const data = {
 				messaging_product: 'whatsapp',
 				recipient_type: 'individual',
 				to: recipientPhoneNumber,
@@ -56,7 +60,7 @@ export const messagingServices = {
 								},
 								{
 									type: 'text',
-									text: `#${params?.docSerialNumber}`
+									text: `${params?.docSerialNumber}`
 								},
 								{
 									type: 'text',
@@ -68,12 +72,13 @@ export const messagingServices = {
 				}
 			};
 
-			const res = await axios.post(ENV.WA.MESSAGES, body, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-					'Content-Type': 'application/json'
-				}
-			});
+			const body = {
+				url: ENV.WA.MESSAGES,
+				data,
+				fbToken: token
+			};
+
+			const res = await whatsAppLibs.proxy(body);
 
 			return res;
 		} catch (error) {
@@ -84,17 +89,17 @@ export const messagingServices = {
 
 	uploadMedia: async (doc: any, serialNumber: string) => {
 		try {
+			if (!token) {
+				throw new Error('WhatsApp access token no disponible');
+			}
+
 			const formData = new FormData();
 			formData.append('file', doc, `${serialNumber}.pdf`);
-			formData.append('type', 'document');
 			formData.append('messaging_product', 'whatsapp');
+			formData.append('url', ENV.WA.MEDIA);
+			formData.append('fbToken', token);
 
-			const res = await axios.post(ENV.WA.MEDIA, formData, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-					'Content-Type': 'multipart/form-data'
-				}
-			});
+			const res = await whatsAppLibs.proxy(formData);
 
 			if (res.status !== 200) {
 				throw new Error('Error subiendo el documento');

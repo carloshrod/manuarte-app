@@ -47,7 +47,7 @@ const PDFTermsCol = ({ city }: { city: string }) => {
 		{ address: string; phoneNumber: string; email: string }
 	> = {
 		barranquilla: {
-			address: 'Calle 44 # 72 - 63, Local 106',
+			address: 'Carrera 44 # 72 - 107, Local 105 - Edif. Nueva Colombia',
 			phoneNumber: '322 887 3928',
 			email: 'ventascolombia@manuartestore.com'
 		},
@@ -58,8 +58,9 @@ const PDFTermsCol = ({ city }: { city: string }) => {
 		}
 	};
 
-	const formatToTitleCase = (str: string) =>
-		str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+	const formatToTitleCase = (str: string) => {
+		return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+	};
 
 	const branch = BRANCHES[city] ?? BRANCHES.barranquilla;
 

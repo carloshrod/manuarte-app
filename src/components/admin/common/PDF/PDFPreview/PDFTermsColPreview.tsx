@@ -6,7 +6,7 @@ const PDFTermsColPreview = ({ city }: { city: string }) => {
 		{ address: string; phoneNumber: string; email: string }
 	> = {
 		barranquilla: {
-			address: 'Calle 44 # 72 - 63, Local 106',
+			address: 'Carrera 44 # 72 - 107, Local 105 - Edif. Nueva Colombia',
 			phoneNumber: '322 887 3928',
 			email: 'ventascolombia@manuartestore.com'
 		},

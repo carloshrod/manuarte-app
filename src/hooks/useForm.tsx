@@ -271,8 +271,7 @@ const useForm = () => {
 				if (values?.phoneNumber) {
 					await sendPdfAfterCreateDoc({
 						isQuote: true,
-						serialNumber: res?.data?.newQuote?.serialNumber,
-						shopSlug: values?.shopSlug as string
+						serialNumber: res?.data?.newQuote?.serialNumber
 					});
 				}
 			}
@@ -294,8 +293,7 @@ const useForm = () => {
 				if (values?.phoneNumber) {
 					await sendPdfAfterCreateDoc({
 						isQuote: true,
-						serialNumber: res?.data?.updatedQuote?.serialNumber,
-						shopSlug: values?.shopSlug as string
+						serialNumber: res?.data?.updatedQuote?.serialNumber
 					});
 				}
 			}
@@ -322,8 +320,7 @@ const useForm = () => {
 				if (values?.phoneNumber && status === BillingStatus.PAID) {
 					await sendPdfAfterCreateDoc({
 						isQuote: false,
-						serialNumber,
-						shopSlug: values?.shopSlug as string
+						serialNumber
 					});
 				}
 			}
@@ -343,10 +340,9 @@ const useForm = () => {
 			currentStatus: BillingStatus;
 			serialNumber: string;
 			phoneNumber: string;
-			shopSlug: string;
 		}
 	) => {
-		const { billingId, currentStatus, serialNumber, phoneNumber, shopSlug } =
+		const { billingId, currentStatus, serialNumber, phoneNumber } =
 			currentBillingData;
 
 		await handleSubmit({
@@ -370,8 +366,7 @@ const useForm = () => {
 				) {
 					await sendPdfAfterCreateDoc({
 						isQuote: false,
-						serialNumber,
-						shopSlug: shopSlug as string
+						serialNumber
 					});
 				}
 			}

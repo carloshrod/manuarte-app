@@ -159,8 +159,7 @@ const BillingModalForm = () => {
 								billingId: dataToHandle?.id,
 								currentStatus: dataToHandle?.status,
 								serialNumber: dataToHandle?.serialNumber,
-								phoneNumber: dataToHandle?.phoneNumber,
-								shopSlug: params?.shopSlug as string
+								phoneNumber: dataToHandle?.phoneNumber
 							}
 						)
 				}

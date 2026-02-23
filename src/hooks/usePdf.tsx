@@ -36,30 +36,25 @@ const usePdf = () => {
 
 	const generatePDFBlob = async ({
 		isQuote,
-		data,
-		shopSlug
+		data
 	}: {
 		isQuote: boolean;
 		data: Quote | Billing;
-		shopSlug: string;
 	}) => {
-		const blob = await pdf(
-			<PDFDoc isQuote={isQuote} data={data} shopSlug={shopSlug} />
-		).toBlob();
+		const blob = await pdf(<PDFDoc isQuote={isQuote} data={data} />).toBlob();
+
 		return blob;
 	};
 
 	const sendPdf = async ({
 		isQuote,
-		data,
-		shopSlug
+		data
 	}: {
 		isQuote: boolean;
 		data: Quote | Billing;
-		shopSlug: string;
 	}) => {
 		try {
-			const doc = await generatePDFBlob({ isQuote, data, shopSlug });
+			const doc = await generatePDFBlob({ isQuote, data });
 			const mediaId = await messagingServices.uploadMedia(
 				doc,
 				data.serialNumber
@@ -115,12 +110,10 @@ const usePdf = () => {
 
 	const sendPdfAfterCreateDoc = async ({
 		isQuote,
-		serialNumber,
-		shopSlug
+		serialNumber
 	}: {
 		isQuote: boolean;
 		serialNumber: string;
-		shopSlug: string;
 	}) => {
 		const newQuoteData = isQuote
 			? await quoteLibs.getOne({ serialNumber })
@@ -128,8 +121,7 @@ const usePdf = () => {
 
 		await sendPdf({
 			isQuote,
-			data: newQuoteData,
-			shopSlug
+			data: newQuoteData
 		});
 	};
 
