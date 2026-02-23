@@ -1,4 +1,4 @@
-const WA_BASE_URL = `${process.env.NEXT_PUBLIC_WA_URL}/${process.env.NEXT_PUBLIC__WA_PHONE_NUMBER_ID}`;
+const WA_BASE_URL = `${process.env.NEXT_PUBLIC_WA_URL}/${process.env.NEXT_PUBLIC_WA_PHONE_NUMBER_ID}`;
 
 export const ENV = {
 	BASE_URL: process.env.NEXT_PUBLIC_API_URL,
