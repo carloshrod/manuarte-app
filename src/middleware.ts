@@ -3,7 +3,7 @@ import { auth } from './auth';
 import { AUTH_RULES } from './utils/auth';
 import { ROUTES } from './utils/routes';
 
-const { LOGIN, PRODUCTS, CUSTOMERS } = ROUTES;
+const { LOGIN, PRODUCTS, CUSTOMERS, CUSTOMER_BALANCE } = ROUTES;
 
 export async function middleware(req: NextRequest) {
 	const session = await auth();
@@ -26,11 +26,14 @@ export async function middleware(req: NextRequest) {
 	const hasRoleAccess = isPathAllowed(requestedPage, roleRules.allowedPaths);
 
 	const hasExtraPermissionAccess = extraPermissions.some(permission => {
-		const permissionToPathMap: Record<string, string> = {
-			'product-read': PRODUCTS,
-			'customer-read': CUSTOMERS
+		const permissionToPathMap: Record<string, string[]> = {
+			'product-read': [PRODUCTS],
+			'customer-read': [CUSTOMERS, CUSTOMER_BALANCE]
 		};
-		return permissionToPathMap[permission] === requestedPage;
+
+		const allowedPaths = permissionToPathMap[permission] || [];
+
+		return isPathAllowed(requestedPage, allowedPaths);
 	});
 
 	if (
