@@ -23,9 +23,6 @@ const useTable = () => {
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef<InputRef>(null);
-	const [selectedDate, setSelectedDate] = useState<
-		[Dayjs | null, Dayjs | null] | null
-	>(null);
 
 	const handleSearch = (
 		selectedKeys: string[],
@@ -144,8 +141,6 @@ const useTable = () => {
 		localFilter: boolean = false,
 		filteredValue?: [Dayjs | null, Dayjs | null] | null
 	): TableColumnType<any> => {
-		const initialDate = filteredValue || selectedDate;
-
 		const props: TableColumnType<any> = {
 			filterDropdown: ({
 				setSelectedKeys,
@@ -159,9 +154,15 @@ const useTable = () => {
 				>
 					<RangePicker
 						placeholder={['Filtrar desde...', 'Filtrar hasta...']}
-						value={initialDate}
+						value={
+							Array.isArray(selectedKeys) && selectedKeys.length === 2
+								? [
+										dayjs(String(selectedKeys[0])),
+										dayjs(String(selectedKeys[1]))
+									]
+								: filteredValue || [null, null]
+						}
 						onChange={(dates, dateStrings) => {
-							setSelectedDate(dates as [Dayjs | null, Dayjs | null]);
 							setSelectedKeys(
 								Array.isArray(dateStrings)
 									? dateStrings.filter(Boolean)
@@ -170,6 +171,7 @@ const useTable = () => {
 										: []
 							);
 						}}
+						allowClear={false}
 					/>
 					<Space>
 						<Button
@@ -186,7 +188,6 @@ const useTable = () => {
 							onClick={() => {
 								clearFilters && clearFilters();
 								confirm();
-								setSelectedDate(null);
 							}}
 							size='small'
 							style={{ width: 90 }}
