@@ -1,3 +1,4 @@
+import { formatToTitleCase } from '@/utils/formats';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
@@ -56,10 +57,6 @@ const PDFTermsCol = ({ city }: { city: string }) => {
 			phoneNumber: '312 388 3602',
 			email: 'info@manuartestore.com'
 		}
-	};
-
-	const formatToTitleCase = (str: string) => {
-		return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 	};
 
 	const branch = BRANCHES[city] ?? BRANCHES.barranquilla;
